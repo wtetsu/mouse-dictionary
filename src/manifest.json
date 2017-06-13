@@ -1,29 +1,18 @@
 {
-
-  "manifest_version": 2,
   "name": "Mouse Dictionary",
-  "description": "Mouse Dictionary.",
+  "description": "Mouse Dictionary",
   "version": "1.0",
-  "applications": {
-    "gecko": {
-      "strict_min_version": "54.0a1"
-    }
+  "permissions": [
+    "storage", "unlimitedStorage", "activeTab" ,"tabs", "http://*/*", "https://*/*"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
   },
-
-  "sidebar_action": {
-    "default_icon": "icons/star.png",
-    "default_title" : "Mouse Dictionary",
-    "default_panel": "sidebar/panel.html"
+  "browser_action": {
+    "default_title": "Mouse Dictionary"
   },
-
-  "permissions": ["storage", "tabs", "activeTab", "<all_urls>"],
-
-  "commands": {
-    "_execute_sidebar_action": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Y"
-      }
-    }
-  }
-
+  "manifest_version": 2
 }
