@@ -6,6 +6,11 @@
   "author": "wtetsu <tewatana@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "eslint": "^4.0.0",
     "nodeunit": "^0.11.1"
+  },
+  "scripts": {
+    "test": "nodeunit test",
+    "lint": "eslint src/backgrond.js"
   }
 }
