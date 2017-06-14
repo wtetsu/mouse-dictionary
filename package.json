@@ -1,0 +1,11 @@
+{
+  "name": "mouse-dictionary",
+  "version": "0.9.0",
+  "main": "index.js",
+  "repository": "https://github.com/wtetsu/mouse-dictionary.git",
+  "author": "wtetsu <tewatana@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "nodeunit": "^0.11.1"
+  }
+}
