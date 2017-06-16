@@ -1,4 +1,6 @@
 
+let area = createArea();
+document.body.appendChild(area);
 
 function getWordAtPoint(elem, x, y) {
   let word = null;
@@ -62,5 +64,22 @@ function expandRange(range, elem, startIndex) {
 document.body.addEventListener("mousemove", (ev)=>{
   var w = getWordAtPoint(ev.target, ev.x, ev.y);
   console.log(w);
+  area.innerText = w;
   //chrome.runtime.sendMessage("...");
 });
+
+function createArea() {
+  let area = document.createElement("div");
+  area.style.width = "100px";
+  area.style.height = "100px";
+  area.innerText = "aaa aaa aaa aaa aaa aaa aaa aaa aaa aaa aaa aaa aaa aaa aaa aaa aaa";
+  area.style.position = "absolute";
+  area.style.resize = "both";
+  area.style.overflow = "scroll";
+  area.style.top = 0;
+  area.style.left = 0;
+  area.style.backgroundColor = "#ffffff";
+  area.style.zIndex = 2147483647;
+  return area;
+}
+
