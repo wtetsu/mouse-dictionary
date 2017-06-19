@@ -1,0 +1,41 @@
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="milligram.css">
+  <link rel="stylesheet" href="options.css">
+  <title>Mouse Dictionary</title>
+  <script src="linereader.js"></script>
+</head>
+<body>
+
+<section class="container" id="mainForm">
+  <h1>Mouse Dictionary</h1>
+  <label>辞書データの文字コード:</label>
+  <select>
+    <option>UTF-8</option>
+    <option>UTF-16</option>
+    <option>Shift-JIS</option>
+  </select>
+
+  <br/>
+
+  <label>辞書データの形式:</label>
+  <select id="fileformat">
+    <option value="PDIC">PDIC(単語行、訳行の交互)</option>
+    <option value="PDIC_LINE"/>PDIC1行( /// 区切り)</option>
+    <option value="TSV">TSV(タブ区切り)</option>
+    <option value="EIJI">英辞郎テキスト形式(■見出し)</option>
+  </select>  
+
+  <br/>
+
+  <label>辞書データの読み込み:</label>
+  <input type="file" id="dictdata" />
+
+  <div id="logArea"></div>
+
+</section>
+
+<script src="options.js"></script>
+</body>
+</html>
