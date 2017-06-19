@@ -2,6 +2,7 @@
   "name": "Mouse Dictionary",
   "description": "Mouse Dictionary",
   "version": "1.0",
+  "options_page": "options.html",  
   "permissions": [
     "storage", "unlimitedStorage", "activeTab" ,"tabs", "http://*/*", "https://*/*"
   ],
@@ -14,5 +15,10 @@
   "browser_action": {
     "default_title": "Mouse Dictionary"
   },
-  "manifest_version": 2
+  "manifest_version": 2,
+  "icons": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+  }
 }
