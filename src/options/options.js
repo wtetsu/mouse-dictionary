@@ -6,7 +6,7 @@ function saveDictionaryData(dictData) {
     chrome.storage.local.set(dictData, ()=>{
       resolve();
     });
-  })
+  });
 }
 
 let logArea = document.getElementById("logArea")
@@ -37,37 +37,32 @@ function loadDictionaryData(file) {
 
     let reader = new LineReader(data);
     reader.eachLine((line, i)=>{
-      //let arr = line.split("\t");
-      let arr = line.split(" /// ");
+      let arr = line.split("\t");
+      //let arr = line.split(" /// ");
+      let word, desc;
       if (arr.length >= 2) {
-        let word = arr[0].trim();
-        let desc = arr[1].trim();
+        word = arr[0].trim();
+        desc = arr[1].trim();
         dictData[word] = desc;
         wordCount += 1;
       }
-
-      let r = true;
-      if (i >= 1 && i % 100 === 0) {
-        showLog(line);
-        saveDictionaryData(dictData).then(()=>{
-          // succeeded
-        }, (error)=>{
-          showLog(`Error: ${error}`);
-        });
+      if (wordCount >= 1 && i % wordCount === 10000) {
+        showLog(i.toString() + "単語登録 " + word);
+        let d = dictData;
         dictData = {};
-        //r = false; // break
+        return saveDictionaryData(d);
       }
-      return r;
     }, () => {
       // finished
       saveDictionaryData(dictData).then(null, (error)=>{
         showLog(`Error: ${error}`);
       });
-      showLog("Finished(" + wordCount.toString() + "単語登録)");
+      showLog("Finished(" + wordCount.toString() + "単語登録完了) ");
       dictData = null;
     });
   };
-  reader.readAsText(file, "shift-jis");  
+  //reader.readAsText(file, "shift-jis");
+  reader.readAsText(file, "UTF-8");
 }
 
 if (typeof(document) !== "undefined") {
@@ -78,10 +73,24 @@ if (typeof(document) !== "undefined") {
       loadDictionaryData(file);
     }, 0);
   });
-}
 
-chrome.storage.sync.set({key00: "value00"}, ()=>{
-  //alert("key00 valye set!");
-});
+  let wordTestArea = document.getElementById("wordTestArea");
+  let wordTestInput = document.getElementById("wordTestInput");
+  wordTestInput.addEventListener("keyup", ()=>{
+    let word = wordTestInput.value;
+    chrome.storage.local.get([word], (r)=>{
+      let desc = r[word];
+      if (desc) {
+        wordTestArea.innerText = desc;
+      }
+    });
+  });
+  
+  document.getElementById("clear").addEventListener("click", ()=>{
+    chrome.storage.local.clear(()=>{
+      alert("cleared!");
+    });
+  });
+}
 
 
