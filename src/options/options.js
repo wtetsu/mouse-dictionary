@@ -46,7 +46,7 @@ function loadDictionaryData(file) {
         dictData[word] = desc;
         wordCount += 1;
       }
-      if (wordCount >= 1 && i % wordCount === 10000) {
+      if (wordCount >= 1 && i % wordCount === 1000) {
         showLog(i.toString() + "単語登録 " + word);
         let d = dictData;
         dictData = {};
@@ -61,8 +61,8 @@ function loadDictionaryData(file) {
       dictData = null;
     });
   };
-  //reader.readAsText(file, "shift-jis");
-  reader.readAsText(file, "UTF-8");
+  let fileEncoding = document.getElementById("fileEncoding").value;
+  reader.readAsText(file, fileEncoding);
 }
 
 if (typeof(document) !== "undefined") {
@@ -79,7 +79,7 @@ if (typeof(document) !== "undefined") {
   wordTestInput.addEventListener("keyup", ()=>{
     let word = wordTestInput.value;
     chrome.storage.local.get([word], (r)=>{
-      let desc = r[word];
+      let desc = r[word] || "?";
       if (desc) {
         wordTestArea.innerText = desc;
       }
