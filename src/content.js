@@ -7,18 +7,18 @@ class Draggable {
     this.elementY = null;
     document.body.addEventListener("mousemove", (e) => {
       if (this.targetElement) {
-        console.log("mousemove");
+        //console.log("mousemove");
         let x = this.parseInt(e.pageX, 10);
         let y = this.parseInt(e.pageY, 10);
         let left = this.elementX + x - this.startingX;
         let top = this.elementY + y - this.startingY;
-        console.log(`left:${left}, top:${top}`);
-        this.targetElement.style.left = this.elementX + x - this.startingX;
-        this.targetElement.style.top = this.elementY + y - this.startingY;
+        //console.log(`left:${left}, top:${top}`);
+        this.targetElement.style.left = left.toString() + "px";
+        this.targetElement.style.top = top.toString() + "px";
       }
     });
     document.body.addEventListener("mouseup", (e) => {
-      console.log("mouseup");
+      //console.log("mouseup");
       this.targetElement = null;
       this.startingX = null;
       this.startingY = null;
@@ -33,7 +33,7 @@ class Draggable {
   }
   makeElementDraggable(elem, titleBar) {
     titleBar.addEventListener("mousedown", (e) => {
-      console.log("mousedown");
+      //console.log("mousedown");
       this.targetElement = elem;
       this.startingX = this.parseInt(e.pageX, 10);
       this.startingY = this.parseInt(e.pageY, 10);
@@ -75,8 +75,10 @@ draggable.add(area.dialog, area.header);
 function getWordAtPoint(elem, x, y) {
   let word = null;
   if (elem.nodeType == elem.TEXT_NODE) {
+    console.log("TEXT_NODE");
     word = getWordAtPointForTextNode(elem, x, y);
   } else {
+    console.log("!TEXT_NODE");
     word = getWordAtPointForOthers(elem, x, y);
   }
   return(word);
@@ -96,6 +98,7 @@ function getWordAtPointForTextNode(elem, x, y) {
       range.expand("word");
       expandRange(range, elem, currentPos);
       word = range.toString();
+      //console.log("●getWordAtPointForTextNode●" + word);
       range.detach();
       break;
     }
@@ -113,6 +116,7 @@ function getWordAtPointForOthers(elem, x, y) {
        range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
       range.detach();
       word = getWordAtPoint(elem.childNodes[i], x, y);
+      //console.log("●getWordAtPointForOthers●" + word);
       break;
     } else {
       range.detach();
@@ -131,22 +135,67 @@ function expandRange(range, elem, startIndex) {
   }
 }
 
+function createDescriptionHtml(text) {
+  return text.replace(/\\/g, "\n")
+             .replace(/(◆.+)/g, '<font color="#008000">$1</font>')
+             .replace(/(【.+?】)/g, '<font color="#000088">$1</font>')
+             .replace(/\n/g, "<br/>");
+}
+
+function createContentHtml(words) {
+  return new Promise(function(resolve, reject){
+    chrome.storage.local.get(words, (r)=>{
+      let contentHtml = "";
+      for (let i = 0; i < words.length; i++) {
+        let word = words[i];
+        let desc = r[word];
+        if (desc) {
+          if (contentHtml) {
+            contentHtml += "<hr/>";
+          }
+          contentHtml += '<font color="#000088"><strong>' + word + '</strong></font><br/>';
+          contentHtml += createDescriptionHtml(desc);
+        }
+      }
+      resolve(contentHtml)
+    });
+  });
+}
+
 document.body.addEventListener("mousemove", (ev)=>{
-  var word = getWordAtPoint(ev.target, ev.x, ev.y);
-  
-  word = word.split(" ")[0];
-  
-  console.log(word);
+  let text = getWordAtPoint(ev.target, ev.x, ev.y);
+  if (text) {
+    text = text.trim();
+  } else {
+    return;
+  }
+  //let words = md.string.parseString(text);
+  let words = [];
+  let arr = text.split(" ");
+  for (let i = 0; i < arr.length; i++) {
+    let arr2 = md.string.parseString(arr[i]);
+    words = words.concat(arr2);
+  }
+  console.log(text);
+  console.log(words);
+
+  //console.log(words);
+  createContentHtml(words).then(function(contentHtml){
+    area.content.innerHTML = contentHtml;
+  });
+
+  /*
+  //console.log(word);
   chrome.storage.local.get([word], (r)=>{
     var desc = r[word];
-    // #000088
     var innerHTML = '<font color="#000088"><strong>' + word + '</strong></font><br/>';
     if (desc) {
-      innerHTML += desc;
+      innerHTML += createDescriptionHtml(desc);
     } else {
     }
     area.content.innerHTML = innerHTML;
   });
+  */
 });
 
 function createDialogElement() {

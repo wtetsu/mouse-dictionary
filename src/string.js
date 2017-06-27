@@ -20,19 +20,32 @@ md.string._splitString = function(str) {
     }
     var ch = str[i];
     var isCapital = md.string._isStrCapital(ch);
+    var wordToAdd = null;
     if (ch === "-" || ch === "_") {
-      arr.push(str.substring(startIndex, i));
+      wordToAdd = str.substring(startIndex, i);
       startIndex = i+1;
     } else if (isCapital && !isLastCapital) {
-      arr.push(str.substring(startIndex, i));
+      wordToAdd = str.substring(startIndex, i);
       startIndex = i;
     } else {
       isLastCapital = isCapital;
     }
+    if (wordToAdd) {
+      arr.push(wordToAdd);
+      var lWordToAdd = wordToAdd.toLowerCase();
+      if (lWordToAdd !== wordToAdd) {
+        arr.push(lWordToAdd);
+      }
+    }
     i += 1;
   }
   if (startIndex > 0) {
-    arr.push(str.substring(startIndex));
+    var lastWord = str.substring(startIndex);
+    arr.push(lastWord);
+    var lLastWord = lastWord.toLowerCase();
+    if (lLastWord !== lastWord) {
+      arr.push(lLastWord);
+    }
   }
 
   return arr;
