@@ -93,8 +93,8 @@ function getWordAtPointForTextNode(elem, x, y) {
   while (currentPos+1 < endPos) {
     range.setStart(elem, currentPos);
     range.setEnd(elem, currentPos+1);
-    if (range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
-       range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
+    let rect = range.getBoundingClientRect();
+    if (rect.left <= x && rect.right  >= x && rect.top  <= y && rect.bottom >= y) {
       range.expand("word");
       expandRange(range, elem, currentPos);
       word = range.toString();
@@ -112,8 +112,8 @@ function getWordAtPointForOthers(elem, x, y) {
   for (var i = 0; i < elem.childNodes.length; i++) {
     var range = elem.childNodes[i].ownerDocument.createRange();
     range.selectNodeContents(elem.childNodes[i]);
-    if (range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
-       range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
+    let rect = range.getBoundingClientRect();
+    if (rect.left <= x && rect.right  >= x && rect.top  <= y && rect.bottom >= y) {
       range.detach();
       word = getWordAtPoint(elem.childNodes[i], x, y);
       //console.log("●getWordAtPointForOthers●" + word);
