@@ -6,7 +6,7 @@
   "author": "wtetsu <tewatana@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "eslint": "^4.0.0",
+    "eslint": "^4.2.0",
     "nodeunit": "^0.11.1"
   },
   "scripts": {
