@@ -1,2 +1,0 @@
-Chromeのrangeの使い方
-https://stackoverflow.com/questions/2444430/how-to-get-a-word-under-cursor-using-javascript
