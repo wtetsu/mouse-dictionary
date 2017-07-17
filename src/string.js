@@ -65,41 +65,55 @@ md.string.parseString = function(str) {
   return result;
 };
 
+md.string.replaceTrailingCharacters = function(str, searchValue, newValue) {
+  let result = null;
+  if (str.endsWith(searchValue)) {
+    result = str.substring(str, str.length - searchValue.length) + newValue;
+  }
+  return result;
+};
+
 md.string.transformWord = function(str) {
-  var words = [str];
+  let w;
+  let words = [str];
   if (str != str.toLowerCase()) {
     words.push(str.toLowerCase());
   }
-  if (str.match(/ied$/)) {
-    words.push(str.replace(/ied$/,'y'));
+  w = md.string.replaceTrailingCharacters(str, 'ied', 'y');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 'ed', '');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 'ed', 'e');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 'ies', 'y');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 'ier', 'y');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 'er', '');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 'iest', 'y');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 'est', '');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 's', '');
+  if (w) words.push(w);
+
+  w = md.string.replaceTrailingCharacters(str, 'nning', 'n');
+  if (w) {
+    words.push(w);
+  } else {
+    w = md.string.replaceTrailingCharacters(str, 'ing', '');
+    if (w) words.push(w);
   }
-  if (str.match(/ed$/)) {
-    words.push(str.replace(/ed$/,''));
-    words.push(str.replace(/d$/,''));
-  }
-  if (str.match(/ies$/)) {
-    words.push(str.replace(/ies$/,'y'));
-  }
-  if (str.match(/ier$/)) {
-    words.push(str.replace(/ier$/,'y'));
-  }
-  if (str.match(/er$/)) {
-    words.push(str.replace(/er$/,''));
-  }
-  if (str.match(/iest$/)) {
-    words.push(str.replace(/iest$/,'y'));
-  }
-  if (str.match(/est$/)) {
-    words.push(str.replace(/est$/,''));
-  }
-  if (str.match(/s$/)) {
-    words.push(str.replace(/s$/,''));
-  }
-  if (str.match(/nning$/)) {
-    words.push(str.replace(/nning$/,'n'));
-  } else if (str.match(/ing$/)) {
-    words.push(str.replace(/ing$/,''));
-  }
+
   return words;
 };
 
