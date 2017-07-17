@@ -66,18 +66,6 @@ md.string.parseString = function(str) {
 };
 
 md.string.transformWord = function(str) {
-  var words = [];
-
-  var strList = md.string.parseString(str);
-  var i, len;
-  for (i = 0, len = strList.length; i < len; i++) {
-    var newWords = md.string._transformWord(strList[i]);
-    words = words.concat(newWords);
-  }
-  return words;
-};
-
-md.string._transformWord = function(str) {
   var words = [str];
   if (str != str.toLowerCase()) {
     words.push(str.toLowerCase());
