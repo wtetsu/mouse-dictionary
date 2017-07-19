@@ -10,15 +10,15 @@ module.exports.testString = (test)=>{
 };
 
 module.exports.testTransformWord = (test)=>{
-  test.deepEqual(md.string.transformWord("Word"), ["Word", "word"]);
-  test.deepEqual(md.string.transformWord("studied"), ['studied', 'study', 'studi', 'studie']);
-  test.deepEqual(md.string.transformWord("studies"), ['studies', 'study', 'studie']);
-  test.deepEqual(md.string.transformWord("player"), ['player', 'play']);
-  test.deepEqual(md.string.transformWord("supplier"), ['supplier', 'supply', 'suppli']);
-  test.deepEqual(md.string.transformWord("happiest"), ['happiest', 'happy', 'happi']);
-  test.deepEqual(md.string.transformWord("runs"), ['runs', 'run']);
-  test.deepEqual(md.string.transformWord("running"), ['running', 'run']);
-  test.deepEqual(md.string.transformWord("playing"), ['playing', 'play']);
+  test.deepEqual(string.transformWord("Word"), ["Word", "word"]);
+  test.deepEqual(string.transformWord("studied"), ['studied', 'study', 'studi', 'studie']);
+  test.deepEqual(string.transformWord("studies"), ['studies', 'study', 'studie']);
+  test.deepEqual(string.transformWord("player"), ['player', 'play']);
+  test.deepEqual(string.transformWord("supplier"), ['supplier', 'supply', 'suppli']);
+  test.deepEqual(string.transformWord("happiest"), ['happiest', 'happy', 'happi']);
+  test.deepEqual(string.transformWord("runs"), ['runs', 'run']);
+  test.deepEqual(string.transformWord("running"), ['running', 'run']);
+  test.deepEqual(string.transformWord("playing"), ['playing', 'play']);
 
   test.done();
 };

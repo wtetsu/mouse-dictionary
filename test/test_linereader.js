@@ -1,4 +1,4 @@
-let LineReader = require("../src/options/linereader");
+let LineReader = require("../src/linereader");
 
 module.exports.testLineReaderLf = (test)=>{
   let reader = new LineReader("aaa\nbbb\nccc");

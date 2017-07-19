@@ -1,12 +1,10 @@
-let md = {};
+let string = {};
 
-md.string = {};
-
-md.string._isStrCapital = function(str) {
+string._isStrCapital = function(str) {
   return /^[A-Z]$/.test(str);
 };
 
-md.string._splitString = function(str) {
+string._splitString = function(str) {
   var arr = [];
   var startIndex = 0;
   var i = 0;
@@ -17,7 +15,7 @@ md.string._splitString = function(str) {
       break;
     }
     var ch = str[i];
-    var isCapital = md.string._isStrCapital(ch);
+    var isCapital = string._isStrCapital(ch);
     var wordToAdd = null;
     if (ch === "-" || ch === "_") {
       wordToAdd = str.substring(startIndex, i);
@@ -49,11 +47,11 @@ md.string._splitString = function(str) {
   return arr;
 };
 
-md.string.parseString = function(str) {
+string.parseString = function(str) {
   var result = [];
   if (str) {
     result.push(str);
-    var arr = md.string._splitString(str);
+    var arr = string._splitString(str);
     var i, len;
     for (i = 0, len = arr.length; i < len; i++) {
       result.push(arr[i]);
@@ -63,7 +61,7 @@ md.string.parseString = function(str) {
   return result;
 };
 
-md.string.replaceTrailingCharacters = function(str, searchValue, newValue) {
+string.replaceTrailingCharacters = function(str, searchValue, newValue) {
   let result = null;
   if (str.endsWith(searchValue)) {
     result = str.substring(str, str.length - searchValue.length) + newValue;
@@ -71,49 +69,48 @@ md.string.replaceTrailingCharacters = function(str, searchValue, newValue) {
   return result;
 };
 
-md.string.transformWord = function(str) {
+string.transformWord = function(str) {
   let w;
   let words = [str];
   if (str != str.toLowerCase()) {
     words.push(str.toLowerCase());
   }
-  w = md.string.replaceTrailingCharacters(str, 'ied', 'y');
+  w = string.replaceTrailingCharacters(str, 'ied', 'y');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 'ed', '');
+  w = string.replaceTrailingCharacters(str, 'ed', '');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 'ed', 'e');
+  w = string.replaceTrailingCharacters(str, 'ed', 'e');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 'ies', 'y');
+  w = string.replaceTrailingCharacters(str, 'ies', 'y');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 'ier', 'y');
+  w = string.replaceTrailingCharacters(str, 'ier', 'y');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 'er', '');
+  w = string.replaceTrailingCharacters(str, 'er', '');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 'iest', 'y');
+  w = string.replaceTrailingCharacters(str, 'iest', 'y');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 'est', '');
+  w = string.replaceTrailingCharacters(str, 'est', '');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 's', '');
+  w = string.replaceTrailingCharacters(str, 's', '');
   if (w) words.push(w);
 
-  w = md.string.replaceTrailingCharacters(str, 'nning', 'n');
+  w = string.replaceTrailingCharacters(str, 'nning', 'n');
   if (w) {
     words.push(w);
   } else {
-    w = md.string.replaceTrailingCharacters(str, 'ing', '');
+    w = string.replaceTrailingCharacters(str, 'ing', '');
     if (w) words.push(w);
   }
 
   return words;
 };
 
-module.exports = md.string;
-
+module.exports = string;
