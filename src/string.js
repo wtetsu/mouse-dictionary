@@ -1,6 +1,4 @@
-if (typeof(md) === "undefined") {
-  md = {};
-}
+let md = {};
 
 md.string = {};
 
@@ -117,7 +115,5 @@ md.string.transformWord = function(str) {
   return words;
 };
 
-// for test
-if (typeof(module) !== "undefined") {
-  module.exports = md.string;
-}
+module.exports = md.string;
+

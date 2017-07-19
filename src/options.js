@@ -1,5 +1,4 @@
-//alert(localStorage.rules);
-//localStorage.rules = "aaa";
+const LineReader = require("./linereader");
 
 function saveDictionaryData(dictData) {
   return new Promise((resolve, reject)=>{
@@ -9,7 +8,7 @@ function saveDictionaryData(dictData) {
   });
 }
 
-let logArea = document.getElementById("logArea")
+let logArea = document.getElementById("logArea");
 
 function showLog(str) {
   console.log(str);

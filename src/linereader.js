@@ -53,6 +53,5 @@ class LineReader {
   }
 }
 
-if (typeof(module) !== "undefined") {
-  module.exports = LineReader;
-}
+module.exports = LineReader;
+

@@ -1,3 +1,5 @@
+const string = require("./string");
+
 class Draggable {
   constructor() {
     this.targetElement = null;
@@ -173,11 +175,10 @@ document.body.addEventListener("mousemove", (ev)=>{
   } else {
     return;
   }
-  //let words = md.string.parseString(text);
   let words = [];
   let arr = text.split(" ");
   for (let i = 0; i < arr.length; i++) {
-    let arr2 = md.string.parseString(arr[i]);
+    let arr2 = string.parseString(arr[i]);
     words = words.concat(arr2);
   }
   console.log(text);
