@@ -29,6 +29,24 @@ function loadDictionaryData(file) {
     console.log("onloadend");
   };
   reader.onload = (e)=>{
+    let fileFormat = document.getElementById("fileformat").value;
+    let deimiter = null;
+    switch (fileFormat) {
+      case "PDIC":
+        break;
+      case "PDIC_LINE":
+        deimiter = " /// ";
+        break;
+      case "TSV":
+        deimiter = "\t";
+        break;
+      case "EIJI":
+        break;
+    }
+    if (deimiter === null) {
+      return;
+    }
+    
     let data = e.target.result;
     //alert("a file selected(length:" + data.length.toString() + ")");
 
@@ -36,8 +54,7 @@ function loadDictionaryData(file) {
 
     let reader = new LineReader(data);
     reader.eachLine((line, i)=>{
-      let arr = line.split("\t");
-      //let arr = line.split(" /// ");
+      let arr = line.split(deimiter);
       let word, desc;
       if (arr.length >= 2) {
         word = arr[0].trim();
