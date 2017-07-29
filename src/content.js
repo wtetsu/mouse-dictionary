@@ -123,7 +123,9 @@ function getWordAtPointForOthers(elem, x, y) {
       range.detach();
       word = getWordAtPoint(elem.childNodes[i], x, y);
       //console.log("●getWordAtPointForOthers●" + word);
-      break;
+      if (word) {
+        break;
+      }
     } else {
       range.detach();
     }
@@ -152,15 +154,27 @@ function createContentHtml(words) {
   return new Promise(function(resolve, reject){
     chrome.storage.local.get(words, (r)=>{
       let contentHtml = "";
-      for (let i = 0; i < words.length; i++) {
+      //for (let i = 0; i < words.length; i++) {
+      let currentString = "";
+      for (let i = 0; i < 1; i++) {
         let word = words[i];
-        let desc = r[word];
+        if (i == 0) {
+          currentString = word;
+        } else {
+          currentString += " " + word;
+        }
+        let desc = r[currentString];
         if (desc) {
           if (contentHtml) {
             contentHtml += "<hr/>";
           }
-          contentHtml += '<font color="#000088"><strong>' + word + '</strong></font><br/>';
+          contentHtml += '<font color="#000088"><strong>' + currentString + '</strong></font><br/>';
           contentHtml += createDescriptionHtml(desc);
+        } else {
+          if (i == 0) {
+            contentHtml += '<font color="#000088"><strong>' + currentString + '</strong></font><br/>';
+          }
+          break;
         }
       }
       resolve(contentHtml)
