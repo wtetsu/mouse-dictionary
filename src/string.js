@@ -50,7 +50,8 @@ string._splitString = function(str) {
 string.parseString = function(str) {
   var result = [];
   if (str) {
-    result.push(str);
+    result = result.concat(string.transformWord(str.toLowerCase()));
+
     var arr = string._splitString(str);
     var i, len;
     for (i = 0, len = arr.length; i < len; i++) {
@@ -71,7 +72,7 @@ string.replaceTrailingCharacters = function(str, searchValue, newValue) {
 
 string.transformWord = function(str) {
   let w;
-  let words = [str];
+  let words = [];
   if (str != str.toLowerCase()) {
     words.push(str.toLowerCase());
   }

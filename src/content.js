@@ -1,70 +1,5 @@
 const string = require("./string");
-
-class Draggable {
-  constructor() {
-    this.targetElement = null;
-    this.startingX = null;
-    this.startingY = null;
-    this.elementX = null;
-    this.elementY = null;
-    document.body.addEventListener("mousemove", (e) => {
-      if (this.targetElement) {
-        //console.log("mousemove");
-        let x = this.parseInt(e.pageX, 10);
-        let y = this.parseInt(e.pageY, 10);
-        let left = this.elementX + x - this.startingX;
-        let top = this.elementY + y - this.startingY;
-        //console.log(`left:${left}, top:${top}`);
-        this.targetElement.style.left = left.toString() + "px";
-        this.targetElement.style.top = top.toString() + "px";
-      }
-    });
-    document.body.addEventListener("mouseup", (e) => {
-      //console.log("mouseup");
-      this.targetElement = null;
-      this.startingX = null;
-      this.startingY = null;
-      this.elementX = null;
-      this.elementY = null;
-      //return false;
-    });
-
-  }
-  add(elem, titleBar) {
-    this.makeElementDraggable(elem, titleBar);
-  }
-  makeElementDraggable(elem, titleBar) {
-    titleBar.addEventListener("mousedown", (e) => {
-      //console.log("mousedown");
-      this.targetElement = elem;
-      this.startingX = this.parseInt(e.pageX, 10);
-      this.startingY = this.parseInt(e.pageY, 10);
-      this.elementX = this.parseInt(this.targetElement.style.left);
-      this.elementY = this.parseInt(this.targetElement.style.top);
-      //return false;
-    });
-  }
-  dispose() {
-    document.body.removeEventListener("mousemove", this.onmousemove);
-  }
-
-  parseInt(str) {
-    let r;
-    if (str === null || str === undefined || str === "") {
-      r = 0;
-    } else {
-      r = window.parseInt(str, 10);
-      if (isNaN(r)) {
-        r = 0;
-      }
-    }
-    //console.warn(n);
-    return r;
-  }
-}
-
-//var draggable = new Draggable();
-//draggable.add(document.getElementById("area"));
+const Draggable = require("./draggable");
 
 
 let area = createArea();
@@ -76,11 +11,9 @@ draggable.add(area.dialog, area.header);
 
 function getWordAtPoint(elem, x, y) {
   let word = null;
-  if (elem.nodeType == elem.TEXT_NODE) {
-    console.log("TEXT_NODE");
+  if (elem.nodeType === elem.TEXT_NODE) {
     word = getWordAtPointForTextNode(elem, x, y);
   } else {
-    console.log("!TEXT_NODE");
     word = getWordAtPointForOthers(elem, x, y);
   }
   return(word);
@@ -100,7 +33,6 @@ function getWordAtPointForTextNode(elem, x, y) {
       range.expand("word");
       expandRange(range, elem, currentPos);
       word = range.toString();
-      //console.log("●getWordAtPointForTextNode●" + word);
       range.detach();
       break;
     }
@@ -122,7 +54,6 @@ function getWordAtPointForOthers(elem, x, y) {
     if (insideRect(rect, x, y)) {
       range.detach();
       word = getWordAtPoint(elem.childNodes[i], x, y);
-      //console.log("●getWordAtPointForOthers●" + word);
       if (word) {
         break;
       }
@@ -154,28 +85,24 @@ function createContentHtml(words) {
   return new Promise(function(resolve, reject){
     chrome.storage.local.get(words, (r)=>{
       let contentHtml = "";
-      //for (let i = 0; i < words.length; i++) {
       let currentString = "";
-      for (let i = 0; i < 1; i++) {
+      for (let i = 0; i < words.length; i++) {
         let word = words[i];
-        if (i == 0) {
-          currentString = word;
-        } else {
-          currentString += " " + word;
-        }
-        let desc = r[currentString];
+        let desc = r[word];
         if (desc) {
           if (contentHtml) {
             contentHtml += "<hr/>";
           }
-          contentHtml += '<font color="#000088"><strong>' + currentString + '</strong></font><br/>';
+          contentHtml += '<font color="#000088"><strong>' + word + '</strong></font><br/>';
           contentHtml += createDescriptionHtml(desc);
         } else {
-          if (i == 0) {
-            contentHtml += '<font color="#000088"><strong>' + currentString + '</strong></font><br/>';
-          }
-          break;
+          // if (i === 0) {
+          //   contentHtml += '<font color="#000088"><strong>' + word + '</strong></font><br/>';
+          // }
         }
+      }
+      if (contentHtml === "") {
+        contentHtml += '<font color="#000088"><strong>' + words[0] + '</strong></font><br/>';        
       }
       resolve(contentHtml)
     });
@@ -190,32 +117,34 @@ document.body.addEventListener("mousemove", (ev)=>{
     return;
   }
   let words = [];
-  let arr = text.split(" ");
-  for (let i = 0; i < arr.length; i++) {
-    let arr2 = string.parseString(arr[i]);
-    words = words.concat(arr2);
-  }
-  console.log(text);
-  console.log(words);
+  let arr = text.replace(",","").split(" ");
+  let linkedWords = linkWords(arr);
 
-  //console.log(words);
-  createContentHtml(words).then(function(contentHtml){
+  // for (let i = 0; i < arr.length; i++) {
+  //   let arr2 = string.parseString(arr[i]);
+  //   words = words.concat(arr2);
+  // }
+  let w = string.parseString(arr[0]);
+  linkedWords.splice.apply(linkedWords, [1, 0].concat(w));
+  createContentHtml(linkedWords).then(function(contentHtml){
     area.content.innerHTML = contentHtml;
   });
-
-  /*
-  //console.log(word);
-  chrome.storage.local.get([word], (r)=>{
-    var desc = r[word];
-    var innerHTML = '<font color="#000088"><strong>' + word + '</strong></font><br/>';
-    if (desc) {
-      innerHTML += createDescriptionHtml(desc);
-    } else {
-    }
-    area.content.innerHTML = innerHTML;
-  });
-  */
 });
+
+function linkWords(words) {
+  let linkedWords = [];
+  let currentString;
+  for (let i = 0; i < words.length; i++) {
+    let word = words[i].toLowerCase();
+    if (i === 0) {
+      currentString = word;
+    } else {
+      currentString += " " + word;
+    }
+    linkedWords.push(currentString);
+  }
+  return linkedWords;
+}
 
 function createDialogElement() {
   let dialog = document.createElement("div");
