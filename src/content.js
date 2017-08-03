@@ -81,32 +81,31 @@ function createDescriptionHtml(text) {
              .replace(/\n/g, "<br/>");
 }
 
-function createContentHtml(words) {
+function consultAndCreateContentHtml(words) {
   return new Promise(function(resolve, reject){
-    chrome.storage.local.get(words, (r)=>{
-      let contentHtml = "";
-      let currentString = "";
-      for (let i = 0; i < words.length; i++) {
-        let word = words[i];
-        let desc = r[word];
-        if (desc) {
-          if (contentHtml) {
-            contentHtml += "<hr/>";
-          }
-          contentHtml += '<font color="#000088"><strong>' + word + '</strong></font><br/>';
-          contentHtml += createDescriptionHtml(desc);
-        } else {
-          // if (i === 0) {
-          //   contentHtml += '<font color="#000088"><strong>' + word + '</strong></font><br/>';
-          // }
-        }
-      }
-      if (contentHtml === "") {
-        contentHtml += '<font color="#000088"><strong>' + words[0] + '</strong></font><br/>';        
-      }
+    chrome.storage.local.get(words, (meanings)=>{
+      let contentHtml = createContentHtml(words, meanings);
       resolve(contentHtml)
     });
   });
+}
+
+function createContentHtml (words, meanings) {
+  let currentString = "";
+  let descriptions = [];
+  for (let i = 0; i < words.length; i++) {
+    let word = words[i];
+    let desc = meanings[word];
+    if (desc) {
+      let html = '<font color="#000088"><strong>' + word + '</strong></font><br/>' + createDescriptionHtml(desc);
+      descriptions.push(html);
+    }
+  }
+  if (descriptions.length === 0) {
+    descriptions.push('<font color="#000088"><strong>' + words[0] + '</strong></font><br/>');
+  }
+  let contentHtml = descriptions.join('<br/><hr width="100%"/>')
+  return contentHtml;
 }
 
 document.body.addEventListener("mousemove", (ev)=>{
@@ -118,33 +117,14 @@ document.body.addEventListener("mousemove", (ev)=>{
   }
   let words = [];
   let arr = text.replace(",","").split(" ");
-  let linkedWords = linkWords(arr);
-
-  // for (let i = 0; i < arr.length; i++) {
-  //   let arr2 = string.parseString(arr[i]);
-  //   words = words.concat(arr2);
-  // }
+  let linkedWords = string.linkWords(arr);
   let w = string.parseString(arr[0]);
-  linkedWords.splice.apply(linkedWords, [1, 0].concat(w));
-  createContentHtml(linkedWords).then(function(contentHtml){
+  //linkedWords.splice.apply(linkedWords, [1, 0].concat(w));
+  linkedWords.splice.apply(linkedWords, [0, 0].concat(w));
+  consultAndCreateContentHtml(linkedWords).then(function(contentHtml){
     area.content.innerHTML = contentHtml;
   });
 });
-
-function linkWords(words) {
-  let linkedWords = [];
-  let currentString;
-  for (let i = 0; i < words.length; i++) {
-    let word = words[i].toLowerCase();
-    if (i === 0) {
-      currentString = word;
-    } else {
-      currentString += " " + word;
-    }
-    linkedWords.push(currentString);
-  }
-  return linkedWords;
-}
 
 function createDialogElement() {
   let dialog = document.createElement("div");

@@ -114,4 +114,19 @@ string.transformWord = function(str) {
   return words;
 };
 
+string.linkWords = function(words) {
+  let linkedWords = [];
+  let currentString;
+  for (let i = 0; i < words.length; i++) {
+    let word = words[i].toLowerCase();
+    if (i === 0) {
+      currentString = word;
+    } else {
+      currentString += " " + word;
+    }
+    linkedWords.unshift(currentString);
+  }
+  return linkedWords;
+};
+
 module.exports = string;
