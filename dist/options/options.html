@@ -1,46 +1,51 @@
 <html>
+
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <link rel="stylesheet" href="milligram.css">
   <link rel="stylesheet" href="options.css">
   <title>Mouse Dictionary</title>
 </head>
+
 <body>
 
-<section class="container" id="mainForm">
-  <h1>Mouse Dictionary</h1>
-  <label>辞書データの文字コード:</label>
-  <select id="fileEncoding">
-    <option>UTF-8</option>
-    <option>UTF-16</option>
-    <option>Shift-JIS</option>
-  </select>
+  <section class="container" id="mainForm">
+    <h1>Mouse Dictionary</h1>
+    <label>辞書データの文字コード:</label>
+    <select id="fileEncoding">
+      <option>UTF-8</option>
+      <option>UTF-16</option>
+      <option>Shift-JIS</option>
+    </select>
 
-  <br/>
+    <br/>
 
-  <label>辞書データの形式:</label>
-  <select id="fileformat">
-    <option value="PDIC">PDIC(単語行、訳行の交互)</option>
-    <option value="PDIC_LINE"/>PDIC1行( /// 区切り)</option>
-    <option value="TSV">TSV(タブ区切り)</option>
-    <option value="EIJI">英辞郎テキスト形式(■見出し)</option>
-  </select>  
+    <label>辞書データの形式:</label>
+    <select id="fileformat">
+      <option value="PDIC">PDIC(単語行、訳行の交互)</option>
+      <option value="PDIC_LINE" selected/>PDIC1行( /// 区切り)
+      </option>
+      <option value="TSV">TSV(タブ区切り)</option>
+      <option value="EIJI">英辞郎テキスト形式(■見出し)</option>
+    </select>
 
-  <br/>
+    <br/>
 
-  <label>辞書データの読み込み:</label>
-  <input type="file" id="dictdata" />
+    <label>辞書データの読み込み:</label>
+    <input type="file" id="dictdata" />
 
-  <br/>
-  <input type="button" id="clear" value="clear" />
-  <br/>
+    <br/>
+    <input type="button" id="load" value="load" />
+    <input type="button" id="clear" value="clear" />
+    <br/>
 
-  <div id="logArea"></div>
-  
-  <input type="text" id="wordTestInput" /><span id="wordTestArea"></span>
+    <div id="logArea"></div>
 
-</section>
+    <input type="text" id="wordTestInput" /><span id="wordTestArea"></span>
 
-<script src="options.js"></script>
+  </section>
+
+  <script src="options.js"></script>
 </body>
+
 </html>

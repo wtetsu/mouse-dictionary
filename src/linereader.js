@@ -10,8 +10,10 @@ class LineReader {
     let index = data.indexOf("\n");
     if (index >= 0) {
       if (data[index - 1] == "\r") {
+        console.log("linefeed:\\r");
         code = "\r\n";
       } else {
+        console.log("linefeed:\\n");
         code = "\n";
       }
     }

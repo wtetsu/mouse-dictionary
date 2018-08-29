@@ -1,7 +1,9 @@
 const LineReader = require("./linereader");
+const swal = require("sweetalert");
 
 function saveDictionaryData(dictData) {
   return new Promise((resolve, reject) => {
+    // resolve();
     chrome.storage.local.set(dictData, () => {
       resolve();
     });
@@ -29,6 +31,7 @@ function loadDictionaryData(file) {
     console.log("onloadend");
   };
   reader.onload = e => {
+    console.log("onload!!");
     let fileFormat = document.getElementById("fileformat").value;
     let deimiter = null;
     switch (fileFormat) {
@@ -48,7 +51,7 @@ function loadDictionaryData(file) {
     }
 
     let data = e.target.result;
-    //alert("a file selected(length:" + data.length.toString() + ")");
+    console.log("a file selected(length:" + data.length.toString() + ")");
 
     var dictData = {};
 
@@ -63,7 +66,8 @@ function loadDictionaryData(file) {
           dictData[word] = desc;
           wordCount += 1;
         }
-        if (wordCount >= 1 && i % wordCount === 1000) {
+        //if (wordCount >= 1 && i % wordCount === 1000) {
+        if (wordCount >= 1 && i % 1000 === 0) {
           showLog(i.toString() + "単語登録 " + word);
           let d = dictData;
           dictData = {};
@@ -85,13 +89,12 @@ function loadDictionaryData(file) {
 }
 
 if (typeof document !== "undefined") {
-  document.getElementById("dictdata").addEventListener("change", () => {
-    //alert("hello!");
-    var file = document.getElementById("dictdata").files[0];
-    setTimeout(() => {
-      loadDictionaryData(file);
-    }, 0);
-  });
+  // document.getElementById("dictdata").addEventListener("change", () => {
+  //   var file = document.getElementById("dictdata").files[0];
+  //   setTimeout(() => {
+  //     loadDictionaryData(file);
+  //   }, 0);
+  // });
 
   let wordTestArea = document.getElementById("wordTestArea");
   let wordTestInput = document.getElementById("wordTestInput");
@@ -103,6 +106,16 @@ if (typeof document !== "undefined") {
         wordTestArea.innerText = desc;
       }
     });
+  });
+
+  document.getElementById("load").addEventListener("click", () => {
+    console.log("load");
+    const file = document.getElementById("dictdata").files[0];
+    if (file) {
+      loadDictionaryData(file);
+    } else {
+      swal("辞書ファイルを選択してください。");
+    }
   });
 
   document.getElementById("clear").addEventListener("click", () => {
