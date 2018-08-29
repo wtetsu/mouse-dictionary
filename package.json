@@ -9,13 +9,16 @@
     "test": "nodeunit test",
     "lint": "eslint src/backgrond.js",
     "build": "browserify src/options.js -o dist/options/options.js & browserify src/background.js -o dist/background.js & browserify src/content.js -o dist/content.js",
-    "watch": "watchify src/content.js -o dist/content.js -v"
+    "watch": "watchify src/content.js -o dist/content.js -v",
+    "watch-o": "watchify src/options.js -o dist/options.js -v"
   },
-  "dependencies": {},
+  "dependencies": {
+    "sweetalert": "^2.1.0"
+  },
   "devDependencies": {
-    "browserify": "^14.4.0",
-    "eslint": "^4.3.0",
-    "nodeunit": "^0.11.1",
-    "watchify": "^3.9.0"
+    "browserify": "^16.2.2",
+    "eslint": "^5.4.0",
+    "nodeunit": "^0.11.3",
+    "watchify": "^3.11.0"
   }
 }
