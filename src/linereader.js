@@ -1,4 +1,3 @@
-
 class LineReader {
   constructor(data) {
     this.data = data;
@@ -10,7 +9,7 @@ class LineReader {
     let code = null;
     let index = data.indexOf("\n");
     if (index >= 0) {
-      if (data[index-1] == "\r") {
+      if (data[index - 1] == "\r") {
         code = "\r\n";
       } else {
         code = "\n";
@@ -26,8 +25,8 @@ class LineReader {
   prosessNextLine(fnEachLine, fnFinished, linenum) {
     let line = this.getNextLine();
     if (line !== null) {
-      return Promise.all([fnEachLine(line, linenum)]).then(()=>{
-        return this.prosessNextLine(fnEachLine, fnFinished, linenum+1);
+      return Promise.all([fnEachLine(line, linenum)]).then(() => {
+        return this.prosessNextLine(fnEachLine, fnFinished, linenum + 1);
       });
     } else {
       if (fnFinished) {
@@ -44,7 +43,7 @@ class LineReader {
     let nextLfIndex = this.data.indexOf(this.lineFeedCode, this.currentIndex);
     if (nextLfIndex >= 0) {
       line = this.data.substring(this.currentIndex, nextLfIndex);
-      this.currentIndex  = nextLfIndex + this.lineFeedCode.length;
+      this.currentIndex = nextLfIndex + this.lineFeedCode.length;
     } else {
       line = this.data.substring(this.currentIndex);
       this.currentIndex = -1;
@@ -54,4 +53,3 @@ class LineReader {
 }
 
 module.exports = LineReader;
-

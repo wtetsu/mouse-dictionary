@@ -19,7 +19,7 @@ string._splitString = function(str) {
     var wordToAdd = null;
     if (ch === "-" || ch === "_") {
       wordToAdd = str.substring(startIndex, i);
-      startIndex = i+1;
+      startIndex = i + 1;
     } else if (isCapital && !isLastCapital) {
       wordToAdd = str.substring(startIndex, i);
       startIndex = i;
@@ -76,38 +76,38 @@ string.transformWord = function(str) {
   if (str != str.toLowerCase()) {
     words.push(str.toLowerCase());
   }
-  w = string.replaceTrailingCharacters(str, 'ied', 'y');
+  w = string.replaceTrailingCharacters(str, "ied", "y");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 'ed', '');
+  w = string.replaceTrailingCharacters(str, "ed", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 'ed', 'e');
+  w = string.replaceTrailingCharacters(str, "ed", "e");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 'ies', 'y');
+  w = string.replaceTrailingCharacters(str, "ies", "y");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 'ier', 'y');
+  w = string.replaceTrailingCharacters(str, "ier", "y");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 'er', '');
+  w = string.replaceTrailingCharacters(str, "er", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 'iest', 'y');
+  w = string.replaceTrailingCharacters(str, "iest", "y");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 'est', '');
+  w = string.replaceTrailingCharacters(str, "est", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 's', '');
+  w = string.replaceTrailingCharacters(str, "s", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, 'nning', 'n');
+  w = string.replaceTrailingCharacters(str, "nning", "n");
   if (w) {
     words.push(w);
   } else {
-    w = string.replaceTrailingCharacters(str, 'ing', '');
+    w = string.replaceTrailingCharacters(str, "ing", "");
     if (w) words.push(w);
   }
 

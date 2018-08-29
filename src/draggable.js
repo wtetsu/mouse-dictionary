@@ -5,7 +5,7 @@ class Draggable {
     this.startingY = null;
     this.elementX = null;
     this.elementY = null;
-    document.body.addEventListener("mousemove", (e) => {
+    document.body.addEventListener("mousemove", e => {
       if (this.targetElement) {
         //console.log("mousemove");
         let x = this.parseInt(e.pageX, 10);
@@ -17,7 +17,7 @@ class Draggable {
         this.targetElement.style.top = top.toString() + "px";
       }
     });
-    document.body.addEventListener("mouseup", (e) => {
+    document.body.addEventListener("mouseup", e => {
       //console.log("mouseup");
       this.targetElement = null;
       this.startingX = null;
@@ -31,7 +31,7 @@ class Draggable {
     this.makeElementDraggable(elem, titleBar);
   }
   makeElementDraggable(elem, titleBar) {
-    titleBar.addEventListener("mousedown", (e) => {
+    titleBar.addEventListener("mousedown", e => {
       //console.log("mousedown");
       this.targetElement = elem;
       this.startingX = this.parseInt(e.pageX, 10);
