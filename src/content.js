@@ -158,6 +158,8 @@ function createDialogElement() {
   dialog.style.zIndex = 2147483647;
   dialog.style.fontSize = "0.8em";
   dialog.style.border = "1px solid #A0A0A0";
+  dialog.style.textAlign = "left";
+  dialog.style.lineHeight = "normal";
   return dialog;
 }
 
