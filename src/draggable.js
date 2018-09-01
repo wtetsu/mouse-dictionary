@@ -1,4 +1,4 @@
-class Draggable {
+export default class Draggable {
   constructor() {
     this.targetElement = null;
     this.startingX = null;
@@ -58,5 +58,3 @@ class Draggable {
     return r;
   }
 }
-
-module.exports = Draggable;

@@ -1,10 +1,10 @@
 let string = {};
 
-string._isStrCapital = function(str) {
+string._isStrCapital = str => {
   return /^[A-Z]$/.test(str);
 };
 
-string._splitString = function(str) {
+string._splitString = str => {
   var arr = [];
   var startIndex = 0;
   var i = 0;
@@ -47,10 +47,10 @@ string._splitString = function(str) {
   return arr;
 };
 
-string.parseString = function(str) {
+string.parseString = str => {
   var result = [];
   if (str) {
-    result = result.concat(string.transformWord(str.toLowerCase()));
+    result = result.concat(string.transformWord(str));
 
     var arr = string._splitString(str);
     var i, len;
@@ -62,7 +62,7 @@ string.parseString = function(str) {
   return result;
 };
 
-string.replaceTrailingCharacters = function(str, searchValue, newValue) {
+string.replaceTrailingCharacters = (str, searchValue, newValue) => {
   let result = null;
   if (str.endsWith(searchValue)) {
     result = str.substring(str, str.length - searchValue.length) + newValue;
@@ -70,12 +70,13 @@ string.replaceTrailingCharacters = function(str, searchValue, newValue) {
   return result;
 };
 
-string.transformWord = function(str) {
+const _reSigns = /[!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]/gm;
+
+string.transformWord = str => {
   let w;
   let words = [];
-  if (str != str.toLowerCase()) {
-    words.push(str.toLowerCase());
-  }
+  if (str !== str.toLowerCase()) words.push(str);
+
   w = string.replaceTrailingCharacters(str, "ied", "y");
   if (w) words.push(w);
 
@@ -103,6 +104,12 @@ string.transformWord = function(str) {
   w = string.replaceTrailingCharacters(str, "s", "");
   if (w) words.push(w);
 
+  w = string.replaceTrailingCharacters(str, "es", "");
+  if (w) words.push(w);
+
+  w = string.replaceTrailingCharacters(str, "'s", "");
+  if (w) words.push(w);
+
   w = string.replaceTrailingCharacters(str, "nning", "n");
   if (w) {
     words.push(w);
@@ -111,17 +118,20 @@ string.transformWord = function(str) {
     if (w) words.push(w);
   }
 
-  w = string.replaceTrailingCharacters(str, ".", "");
-  if (w) words.push(w);
-  w = string.replaceTrailingCharacters(str, "?", "");
-  if (w) words.push(w);
-  w = string.replaceTrailingCharacters(str, "!", "");
-  if (w) words.push(w);
+  // signs
+  w = str.replace(_reSigns, "");
+  if (w != str) {
+    words.push(w);
+    const lw = w.toLowerCase();
+    if (lw !== w) {
+      words.push(w);
+    }
+  }
 
   return words;
 };
 
-string.linkWords = function(words) {
+string.linkWords = words => {
   let linkedWords = [];
   let currentString;
   for (let i = 0; i < words.length; i++) {
@@ -136,4 +146,4 @@ string.linkWords = function(words) {
   return linkedWords;
 };
 
-module.exports = string;
+export default string;

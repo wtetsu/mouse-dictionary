@@ -1,4 +1,4 @@
-class LineReader {
+export default class LineReader {
   constructor(data) {
     this.data = data;
     this.lineFeedCode = this.detectLineFeedCode(data);
@@ -10,10 +10,8 @@ class LineReader {
     let index = data.indexOf("\n");
     if (index >= 0) {
       if (data[index - 1] == "\r") {
-        console.log("linefeed:\\r");
         code = "\r\n";
       } else {
-        console.log("linefeed:\\n");
         code = "\n";
       }
     }
@@ -53,5 +51,3 @@ class LineReader {
     return line;
   }
 }
-
-module.exports = LineReader;

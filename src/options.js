@@ -1,25 +1,23 @@
-const swal = require("sweetalert");
-const LineReader = require("./linereader");
-const text = require("./text.js");
+import swal from "sweetalert";
+import LineReader from "./linereader";
+import text from "./text.js";
 
-function saveDictionaryData(dictData) {
+const saveDictionaryData = dictData => {
   return new Promise(resolve => {
-    let start = new Date().getTime();
     chrome.storage.local.set(dictData, () => {
-      console.log("登録時間:" + (new Date().getTime() - start).toString());
       resolve();
     });
   });
-}
+};
 
-let logArea = document.getElementById("logArea");
+const logArea = document.getElementById("logArea");
 
-function showLog(str) {
+const showLog = str => {
   console.log(str);
   logArea.innerText = str;
-}
+};
 
-function loadDictionaryData(file) {
+const loadDictionaryData = file => {
   let wordCount = 0;
   var reader = new FileReader();
   reader.onloadstart = () => {
@@ -87,7 +85,7 @@ function loadDictionaryData(file) {
   };
   let fileEncoding = document.getElementById("fileEncoding").value;
   reader.readAsText(file, fileEncoding);
-}
+};
 
 if (typeof document !== "undefined") {
   let wordTestArea = document.getElementById("wordTestArea");
@@ -122,12 +120,10 @@ if (typeof document !== "undefined") {
       dangerMode: true
     }).then(willDelete => {
       if (willDelete) {
-        chrome.storage.local.clear(function() {
-          alert(willDelete);
-          swal({
-            text: text("finishedClear"),
-            icon: "success"
-          });
+        chrome.storage.local.clear();
+        swal({
+          text: text("finishedClear"),
+          icon: "success"
         });
       }
     });

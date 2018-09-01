@@ -1,13 +1,9 @@
-const string = require("./string");
-const Draggable = require("./draggable");
+import string from "./string";
+import Draggable from "./draggable";
 
-let area = createArea();
-document.body.appendChild(area.dialog);
+let area;
 
-var draggable = new Draggable();
-draggable.add(area.dialog, area.header);
-
-function getWordAtPoint(elem, x, y) {
+const getWordAtPoint = (elem, x, y) => {
   let word = null;
   if (elem.nodeType === elem.TEXT_NODE) {
     word = getWordAtPointForTextNode(elem, x, y);
@@ -15,9 +11,9 @@ function getWordAtPoint(elem, x, y) {
     word = getWordAtPointForOthers(elem, x, y);
   }
   return word;
-}
+};
 
-function getWordAtPointForTextNode(elem, x, y) {
+const getWordAtPointForTextNode = (elem, x, y) => {
   console.log("getWordAtPointForTextNode");
   let word = null;
   let range = elem.ownerDocument.createRange();
@@ -40,9 +36,9 @@ function getWordAtPointForTextNode(elem, x, y) {
     currentPos += 1;
   }
   return word;
-}
+};
 
-function insideRect(rect, x, y) {
+const insideRect = (rect, x, y) => {
   console.log(
     "rect.left <= x && rect.right >= x && rect.top <= y && rect.bottom >= y;"
   );
@@ -53,9 +49,9 @@ function insideRect(rect, x, y) {
     } >= ${y};`
   );
   return rect.left <= x && rect.right >= x && rect.top <= y && rect.bottom >= y;
-}
+};
 
-function getWordAtPointForOthers(elem, x, y) {
+const getWordAtPointForOthers = (elem, x, y) => {
   console.log("getWordAtPointForOthers");
   let word = null;
   for (var i = 0; i < elem.childNodes.length; i++) {
@@ -73,9 +69,9 @@ function getWordAtPointForOthers(elem, x, y) {
     }
   }
   return word;
-}
+};
 
-function expandRange(range, elem, startIndex) {
+const expandRange = (range, elem, startIndex) => {
   for (let i = startIndex + 1; i < startIndex + 100; i++) {
     try {
       range.setEnd(elem, i);
@@ -83,26 +79,26 @@ function expandRange(range, elem, startIndex) {
       break;
     }
   }
-}
+};
 
-function createDescriptionHtml(text) {
+const createDescriptionHtml = text => {
   return text
     .replace(/\\/g, "\n")
     .replace(/(◆.+)/g, '<font color="#008000">$1</font>')
     .replace(/(【.+?】)/g, '<font color="#000088">$1</font>')
     .replace(/\n/g, "<br/>");
-}
+};
 
-function consultAndCreateContentHtml(words) {
+const consultAndCreateContentHtml = words => {
   return new Promise(function(resolve, reject) {
     chrome.storage.local.get(words, meanings => {
       let contentHtml = createContentHtml(words, meanings);
       resolve(contentHtml);
     });
   });
-}
+};
 
-function createContentHtml(words, meanings) {
+const createContentHtml = (words, meanings) => {
   let currentString = "";
   let descriptions = [];
   for (let i = 0; i < words.length; i++) {
@@ -124,28 +120,36 @@ function createContentHtml(words, meanings) {
   }
   let contentHtml = descriptions.join('<br/><hr width="100%"/>');
   return contentHtml;
-}
+};
+
+let _lastText = null;
+
+const reNewLine = /(\r\n|\n|\r|\,|\.)/gm;
 
 document.body.addEventListener("mousemove", ev => {
   console.log(`${ev.x},${ev.y}`);
   let text = getWordAtPoint(ev.target, ev.x, ev.y);
-  if (text) {
-    text = text.trim();
-  } else {
+  if (!text) {
     return;
   }
-  let words = [];
-  let arr = text.replace(",", "").split(" ");
+  if (_lastText == text) {
+    return;
+  }
+  console.warn(text);
+  let arr = text
+    .trim()
+    .replace(reNewLine, " ")
+    .split(" ");
   let linkedWords = string.linkWords(arr);
   let w = string.parseString(arr[0]);
-  //linkedWords.splice.apply(linkedWords, [1, 0].concat(w));
   linkedWords.splice.apply(linkedWords, [0, 0].concat(w));
-  consultAndCreateContentHtml(linkedWords).then(function(contentHtml) {
+  consultAndCreateContentHtml(linkedWords).then(contentHtml => {
     area.content.innerHTML = contentHtml;
+    _lastText = text;
   });
 });
 
-function createDialogElement() {
+const createDialogElement = () => {
   let dialog = document.createElement("div");
   dialog.style.width = "200px";
   dialog.style.height = "200px";
@@ -161,26 +165,32 @@ function createDialogElement() {
   dialog.style.textAlign = "left";
   dialog.style.lineHeight = "normal";
   return dialog;
-}
+};
 
-function createHeaderElement() {
+const createHeaderElement = () => {
   let header = document.createElement("div");
   header.innerText = "Mouse Dictionary";
   header.style.cursor = "pointer";
   header.style.backgroundColor = "#EBEBEB";
   return header;
-}
+};
 
-function createContentElement() {
+const createContentElement = () => {
   let content = document.createElement("div");
   return content;
-}
+};
 
-function createArea() {
+const createArea = () => {
   let dialog = createDialogElement();
   let header = createHeaderElement();
   let content = createContentElement();
   dialog.appendChild(header);
   dialog.appendChild(content);
   return { dialog, header, content };
-}
+};
+
+area = createArea();
+document.body.appendChild(area.dialog);
+
+const draggable = new Draggable();
+draggable.add(area.dialog, area.header);
