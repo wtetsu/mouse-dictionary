@@ -90,7 +90,7 @@ const createDescriptionHtml = text => {
 };
 
 const consultAndCreateContentHtml = words => {
-  return new Promise(function(resolve, reject) {
+  return new Promise(resolve => {
     chrome.storage.local.get(words, meanings => {
       let contentHtml = createContentHtml(words, meanings);
       resolve(contentHtml);
@@ -99,7 +99,6 @@ const consultAndCreateContentHtml = words => {
 };
 
 const createContentHtml = (words, meanings) => {
-  let currentString = "";
   let descriptions = [];
   for (let i = 0; i < words.length; i++) {
     let word = words[i];
@@ -124,7 +123,7 @@ const createContentHtml = (words, meanings) => {
 
 let _lastText = null;
 
-const reNewLine = /(\r\n|\n|\r|\,|\.)/gm;
+const reNewLine = /(\r\n|\n|\r|,|\.)/gm;
 
 document.body.addEventListener("mousemove", ev => {
   console.log(`${ev.x},${ev.y}`);

@@ -57,5 +57,4 @@ typings/
 # dotenv environment variables file
 .env
 
-dist/*.js
-dist/*/*.js
+dist/

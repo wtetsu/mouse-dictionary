@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "lint": "eslint src/backgrond.js",
+    "lint": "eslint src/*.js",
     "release": "NODE_ENV=production npm run webpack",
     "build": "webpack",
     "watch": "webpack -w"

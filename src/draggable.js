@@ -17,7 +17,7 @@ export default class Draggable {
         this.targetElement.style.top = top.toString() + "px";
       }
     });
-    document.body.addEventListener("mouseup", e => {
+    document.body.addEventListener("mouseup", () => {
       //console.log("mouseup");
       this.targetElement = null;
       this.startingX = null;

@@ -55,7 +55,7 @@ const loadDictionaryData = file => {
 
     let reader = new LineReader(data);
     reader.eachLine(
-      (line, i) => {
+      line => {
         const arr = line.split(deimiter);
         let word, desc;
         if (arr.length >= 2) {
