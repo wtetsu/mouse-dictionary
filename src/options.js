@@ -1,9 +1,9 @@
-const LineReader = require("./linereader");
 const swal = require("sweetalert");
+const LineReader = require("./linereader");
+const text = require("./text.js");
 
 function saveDictionaryData(dictData) {
-  return new Promise((resolve, reject) => {
-    // resolve();
+  return new Promise(resolve => {
     chrome.storage.local.set(dictData, () => {
       resolve();
     });
@@ -24,8 +24,7 @@ function loadDictionaryData(file) {
     console.log("onloadstart");
   };
   reader.onprogress = e => {
-    //console.log("onprogress");
-    console.log("読み込中: " + e.loaded + " / " + e.total + "Byte");
+    console.log("loding: " + e.loaded + " / " + e.total + "Byte");
   };
   reader.onloadend = () => {
     console.log("onloadend");
@@ -51,14 +50,15 @@ function loadDictionaryData(file) {
     }
 
     let data = e.target.result;
-    console.log("a file selected(length:" + data.length.toString() + ")");
 
     var dictData = {};
 
     let reader = new LineReader(data);
     reader.eachLine(
       (line, i) => {
-        let arr = line.split(deimiter);
+        console.log("eachLine");
+
+        const arr = line.split(deimiter);
         let word, desc;
         if (arr.length >= 2) {
           word = arr[0].trim();
@@ -66,9 +66,9 @@ function loadDictionaryData(file) {
           dictData[word] = desc;
           wordCount += 1;
         }
-        //if (wordCount >= 1 && i % wordCount === 1000) {
-        if (wordCount >= 1 && i % 1000 === 0) {
-          showLog(i.toString() + "単語登録 " + word);
+        showLog(i);
+        if (wordCount >= 1 && wordCount % 1000 === 0) {
+          showLog(text("progressRegister", wordCount, word));
           let d = dictData;
           dictData = {};
           return saveDictionaryData(d);
@@ -79,7 +79,7 @@ function loadDictionaryData(file) {
         saveDictionaryData(dictData).then(null, error => {
           showLog(`Error: ${error}`);
         });
-        showLog("Finished(" + wordCount.toString() + "単語登録完了) ");
+        showLog(text("finishRegister", wordCount));
         dictData = null;
       }
     );
@@ -89,13 +89,6 @@ function loadDictionaryData(file) {
 }
 
 if (typeof document !== "undefined") {
-  // document.getElementById("dictdata").addEventListener("change", () => {
-  //   var file = document.getElementById("dictdata").files[0];
-  //   setTimeout(() => {
-  //     loadDictionaryData(file);
-  //   }, 0);
-  // });
-
   let wordTestArea = document.getElementById("wordTestArea");
   let wordTestInput = document.getElementById("wordTestInput");
   wordTestInput.addEventListener("keyup", () => {
@@ -114,13 +107,29 @@ if (typeof document !== "undefined") {
     if (file) {
       loadDictionaryData(file);
     } else {
-      swal("辞書ファイルを選択してください。");
+      swal({
+        title: text("selectDictFile"),
+        icon: "info"
+      });
     }
   });
 
   document.getElementById("clear").addEventListener("click", () => {
-    chrome.storage.local.clear(() => {
-      alert("cleared!");
+    swal({
+      text: text("clearAllDictData"),
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        chrome.storage.local.clear(function() {
+          alert(willDelete);
+          swal({
+            text: text("finishedClear"),
+            icon: "success"
+          });
+        });
+      }
     });
   });
 }

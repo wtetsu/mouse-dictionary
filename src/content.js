@@ -18,15 +18,18 @@ function getWordAtPoint(elem, x, y) {
 }
 
 function getWordAtPointForTextNode(elem, x, y) {
+  console.log("getWordAtPointForTextNode");
   let word = null;
   let range = elem.ownerDocument.createRange();
   range.selectNodeContents(elem);
   let currentPos = 0;
   let endPos = range.endOffset;
   while (currentPos + 1 < endPos) {
+    console.log(`currentPos:${currentPos},endPos:${endPos}`);
     range.setStart(elem, currentPos);
     range.setEnd(elem, currentPos + 1);
     let rect = range.getBoundingClientRect();
+    console.log(rect);
     if (insideRect(rect, x, y)) {
       range.expand("word");
       expandRange(range, elem, currentPos);
@@ -40,10 +43,20 @@ function getWordAtPointForTextNode(elem, x, y) {
 }
 
 function insideRect(rect, x, y) {
+  console.log(
+    "rect.left <= x && rect.right >= x && rect.top <= y && rect.bottom >= y;"
+  );
+
+  console.log(
+    `${rect.left} <= ${x} && ${rect.right} >= ${x} && ${rect.top} <= ${y} && ${
+      rect.bottom
+    } >= ${y};`
+  );
   return rect.left <= x && rect.right >= x && rect.top <= y && rect.bottom >= y;
 }
 
 function getWordAtPointForOthers(elem, x, y) {
+  console.log("getWordAtPointForOthers");
   let word = null;
   for (var i = 0; i < elem.childNodes.length; i++) {
     var range = elem.childNodes[i].ownerDocument.createRange();
@@ -114,6 +127,7 @@ function createContentHtml(words, meanings) {
 }
 
 document.body.addEventListener("mousemove", ev => {
+  console.log(`${ev.x},${ev.y}`);
   let text = getWordAtPoint(ev.target, ev.x, ev.y);
   if (text) {
     text = text.trim();
