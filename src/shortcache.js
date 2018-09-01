@@ -26,8 +26,6 @@ class ShortCache {
     this.dict[key] = this.index;
 
     this.index = (this.index + 1) % this.size;
-
-    console.warn(this.dict);
   }
 
   get(key) {
