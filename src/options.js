@@ -4,7 +4,9 @@ const text = require("./text.js");
 
 function saveDictionaryData(dictData) {
   return new Promise(resolve => {
+    let start = new Date().getTime();
     chrome.storage.local.set(dictData, () => {
+      console.log("登録時間:" + (new Date().getTime() - start).toString());
       resolve();
     });
   });
@@ -56,8 +58,6 @@ function loadDictionaryData(file) {
     let reader = new LineReader(data);
     reader.eachLine(
       (line, i) => {
-        console.log("eachLine");
-
         const arr = line.split(deimiter);
         let word, desc;
         if (arr.length >= 2) {
@@ -66,12 +66,12 @@ function loadDictionaryData(file) {
           dictData[word] = desc;
           wordCount += 1;
         }
-        showLog(i);
-        if (wordCount >= 1 && wordCount % 1000 === 0) {
+
+        if (wordCount >= 1 && wordCount % 100000 === 0) {
           showLog(text("progressRegister", wordCount, word));
-          let d = dictData;
+          let tmp = dictData;
           dictData = {};
-          return saveDictionaryData(d);
+          return saveDictionaryData(tmp);
         }
       },
       () => {
@@ -81,6 +81,7 @@ function loadDictionaryData(file) {
         });
         showLog(text("finishRegister", wordCount));
         dictData = null;
+        document.getElementById("load").removeAttribute("disabled");
       }
     );
   };
@@ -102,7 +103,6 @@ if (typeof document !== "undefined") {
   });
 
   document.getElementById("load").addEventListener("click", () => {
-    console.log("load");
     const file = document.getElementById("dictdata").files[0];
     if (file) {
       loadDictionaryData(file);
