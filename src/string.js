@@ -111,6 +111,13 @@ string.transformWord = function(str) {
     if (w) words.push(w);
   }
 
+  w = string.replaceTrailingCharacters(str, ".", "");
+  if (w) words.push(w);
+  w = string.replaceTrailingCharacters(str, "?", "");
+  if (w) words.push(w);
+  w = string.replaceTrailingCharacters(str, "!", "");
+  if (w) words.push(w);
+
   return words;
 };
 
