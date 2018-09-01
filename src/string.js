@@ -1,7 +1,9 @@
 let string = {};
 
+const reCapital = /^[A-Z]$/;
+
 string._isStrCapital = str => {
-  return /^[A-Z]$/.test(str);
+  return reCapital.test(str);
 };
 
 string._splitString = str => {
@@ -70,7 +72,6 @@ string.replaceTrailingCharacters = (str, searchValue, newValue) => {
   return result;
 };
 
-//const _reSigns = /[!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]/gm;
 const _reSigns = /[!"#$%&'()*+-.,/:;<=>?@[\\\]^_`{|}~]/gm;
 
 string.transformWord = str => {

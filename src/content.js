@@ -1,5 +1,6 @@
 import string from "./string";
 import Draggable from "./draggable";
+import ShortCache from "./shortcache";
 
 let area;
 
@@ -122,6 +123,7 @@ const createContentHtml = (words, meanings) => {
 };
 
 let _lastText = null;
+const _shortCache = new ShortCache(100);
 
 const reNewLine = /(\r\n|\n|\r|,|\.)/gm;
 
@@ -134,6 +136,13 @@ document.body.addEventListener("mousemove", ev => {
   if (_lastText == text) {
     return;
   }
+  const cache = _shortCache.get(text);
+  if (cache) {
+    area.content.innerHTML = cache;
+    return;
+  }
+  console.error("no-cache!");
+
   console.warn(text);
   let arr = text
     .trim()
@@ -144,6 +153,7 @@ document.body.addEventListener("mousemove", ev => {
   linkedWords.splice.apply(linkedWords, [0, 0].concat(w));
   consultAndCreateContentHtml(linkedWords).then(contentHtml => {
     area.content.innerHTML = contentHtml;
+    _shortCache.put(text, contentHtml);
     _lastText = text;
   });
 });
@@ -163,6 +173,7 @@ const createDialogElement = () => {
   dialog.style.border = "1px solid #A0A0A0";
   dialog.style.textAlign = "left";
   dialog.style.lineHeight = "normal";
+  dialog.style.opacity = 0.95;
   return dialog;
 };
 
