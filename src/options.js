@@ -13,29 +13,21 @@ const saveDictionaryData = dictData => {
 const logArea = document.getElementById("logArea");
 
 const showLog = str => {
-  console.log(str);
   logArea.innerText = str;
 };
 
 const loadDictionaryData = file => {
   let wordCount = 0;
   var reader = new FileReader();
-  reader.onloadstart = () => {
-    console.log("onloadstart");
-  };
   reader.onprogress = e => {
-    console.log("loding: " + e.loaded + " / " + e.total + "Byte");
-  };
-  reader.onloadend = () => {
-    console.log("onloadend");
+    showLog("loding: " + e.loaded + " / " + e.total + "Byte");
   };
   reader.onload = e => {
-    console.log("onload!!");
     let fileFormat = document.getElementById("fileformat").value;
     let deimiter = null;
     switch (fileFormat) {
-      case "PDIC":
-        break;
+      // case "PDIC":
+      //   break;
       case "PDIC_LINE":
         deimiter = " /// ";
         break;
