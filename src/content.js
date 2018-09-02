@@ -28,19 +28,27 @@ const createContentHtml = (words, meanings) => {
     let word = words[i];
     let desc = meanings[word];
     if (desc) {
-      let html = '<font color="#000088"><strong>' + word + "</strong></font><br/>" + createDescriptionHtml(desc);
+      let html = '<font color="#000088"><strong>' + escapeHtml(word) + "</strong></font><br/>" + createDescriptionHtml(desc);
       descriptions.push(html);
     }
   }
   if (descriptions.length === 0) {
-    descriptions.push('<font color="#000088"><strong>' + words[0] + "</strong></font><br/>");
+    descriptions.push('<font color="#000088"><strong>' + escapeHtml(words[0]) + "</strong></font><br/>");
   }
   let contentHtml = descriptions.join('<br/><hr style="width:100%"/>');
   return contentHtml;
 };
 
+const escapeHtml = str => {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+};
+
 let _lastText = null;
-const _shortCache = new ShortCache(100);
+const _shortCache = new ShortCache(200);
 
 const reIgnores = /(\r\n|\n|\r|,|\.)/gm;
 
@@ -58,8 +66,6 @@ document.body.addEventListener("mousemove", ev => {
     return;
   }
 
-  console.info("new");
-
   let arr = text
     .trim()
     .replace(reIgnores, " ")
@@ -74,22 +80,28 @@ document.body.addEventListener("mousemove", ev => {
   });
 });
 
+const _styles = {
+  width: "200px",
+  height: "200px",
+  position: "fixed",
+  resize: "both",
+  overflow: "hidden",
+  top: 0,
+  left: 0,
+  backgroundColor: "#ffffff",
+  zIndex: 2147483647,
+  fontSize: "0.8em",
+  border: "1px solid #A0A0A0",
+  textAlign: "left",
+  lineHeight: "normal",
+  opacity: 0.95
+};
+
 const createDialogElement = () => {
   let dialog = document.createElement("div");
-  dialog.style.width = "200px";
-  dialog.style.height = "200px";
-  dialog.style.position = "fixed";
-  dialog.style.resize = "both";
-  dialog.style.overflow = "hidden";
-  dialog.style.top = 0;
-  dialog.style.left = 0;
-  dialog.style.backgroundColor = "#ffffff";
-  dialog.style.zIndex = 2147483647;
-  dialog.style.fontSize = "0.8em";
-  dialog.style.border = "1px solid #A0A0A0";
-  dialog.style.textAlign = "left";
-  dialog.style.lineHeight = "normal";
-  dialog.style.opacity = 0.95;
+  for (let key of Object.keys(_styles)) {
+    dialog.style[key] = _styles[key];
+  }
   return dialog;
 };
 

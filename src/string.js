@@ -19,7 +19,7 @@ string._splitString = str => {
     var ch = str[i];
     var isCapital = string._isStrCapital(ch);
     var wordToAdd = null;
-    if (ch === "-" || ch === "_") {
+    if (ch === "-" || ch === "_" || ch === "#" || ch === ".") {
       wordToAdd = str.substring(startIndex, i);
       startIndex = i + 1;
     } else if (isCapital && !isLastCapital) {
