@@ -22,7 +22,7 @@
     "@babel/preset-env": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.4.2",
-    "babel-loader": "^8.0.0",
+    "babel-loader": "^8.0.1",
     "eslint": "^5.5.0",
     "jest": "^23.5.0",
     "regenerator-runtime": "^0.12.1",
