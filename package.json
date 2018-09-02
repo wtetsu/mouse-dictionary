@@ -1,16 +1,15 @@
 {
   "name": "mouse-dictionary",
-  "version": "0.9.0",
-  "main": "index.js",
+  "version": "1.0.1",
   "repository": "https://github.com/wtetsu/mouse-dictionary.git",
   "author": "wtetsu <tewatana@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "build": "webpack",
+    "watch": "webpack -w",
     "lint": "eslint src/*.js",
     "release": "NODE_ENV=production npm run build",
-    "build": "webpack",
-    "watch": "webpack -w"
+    "test": "jest"
   },
   "dependencies": {
     "sprintf-js": "^1.1.1",
