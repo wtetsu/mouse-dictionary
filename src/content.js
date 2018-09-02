@@ -1,86 +1,9 @@
 import string from "./string";
 import Draggable from "./draggable";
 import ShortCache from "./shortcache";
+import atcursor from "./atcursor";
 
 let area;
-
-const getWordAtPoint = (elem, x, y) => {
-  let word = null;
-  if (elem.nodeType === elem.TEXT_NODE) {
-    word = getWordAtPointForTextNode(elem, x, y);
-  } else {
-    word = getWordAtPointForOthers(elem, x, y);
-  }
-  return word;
-};
-
-const getWordAtPointForTextNode = (elem, x, y) => {
-  console.log("getWordAtPointForTextNode");
-  let word = null;
-  let range = elem.ownerDocument.createRange();
-  range.selectNodeContents(elem);
-  let currentPos = 0;
-  let endPos = range.endOffset;
-  while (currentPos + 1 < endPos) {
-    console.log(`currentPos:${currentPos},endPos:${endPos}`);
-    range.setStart(elem, currentPos);
-    range.setEnd(elem, currentPos + 1);
-    let rect = range.getBoundingClientRect();
-    console.log(rect);
-    if (insideRect(rect, x, y)) {
-      range.expand("word");
-      expandRange(range, elem, currentPos);
-      word = range.toString();
-      range.detach();
-      break;
-    }
-    currentPos += 1;
-  }
-  return word;
-};
-
-const insideRect = (rect, x, y) => {
-  console.log(
-    "rect.left <= x && rect.right >= x && rect.top <= y && rect.bottom >= y;"
-  );
-
-  console.log(
-    `${rect.left} <= ${x} && ${rect.right} >= ${x} && ${rect.top} <= ${y} && ${
-      rect.bottom
-    } >= ${y};`
-  );
-  return rect.left <= x && rect.right >= x && rect.top <= y && rect.bottom >= y;
-};
-
-const getWordAtPointForOthers = (elem, x, y) => {
-  console.log("getWordAtPointForOthers");
-  let word = null;
-  for (var i = 0; i < elem.childNodes.length; i++) {
-    var range = elem.childNodes[i].ownerDocument.createRange();
-    range.selectNodeContents(elem.childNodes[i]);
-    let rect = range.getBoundingClientRect();
-    if (insideRect(rect, x, y)) {
-      range.detach();
-      word = getWordAtPoint(elem.childNodes[i], x, y);
-      if (word) {
-        break;
-      }
-    } else {
-      range.detach();
-    }
-  }
-  return word;
-};
-
-const expandRange = (range, elem, startIndex) => {
-  for (let i = startIndex + 1; i < startIndex + 100; i++) {
-    try {
-      range.setEnd(elem, i);
-    } catch (ex) {
-      break;
-    }
-  }
-};
 
 const createDescriptionHtml = text => {
   return text
@@ -105,31 +28,24 @@ const createContentHtml = (words, meanings) => {
     let word = words[i];
     let desc = meanings[word];
     if (desc) {
-      let html =
-        '<font color="#000088"><strong>' +
-        word +
-        "</strong></font><br/>" +
-        createDescriptionHtml(desc);
+      let html = '<font color="#000088"><strong>' + word + "</strong></font><br/>" + createDescriptionHtml(desc);
       descriptions.push(html);
     }
   }
   if (descriptions.length === 0) {
-    descriptions.push(
-      '<font color="#000088"><strong>' + words[0] + "</strong></font><br/>"
-    );
+    descriptions.push('<font color="#000088"><strong>' + words[0] + "</strong></font><br/>");
   }
-  let contentHtml = descriptions.join('<br/><hr width="100%"/>');
+  let contentHtml = descriptions.join('<br/><hr style="width:100%"/>');
   return contentHtml;
 };
 
 let _lastText = null;
 const _shortCache = new ShortCache(100);
 
-const reNewLine = /(\r\n|\n|\r|,|\.)/gm;
+const reIgnores = /(\r\n|\n|\r|,|\.)/gm;
 
 document.body.addEventListener("mousemove", ev => {
-  console.log(`${ev.x},${ev.y}`);
-  let text = getWordAtPoint(ev.target, ev.x, ev.y);
+  let text = atcursor(ev.target, ev.clientX, ev.clientY);
   if (!text) {
     return;
   }
@@ -141,12 +57,12 @@ document.body.addEventListener("mousemove", ev => {
     area.content.innerHTML = cache;
     return;
   }
-  console.error("no-cache!");
 
-  console.warn(text);
+  console.info("new");
+
   let arr = text
     .trim()
-    .replace(reNewLine, " ")
+    .replace(reIgnores, " ")
     .split(" ");
   let linkedWords = string.linkWords(arr);
   let w = string.parseString(arr[0]);

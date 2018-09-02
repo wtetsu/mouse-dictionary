@@ -72,7 +72,7 @@ string.replaceTrailingCharacters = (str, searchValue, newValue) => {
   return result;
 };
 
-const _reSigns = /[!"#$%&'()*+-.,/:;<=>?@[\\\]^_`{|}~]/gm;
+const _reSigns = /[!"#$%&'’‘()*+-.,/:;<=>?@[\\\]^_`{|}~]/gm;
 
 string.transformWord = str => {
   let w;
