@@ -8,7 +8,7 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src/*.js",
-    "release": "NODE_ENV=production npm run webpack",
+    "release": "NODE_ENV=production npm run build",
     "build": "webpack",
     "watch": "webpack -w"
   },
