@@ -28,13 +28,11 @@ const loadDictionaryData = file => {
     switch (fileFormat) {
       // case "PDIC":
       //   break;
-      case "PDIC_LINE":
-        deimiter = " /// ";
-        break;
       case "TSV":
         deimiter = "\t";
         break;
-      case "EIJI":
+      case "PDIC_LINE":
+        deimiter = " /// ";
         break;
     }
     if (deimiter === null) {
