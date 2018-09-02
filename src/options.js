@@ -156,18 +156,6 @@ const updateDictDataUsage = () => {
 
 if (typeof document !== "undefined") {
   window.onload = () => {
-    let wordTestArea = document.getElementById("wordTestArea");
-    let wordTestInput = document.getElementById("wordTestInput");
-    wordTestInput.addEventListener("keyup", () => {
-      let word = wordTestInput.value;
-      chrome.storage.local.get([word], r => {
-        let desc = r[word] || "?";
-        if (desc) {
-          wordTestArea.innerText = desc;
-        }
-      });
-    });
-
     document.getElementById("load").addEventListener("click", () => {
       const file = document.getElementById("dictdata").files[0];
       if (file) {
