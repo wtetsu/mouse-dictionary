@@ -3,14 +3,7 @@
   "description": "Mouse Dictionary",
   "version": "1.0",
   "options_page": "options/options.html",
-  "permissions": [
-    "storage",
-    "unlimitedStorage",
-    "activeTab",
-    "tabs",
-    "http://*/*",
-    "https://*/*"
-  ],
+  "permissions": ["storage", "unlimitedStorage", "activeTab", "tabs", "http://*/*", "https://*/*"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
@@ -23,5 +16,6 @@
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
-  }
+  },
+  "web_accessible_resources": ["data/*.json"]
 }

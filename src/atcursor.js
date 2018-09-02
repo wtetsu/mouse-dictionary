@@ -63,7 +63,7 @@ const getTextFromRange = (text, offset) => {
   }
   const ch = text[offset];
 
-  if (!ch || !ch.match(/[A-Za-z]/)) {
+  if (!ch || !ch.match(/[\x20-\x7E]/)) {
     return null;
   }
 

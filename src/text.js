@@ -8,7 +8,9 @@ const templates = {
     progressRegister: "%d語登録(%s)",
     finishRegister: "登録完了(%d語)",
     clearAllDictData: "登録した辞書データを削除します。",
-    finishedClear: "辞書データを削除しました"
+    finishedClear: "辞書データを削除しました",
+    dictDataUsage: "%sKB使用中",
+    confirmLoadInitialDict: "まだ辞書データが無いようです。\nフリー辞書のデータを自動登録します。"
   }
 };
 
