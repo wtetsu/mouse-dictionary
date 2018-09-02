@@ -1,4 +1,3 @@
-import _ from "lodash";
 import sprintf from "sprintf-js";
 
 const LANG = "ja";
@@ -13,14 +12,13 @@ const templates = {
   }
 };
 
-const sprintfWithArgs = _.spread(sprintf.sprintf);
-
 export default (key, ...params) => {
   let r;
   const lang = templates[LANG];
   const tmpl = lang[key];
   if (tmpl) {
-    r = sprintfWithArgs(_.concat([tmpl], params));
+    const sprintfParams = [tmpl].concat(params);
+    r = sprintf.sprintf(...sprintfParams);
   } else {
     r = "";
   }
