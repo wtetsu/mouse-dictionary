@@ -13,7 +13,6 @@
     "watch": "webpack -w"
   },
   "dependencies": {
-    "lodash": "^4.17.10",
     "sprintf-js": "^1.1.1",
     "sweetalert": "^2.1.0"
   },
