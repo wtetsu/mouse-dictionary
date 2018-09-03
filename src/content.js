@@ -6,24 +6,16 @@ import atcursor from "./atcursor";
 const main = () => {
   const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
 
-  let area = document.getElementById(DIALOG_ID);
+  let _area = document.getElementById(DIALOG_ID);
 
-  if (area) {
-    if (area.style.opacity <= 0.0) {
-      area.style.opacity = 0.9;
+  if (_area) {
+    if (_area.style.opacity <= 0.0) {
+      _area.style.opacity = 0.9;
     } else {
-      area.style.opacity = 0.0;
+      _area.style.opacity = 0.0;
     }
     return;
   }
-
-  const createDescriptionHtml = text => {
-    return text
-      .replace(/\\/g, "\n")
-      .replace(/(◆.+)/g, '<font color="#008000">$1</font>')
-      .replace(/(【.+?】)/g, '<font color="#000088">$1</font>')
-      .replace(/\n/g, "<br/>");
-  };
 
   const consultAndCreateContentHtml = words => {
     return new Promise(resolve => {
@@ -34,6 +26,7 @@ const main = () => {
     });
   };
 
+  // dirty
   const createContentHtml = (words, meanings) => {
     const descriptions = [];
     for (let i = 0; i < words.length; i++) {
@@ -49,6 +42,15 @@ const main = () => {
     }
     const contentHtml = descriptions.join('<br/><hr style="width:100%"/>');
     return contentHtml;
+  };
+
+  // dirty
+  const createDescriptionHtml = text => {
+    return text
+      .replace(/\\/g, "\n")
+      .replace(/(◆.+)/g, '<font color="#008000">$1</font>')
+      .replace(/(【.+?】)/g, '<font color="#000088">$1</font>')
+      .replace(/\n/g, "<br/>");
   };
 
   const escapeHtml = str => {
@@ -74,7 +76,7 @@ const main = () => {
     }
     const cache = _shortCache.get(text);
     if (cache) {
-      area.content.innerHTML = cache;
+      _area.content.innerHTML = cache;
       return;
     }
 
@@ -86,7 +88,7 @@ const main = () => {
     const w = string.parseString(arr[0]);
     linkedWords.splice.apply(linkedWords, [0, 0].concat(w));
     consultAndCreateContentHtml(linkedWords).then(contentHtml => {
-      area.content.innerHTML = contentHtml;
+      _area.content.innerHTML = contentHtml;
       _shortCache.put(text, contentHtml);
       _lastText = text;
     });
@@ -141,11 +143,11 @@ const main = () => {
     return { dialog, header, content };
   };
 
-  area = createArea();
-  document.body.appendChild(area.dialog);
+  _area = createArea();
+  document.body.appendChild(_area.dialog);
 
   const draggable = new Draggable();
-  draggable.add(area.dialog, area.header);
+  draggable.add(_area.dialog, _area.header);
 };
 
 main();
