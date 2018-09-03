@@ -26,7 +26,7 @@ const main = () => {
     });
   };
 
-  // dirty
+  // dirty...
   const createContentHtml = (words, meanings) => {
     const descriptions = [];
     for (let i = 0; i < words.length; i++) {
@@ -44,12 +44,13 @@ const main = () => {
     return contentHtml;
   };
 
-  // dirty
+  // dirty...
   const createDescriptionHtml = text => {
     return text
       .replace(/\\/g, "\n")
       .replace(/(◆.+)/g, '<font color="#008000">$1</font>')
       .replace(/(【.+?】)/g, '<font color="#000088">$1</font>')
+      .replace(/({.+?})/g, '<font color="#000088">$1</font>')
       .replace(/\n/g, "<br/>");
   };
 

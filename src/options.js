@@ -1,6 +1,8 @@
 import swal from "sweetalert";
 import LineReader from "./linereader";
-import text from "./text.js";
+import text from "./text";
+import EijiroParser from "./eijiroparser";
+import SimpleDictParser from "./simpledictparser";
 
 const KEY_LOADED = "**** loaded ****";
 
@@ -71,18 +73,19 @@ const loadDictionaryData = file => {
   };
   reader.onload = e => {
     let fileFormat = document.getElementById("fileformat").value;
-    let deimiter = null;
+    let parser = null;
     switch (fileFormat) {
-      // case "PDIC":
-      //   break;
       case "TSV":
-        deimiter = "\t";
+        parser = new SimpleDictParser("\t");
         break;
       case "PDIC_LINE":
-        deimiter = " /// ";
+        parser = new SimpleDictParser(" /// ");
+        break;
+      case "EIJIRO":
+        parser = new EijiroParser();
         break;
     }
-    if (deimiter === null) {
+    if (parser === null) {
       return;
     }
 
@@ -93,24 +96,27 @@ const loadDictionaryData = file => {
     let reader = new LineReader(data);
     reader.eachLine(
       line => {
-        const arr = line.split(deimiter);
-        let word, desc;
-        if (arr.length >= 2) {
-          word = arr[0].trim();
-          desc = arr[1].trim();
-          dictData[word] = desc;
+        const hd = parser.addLine(line);
+        if (hd) {
+          dictData[hd.head] = hd.desc;
           wordCount += 1;
-        }
 
-        if (wordCount >= 1 && wordCount % 100000 === 0) {
-          showLog(text("progressRegister", wordCount, word));
-          let tmp = dictData;
-          dictData = {};
-          return saveDictionaryData(tmp);
+          if (wordCount >= 1 && wordCount % 100000 === 0) {
+            showLog(text("progressRegister", wordCount, hd.head));
+            let tmp = dictData;
+            dictData = {};
+            return saveDictionaryData(tmp);
+          }
         }
       },
       () => {
         // finished
+        const hd = parser.flush();
+        if (hd) {
+          dictData[hd.head] = hd.desc;
+          wordCount += 1;
+        }
+
         saveDictionaryData(dictData).then(null, error => {
           showLog(`Error: ${error}`);
         });
@@ -192,3 +198,10 @@ if (typeof document !== "undefined") {
     updateDictDataUsage();
   };
 }
+
+window.onerror = msg => {
+  swal({
+    text: msg,
+    icon: "error"
+  });
+};
