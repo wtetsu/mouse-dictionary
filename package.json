@@ -9,7 +9,8 @@
     "watch": "webpack -w",
     "lint": "eslint src/*.js",
     "release": "NODE_ENV=production npm run build",
-    "test": "jest"
+    "test": "jest",
+    "test-watch": "jest --watch"
   },
   "dependencies": {
     "sprintf-js": "^1.1.1",
