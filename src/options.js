@@ -1,6 +1,6 @@
 import swal from "sweetalert";
 import LineReader from "./linereader";
-import text from "./text";
+import resource from "./resource";
 import EijiroParser from "./eijiroparser";
 import SimpleDictParser from "./simpledictparser";
 
@@ -9,7 +9,7 @@ const KEY_LOADED = "**** loaded ****";
 chrome.storage.local.get(KEY_LOADED, r => {
   if (!r[KEY_LOADED]) {
     swal({
-      text: text("confirmLoadInitialDict"),
+      text: resource("confirmLoadInitialDict"),
       icon: "info",
       buttons: true,
       closeOnClickOutside: false
@@ -34,7 +34,7 @@ const loadInitialDict = async () => {
     await saveDictionaryData(dictData);
 
     swal({
-      text: text("finishRegister", wordCount),
+      text: resource("finishRegister", wordCount),
       icon: "success"
     });
 
@@ -102,7 +102,7 @@ const loadDictionaryData = file => {
           wordCount += 1;
 
           if (wordCount >= 1 && wordCount % 100000 === 0) {
-            showLog(text("progressRegister", wordCount, hd.head));
+            showLog(resource("progressRegister", wordCount, hd.head));
             let tmp = dictData;
             dictData = {};
             return saveDictionaryData(tmp);
@@ -122,7 +122,7 @@ const loadDictionaryData = file => {
         });
         showLog("");
         swal({
-          text: text("finishRegister", wordCount),
+          text: resource("finishRegister", wordCount),
           icon: "success"
         });
 
@@ -156,7 +156,7 @@ const makeControlsBusy = disabled => {
 const updateDictDataUsage = () => {
   chrome.storage.local.getBytesInUse(null, byteSize => {
     const kb = Math.floor(byteSize / 1024).toLocaleString();
-    document.getElementById("dictSize").innerText = text("dictDataUsage", kb);
+    document.getElementById("dictSize").innerText = resource("dictDataUsage", kb);
   });
 };
 
@@ -168,7 +168,7 @@ if (typeof document !== "undefined") {
         loadDictionaryData(file);
       } else {
         swal({
-          title: text("selectDictFile"),
+          title: resource("selectDictFile"),
           icon: "info"
         });
       }
@@ -176,7 +176,7 @@ if (typeof document !== "undefined") {
 
     document.getElementById("clear").addEventListener("click", () => {
       swal({
-        text: text("clearAllDictData"),
+        text: resource("clearAllDictData"),
         icon: "warning",
         buttons: true,
         dangerMode: true
@@ -186,7 +186,7 @@ if (typeof document !== "undefined") {
           chrome.storage.local.clear(() => {
             updateDictDataUsage();
             swal({
-              text: text("finishedClear"),
+              text: resource("finishedClear"),
               icon: "success"
             });
             makeControlsBusy(false);
