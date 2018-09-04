@@ -95,8 +95,8 @@ const main = () => {
       const newDom = dom.create(`<div>${contentHtml}</div>`);
       _area.content.innerHTML = "";
       _area.content.appendChild(newDom);
-      _shortCache.put(text, newDom);
-      _lastText = text;
+      _shortCache.put(textAtCursor, newDom);
+      _lastText = textAtCursor;
     });
   });
 
