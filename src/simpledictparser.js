@@ -8,10 +8,9 @@ export default class SimpleDictParser {
     const didx = line.indexOf(this.delimiter);
     if (didx >= 0) {
       let head = line.substring(0, didx);
-      let desc = line.substring(didx + delimiter.length);
+      let desc = line.substring(didx + this.delimiter.length);
       if (head && desc) {
         hd = { head, desc };
-        wordCount += 1;
       }
     }
     return hd;

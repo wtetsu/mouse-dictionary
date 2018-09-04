@@ -80,7 +80,7 @@ const main = () => {
     const cache = _shortCache.get(textAtCursor);
     if (cache) {
       _area.content.innerHTML = "";
-      _area.content.appendChild(newDom);
+      _area.content.appendChild(cache);
       return;
     }
 
@@ -92,13 +92,10 @@ const main = () => {
     const w = text.parseString(arr[0]);
     linkedWords.splice.apply(linkedWords, [0, 0].concat(w));
     consultAndCreateContentHtml(linkedWords).then(contentHtml => {
-      const s = new Date();
       const newDom = dom.create(`<div>${contentHtml}</div>`);
       _area.content.innerHTML = "";
       _area.content.appendChild(newDom);
       _shortCache.put(text, newDom);
-
-      console.log(new Date().getTime() - s.getTime());
       _lastText = text;
     });
   });

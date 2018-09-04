@@ -6,14 +6,15 @@
   "parserOptions": {
     "sourceType": "module",
     "allowImportExportEverywhere": false,
-    "codeFrame": false
+    "codeFrame": false,
+    "ecmaVersion": 2017
   },
   "globals": {
     "chrome": true,
     "Promise": true
   },
   "rules": {
-    "no-console": 1,
+    "no-console": 0,
     "max-len": [2, { "code": 200, "tabWidth": 4, "ignoreUrls": true }]
   }
 }
