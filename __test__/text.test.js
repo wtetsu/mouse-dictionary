@@ -1,8 +1,12 @@
 import text from "../src/text";
 
 test("", () => {
-  // TODO
+  expect(text.splitIntoWords("removed from")).toEqual(["removed", "from"]);
+  expect(text.splitIntoWords("removed  from")).toEqual(["removed", "from"]);
+  expect(text.splitIntoWords("あああremoved  fromあいいいい")).toEqual(["removed", "from"]);
+});
 
+test("", () => {
   expect(text.parseString("word")).toEqual([]);
 
   expect(text.parseString("WordoneWordtwoWordthree")).toEqual(["WordoneWordtwoWordthree", "Wordone", "wordone", "Wordtwo", "wordtwo", "Wordthree", "wordthree"]);

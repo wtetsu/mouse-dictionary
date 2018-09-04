@@ -2,6 +2,37 @@ const text = {};
 
 const reCapital = /^[A-Z]$/;
 
+text.splitIntoWords = str => {
+  const words = [];
+  let startIndex = null;
+  let i = 0;
+  for (;;) {
+    const code = str.charCodeAt(i);
+    const isEnglishCharacter = code >= 0x21 && code <= 0x7e;
+    if (isEnglishCharacter) {
+      if (startIndex === null) {
+        startIndex = i;
+      }
+    } else {
+      if (startIndex !== null) {
+        const newWord = str.substring(startIndex, i);
+        words.push(newWord);
+        startIndex = null;
+      }
+    }
+    i += 1;
+
+    if (i >= str.length) {
+      if (startIndex !== null) {
+        const newWord = str.substring(startIndex);
+        words.push(newWord);
+      }
+      break;
+    }
+  }
+  return words;
+};
+
 text._isStrCapital = str => {
   return reCapital.test(str);
 };

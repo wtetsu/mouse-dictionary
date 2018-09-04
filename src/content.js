@@ -2,6 +2,7 @@ import text from "./text";
 import Draggable from "./draggable";
 import ShortCache from "./shortcache";
 import atcursor from "./atcursor";
+import dom from "./dom";
 
 const main = () => {
   const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
@@ -40,7 +41,7 @@ const main = () => {
     if (descriptions.length === 0) {
       descriptions.push('<font color="#000088"><strong>' + escapeHtml(words[0]) + "</strong></font><br/>");
     }
-    const contentHtml = descriptions.join('<br/><hr style="width:100%"/>');
+    const contentHtml = descriptions.join('<br/><hr style="width:100%;margin:0px 0px 5px 0px;" />');
     return contentHtml;
   };
 
@@ -49,6 +50,7 @@ const main = () => {
     return text
       .replace(/\\/g, "\n")
       .replace(/(◆.+)/g, '<font color="#008000">$1</font>')
+      .replace(/(■.+)/g, '<font color="#008000">$1</font>')
       .replace(/(【.+?】)/g, '<font color="#000088">$1</font>')
       .replace(/({.+?})/g, '<font color="#000088">$1</font>')
       .replace(/\n/g, "<br/>");
@@ -63,25 +65,26 @@ const main = () => {
   };
 
   let _lastText = null;
-  const _shortCache = new ShortCache(200);
+  const _shortCache = new ShortCache(100);
 
   const reIgnores = /(\r\n|\n|\r|,|\.)/gm;
 
   document.body.addEventListener("mousemove", ev => {
-    const text = atcursor(ev.target, ev.clientX, ev.clientY);
-    if (!text) {
+    const textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY);
+    if (!textAtCursor) {
       return;
     }
-    if (_lastText == text) {
+    if (_lastText == textAtCursor) {
       return;
     }
-    const cache = _shortCache.get(text);
+    const cache = _shortCache.get(textAtCursor);
     if (cache) {
-      _area.content.innerHTML = cache;
+      _area.content.innerHTML = "";
+      _area.content.appendChild(newDom);
       return;
     }
 
-    const arr = text
+    const arr = textAtCursor
       .trim()
       .replace(reIgnores, " ")
       .split(" ");
@@ -89,13 +92,19 @@ const main = () => {
     const w = text.parseString(arr[0]);
     linkedWords.splice.apply(linkedWords, [0, 0].concat(w));
     consultAndCreateContentHtml(linkedWords).then(contentHtml => {
-      _area.content.innerHTML = contentHtml;
-      _shortCache.put(text, contentHtml);
+      const s = new Date();
+      const newDom = dom.create(`<div>${contentHtml}</div>`);
+      _area.content.innerHTML = "";
+      _area.content.appendChild(newDom);
+      _shortCache.put(text, newDom);
+
+      console.log(new Date().getTime() - s.getTime());
       _lastText = text;
     });
   });
 
   const _styles = {
+    all: "initial",
     width: "200px",
     height: "200px",
     position: "fixed",
