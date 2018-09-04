@@ -1,4 +1,4 @@
-import string from "./string";
+import text from "./text";
 import Draggable from "./draggable";
 import ShortCache from "./shortcache";
 import atcursor from "./atcursor";
@@ -85,8 +85,8 @@ const main = () => {
       .trim()
       .replace(reIgnores, " ")
       .split(" ");
-    const linkedWords = string.linkWords(arr);
-    const w = string.parseString(arr[0]);
+    const linkedWords = text.linkWords(arr);
+    const w = text.parseString(arr[0]);
     linkedWords.splice.apply(linkedWords, [0, 0].concat(w));
     consultAndCreateContentHtml(linkedWords).then(contentHtml => {
       _area.content.innerHTML = contentHtml;

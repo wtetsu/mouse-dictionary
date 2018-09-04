@@ -1,12 +1,12 @@
-let string = {};
+const text = {};
 
 const reCapital = /^[A-Z]$/;
 
-string._isStrCapital = str => {
+text._isStrCapital = str => {
   return reCapital.test(str);
 };
 
-string._splitString = str => {
+text._splitString = str => {
   var arr = [];
   var startIndex = 0;
   var i = 0;
@@ -17,7 +17,7 @@ string._splitString = str => {
       break;
     }
     var ch = str[i];
-    var isCapital = string._isStrCapital(ch);
+    var isCapital = text._isStrCapital(ch);
     var wordToAdd = null;
     if (ch === "-" || ch === "_" || ch === "#" || ch === ".") {
       wordToAdd = str.substring(startIndex, i);
@@ -49,12 +49,12 @@ string._splitString = str => {
   return arr;
 };
 
-string.parseString = str => {
+text.parseString = str => {
   var result = [];
   if (str) {
-    result = result.concat(string.transformWord(str));
+    result = result.concat(text.transformWord(str));
 
-    var arr = string._splitString(str);
+    var arr = text._splitString(str);
     var i, len;
     for (i = 0, len = arr.length; i < len; i++) {
       result.push(arr[i]);
@@ -64,7 +64,7 @@ string.parseString = str => {
   return result;
 };
 
-string.replaceTrailingCharacters = (str, searchValue, newValue) => {
+text.replaceTrailingCharacters = (str, searchValue, newValue) => {
   let result = null;
   if (str.endsWith(searchValue)) {
     result = str.substring(str, str.length - searchValue.length) + newValue;
@@ -74,49 +74,49 @@ string.replaceTrailingCharacters = (str, searchValue, newValue) => {
 
 const _reSigns = /[!"#$%&'’‘()*+-.,/:;<=>?@[\\\]^_`{|}~]/gm;
 
-string.transformWord = str => {
+text.transformWord = str => {
   let w;
   let words = [];
   if (str !== str.toLowerCase()) words.push(str);
 
-  w = string.replaceTrailingCharacters(str, "ied", "y");
+  w = text.replaceTrailingCharacters(str, "ied", "y");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "ed", "");
+  w = text.replaceTrailingCharacters(str, "ed", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "ed", "e");
+  w = text.replaceTrailingCharacters(str, "ed", "e");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "ies", "y");
+  w = text.replaceTrailingCharacters(str, "ies", "y");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "ier", "y");
+  w = text.replaceTrailingCharacters(str, "ier", "y");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "er", "");
+  w = text.replaceTrailingCharacters(str, "er", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "iest", "y");
+  w = text.replaceTrailingCharacters(str, "iest", "y");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "est", "");
+  w = text.replaceTrailingCharacters(str, "est", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "s", "");
+  w = text.replaceTrailingCharacters(str, "s", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "es", "");
+  w = text.replaceTrailingCharacters(str, "es", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "'s", "");
+  w = text.replaceTrailingCharacters(str, "'s", "");
   if (w) words.push(w);
 
-  w = string.replaceTrailingCharacters(str, "nning", "n");
+  w = text.replaceTrailingCharacters(str, "nning", "n");
   if (w) {
     words.push(w);
   } else {
-    w = string.replaceTrailingCharacters(str, "ing", "");
+    w = text.replaceTrailingCharacters(str, "ing", "");
     if (w) words.push(w);
   }
 
@@ -133,7 +133,7 @@ string.transformWord = str => {
   return words;
 };
 
-string.linkWords = words => {
+text.linkWords = words => {
   let linkedWords = [];
   let currentString;
   for (let i = 0; i < words.length; i++) {
@@ -148,4 +148,4 @@ string.linkWords = words => {
   return linkedWords;
 };
 
-export default string;
+export default text;
