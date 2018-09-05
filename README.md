@@ -19,7 +19,7 @@ Use npm 6+.
 
 ```sh
 npm install
-npm build
+npm run build
 ```
 
 ## License
