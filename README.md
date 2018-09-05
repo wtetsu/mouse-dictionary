@@ -3,26 +3,40 @@
 
 # Mouse Dictionary
 
-Chrome extension dictionary
+A dictionary for Google Chrome.
 
 - Blazing fast
 - Can show collocations
-- Devide a string like "camelCase" into "camel" and "case" and look up them
+- Divide a string like "camelCase" into "camel" and "case" and look up them at once
 
 ## Screenshots
 
 ![ss01.gif](https://github.com/wtetsu/mouse-dictionary/blob/images/ss01.gif)
 
+## How to develop
+
+Use npm 6+.
+
+```sh
+npm install
+npm build
+```
+
 ## License
 
-### ejdic-hand
+Mouse Dictionary is published under the MIT license.
 
-https://kujirahand.com/web-tools/
+## Third-party data
 
-License: Public domain
+This project includes some third-party data:
 
-### Book, bookmark icon
+- dictionary data
 
-https://www.iconfinder.com/icons/111113/book_bookmark_icon
+  - ejdic-hand
+  - https://kujirahand.com/web-tools/
+  - License: Public domain
 
-Creative Commons (Attribution-Share Alike 3.0 Unported)
+- Images
+  - Book, bookmark icon
+  - https://www.iconfinder.com/icons/111113/book_bookmark_icon
+  - License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
