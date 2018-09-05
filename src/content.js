@@ -53,6 +53,7 @@ const main = () => {
       .replace(/(■.+)/g, '<font color="#008000">$1</font>')
       .replace(/(【.+?】)/g, '<font color="#000088">$1</font>')
       .replace(/({.+?})/g, '<font color="#000088">$1</font>')
+      .replace(/(《.+?》)/g, '<font color="#000088">$1</font>')
       .replace(/\n/g, "<br/>");
   };
 
