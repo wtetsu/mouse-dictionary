@@ -15,6 +15,6 @@
   },
   "rules": {
     "no-console": 0,
-    "max-len": [2, { "code": 200, "tabWidth": 4, "ignoreUrls": true }]
+    "max-len": [2, { "code": 200, "tabWidth": 2, "ignoreUrls": true }]
   }
 }
