@@ -74,21 +74,23 @@ const getTextFromRange = (text, offset) => {
 const getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
   let node = null;
   let offset = null;
-  if (ownerDocument.caretPositionFromPoint != null) { // for Firefox (based on recent WD of CSSOM View Module)
+  let result = null;
+
+  if (ownerDocument.caretPositionFromPoint) { // for Firefox (based on recent WD of CSSOM View Module)
     const position = ownerDocument.caretPositionFromPoint(pointX, pointY);
     if (position) {
       node = position.offsetNode;
       offset = position.offset;
+      result = { node, offset };
     }
-  } else if (ownerDocument.caretRangeFromPoint != null) { // for Chrome
+  } else if (ownerDocument.caretRangeFromPoint) { // for Chrome
     const range = ownerDocument.caretRangeFromPoint(pointX, pointY);
     if (range) {
       node = range.startContainer;
       offset = range.startOffset;
+      result = { node, offset };
     }
-  } else {
-    return null;
   }
 
-  return { node, offset };
+  return result;
 };
