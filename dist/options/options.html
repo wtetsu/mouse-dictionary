@@ -9,6 +9,7 @@
 </head>
 
 <body>
+  
   <!--
     GitHub Corners(MIT)
     http://tholman.com/github-corners/
@@ -17,39 +18,7 @@
 
   <section class="container" id="mainForm">
     <h1>Mouse Dictionary</h1>
-    <label>辞書データの文字コード:</label>
-    <select id="fileEncoding">
-      <option value="Shift-JIS" selected>Shift-JIS</option>
-      <option value="UTF-8">UTF-8</option>
-      <option value="UTF-16">UTF-16</option>
-    </select>
-
-    <br/>
-
-    <label>辞書データの形式:</label>
-    <select id="fileformat">
-      <option value="EIJIRO" selected/>英辞郎テキストデータ(■見出し)
-      <option value="TSV">TSV(タブ区切り)</option>
-      <option value="PDIC_LINE"/>PDIC1行( /// 区切り)
-      </option>
-    </select>
-
-    <br/>
-
-    <label>辞書データの読み込み:</label>
-    <input type="file" id="dictdata" />
-
-    <br/>
-    <input type="button" id="load" value="load" />
-    <input type="button" id="clear" value="clear" />
-    <img src="loading.gif" id="loading" width="32" height="32" style="vertical-align: middle;display: none;" />
-
-    <br/>
-
-    <div id="logArea"></div>
-
-    <div style="font-size: 75%;" id="dictSize"></div>
-
+    <div id="app"></div>
   </section>
 
   <script src="options.js"></script>

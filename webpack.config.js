@@ -3,7 +3,7 @@ const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 module.exports = {
   mode: process.env.NODE_ENV || "development",
   entry: {
-    "options/options": "./src/options.js",
+    "options/options": "./src/options/Main.jsx",
     background: "./src/background.js",
     content: "./src/content.js"
   },
@@ -14,10 +14,23 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: "babel-loader",
-        exclude: /node_modules/
+        use: {
+          loader: "babel-loader"
+        }
+      },
+      {
+        test: /\.jsx$/,
+        use: [
+          {
+            loader: "babel-loader",
+            options: { presets: ["@babel/env", "@babel/react"] }
+          }
+        ]
       }
     ]
+  },
+  resolve: {
+    extensions: [".js", ".jsx"]
   },
   optimization:
     process.env.NODE_ENV === "production"
