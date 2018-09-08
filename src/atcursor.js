@@ -2,13 +2,11 @@ export default (element, clientX, clientY) => {
   let textOnCursor = null;
 
   try {
-    const range = element.ownerDocument.caretRangeFromPoint(clientX, clientY);
+    const range = getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
     if (range) {
-      const container = range.startContainer;
-      const startOffset = range.startOffset;
-
-      if (container.nodeType == Node.TEXT_NODE) {
-        textOnCursor = getTextFromRange(container.data, startOffset);
+      const { node, offset } = range;
+      if (node.nodeType === Node.TEXT_NODE) {
+        textOnCursor = getTextFromRange(node.data, offset);
       }
     }
   } catch (err) {
@@ -71,4 +69,28 @@ const getTextFromRange = (text, offset) => {
   const endIndex = searchEndIndex(text, offset);
 
   return text.substring(startIndex, endIndex);
+};
+
+const getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
+  let node = null;
+  let offset = null;
+  let result = null;
+
+  if (ownerDocument.caretPositionFromPoint) { // for Firefox (based on recent WD of CSSOM View Module)
+    const position = ownerDocument.caretPositionFromPoint(pointX, pointY);
+    if (position) {
+      node = position.offsetNode;
+      offset = position.offset;
+      result = { node, offset };
+    }
+  } else if (ownerDocument.caretRangeFromPoint) { // for Chrome
+    const range = ownerDocument.caretRangeFromPoint(pointX, pointY);
+    if (range) {
+      node = range.startContainer;
+      offset = range.startOffset;
+      result = { node, offset };
+    }
+  }
+
+  return result;
 };
