@@ -1,4 +1,4 @@
-import EijiroParser from "../src/eijiroparser";
+import EijiroParser from "../src/options/eijiroparser";
 
 test("", () => {
   const parser = new EijiroParser();

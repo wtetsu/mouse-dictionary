@@ -1,4 +1,4 @@
-import LineReader from "../src/linereader";
+import LineReader from "../src/options/linereader";
 
 test("", () => {
   /*
