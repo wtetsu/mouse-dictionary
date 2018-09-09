@@ -68,8 +68,6 @@ const main = () => {
   let _lastText = null;
   const _shortCache = new ShortCache(100);
 
-  const reIgnores = /(\r\n|\n|\r|,|\.)/gm;
-
   document.body.addEventListener("mousemove", ev => {
     const textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY);
     if (!textAtCursor) {
@@ -85,14 +83,9 @@ const main = () => {
       return;
     }
 
-    const arr = textAtCursor
-      .trim()
-      .replace(reIgnores, " ")
-      .split(" ");
-    const linkedWords = text.linkWords(arr);
-    const w = text.parseString(arr[0]);
-    linkedWords.splice.apply(linkedWords, [0, 0].concat(w));
-    consultAndCreateContentHtml(linkedWords).then(contentHtml => {
+    const lookupWords = text.createLookupWords(textAtCursor);
+
+    consultAndCreateContentHtml(lookupWords).then(contentHtml => {
       const newDom = dom.create(`<div>${contentHtml}</div>`);
       _area.content.innerHTML = "";
       _area.content.appendChild(newDom);
