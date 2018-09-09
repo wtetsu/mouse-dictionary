@@ -38,18 +38,17 @@ text._isStrCapital = str => {
 };
 
 text._splitString = str => {
-  var arr = [];
-  var startIndex = 0;
-  var i = 0;
-  var len = str.length;
-  var isLastCapital = true;
+  const arr = [];
+  let startIndex = 0;
+  let i = 0;
+  let isLastCapital = true;
   for (;;) {
-    if (i >= len) {
+    if (i >= str.length) {
       break;
     }
-    var ch = str[i];
-    var isCapital = text._isStrCapital(ch);
-    var wordToAdd = null;
+    const ch = str[i];
+    const isCapital = text._isStrCapital(ch);
+    let wordToAdd = null;
     if (ch === "-" || ch === "_" || ch === "#" || ch === ".") {
       wordToAdd = str.substring(startIndex, i);
       startIndex = i + 1;
@@ -61,7 +60,7 @@ text._splitString = str => {
     }
     if (wordToAdd) {
       arr.push(wordToAdd);
-      var lWordToAdd = wordToAdd.toLowerCase();
+      const lWordToAdd = wordToAdd.toLowerCase();
       if (lWordToAdd !== wordToAdd) {
         arr.push(lWordToAdd);
       }
@@ -69,9 +68,9 @@ text._splitString = str => {
     i += 1;
   }
   if (startIndex > 0) {
-    var lastWord = str.substring(startIndex);
+    const lastWord = str.substring(startIndex);
     arr.push(lastWord);
-    var lLastWord = lastWord.toLowerCase();
+    const lLastWord = lastWord.toLowerCase();
     if (lLastWord !== lastWord) {
       arr.push(lLastWord);
     }
@@ -81,12 +80,12 @@ text._splitString = str => {
 };
 
 text.parseString = str => {
-  var result = [];
+  let result = [];
   if (str) {
     result = result.concat(text.transformWord(str));
 
-    var arr = text._splitString(str);
-    var i, len;
+    const arr = text._splitString(str);
+    let i, len;
     for (i = 0, len = arr.length; i < len; i++) {
       result.push(arr[i]);
     }
@@ -103,55 +102,42 @@ text.replaceTrailingCharacters = (str, searchValue, newValue) => {
   return result;
 };
 
+const _trailingRule = [
+  [{ search: "ied", new: "y" }],
+  [{ search: "ed", new: "" }],
+  [{ search: "ed", new: "e" }],
+  [{ search: "ies", new: "y" }],
+  [{ search: "ier", new: "y" }],
+  [{ search: "er", new: "" }],
+  [{ search: "iest", new: "y" }],
+  [{ search: "est", new: "" }],
+  [{ search: "s", new: "" }],
+  [{ search: "es", new: "" }],
+  [{ search: "'s", new: "" }],
+  [{ search: "nning", new: "n" }, { search: "ing", new: "" }]
+];
+
 const _reSigns = /[!"#$%&'’‘()*+-.,/:;<=>?@[\\\]^_`{|}~]/gm;
 
 text.transformWord = str => {
-  let w;
   let words = [];
   if (str !== str.toLowerCase()) words.push(str);
 
-  w = text.replaceTrailingCharacters(str, "ied", "y");
-  if (w) words.push(w);
+  for (let i = 0; i < _trailingRule.length; i++) {
+    const tlist = _trailingRule[i];
 
-  w = text.replaceTrailingCharacters(str, "ed", "");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "ed", "e");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "ies", "y");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "ier", "y");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "er", "");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "iest", "y");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "est", "");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "s", "");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "es", "");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "'s", "");
-  if (w) words.push(w);
-
-  w = text.replaceTrailingCharacters(str, "nning", "n");
-  if (w) {
-    words.push(w);
-  } else {
-    w = text.replaceTrailingCharacters(str, "ing", "");
-    if (w) words.push(w);
+    for (let j = 0; j < tlist.length; j++) {
+      const t = tlist[j];
+      let w = text.replaceTrailingCharacters(str, t.search, t.new);
+      if (w) {
+        words.push(w);
+        break;
+      }
+    }
   }
 
   // signs
+  let w;
   w = str.replace(_reSigns, "");
   if (w != str) {
     words.push(w);
