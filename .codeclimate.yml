@@ -1,4 +1,14 @@
-engines:
+version: "2"
+checks:
+  method-lines:
+    enabled: true
+    config:
+      threshold: 100
+  method-complexity:
+    enabled: true
+    config:
+      threshold: 20
+plugins:
   eslint:
     enabled: true
   csslint:
@@ -7,9 +17,8 @@ engines:
     enabled: true
     config:
       languages:
-      - javascript:
-ratings:
-  paths:
-  - src/**
+        - javascript
 exclude_paths:
-- "src/data/initial_dic.json"
+  - "__test__/"
+  - "dist/data/initial_dic.json"
+  - "dist/options/milligram.min.css"
