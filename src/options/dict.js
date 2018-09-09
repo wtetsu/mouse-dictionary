@@ -82,20 +82,23 @@ const load = async ({ file, encoding, format, event }) => {
 };
 
 const registerDefaultDict = async () => {
-  const url = chrome.extension.getURL("/data/initial_dict.json");
+  let wordCount = 0;
+  wordCount += await registerDict("/data/initial_dict1.json");
+  wordCount += await registerDict("/data/initial_dict2.json");
+  return { wordCount };
+};
 
-  try {
-    const response = await fetch(url);
-    const dictData = await response.json();
+const registerDict = async fname => {
+  const url = chrome.extension.getURL(fname);
 
-    const wordCount = Object.keys(dictData).length;
+  const response = await fetch(url);
+  const dictData = await response.json();
 
-    await save(dictData);
+  const wordCount = Object.keys(dictData).length;
 
-    return { wordCount };
-  } catch (e) {
-    console.error(e);
-  }
+  await save(dictData);
+
+  return wordCount;
 };
 
 export default { load, registerDefaultDict };
