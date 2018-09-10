@@ -1,5 +1,9 @@
+import dom from "./dom";
+
 export default class Draggable {
-  constructor() {
+  constructor(normalStyles, movingStyles) {
+    this.normalStyles = normalStyles;
+    this.movingStyles = movingStyles;
     this.targetElement = null;
     this.startingX = null;
     this.startingY = null;
@@ -17,7 +21,7 @@ export default class Draggable {
     });
     document.body.addEventListener("mouseup", () => {
       if (this.targetElement) {
-        this.targetElement.style.opacity = 0.95;
+        dom.applyStyles(this.targetElement, this.normalStyles);
         this.targetElement = null;
         this.startingX = null;
         this.startingY = null;
@@ -32,7 +36,7 @@ export default class Draggable {
   makeElementDraggable(elem, titleBar) {
     titleBar.addEventListener("mousedown", e => {
       this.targetElement = elem;
-      this.targetElement.style.opacity = 0.35;
+      dom.applyStyles(this.targetElement, this.movingStyles);
       this.startingX = this.parseInt(e.pageX);
       this.startingY = this.parseInt(e.pageY);
       this.elementX = this.parseInt(this.targetElement.style.left);

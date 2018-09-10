@@ -6,4 +6,13 @@ dom.create = html => {
   return template.content.firstChild;
 };
 
+dom.applyStyles = (element, styles) => {
+  if (!styles) {
+    return;
+  }
+  for (let key of Object.keys(styles)) {
+    element.style[key] = styles[key];
+  }
+};
+
 export default dom;
