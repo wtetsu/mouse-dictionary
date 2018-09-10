@@ -1,3 +1,5 @@
+import consts from "./consts";
+
 export default (element, clientX, clientY) => {
   let textOnCursor = null;
 
@@ -12,6 +14,7 @@ export default (element, clientX, clientY) => {
   } catch (err) {
     textOnCursor = null;
   }
+  console.info(textOnCursor);
   return textOnCursor;
 };
 
@@ -19,7 +22,8 @@ const searchStartIndex = (text, index) => {
   let startIndex;
   let i = index;
   for (;;) {
-    if (text[i] === " ") {
+    const code = text.charCodeAt(i);
+    if (!consts.targetCharacters[code]) {
       startIndex = i + 1;
       break;
     }
@@ -27,7 +31,6 @@ const searchStartIndex = (text, index) => {
       startIndex = 0;
       break;
     }
-
     i -= 1;
   }
   return startIndex;
@@ -37,13 +40,24 @@ const searchEndIndex = (text, index) => {
   let endIndex;
   let i = index + 1;
   let spaceCount = 0;
+  let theLastIsSpace = false;
   for (;;) {
-    if (text[i] === " ") {
-      spaceCount += 1;
+    const code = text.charCodeAt(i);
+    if (code === 0x20) {
+      if (!theLastIsSpace) {
+        spaceCount += 1;
+      }
+      theLastIsSpace = true;
       if (spaceCount >= 4) {
         endIndex = i;
         break;
       }
+    } else {
+      if (!consts.targetCharacters[code]) {
+        endIndex = i;
+        break;
+      }
+      theLastIsSpace = false;
     }
     if (i >= text.length) {
       endIndex = i;
@@ -59,9 +73,9 @@ const getTextFromRange = (text, offset) => {
   if (!text) {
     return null;
   }
-  const ch = text[offset];
-
-  if (!ch || !ch.match(/[\x20-\x7E]/)) {
+  const code = text.charCodeAt(offset);
+  const isEnglishLikeCharacter = 0x20 <= code && code <= 0x7e;
+  if (!isEnglishLikeCharacter) {
     return null;
   }
 
@@ -76,14 +90,16 @@ const getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
   let offset = null;
   let result = null;
 
-  if (ownerDocument.caretPositionFromPoint) { // for Firefox (based on recent WD of CSSOM View Module)
+  if (ownerDocument.caretPositionFromPoint) {
+    // for Firefox (based on recent WD of CSSOM View Module)
     const position = ownerDocument.caretPositionFromPoint(pointX, pointY);
     if (position) {
       node = position.offsetNode;
       offset = position.offset;
       result = { node, offset };
     }
-  } else if (ownerDocument.caretRangeFromPoint) { // for Chrome
+  } else if (ownerDocument.caretRangeFromPoint) {
+    // for Chrome
     const range = ownerDocument.caretRangeFromPoint(pointX, pointY);
     if (range) {
       node = range.startContainer;
