@@ -14,7 +14,6 @@ export default (element, clientX, clientY) => {
   } catch (err) {
     textOnCursor = null;
   }
-  console.info(textOnCursor);
   return textOnCursor;
 };
 

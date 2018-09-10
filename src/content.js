@@ -1,9 +1,12 @@
+import Hogan from "hogan.js";
+
 import text from "./text";
 import res from "./resources";
 import Draggable from "./draggable";
 import ShortCache from "./shortcache";
 import atcursor from "./atcursor";
 import dom from "./dom";
+import defaultSettings from "./defaultsettings";
 
 const main = () => {
   // Pages which have frames are not supported.
@@ -13,17 +16,49 @@ const main = () => {
     return;
   }
 
+  const _configs = {};
+  if (!(_configs.shortWordLength >= 0)) {
+    _configs.shortWordLength = defaultSettings.shortWordLength;
+  }
+  if (!(_configs.cutShortWordDescription >= 0)) {
+    _configs.cutShortWordDescription = defaultSettings.cutShortWordDescription;
+  }
+  if (!_configs.replaceRules) {
+    _configs.replaceRules = defaultSettings.replaceRules;
+  }
+  if (!_configs.dialogTemplate) {
+    _configs.dialogTemplate = defaultSettings.dialogTemplate;
+  }
+  if (!_configs.headerTemplate) {
+    _configs.headerTemplate = defaultSettings.headerTemplate;
+  }
+  if (!_configs.contentWrapperTemplate) {
+    _configs.contentWrapperTemplate = defaultSettings.contentWrapperTemplate;
+  }
+  if (!_configs.contentTemplate) {
+    _configs.contentTemplate = defaultSettings.contentTemplate;
+  }
+  if (!_configs.normalDialogStyles) {
+    _configs.normalDialogStyles = defaultSettings.normalDialogStyles;
+  }
+  if (!_configs.movingDialogStyles) {
+    _configs.movingDialogStyles = defaultSettings.movingDialogStyles;
+  }
+
   const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
   let _area = document.getElementById(DIALOG_ID);
 
   if (_area) {
     if (_area.style.opacity <= 0.0) {
-      _area.style.opacity = 0.9;
+      dom.applyStyles(_area, _configs.normalDialogStyles);
     } else {
       _area.style.opacity = 0.0;
     }
     return;
   }
+
+  const _contentTemplate = Hogan.compile(_configs.contentTemplate);
+  const _headerTemplate = Hogan.compile(_configs.headerTemplate);
 
   const consultAndCreateContentHtml = words => {
     return new Promise(resolve => {
@@ -34,34 +69,56 @@ const main = () => {
     });
   };
 
-  // dirty...
   const createContentHtml = (words, meanings) => {
-    const descriptions = [];
+    const data = createContentTemplateData(words, meanings);
+    const html = _contentTemplate.render({ words: data });
+    return html;
+  };
+
+  const createContentTemplateData = (words, meanings) => {
+    const data = [];
+
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
       const desc = meanings[word];
       if (desc) {
-        const html = '<font color="#000088"><strong>' + escapeHtml(word) + "</strong></font><br/>" + createDescriptionHtml(desc);
-        descriptions.push(html);
+        data.push({
+          head: escapeHtml(word),
+          desc: createDescriptionHtml(desc),
+          isShort: word.length <= _configs.shortWordLength,
+          shortText: desc.substring(0, _configs.cutShortWordDescription)
+        });
       }
     }
-    if (descriptions.length === 0) {
-      descriptions.push('<font color="#000088"><strong>' + escapeHtml(words[0]) + "</strong></font><br/>");
+    for (let i = 0; i < data.length; i++) {
+      const d = data[i];
+      d.isFirst = i == 0;
+      d.isLast = i == data.length - 1;
     }
-    const contentHtml = descriptions.join('<br/><hr style="width:100%;margin:0px 0px 5px 0px;" />');
-    return contentHtml;
+
+    return data;
   };
 
-  // dirty...
-  const createDescriptionHtml = text => {
-    return text
-      .replace(/\\/g, "\n")
-      .replace(/(◆.+)/g, '<font color="#008000">$1</font>')
-      .replace(/(■.+)/g, '<font color="#008000">$1</font>')
-      .replace(/(【.+?】)/g, '<font color="#000088">$1</font>')
-      .replace(/({.+?})/g, '<font color="#000088">$1</font>')
-      .replace(/(《.+?》)/g, '<font color="#000088">$1</font>')
-      .replace(/\n/g, "<br/>");
+  const replaceRuleSettings = _configs.replaceRules;
+
+  const replaceRule = [];
+  for (let i = 0; i < replaceRuleSettings.length; i++) {
+    const rule = replaceRuleSettings[i];
+    if (rule.search) {
+      replaceRule.push({
+        search: new RegExp(rule.search, "g"),
+        replace: rule.replace
+      });
+    }
+  }
+
+  const createDescriptionHtml = sourceText => {
+    let result = sourceText;
+    for (let i = 0; i < replaceRule.length; i++) {
+      const rule = replaceRule[i];
+      result = result.replace(rule.search, rule.replace);
+    }
+    return result;
   };
 
   const escapeHtml = str => {
@@ -93,7 +150,7 @@ const main = () => {
     const lookupWords = text.createLookupWords(textAtCursor);
 
     consultAndCreateContentHtml(lookupWords).then(contentHtml => {
-      const newDom = dom.create(`<div>${contentHtml}</div>`);
+      const newDom = dom.create(contentHtml);
       _area.content.innerHTML = "";
       _area.content.appendChild(newDom);
       _shortCache.put(textAtCursor, newDom);
@@ -101,49 +158,26 @@ const main = () => {
     });
   });
 
-  const _styles = {
-    all: "initial",
-    width: "200px",
-    height: "200px",
-    position: "fixed",
-    resize: "both",
-    overflow: "hidden",
-    top: 0,
-    left: 0,
-    backgroundColor: "#ffffff",
-    zIndex: 2147483647,
-    fontSize: "0.8em",
-    border: "1px solid #A0A0A0",
-    textAlign: "left",
-    lineHeight: "normal",
-    opacity: 0.95
-  };
-
   const createDialogElement = () => {
-    const dialog = document.createElement("div");
-    for (let key of Object.keys(_styles)) {
-      dialog.style[key] = _styles[key];
-    }
+    const dialog = dom.create(_configs.dialogTemplate);
+    dom.applyStyles(dialog, defaultSettings.normalDialogStyles);
     return dialog;
   };
 
   const createHeaderElement = () => {
-    let header = document.createElement("div");
-    header.innerText = "Mouse Dictionary";
-    header.style.cursor = "pointer";
-    header.style.backgroundColor = "#EBEBEB";
-    return header;
+    const html = _headerTemplate.render({});
+    return dom.create(html);
   };
 
-  const createContentElement = () => {
-    const content = document.createElement("div");
-    return content;
+  const createContentWrapperElement = () => {
+    const dialog = dom.create(_configs.contentWrapperTemplate);
+    return dialog;
   };
 
   const createArea = () => {
     const dialog = createDialogElement();
     const header = createHeaderElement();
-    const content = createContentElement();
+    const content = createContentWrapperElement();
     dialog.appendChild(header);
     dialog.appendChild(content);
 
@@ -154,7 +188,7 @@ const main = () => {
   _area = createArea();
   document.body.appendChild(_area.dialog);
 
-  const draggable = new Draggable();
+  const draggable = new Draggable(_configs.normalDialogStyles, _configs.movingDialogStyles);
   draggable.add(_area.dialog, _area.header);
 };
 
