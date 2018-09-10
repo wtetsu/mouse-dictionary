@@ -1,12 +1,19 @@
 import text from "./text";
+import res from "./resources";
 import Draggable from "./draggable";
 import ShortCache from "./shortcache";
 import atcursor from "./atcursor";
 import dom from "./dom";
 
 const main = () => {
-  const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
+  // Pages which have frames are not supported.
+  const frames = document.getElementsByTagName("frame");
+  if (frames && frames.length >= 1) {
+    alert(res("doesntSupportFrame"));
+    return;
+  }
 
+  const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
   let _area = document.getElementById(DIALOG_ID);
 
   if (_area) {
