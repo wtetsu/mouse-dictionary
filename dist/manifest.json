@@ -1,7 +1,7 @@
 {
   "name": "Mouse Dictionary",
   "description": "Mouse Dictionary",
-  "version": "1.0.6",
+  "version": "1.0.6beta3",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
@@ -12,6 +12,7 @@
     "persistent": false
   },
   "browser_action": {
+    "default_icon": "icon48.png",
     "default_title": "Mouse Dictionary"
   },
   "manifest_version": 2,
