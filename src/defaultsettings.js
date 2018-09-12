@@ -1,6 +1,6 @@
 export default {
   shortWordLength: 2,
-  cutShortWordDescription: 80,
+  cutShortWordDescription: 30,
 
   replaceRules: [
     {
@@ -37,12 +37,17 @@ export default {
     opacity: 0.35
   },
 
-  headerTemplate: '<div style="margin:0;padding:0;font-style:normal;font-weight:normal;font-size:small;cursor:pointer;background-color:#EBEBEB;">Mouse Dictionary</div>',
+  headerTemplate: `<div style="all:initial;
+                               display:block;
+                               font-size:small;
+                               cursor:pointer;
+                               background-color:#EBEBEB;">Mouse Dictionary</div>`,
 
-  contentWrapperTemplate: "<div></div>",
+  contentWrapperTemplate: `<div style="text-align:left;"></div>`,
 
-  dialogTemplate: `<div style="width: 400px;
-                               height: 600px;
+  dialogTemplate: `<div style="all:initial;
+                               width: 300px;
+                               height: 400px;
                                position: fixed;
                                resize: both;
                                overflow: hidden;
@@ -58,13 +63,15 @@ export default {
     {{#words}}
       {{#isShort}}
         {{! 短い単語 }}
-        <font color="#000088"><strong>{{head}}</strong></font>
-        <font size="-2">{{shortText}}...</font>
+        <span style="color:#000088;font-weight:bold;">{{head}}</span>
+        <span style="color:#505050;font-size:x-small;">{{shortText}}</span>
       {{/isShort}}
       {{^isShort}}
         {{! 通常の単語 }}
-        <font color="#000088"><strong>{{head}}</strong></font><br/>
-        {{{desc}}}
+        <span style="font-size:small;font-weight:bold;color:#000088">{{head}}</span><br/>
+        <span style="font-size:small;color:#101010;">
+          {{{desc}}}
+        </span>
       {{/isShort}}
       {{^isLast}}
         <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:0;height:1px;" />
