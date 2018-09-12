@@ -1,6 +1,7 @@
 {
   "name": "Mouse Dictionary",
   "description": "Mouse Dictionary",
+  "author": "wtetsu",
   "version": "1.0.6beta3",
   "options_ui": {
     "page": "options/options.html",
