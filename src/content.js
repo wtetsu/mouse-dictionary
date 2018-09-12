@@ -8,6 +8,45 @@ import atcursor from "./atcursor";
 import dom from "./dom";
 import defaultSettings from "./defaultsettings";
 
+const initializeSettings = () => {
+  const settings = {};
+  if (!(settings.shortWordLength >= 0)) {
+    settings.shortWordLength = defaultSettings.shortWordLength;
+  }
+  if (!(settings.cutShortWordDescription >= 0)) {
+    settings.cutShortWordDescription = defaultSettings.cutShortWordDescription;
+  }
+  if (!settings.replaceRules) {
+    settings.replaceRules = defaultSettings.replaceRules;
+  }
+  if (!settings.dialogTemplate) {
+    settings.dialogTemplate = defaultSettings.dialogTemplate;
+  }
+  if (!settings.headerTemplate) {
+    settings.headerTemplate = defaultSettings.headerTemplate;
+  }
+  if (!settings.contentWrapperTemplate) {
+    settings.contentWrapperTemplate = defaultSettings.contentWrapperTemplate;
+  }
+  if (!settings.contentTemplate) {
+    settings.contentTemplate = defaultSettings.contentTemplate;
+  }
+  if (!settings.normalDialogStyles) {
+    settings.normalDialogStyles = defaultSettings.normalDialogStyles;
+  }
+  if (!settings.movingDialogStyles) {
+    settings.movingDialogStyles = defaultSettings.movingDialogStyles;
+  }
+  if (!settings.hiddenDialogStyles) {
+    settings.hiddenDialogStyles = defaultSettings.hiddenDialogStyles;
+  }
+  if (!settings.initialPosition) {
+    settings.initialPosition = defaultSettings.initialPosition;
+  }
+
+  return settings;
+};
+
 const main = () => {
   // Pages which have frames are not supported.
   const frames = document.getElementsByTagName("frame");
@@ -16,49 +55,25 @@ const main = () => {
     return;
   }
 
-  const _configs = {};
-  if (!(_configs.shortWordLength >= 0)) {
-    _configs.shortWordLength = defaultSettings.shortWordLength;
-  }
-  if (!(_configs.cutShortWordDescription >= 0)) {
-    _configs.cutShortWordDescription = defaultSettings.cutShortWordDescription;
-  }
-  if (!_configs.replaceRules) {
-    _configs.replaceRules = defaultSettings.replaceRules;
-  }
-  if (!_configs.dialogTemplate) {
-    _configs.dialogTemplate = defaultSettings.dialogTemplate;
-  }
-  if (!_configs.headerTemplate) {
-    _configs.headerTemplate = defaultSettings.headerTemplate;
-  }
-  if (!_configs.contentWrapperTemplate) {
-    _configs.contentWrapperTemplate = defaultSettings.contentWrapperTemplate;
-  }
-  if (!_configs.contentTemplate) {
-    _configs.contentTemplate = defaultSettings.contentTemplate;
-  }
-  if (!_configs.normalDialogStyles) {
-    _configs.normalDialogStyles = defaultSettings.normalDialogStyles;
-  }
-  if (!_configs.movingDialogStyles) {
-    _configs.movingDialogStyles = defaultSettings.movingDialogStyles;
-  }
-
   const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
   let _area = document.getElementById(DIALOG_ID);
 
+  const _settings = initializeSettings();
+
   if (_area) {
-    if (_area.style.opacity <= 0.0) {
-      dom.applyStyles(_area, _configs.normalDialogStyles);
+    const isHidden = _area.getAttribute("data-mouse-dictionary-hidden");
+    if (isHidden === "true") {
+      dom.applyStyles(_area, _settings.normalDialogStyles);
+      _area.setAttribute("data-mouse-dictionary-hidden", "false");
     } else {
-      _area.style.opacity = 0.0;
+      dom.applyStyles(_area, _settings.hiddenDialogStyles);
+      _area.setAttribute("data-mouse-dictionary-hidden", "true");
     }
     return;
   }
 
-  const _contentTemplate = Hogan.compile(_configs.contentTemplate);
-  const _headerTemplate = Hogan.compile(_configs.headerTemplate);
+  const _contentTemplate = Hogan.compile(_settings.contentTemplate);
+  const _headerTemplate = Hogan.compile(_settings.headerTemplate);
 
   const consultAndCreateContentHtml = words => {
     return new Promise(resolve => {
@@ -85,8 +100,8 @@ const main = () => {
         data.push({
           head: escapeHtml(word),
           desc: createDescriptionHtml(desc),
-          isShort: word.length <= _configs.shortWordLength,
-          shortText: desc.substring(0, _configs.cutShortWordDescription)
+          isShort: word.length <= _settings.shortWordLength,
+          shortText: desc.substring(0, _settings.cutShortWordDescription)
         });
       }
     }
@@ -99,7 +114,7 @@ const main = () => {
     return data;
   };
 
-  const replaceRuleSettings = _configs.replaceRules;
+  const replaceRuleSettings = _settings.replaceRules;
 
   const replaceRule = [];
   for (let i = 0; i < replaceRuleSettings.length; i++) {
@@ -159,7 +174,7 @@ const main = () => {
   });
 
   const createDialogElement = () => {
-    const dialog = dom.create(_configs.dialogTemplate);
+    const dialog = dom.create(_settings.dialogTemplate);
     dom.applyStyles(dialog, defaultSettings.normalDialogStyles);
     return dialog;
   };
@@ -170,7 +185,7 @@ const main = () => {
   };
 
   const createContentWrapperElement = () => {
-    const dialog = dom.create(_configs.contentWrapperTemplate);
+    const dialog = dom.create(_settings.contentWrapperTemplate);
     return dialog;
   };
 
@@ -182,13 +197,27 @@ const main = () => {
     dialog.appendChild(content);
 
     dialog.id = DIALOG_ID;
+
     return { dialog, header, content };
   };
 
   _area = createArea();
+
   document.body.appendChild(_area.dialog);
 
-  const draggable = new Draggable(_configs.normalDialogStyles, _configs.movingDialogStyles);
+  let left;
+  switch (_settings.initialPosition) {
+    case "right":
+      left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
+      break;
+    default:
+      left = 5;
+  }
+  if (Number.isFinite(left)) {
+    _area.dialog.style["left"] = `${left}px`;
+  }
+
+  const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
   draggable.add(_area.dialog, _area.header);
 };
 

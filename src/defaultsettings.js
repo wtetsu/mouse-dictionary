@@ -2,6 +2,8 @@ export default {
   shortWordLength: 2,
   cutShortWordDescription: 30,
 
+  initialPosition: "right",
+
   replaceRules: [
     {
       search: "(◆.+)",
@@ -30,11 +32,17 @@ export default {
   ],
 
   normalDialogStyles: {
-    opacity: 0.95
+    opacity: 0.95,
+    zIndex: 2147483647
   },
 
   movingDialogStyles: {
     opacity: 0.35
+  },
+
+  hiddenDialogStyles: {
+    opacity: 0.0,
+    zIndex: -1
   },
 
   headerTemplate: `<div style="all:initial;
@@ -51,8 +59,7 @@ export default {
                                position: fixed;
                                resize: both;
                                overflow: hidden;
-                               top: 10px;
-                               left: 10px;
+                               top: 5px;
                                background-color: #ffffff;
                                z-index: 2147483647;
                                border: 1px solid #A0A0A0;
