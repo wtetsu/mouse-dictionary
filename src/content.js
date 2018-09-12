@@ -224,22 +224,44 @@ const main = () => {
 
   _area = createArea();
 
-  document.body.appendChild(_area.dialog);
+  const LAST_POSITION_KEY = "**** last_position ****";
 
-  let left;
-  switch (_settings.initialPosition) {
-    case "right":
-      left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
-      break;
-    default:
-      left = 5;
-  }
-  if (Number.isFinite(left)) {
-    _area.dialog.style["left"] = `${left}px`;
-  }
+  const fetchLeftPosition = () => {
+    return new Promise(resolve => {
+      let left;
+      switch (_settings.initialPosition) {
+        case "right":
+          left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
+          resolve(left);
+          break;
+        case "keep":
+          chrome.storage.local.get([LAST_POSITION_KEY], r => {
+            const lastPosition = r[LAST_POSITION_KEY];
+            const left = lastPosition && lastPosition.left;
+            resolve(left);
+          });
+          break;
+        default:
+          resolve(left);
+          left = 5;
+      }
+    });
+  };
 
-  const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
-  draggable.add(_area.dialog, _area.header);
+  fetchLeftPosition().then(left => {
+    if (Number.isFinite(left)) {
+      _area.dialog.style["left"] = `${left}px`;
+    }
+    document.body.appendChild(_area.dialog);
+
+    const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
+    draggable.onmouseup = e => {
+      const positionData = {};
+      positionData[LAST_POSITION_KEY] = e;
+      chrome.storage.local.set(positionData);
+    };
+    draggable.add(_area.dialog, _area.header);
+  });
 };
 
 main();

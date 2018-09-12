@@ -9,14 +9,17 @@ export default class Draggable {
     this.startingY = null;
     this.elementX = null;
     this.elementY = null;
+    this.onmouseup = null;
+    this.lastLeft = null;
+    this.lastTop = null;
     document.body.addEventListener("mousemove", e => {
       if (this.targetElement) {
         let x = this.parseInt(e.pageX);
         let y = this.parseInt(e.pageY);
-        let left = this.elementX + x - this.startingX;
-        let top = this.elementY + y - this.startingY;
-        this.targetElement.style.left = left.toString() + "px";
-        this.targetElement.style.top = top.toString() + "px";
+        this.lastLeft = this.elementX + x - this.startingX;
+        this.lastTop = this.elementY + y - this.startingY;
+        this.targetElement.style.left = this.lastLeft.toString() + "px";
+        this.targetElement.style.top = this.lastTop.toString() + "px";
       }
     });
     document.body.addEventListener("mouseup", () => {
@@ -27,6 +30,9 @@ export default class Draggable {
         this.startingY = null;
         this.elementX = null;
         this.elementY = null;
+        if (this.onmouseup) {
+          this.onmouseup({ left: this.lastLeft, top: this.lastTop });
+        }
       }
     });
   }
@@ -41,6 +47,8 @@ export default class Draggable {
       this.startingY = this.parseInt(e.pageY);
       this.elementX = this.parseInt(this.targetElement.style.left);
       this.elementY = this.parseInt(this.targetElement.style.top);
+      this.lastLeft = null;
+      this.lastTop = null;
     });
   }
 
