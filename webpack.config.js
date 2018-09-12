@@ -1,10 +1,10 @@
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: process.env.NODE_ENV || "development",
   entry: {
     "options/options": "./src/options/Main.jsx",
-    background: "./src/background.js",
     content: "./src/content.js"
   },
   output: {
@@ -47,5 +47,6 @@ module.exports = {
           ]
         }
       : {},
+  plugins: [new CopyWebpackPlugin([{ from: "static", to: "." }, { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }])],
   devtool: process.env.NODE_ENV === "production" ? false : "cheap-module-source-map"
 };
