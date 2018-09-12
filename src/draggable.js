@@ -38,6 +38,11 @@ export default class Draggable {
   }
   add(elem, titleBar) {
     this.makeElementDraggable(elem, titleBar);
+    setInterval(() => {
+      const width = elem.clientWidth;
+      const height = elem.clientHeight;
+      console.warn({ width, height });
+    }, 3000);
   }
   makeElementDraggable(elem, titleBar) {
     titleBar.addEventListener("mousedown", e => {

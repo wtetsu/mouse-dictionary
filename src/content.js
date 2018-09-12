@@ -46,7 +46,9 @@ const initializeSettings = () => {
   if (!settings.lookupWithCapitalized) {
     settings.lookupWithCapitalized = defaultSettings.lookupWithCapitalized;
   }
-
+  if (!settings.initialSize) {
+    settings.initialSize = defaultSettings.initialSize;
+  }
   return settings;
 };
 
@@ -224,33 +226,42 @@ const main = () => {
 
   _area = createArea();
 
+  // _area.dialog.addEventListener("resize", e => {
+  //   console.info(e);
+  // });
+  // _area.content.addEventListener("resize", e => {
+  //   console.info(e);
+  // });
+
   const LAST_POSITION_KEY = "**** last_position ****";
 
-  const fetchLeftPosition = () => {
+  const fetchInitialPosition = () => {
     return new Promise(resolve => {
       let left;
       switch (_settings.initialPosition) {
         case "right":
           left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
-          resolve(left);
+          resolve({ left });
           break;
         case "keep":
           chrome.storage.local.get([LAST_POSITION_KEY], r => {
             const lastPosition = r[LAST_POSITION_KEY];
-            const left = lastPosition && lastPosition.left;
-            resolve(left);
+            resolve(lastPosition || {});
           });
           break;
         default:
-          resolve(left);
+          resolve({ left });
           left = 5;
       }
     });
   };
 
-  fetchLeftPosition().then(left => {
-    if (Number.isFinite(left)) {
-      _area.dialog.style["left"] = `${left}px`;
+  fetchInitialPosition().then(position => {
+    if (Number.isFinite(position.left)) {
+      _area.dialog.style["left"] = `${position.left}px`;
+    }
+    if (Number.isFinite(position.top)) {
+      _area.dialog.style["top"] = `${position.top}px`;
     }
     document.body.appendChild(_area.dialog);
 
