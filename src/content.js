@@ -226,13 +226,6 @@ const main = () => {
 
   _area = createArea();
 
-  // _area.dialog.addEventListener("resize", e => {
-  //   console.info(e);
-  // });
-  // _area.content.addEventListener("resize", e => {
-  //   console.info(e);
-  // });
-
   const LAST_POSITION_KEY = "**** last_position ****";
 
   const fetchInitialPosition = () => {
@@ -244,8 +237,14 @@ const main = () => {
           resolve({ left });
           break;
         case "keep":
-          chrome.storage.local.get([LAST_POSITION_KEY], r => {
+          chrome.storage.sync.get([LAST_POSITION_KEY], r => {
             const lastPosition = r[LAST_POSITION_KEY];
+            if (lastPosition.width < 50) {
+              lastPosition.width = 50;
+            }
+            if (lastPosition.height < 50) {
+              lastPosition.height = 50;
+            }
             resolve(lastPosition || {});
           });
           break;
@@ -256,6 +255,9 @@ const main = () => {
     });
   };
 
+  dom.applyStyles(_area.dialog, _settings.hiddenDialogStyles);
+  document.body.appendChild(_area.dialog);
+
   fetchInitialPosition().then(position => {
     if (Number.isFinite(position.left)) {
       _area.dialog.style["left"] = `${position.left}px`;
@@ -263,13 +265,24 @@ const main = () => {
     if (Number.isFinite(position.top)) {
       _area.dialog.style["top"] = `${position.top}px`;
     }
-    document.body.appendChild(_area.dialog);
+    if (Number.isFinite(position.width)) {
+      _area.dialog.style["width"] = `${position.width}px`;
+    }
+    if (Number.isFinite(position.height)) {
+      _area.dialog.style["height"] = `${position.height}px`;
+    }
+
+    dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
 
     const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
-    draggable.onmouseup = e => {
+    draggable.onchange = e => {
       const positionData = {};
       positionData[LAST_POSITION_KEY] = e;
-      chrome.storage.local.set(positionData);
+      if (_settings.initialPosition === "keep") {
+        chrome.storage.sync.set(positionData, () => {
+          // saved
+        });
+      }
     };
     draggable.add(_area.dialog, _area.header);
   });

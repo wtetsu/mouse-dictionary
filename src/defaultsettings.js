@@ -3,7 +3,7 @@ export default {
   cutShortWordDescription: 30,
   lookupWithCapitalized: true,
   initialPosition: "keep",
-  initialSize: "keep",
+  //initialSize: "keep",
 
   replaceRules: [
     {
