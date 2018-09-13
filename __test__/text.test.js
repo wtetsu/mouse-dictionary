@@ -12,6 +12,18 @@ test("", () => {
 });
 
 test("", () => {
+  expect(text.createLookupWords("deal with")).toEqual(["deal with", "deal"]);
+  expect(text.createLookupWords("dealt with")).toEqual(["dealt with", "dealt", "deal with", "deal"]);
+  expect(text.createLookupWords("dealing with")).toEqual(["dealing with", "dealing", "deal with", "deal"]);
+
+  expect(text.createLookupWords("run with")).toEqual(["run with", "run"]);
+  expect(text.createLookupWords("ran with")).toEqual(["ran with", "ran", "run with", "run"]);
+  expect(text.createLookupWords("running with")).toEqual(["running with", "running", "run with", "run"]);
+
+  expect(text.createLookupWords("dealt dealt dealt")).toEqual(["dealt dealt dealt", "dealt dealt", "dealt", "deal dealt dealt", "deal dealt", "deal"]);
+});
+
+test("", () => {
   expect(text.splitIntoWords("removed from")).toEqual(["removed", "from"]);
   expect(text.splitIntoWords("removed  from")).toEqual(["removed", "from"]);
   expect(text.splitIntoWords("あああremoved  fromあいいいい")).toEqual(["removed", "from"]);
@@ -28,28 +40,10 @@ test("", () => {
 
   expect(text.parseString("WORDONE_WORDTWO_WORDTHREE")).toEqual(["WORDONE", "wordone", "WORDTWO", "wordtwo", "WORDTHREE", "wordthree", "wordone_wordtwo_wordthree"]);
 
-  expect(text.transformWord("running")).toEqual(["run"]);
+  //expect(text.getAllVerbForms("running")).toEqual(["run"]);
 
   expect(text.parseString("announcements")).toEqual(["announcement"]);
   expect(text.parseString("Announcements")).toEqual(["Announcement", "announcements", "announcement"]);
-});
-
-test("", () => {
-  expect(text.transformWord("word")).toEqual([]);
-  expect(text.transformWord("Word")).toEqual([]);
-  expect(text.transformWord("studied")).toEqual(["study", "studi", "studie"]);
-  expect(text.transformWord("studies")).toEqual(["study", "studie", "studi"]);
-  expect(text.transformWord("player")).toEqual(["play"]);
-  expect(text.transformWord("supplier")).toEqual(["supply", "suppli"]);
-  expect(text.transformWord("happiest")).toEqual(["happy", "happi"]);
-  expect(text.transformWord("runs")).toEqual(["run"]);
-  expect(text.transformWord("running")).toEqual(["run"]);
-  expect(text.transformWord("playing")).toEqual(["play"]);
-
-  expect(text.transformWord("announcements")).toEqual(["announcement"]);
-  expect(text.transformWord("Announcements")).toEqual(["Announcement"]);
-  expect(text.transformWord("announcement")).toEqual([]);
-  expect(text.transformWord("Announcement")).toEqual([]);
 });
 
 test("", () => {
@@ -57,9 +51,8 @@ test("", () => {
   expect(text.linkWords(["word0"])).toEqual(["word0"]);
   expect(text.linkWords(["word0", "word1"])).toEqual(["word0 word1", "word0"]);
   expect(text.linkWords(["word0", "word1", "word2"])).toEqual(["word0 word1 word2", "word0 word1", "word0"]);
-
   expect(text.linkWords(["announcement", "of", "hoge"])).toEqual(["announcement of hoge", "announcement of", "announcement"]);
   expect(text.linkWords(["Announcement", "of", "Hoge"])).toEqual(["Announcement of Hoge", "Announcement of", "Announcement"]);
-
   expect(text.linkWords(["American", "English"])).toEqual(["American English", "American"]);
+  expect(text.linkWords(["dealt", "with"])).toEqual(["dealt with", "dealt", "deal with", "deal"]);
 });

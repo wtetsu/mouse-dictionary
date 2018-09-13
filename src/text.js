@@ -1,4 +1,5 @@
 import consts from "./consts";
+import verbs from "./verbs";
 
 const text = {};
 
@@ -17,7 +18,6 @@ text.createLookupWords = sourceStr => {
     for (let i = 0; i < wlist.length; i++) {
       linkedWords.push(wlist[i]);
     }
-
     mergeArray(result, linkedWords);
   }
   return result;
@@ -114,6 +114,8 @@ text._splitString = str => {
   return arr;
 };
 
+const trailingRules = [[{ search: "s", new: "" }], [{ search: "er", new: "" }], [{ search: "iest", new: "y" }], [{ search: "est", new: "" }], [{ search: "'s", new: "" }]];
+
 text.parseString = (sourceStr, ignoreLowerCase) => {
   let result = [];
   if (!sourceStr) {
@@ -128,7 +130,7 @@ text.parseString = (sourceStr, ignoreLowerCase) => {
     if (i >= 1) {
       result.push(str);
     }
-    result = result.concat(text.transformWord(str));
+    result = result.concat(text.tryToReplaceTrailingStrings(str, trailingRules));
     const arr = text._splitString(str);
     for (let j = 0; j < arr.length; j++) {
       const w = arr[j];
@@ -149,26 +151,11 @@ text.replaceTrailingCharacters = (str, searchValue, newValue) => {
   return result;
 };
 
-const _trailingRule = [
-  [{ search: "ied", new: "y" }],
-  [{ search: "ed", new: "" }],
-  [{ search: "ed", new: "e" }],
-  [{ search: "ies", new: "y" }],
-  [{ search: "ier", new: "y" }],
-  [{ search: "er", new: "" }],
-  [{ search: "iest", new: "y" }],
-  [{ search: "est", new: "" }],
-  [{ search: "s", new: "" }],
-  [{ search: "es", new: "" }],
-  [{ search: "'s", new: "" }],
-  [{ search: "nning", new: "n" }, { search: "ing", new: "" }]
-];
-
-text.transformWord = str => {
+text.tryToReplaceTrailingStrings = (str, trailingRule) => {
   let words = [];
 
-  for (let i = 0; i < _trailingRule.length; i++) {
-    const tlist = _trailingRule[i];
+  for (let i = 0; i < trailingRule.length; i++) {
+    const tlist = trailingRule[i];
 
     for (let j = 0; j < tlist.length; j++) {
       const t = tlist[j];
@@ -186,20 +173,41 @@ text.transformWord = str => {
 /**
  * ["American", "English"
  * -> ["American English", "American", "american engish", "american"]);
+ *
+ * ["dealt", "with"]
+ * -> ["dealt with", "dealt", "deal with", "deal"]
+ *
+ * ["running", "away"]
+ * -> ["running away", "running", "run away", "run"]
  */
 text.linkWords = words => {
   let linkedWords = [];
-  let currentString;
-
-  for (let i = 0; i < words.length; i++) {
-    let word = words[i];
-    if (i === 0) {
-      currentString = word;
-    } else {
-      currentString += " " + word;
-    }
-    linkedWords.unshift(currentString);
+  if (words.length === 0) {
+    return linkedWords;
   }
+
+  const firstWord = words[0];
+  const firstWordList = [firstWord].concat(verbs(firstWord));
+
+  for (let i = 0; i < firstWordList.length; i++) {
+    const wordList = [].concat(words);
+    wordList[0] = firstWordList[i];
+
+    let currentString;
+    const newLinkedWord = new Array(wordList.length);
+    for (let j = 0; j < wordList.length; j++) {
+      let word = wordList[j];
+      if (j === 0) {
+        currentString = word;
+      } else {
+        currentString += " " + word;
+      }
+      newLinkedWord[wordList.length - j - 1] = currentString;
+      //linkedWords.unshift(currentString);
+    }
+    linkedWords.push(...newLinkedWord);
+  }
+
   return linkedWords;
 };
 
