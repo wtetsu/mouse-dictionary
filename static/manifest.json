@@ -7,7 +7,7 @@
     "page": "options/options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "unlimitedStorage", "activeTab", "tabs", "http://*/*", "https://*/*"],
+  "permissions": ["storage", "unlimitedStorage", "activeTab"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
