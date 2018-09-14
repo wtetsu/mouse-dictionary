@@ -43,6 +43,9 @@ const initializeSettings = () => {
   if (!settings.initialPosition) {
     settings.initialPosition = defaultSettings.initialPosition;
   }
+  if (!settings.lookupWithCapitalized) {
+    settings.lookupWithCapitalized = defaultSettings.lookupWithCapitalized;
+  }
 
   return settings;
 };
@@ -147,9 +150,11 @@ const main = () => {
   let _lastText = null;
   const _shortCache = new ShortCache(100);
 
-  let _selection;
+  let _selection = null;
+
   document.body.addEventListener("mouseup", () => {
     _selection = window.getSelection().toString();
+    lookup(_selection);
   });
 
   document.body.addEventListener("mousemove", ev => {
@@ -163,26 +168,31 @@ const main = () => {
       return;
     }
 
-    if (_lastText == textAtCursor) {
+    lookup(textAtCursor);
+  });
+
+  const lookup = textToLookup => {
+    if (!textToLookup || _lastText == textToLookup) {
       return;
     }
-    const cache = _shortCache.get(textAtCursor);
+
+    const cache = _shortCache.get(textToLookup);
     if (cache) {
       _area.content.innerHTML = "";
       _area.content.appendChild(cache);
       return;
     }
 
-    const lookupWords = text.createLookupWords(textAtCursor);
+    const lookupWords = text.createLookupWords(textToLookup, _settings.lookupWithCapitalized);
 
     consultAndCreateContentHtml(lookupWords).then(contentHtml => {
       const newDom = dom.create(contentHtml);
       _area.content.innerHTML = "";
       _area.content.appendChild(newDom);
-      _shortCache.put(textAtCursor, newDom);
-      _lastText = textAtCursor;
+      _shortCache.put(textToLookup, newDom);
+      _lastText = textToLookup;
     });
-  });
+  };
 
   const createDialogElement = () => {
     const dialog = dom.create(_settings.dialogTemplate);

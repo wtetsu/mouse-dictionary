@@ -5,7 +5,12 @@ import SimpleSelect from "./SimpleSelect.jsx";
 const MouseDictionaryOptions = props => {
   const ENCODINGS = [{ id: "Shift-JIS", name: "Shift-JIS" }, { id: "UTF-8", name: "UTF-8" }, { id: "UTF-16", name: "UTF-16" }];
 
-  const FORMATS = [{ id: "EIJIRO", name: res("formatEijiroText") }, { id: "TSV", name: res("formatTsv") }, { id: "PDIC_LINE", name: res("formatPdicOneLine") }];
+  const FORMATS = [
+    { id: "EIJIRO", name: res("formatEijiroText") },
+    { id: "TSV", name: res("formatTsv") },
+    { id: "PDIC_LINE", name: res("formatPdicOneLine") },
+    { id: "JSON", name: res("formatJson") }
+  ];
 
   return (
     <div>

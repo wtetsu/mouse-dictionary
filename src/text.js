@@ -3,7 +3,7 @@ import verbs from "./verbs";
 
 const text = {};
 
-text.createLookupWords = sourceStr => {
+text.createLookupWords = (sourceStr, withCapitalized = false) => {
   const lowerStr = sourceStr.toLowerCase();
   const isAllLower = lowerStr === sourceStr;
   const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
@@ -20,6 +20,11 @@ text.createLookupWords = sourceStr => {
     }
     mergeArray(result, linkedWords);
   }
+
+  if (withCapitalized) {
+    mergeArray(result, result.map(s => s.toUpperCase()));
+  }
+
   return result;
 };
 

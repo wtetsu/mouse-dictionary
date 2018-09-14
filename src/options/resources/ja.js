@@ -13,5 +13,6 @@ export default {
 
   formatEijiroText: "英辞郎テキストデータ(■見出し)",
   formatTsv: "TSV(タブ区切り)",
-  formatPdicOneLine: "PDIC1行"
+  formatPdicOneLine: "PDIC1行",
+  formatJson: "JSON"
 };

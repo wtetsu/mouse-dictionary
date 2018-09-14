@@ -99,6 +99,13 @@ class Main extends React.Component {
 
   async doLoad() {
     const file = document.getElementById("dictdata").files[0];
+    if (!file) {
+      swal({
+        title: res("selectDictFile"),
+        icon: "info"
+      });
+      return;
+    }
     const encoding = this.state.encoding;
     const format = this.state.format;
     const event = ev => {
@@ -115,10 +122,9 @@ class Main extends React.Component {
         }
       }
     };
-    if (file) {
-      this.setState({ busy: true });
+    this.setState({ busy: true });
+    try {
       const { wordCount } = await dict.load({ file, encoding, format, event });
-
       swal({
         text: res("finishRegister", wordCount),
         icon: "success"
@@ -128,12 +134,13 @@ class Main extends React.Component {
       chrome.storage.local.set(loaded);
 
       this.updateDictDataUsage();
-      this.setState({ busy: false, progress: "" });
-    } else {
+    } catch (e) {
       swal({
-        title: res("selectDictFile"),
-        icon: "info"
+        text: e.toString(),
+        icon: "error"
       });
+    } finally {
+      this.setState({ busy: false, progress: "" });
     }
   }
 

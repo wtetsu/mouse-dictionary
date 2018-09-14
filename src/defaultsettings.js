@@ -1,8 +1,9 @@
 export default {
   shortWordLength: 2,
   cutShortWordDescription: 30,
+  lookupWithCapitalized: true,
 
-  initialPosition: "right",
+  initialPosition: "keep",
 
   replaceRules: [
     {

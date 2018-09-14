@@ -50,14 +50,12 @@ export default class EijiroParser {
   }
 
   flush() {
-    let hd = null;
+    const data = {};
     if (this.currentHead && this.lines.length >= 1) {
-      hd = {};
-      hd.head = this.currentHead;
-      hd.desc = this.lines.join("\n");
+      data[this.currentHead] = this.lines.join("\n");
     }
     this.currentHead = null;
     this.lines = [];
-    return hd;
+    return data;
   }
 }

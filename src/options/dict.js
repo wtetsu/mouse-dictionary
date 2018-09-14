@@ -1,6 +1,7 @@
 import LineReader from "./linereader";
 import EijiroParser from "./eijiroparser";
 import SimpleDictParser from "./simpledictparser";
+import JsonDictParser from "./jsondictparser";
 
 const save = dictData => {
   return new Promise(resolve => {
@@ -22,6 +23,9 @@ const load = async ({ file, encoding, format, event }) => {
     case "EIJIRO":
       parser = new EijiroParser();
       break;
+    case "JSON":
+      parser = new JsonDictParser();
+      break;
   }
   if (parser === null) {
     throw new Error("Unknown File Format: " + format);
@@ -29,7 +33,7 @@ const load = async ({ file, encoding, format, event }) => {
 
   const ev = event || (() => {});
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     let wordCount = 0;
     var reader = new FileReader();
     reader.onprogress = e => {
@@ -58,10 +62,15 @@ const load = async ({ file, encoding, format, event }) => {
         },
         () => {
           // finished
-          const hd = parser.flush();
-          if (hd) {
-            dictData[hd.head] = hd.desc;
-            wordCount += 1;
+          let lastData;
+          try {
+            lastData = parser.flush();
+          } catch (e) {
+            reject(e);
+          }
+          if (lastData) {
+            Object.assign(dictData, lastData);
+            wordCount += Object.keys(lastData).length;
           }
 
           save(dictData).then(
