@@ -46,7 +46,9 @@ const initializeSettings = () => {
   if (!settings.lookupWithCapitalized) {
     settings.lookupWithCapitalized = defaultSettings.lookupWithCapitalized;
   }
-
+  if (!settings.initialSize) {
+    settings.initialSize = defaultSettings.initialSize;
+  }
   return settings;
 };
 
@@ -224,22 +226,68 @@ const main = () => {
 
   _area = createArea();
 
+  const LAST_POSITION_KEY = "**** last_position ****";
+
+  const fetchInitialPosition = () => {
+    return new Promise(resolve => {
+      let left;
+      switch (_settings.initialPosition) {
+        case "right":
+          left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
+          resolve({ left });
+          break;
+        case "keep":
+          chrome.storage.sync.get([LAST_POSITION_KEY], r => {
+            const lastPosition = r[LAST_POSITION_KEY];
+            if (lastPosition) {
+              if (lastPosition.width < 50) {
+                lastPosition.width = 50;
+              }
+              if (lastPosition.height < 50) {
+                lastPosition.height = 50;
+              }
+            }
+            resolve(lastPosition || {});
+          });
+          break;
+        default:
+          resolve({ left });
+          left = 5;
+      }
+    });
+  };
+
+  dom.applyStyles(_area.dialog, _settings.hiddenDialogStyles);
   document.body.appendChild(_area.dialog);
 
-  let left;
-  switch (_settings.initialPosition) {
-    case "right":
-      left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
-      break;
-    default:
-      left = 5;
-  }
-  if (Number.isFinite(left)) {
-    _area.dialog.style["left"] = `${left}px`;
-  }
+  fetchInitialPosition().then(position => {
+    if (Number.isFinite(position.left)) {
+      _area.dialog.style["left"] = `${position.left}px`;
+    }
+    if (Number.isFinite(position.top)) {
+      _area.dialog.style["top"] = `${position.top}px`;
+    }
+    if (Number.isFinite(position.width)) {
+      _area.dialog.style["width"] = `${position.width}px`;
+    }
+    if (Number.isFinite(position.height)) {
+      _area.dialog.style["height"] = `${position.height}px`;
+    }
 
-  const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
-  draggable.add(_area.dialog, _area.header);
+    dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
+
+    const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
+    draggable.onchange = e => {
+      const positionData = {};
+      positionData[LAST_POSITION_KEY] = e;
+      if (_settings.initialPosition === "keep") {
+        chrome.storage.sync.set(positionData, () => {
+          // saved
+        });
+      }
+    };
+    draggable.add(_area.dialog, _area.header);
+  });
 };
 
 main();

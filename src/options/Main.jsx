@@ -5,8 +5,10 @@ import MouseDictionaryOptions from "./MouseDictionaryOptions";
 import swal from "sweetalert";
 import res from "./resources";
 import dict from "./dict";
+import defaultSettings from "../defaultsettings";
 
 const KEY_LOADED = "**** loaded ****";
+const KEY_USER_CONFIG = "**** config ****";
 
 class Main extends React.Component {
   constructor(props) {
@@ -16,7 +18,8 @@ class Main extends React.Component {
       format: "EIJIRO",
       dictDataUsage: "-",
       busy: false,
-      progress: ""
+      progress: "",
+      config: null
     };
     this.doChangeState = this.doChangeState.bind(this);
     this.doLoad = this.doLoad.bind(this);
@@ -34,8 +37,9 @@ class Main extends React.Component {
         doLoad={this.doLoad}
         doClear={this.doClear}
         dictDataUsage={state.dictDataUsage}
-        busy={this.state.busy}
-        progress={this.state.progress}
+        busy={state.busy}
+        progress={state.progress}
+        config={state.config}
       />
     );
   }
@@ -43,11 +47,29 @@ class Main extends React.Component {
   componentDidMount() {
     this.updateDictDataUsage();
 
-    chrome.storage.local.get(KEY_LOADED, r => {
-      if (!r[KEY_LOADED]) {
+    chrome.storage.local.get([KEY_LOADED, KEY_USER_CONFIG], r => {
+      if (r[KEY_LOADED]) {
+        let config = this.tryToParseJson(r[KEY_USER_CONFIG]);
+        if (!config) {
+          config = {
+            contentTemplate: defaultSettings.contentTemplate
+          };
+        }
+        this.setState({ config });
+      } else {
         this.registerDefaultDict();
       }
     });
+  }
+
+  tryToParseJson(json) {
+    let result;
+    try {
+      result = JSON.parse(json);
+    } catch (e) {
+      result = null;
+    }
+    return result;
   }
 
   updateDictDataUsage() {
@@ -92,7 +114,14 @@ class Main extends React.Component {
   doChangeState(name, e) {
     if (name) {
       const newState = {};
-      newState[name] = e.target.value;
+
+      if (name !== "contentTemplate") {
+        newState[name] = e.target.value;
+      } else {
+        newState.config = {
+          contentTemplate: e.target.value
+        };
+      }
       this.setState(newState);
     }
   }
