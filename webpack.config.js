@@ -47,6 +47,12 @@ module.exports = {
           ]
         }
       : {},
-  plugins: [new CopyWebpackPlugin([{ from: "static", to: "." }, { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }])],
-  devtool: process.env.NODE_ENV === "production" ? false : "cheap-module-source-map"
+  plugins: [
+    new CopyWebpackPlugin([{ from: "static", to: "." }, { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }])
+  ],
+  devtool: process.env.NODE_ENV === "production" ? false : "cheap-module-source-map",
+  performance: {
+    maxEntrypointSize: 500000,
+    maxAssetSize: 3000000
+  }
 };
