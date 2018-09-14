@@ -29,6 +29,16 @@ test("", () => {
   expect(text.splitIntoWords("あああremoved  fromあいいいい")).toEqual(["removed", "from"]);
 
   expect(text.splitIntoWords("American English")).toEqual(["American", "English"]);
+  expect(text.splitIntoWords(".American English.")).toEqual(["American", "English"]);
+  expect(text.splitIntoWords("'American English'")).toEqual(["American", "English"]);
+
+  expect(text.splitIntoWords("American\rEnglish")).toEqual(["American", "English"]);
+  expect(text.splitIntoWords("American\nEnglish")).toEqual(["American", "English"]);
+  expect(text.splitIntoWords("American\r\nEnglish")).toEqual(["American", "English"]);
+  expect(text.splitIntoWords("American.English")).toEqual(["American", "English"]);
+  expect(text.splitIntoWords("American,English")).toEqual(["American", "English"]);
+  expect(text.splitIntoWords("American-English")).toEqual(["American-English"]);
+  expect(text.splitIntoWords("American_English")).toEqual(["American_English"]);
 });
 
 test("", () => {

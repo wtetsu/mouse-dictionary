@@ -32,15 +32,10 @@ const mergeArray = (destArray, srcArray) => {
   }
 };
 
-const reCapital = /^[A-Z]$/;
-
-const reIgnores = /(\r\n|\n|\r|,|\.)/gm;
-
-text.splitIntoWords = rawstr => {
+text.splitIntoWords = str => {
   const words = [];
   let startIndex = null;
   let i = 0;
-  const str = rawstr.replace(reIgnores, " ");
   for (;;) {
     const code = str.charCodeAt(i);
     const isEnglishCharacter = consts.targetCharacters[code];
@@ -68,10 +63,6 @@ text.splitIntoWords = rawstr => {
   return words;
 };
 
-text._isStrCapital = str => {
-  return reCapital.test(str);
-};
-
 text._splitString = str => {
   const arr = [];
   let startIndex = 0;
@@ -81,10 +72,11 @@ text._splitString = str => {
     if (i >= str.length) {
       break;
     }
-    const ch = str[i];
-    const isCapital = text._isStrCapital(ch);
+    const chCode = str.charCodeAt(i);
+    const isCapital = chCode >= 65 && chCode <= 90;
     let wordToAdd = null;
-    if (ch === "-" || ch === "_" || ch === "#" || ch === ".") {
+    // #, -, ., _
+    if (chCode === 35 || chCode === 45 || chCode === 46 || chCode === 95) {
       wordToAdd = str.substring(startIndex, i);
       startIndex = i + 1;
     } else if (isCapital && !isLastCapital) {
