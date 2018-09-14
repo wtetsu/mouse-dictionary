@@ -239,11 +239,13 @@ const main = () => {
         case "keep":
           chrome.storage.sync.get([LAST_POSITION_KEY], r => {
             const lastPosition = r[LAST_POSITION_KEY];
-            if (lastPosition.width < 50) {
-              lastPosition.width = 50;
-            }
-            if (lastPosition.height < 50) {
-              lastPosition.height = 50;
+            if (lastPosition) {
+              if (lastPosition.width < 50) {
+                lastPosition.width = 50;
+              }
+              if (lastPosition.height < 50) {
+                lastPosition.height = 50;
+              }
             }
             resolve(lastPosition || {});
           });

@@ -82,11 +82,13 @@ export default class Draggable {
       dom.applyStyles(this.targetElement, this.movingStyles);
       this.startingX = this.parseInt(e.pageX);
       this.startingY = this.parseInt(e.pageY);
+      this.currentWidth = elem.clientWidth;
+      this.currentHeight = elem.clientHeight;
       this.elementX = this.parseInt(this.targetElement.style.left);
       this.elementY = this.parseInt(this.targetElement.style.top);
-      this.currentLeft = null;
-      this.currentTop = null;
     });
+    this.currentLeft = this.parseInt(elem.style.left);
+    this.currentTop = this.parseInt(elem.style.top);
   }
 
   parseInt(str) {
