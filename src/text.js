@@ -106,7 +106,13 @@ text._splitString = str => {
   return arr;
 };
 
-const trailingRules = [[{ search: "s", new: "" }], [{ search: "er", new: "" }], [{ search: "iest", new: "y" }], [{ search: "est", new: "" }], [{ search: "'s", new: "" }]];
+const trailingRules = [
+  [{ search: "s", new: "" }],
+  [{ search: "er", new: "" }],
+  [{ search: "iest", new: "y" }],
+  [{ search: "est", new: "" }],
+  [{ search: "'s", new: "" }]
+];
 
 text.parseString = (sourceStr, ignoreLowerCase) => {
   let result = [];
