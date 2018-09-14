@@ -19,6 +19,5 @@ test("", () => {
   expect(hd).toEqual(null);
 
   hd = parser.flush();
-  expect(hd.head).toEqual("tile");
-  expect(hd.desc).toEqual("{自動} : 《コ》〔＊＊＊＊＊＊〕＊＊＊＊＊＊＊＊\n{他動-1} : ＊＊＊＊");
+  expect(hd).toEqual({ tile: "{自動} : 《コ》〔＊＊＊＊＊＊〕＊＊＊＊＊＊＊＊\n{他動-1} : ＊＊＊＊" });
 });
