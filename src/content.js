@@ -147,11 +147,22 @@ const main = () => {
   let _lastText = null;
   const _shortCache = new ShortCache(100);
 
+  let _selection;
+  document.body.addEventListener("mouseup", () => {
+    _selection = window.getSelection().toString();
+  });
+
   document.body.addEventListener("mousemove", ev => {
-    const textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY);
+    let textAtCursor;
+    if (_selection) {
+      textAtCursor = _selection;
+    } else {
+      textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY);
+    }
     if (!textAtCursor) {
       return;
     }
+
     if (_lastText == textAtCursor) {
       return;
     }
