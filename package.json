@@ -10,7 +10,10 @@
     "lint": "eslint src/*.js",
     "release": "NODE_ENV=production npm run build",
     "test": "jest",
-    "test-watch": "jest --watch"
+    "test-watch": "jest --watch",
+    "build-ff": "webpack --config webpack.config.ff.js",
+    "watch-ff": "webpack -w --config webpack.config.ff.js",
+    "release-ff": "NODE_ENV=production npm run build-ff"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",

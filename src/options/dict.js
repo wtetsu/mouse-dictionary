@@ -2,6 +2,7 @@ import LineReader from "./linereader";
 import EijiroParser from "./eijiroparser";
 import SimpleDictParser from "./simpledictparser";
 import JsonDictParser from "./jsondictparser";
+import env from "../env";
 
 const save = dictData => {
   return new Promise(resolve => {
@@ -52,7 +53,7 @@ const load = async ({ file, encoding, format, event }) => {
             dictData[hd.head] = hd.desc;
             wordCount += 1;
 
-            if (wordCount == 1 || (wordCount >= 1 && wordCount % 100000 === 0)) {
+            if (wordCount == 1 || (wordCount >= 1 && wordCount % env.registerRecordsAtOnce === 0)) {
               ev({ name: "loading", count: wordCount, word: hd });
               let tmp = dictData;
               dictData = {};

@@ -1,3 +1,4 @@
 node_modules/
 __test__/
 webpack.config.js
+webpack.config.ff.js
