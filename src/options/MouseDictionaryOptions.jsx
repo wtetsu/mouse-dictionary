@@ -2,20 +2,25 @@ import React from "react";
 import res from "./resources";
 import SimpleSelect from "./SimpleSelect.jsx";
 
-const Configs = props => {
-  const config = props.config;
-  const contentTemplate = config && config.contentTemplate;
+const UserSettings = props => {
+  const settings = props.settings;
+  if (!settings) {
+    return "<div></div>";
+  }
+  const contentTemplate = (settings && settings.contentTemplate) || "";
   return (
-    <div>
-      <pre>{contentTemplate}</pre>
-      <input defaultValue={contentTemplate} onChange={props.onChange} />
+    <form>
+      <fieldset>
+        <label>背景色</label>
+        <input type="text" defaultValue={settings.backgroundColor} onChange={props.onChange.bind(this, "backgroundColor")} />
+        <label>タイトルバー背景色</label>
+        <input type="text" defaultValue={settings.titlebarBackgroundColor} onChange={props.onChange.bind(this, "titlebarBackgroundColor")} />
 
-      <textarea value={contentTemplate} style={{ width: 800, height: 350 }} onChange={e => props.onChange("contentTemplate", e)} />
-      <textarea value={contentTemplate} style={{ width: 800, height: 350 }} onChange={e => props.onChange("contentTemplate", e)} />
-      <textarea value={contentTemplate} style={{ width: 800, height: 350 }} onChange={e => props.onChange("contentTemplate", e)} />
-      <textarea value={contentTemplate} style={{ width: 800, height: 350 }} onChange={e => props.onChange("contentTemplate", e)} />
-      <textarea value={contentTemplate} style={{ width: 800, height: 350 }} onChange={e => props.onChange("contentTemplate", e)} />
-    </div>
+        <pre>{contentTemplate}</pre>
+
+        <textarea value={contentTemplate} style={{ width: 800, height: 350 }} onChange={e => props.onChange("contentTemplate", e)} />
+      </fieldset>
+    </form>
   );
 };
 
@@ -49,7 +54,15 @@ const MouseDictionaryOptions = props => {
       <div>{props.progress}</div>
       <div style={{ fontSize: "75%" }}>{props.dictDataUsage}</div>
 
-      <Configs config={props.config} onChange={props.onChange} />
+      <hr />
+
+      <label>お試し用テキスト</label>
+      <input type="text" value={props.trialText} onChange={e => props.onChange("trialText", e)} />
+      <button type="button" onClick={props.doUpdateTrialWindow}>
+        お試し表示の更新
+      </button>
+
+      <UserSettings settings={props.settings} onChange={props.onChangeSettings} />
     </div>
   );
 };

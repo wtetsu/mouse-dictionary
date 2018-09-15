@@ -2,8 +2,10 @@ export default {
   shortWordLength: 2,
   cutShortWordDescription: 30,
   lookupWithCapitalized: true,
-  initialPosition: "keep",
-  //initialSize: "keep",
+  initialPosition: "right",
+
+  titlebarBackgroundColor: "#EBEBEB",
+  backgroundColor: "#ffffff",
 
   replaceRules: [
     {
@@ -50,7 +52,7 @@ export default {
                                display:block;
                                font-size:small;
                                cursor:pointer;
-                               background-color:#EBEBEB;">Mouse Dictionary</div>`,
+                               background-color:{{titlebarBackgroundColor}};">Mouse Dictionary</div>`,
 
   contentWrapperTemplate: `<div style="text-align:left;"></div>`,
 
@@ -61,7 +63,7 @@ export default {
                                resize: both;
                                overflow: hidden;
                                top: 5px;
-                               background-color: #ffffff;
+                               background-color: {{backgroundColor}};
                                z-index: 2147483647;
                                border: 1px solid #A0A0A0;
   "></div>`,

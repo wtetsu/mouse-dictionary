@@ -7,6 +7,8 @@ import ShortCache from "./shortcache";
 import atcursor from "./atcursor";
 import dom from "./dom";
 import defaultSettings from "./defaultsettings";
+import env from "./env";
+import mdwindow from "./mdwindow";
 
 const initializeSettings = () => {
   const settings = {};
@@ -42,6 +44,9 @@ const initializeSettings = () => {
   }
   if (!settings.initialPosition) {
     settings.initialPosition = defaultSettings.initialPosition;
+    if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
+      settings.initialPosition = "right";
+    }
   }
   if (!settings.lookupWithCapitalized) {
     settings.lookupWithCapitalized = defaultSettings.lookupWithCapitalized;
@@ -77,8 +82,9 @@ const main = () => {
     return;
   }
 
+  // Since contentTemplate is executed fairly frequently,
+  // it's compiled first and should be used the result repeatedly.
   const _contentTemplate = Hogan.compile(_settings.contentTemplate);
-  const _headerTemplate = Hogan.compile(_settings.headerTemplate);
 
   const consultAndCreateContentHtml = words => {
     return new Promise(resolve => {
@@ -195,36 +201,8 @@ const main = () => {
       _lastText = textToLookup;
     });
   };
-
-  const createDialogElement = () => {
-    const dialog = dom.create(_settings.dialogTemplate);
-    dom.applyStyles(dialog, defaultSettings.normalDialogStyles);
-    return dialog;
-  };
-
-  const createHeaderElement = () => {
-    const html = _headerTemplate.render({});
-    return dom.create(html);
-  };
-
-  const createContentWrapperElement = () => {
-    const dialog = dom.create(_settings.contentWrapperTemplate);
-    return dialog;
-  };
-
-  const createArea = () => {
-    const dialog = createDialogElement();
-    const header = createHeaderElement();
-    const content = createContentWrapperElement();
-    dialog.appendChild(header);
-    dialog.appendChild(content);
-
-    dialog.id = DIALOG_ID;
-
-    return { dialog, header, content };
-  };
-
-  _area = createArea();
+  _area = mdwindow.create(_settings);
+  _area.dialog.id = DIALOG_ID;
 
   const LAST_POSITION_KEY = "**** last_position ****";
 
@@ -236,22 +214,35 @@ const main = () => {
           left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
           resolve({ left });
           break;
+        case "left":
+          left = 5;
+          resolve({ left });
+          break;
         case "keep":
-          chrome.storage.sync.get([LAST_POSITION_KEY], r => {
-            const lastPosition = r[LAST_POSITION_KEY];
-            if (lastPosition) {
-              if (lastPosition.width < 50) {
-                lastPosition.width = 50;
+          chrome.storage.sync.get(
+            [LAST_POSITION_KEY],
+            r => {
+              // onGot
+              const lastPosition = r[LAST_POSITION_KEY];
+              if (lastPosition) {
+                if (lastPosition.width < 50) {
+                  lastPosition.width = 50;
+                }
+                if (lastPosition.height < 50) {
+                  lastPosition.height = 50;
+                }
               }
-              if (lastPosition.height < 50) {
-                lastPosition.height = 50;
-              }
+              resolve(lastPosition || {});
+            },
+            () => {
+              // onError: same as "right"
+              left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
+              resolve({ left });
             }
-            resolve(lastPosition || {});
-          });
+          );
           break;
         default:
-          resolve({ left });
+          resolve({});
           left = 5;
       }
     });
@@ -277,15 +268,15 @@ const main = () => {
     dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
 
     const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
-    draggable.onchange = e => {
-      const positionData = {};
-      positionData[LAST_POSITION_KEY] = e;
-      if (_settings.initialPosition === "keep") {
-        chrome.storage.sync.set(positionData, () => {
+    if (!_settings.disableKeepingWindowStatus) {
+      draggable.onchange = e => {
+        const positionData = {};
+        positionData[LAST_POSITION_KEY] = JSON.stringify(e);
+        chrome.storage.local.set(positionData, () => {
           // saved
         });
-      }
-    };
+      };
+    }
     draggable.add(_area.dialog, _area.header);
   });
 };

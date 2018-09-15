@@ -2,7 +2,7 @@
   "name": "Mouse Dictionary",
   "description": "Mouse Dictionary",
   "author": "wtetsu",
-  "version": "1.0.6beta3",
+  "version": "1.0.6",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
@@ -22,5 +22,6 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "web_accessible_resources": ["data/*.json"]
+  "web_accessible_resources": ["data/*.json"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

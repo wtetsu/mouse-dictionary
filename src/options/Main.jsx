@@ -1,11 +1,13 @@
 import "babel-polyfill";
 import React from "react";
 import { render } from "react-dom";
-import MouseDictionaryOptions from "./MouseDictionaryOptions";
 import swal from "sweetalert";
+import Hogan from "hogan.js";
+import MouseDictionaryOptions from "./MouseDictionaryOptions";
 import res from "./resources";
 import dict from "./dict";
 import defaultSettings from "../defaultsettings";
+import mdwindow from "../mdwindow";
 
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";
@@ -19,11 +21,14 @@ class Main extends React.Component {
       dictDataUsage: "-",
       busy: false,
       progress: "",
-      config: null
+      settings: null,
+      trialText: "cloud nine"
     };
     this.doChangeState = this.doChangeState.bind(this);
+    this.doChangeSettings = this.doChangeSettings.bind(this);
     this.doLoad = this.doLoad.bind(this);
     this.doClear = this.doClear.bind(this);
+    this.doUpdateTrialWindow = this.doUpdateTrialWindow.bind(this);
   }
 
   render() {
@@ -34,12 +39,15 @@ class Main extends React.Component {
         encoding={state.encoding}
         format={state.format}
         onChange={this.doChangeState}
+        onChangeSettings={this.doChangeSettings}
         doLoad={this.doLoad}
         doClear={this.doClear}
+        doUpdateTrialWindow={this.doUpdateTrialWindow}
         dictDataUsage={state.dictDataUsage}
         busy={state.busy}
         progress={state.progress}
-        config={state.config}
+        settings={state.settings}
+        trialText={state.trialText}
       />
     );
   }
@@ -47,19 +55,29 @@ class Main extends React.Component {
   componentDidMount() {
     this.updateDictDataUsage();
 
-    chrome.storage.local.get([KEY_LOADED, KEY_USER_CONFIG], r => {
-      if (r[KEY_LOADED]) {
-        let config = this.tryToParseJson(r[KEY_USER_CONFIG]);
-        if (!config) {
-          config = {
-            contentTemplate: defaultSettings.contentTemplate
-          };
-        }
-        this.setState({ config });
-      } else {
+    chrome.storage.local.get([KEY_LOADED], r => {
+      if (!r[KEY_LOADED]) {
         this.registerDefaultDict();
       }
     });
+
+    chrome.storage.sync.get([KEY_USER_CONFIG], r => {
+      let settings = this.tryToParseJson(r[KEY_USER_CONFIG]);
+      if (!settings) {
+        settings = {};
+      }
+      for (let key of Object.keys(defaultSettings)) {
+        if (!settings[key]) {
+          settings[key] = defaultSettings[key];
+        }
+      }
+
+      this.setState({ settings });
+    });
+
+    const headerTemplate = Hogan.compile(defaultSettings.headerTemplate);
+    this.trialWindow = mdwindow.create(defaultSettings, headerTemplate);
+    document.body.appendChild(this.trialWindow.dialog);
   }
 
   tryToParseJson(json) {
@@ -118,11 +136,22 @@ class Main extends React.Component {
       if (name !== "contentTemplate") {
         newState[name] = e.target.value;
       } else {
-        newState.config = {
+        newState.settings = {
           contentTemplate: e.target.value
         };
       }
       this.setState(newState);
+    }
+  }
+
+  doChangeSettings(name, e) {
+    if (name) {
+      const newSettings = Object.assign({}, this.state.settings);
+      newSettings[name] = e.target.value;
+      this.setState({
+        settings: newSettings
+      });
+      this.updateTrialWindow(newSettings);
     }
   }
 
@@ -193,6 +222,21 @@ class Main extends React.Component {
         });
       }
     });
+  }
+
+  doUpdateTrialWindow() {
+    this.updateTrialWindow(this.state.settings);
+  }
+
+  updateTrialWindow(settings) {
+    if (this.trialWindow && this.trialWindow.dialog) {
+      document.body.removeChild(this.trialWindow.dialog);
+      this.trialWindow = null;
+    }
+    if (settings) {
+      this.trialWindow = mdwindow.create(settings);
+      document.body.appendChild(this.trialWindow.dialog);
+    }
   }
 }
 
