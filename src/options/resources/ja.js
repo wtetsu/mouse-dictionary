@@ -14,5 +14,9 @@ export default {
   formatEijiroText: "英辞郎テキストデータ(■見出し)",
   formatTsv: "TSV(タブ区切り)",
   formatPdicOneLine: "PDIC1行",
-  formatJson: "JSON"
+  formatJson: "JSON",
+
+  positionLeft: "左",
+  positionRight: "右",
+  positionKeep: "前回位置を記憶"
 };

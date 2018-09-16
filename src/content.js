@@ -1,5 +1,3 @@
-import Hogan from "hogan.js";
-
 import text from "./text";
 import res from "./resources";
 import Draggable from "./draggable";
@@ -10,54 +8,43 @@ import defaultSettings from "./defaultsettings";
 import env from "./env";
 import mdwindow from "./mdwindow";
 
-const initializeSettings = () => {
-  const settings = {};
-  if (!(settings.shortWordLength >= 0)) {
-    settings.shortWordLength = defaultSettings.shortWordLength;
+const KEY_USER_CONFIG = "**** config ****";
+
+const loadUserSettings = async () => {
+  return new Promise(resolve => {
+    chrome.storage.sync.get([KEY_USER_CONFIG], d => {
+      const userSettings = JSON.parse(d[KEY_USER_CONFIG]);
+      resolve(userSettings);
+    });
+  });
+};
+
+const processSettings = settings => {
+  const jsonItems = ["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"];
+  for (let i = 0; i < jsonItems.length; i++) {
+    const item = jsonItems[i];
+    settings[item] = JSON.parse(settings[item]);
   }
-  if (!(settings.cutShortWordDescription >= 0)) {
-    settings.cutShortWordDescription = defaultSettings.cutShortWordDescription;
+
+  if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
+    settings.initialPosition = "right";
   }
-  if (!settings.replaceRules) {
-    settings.replaceRules = defaultSettings.replaceRules;
-  }
-  if (!settings.dialogTemplate) {
-    settings.dialogTemplate = defaultSettings.dialogTemplate;
-  }
-  if (!settings.headerTemplate) {
-    settings.headerTemplate = defaultSettings.headerTemplate;
-  }
-  if (!settings.contentWrapperTemplate) {
-    settings.contentWrapperTemplate = defaultSettings.contentWrapperTemplate;
-  }
-  if (!settings.contentTemplate) {
-    settings.contentTemplate = defaultSettings.contentTemplate;
-  }
-  if (!settings.normalDialogStyles) {
-    settings.normalDialogStyles = defaultSettings.normalDialogStyles;
-  }
-  if (!settings.movingDialogStyles) {
-    settings.movingDialogStyles = defaultSettings.movingDialogStyles;
-  }
-  if (!settings.hiddenDialogStyles) {
-    settings.hiddenDialogStyles = defaultSettings.hiddenDialogStyles;
-  }
-  if (!settings.initialPosition) {
-    settings.initialPosition = defaultSettings.initialPosition;
-    if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
-      settings.initialPosition = "right";
-    }
-  }
-  if (!settings.lookupWithCapitalized) {
-    settings.lookupWithCapitalized = defaultSettings.lookupWithCapitalized;
-  }
-  if (!settings.initialSize) {
-    settings.initialSize = defaultSettings.initialSize;
+};
+
+const initializeSettings = async () => {
+  const settings = Object.assign({}, defaultSettings);
+  processSettings(settings);
+
+  const userSettings = await loadUserSettings();
+  processSettings(userSettings);
+
+  for (const item of Object.keys(userSettings)) {
+    settings[item] = userSettings[item];
   }
   return settings;
 };
 
-const main = () => {
+const main = async () => {
   // Pages which have frames are not supported.
   const frames = document.getElementsByTagName("frame");
   if (frames && frames.length >= 1) {
@@ -68,7 +55,7 @@ const main = () => {
   const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
   let _area = document.getElementById(DIALOG_ID);
 
-  const _settings = initializeSettings();
+  const _settings = await initializeSettings();
 
   if (_area) {
     const isHidden = _area.getAttribute("data-mouse-dictionary-hidden");
@@ -82,78 +69,14 @@ const main = () => {
     return;
   }
 
-  // Since contentTemplate is executed fairly frequently,
-  // it's compiled first and should be used the result repeatedly.
-  const _contentTemplate = Hogan.compile(_settings.contentTemplate);
-
-  const consultAndCreateContentHtml = words => {
-    return new Promise(resolve => {
-      chrome.storage.local.get(words, meanings => {
-        const contentHtml = createContentHtml(words, meanings);
-        resolve(contentHtml);
-      });
-    });
-  };
-
-  const createContentHtml = (words, meanings) => {
-    const data = createContentTemplateData(words, meanings);
-    const html = _contentTemplate.render({ words: data });
-    return html;
-  };
-
-  const createContentTemplateData = (words, meanings) => {
-    const data = [];
-
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      const desc = meanings[word];
-      if (desc) {
-        data.push({
-          head: escapeHtml(word),
-          desc: createDescriptionHtml(desc),
-          isShort: word.length <= _settings.shortWordLength,
-          shortText: desc.substring(0, _settings.cutShortWordDescription)
-        });
-      }
-    }
-    for (let i = 0; i < data.length; i++) {
-      const d = data[i];
-      d.isFirst = i == 0;
-      d.isLast = i == data.length - 1;
-    }
-
-    return data;
-  };
-
-  const replaceRuleSettings = _settings.replaceRules;
-
-  const replaceRule = [];
-  for (let i = 0; i < replaceRuleSettings.length; i++) {
-    const rule = replaceRuleSettings[i];
-    if (rule.search) {
-      replaceRule.push({
-        search: new RegExp(rule.search, "g"),
-        replace: rule.replace
-      });
-    }
+  // Compile templates, regular expressions so that it works fast
+  let _contentGenerator;
+  try {
+    _contentGenerator = new mdwindow.ContentGenerator(_settings);
+  } catch (e) {
+    _contentGenerator = null;
+    console.error(e);
   }
-
-  const createDescriptionHtml = sourceText => {
-    let result = sourceText;
-    for (let i = 0; i < replaceRule.length; i++) {
-      const rule = replaceRule[i];
-      result = result.replace(rule.search, rule.replace);
-    }
-    return result;
-  };
-
-  const escapeHtml = str => {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  };
 
   let _lastText = null;
   const _shortCache = new ShortCache(100);
@@ -162,10 +85,13 @@ const main = () => {
 
   document.body.addEventListener("mouseup", () => {
     _selection = window.getSelection().toString();
-    lookup(_selection);
+    parseTextAndLookup(_selection);
   });
 
+  let _start;
   document.body.addEventListener("mousemove", ev => {
+    _start = new Date().getTime();
+
     let textAtCursor;
     if (_selection) {
       textAtCursor = _selection;
@@ -176,10 +102,10 @@ const main = () => {
       return;
     }
 
-    lookup(textAtCursor);
+    parseTextAndLookup(textAtCursor);
   });
 
-  const lookup = textToLookup => {
+  const parseTextAndLookup = textToLookup => {
     if (!textToLookup || _lastText == textToLookup) {
       return;
     }
@@ -193,14 +119,24 @@ const main = () => {
 
     const lookupWords = text.createLookupWords(textToLookup, _settings.lookupWithCapitalized);
 
-    consultAndCreateContentHtml(lookupWords).then(contentHtml => {
-      const newDom = dom.create(contentHtml);
-      _area.content.innerHTML = "";
-      _area.content.appendChild(newDom);
+    return lookup(lookupWords).then(newDom => {
       _shortCache.put(textToLookup, newDom);
       _lastText = textToLookup;
     });
   };
+
+  const lookup = lookupWords => {
+    return _contentGenerator.generate(lookupWords).then(contentHtml => {
+      const newDom = dom.create(contentHtml);
+      _area.content.innerHTML = "";
+      _area.content.appendChild(newDom);
+
+      //const t = new Date().getTime() - _start;
+      //console.info(`${textToLookup}(${t}ms)`);
+      return newDom;
+    });
+  };
+
   _area = mdwindow.create(_settings);
   _area.dialog.id = DIALOG_ID;
 
@@ -219,27 +155,19 @@ const main = () => {
           resolve({ left });
           break;
         case "keep":
-          chrome.storage.sync.get(
-            [LAST_POSITION_KEY],
-            r => {
-              // onGot
-              const lastPosition = r[LAST_POSITION_KEY];
-              if (lastPosition) {
-                if (lastPosition.width < 50) {
-                  lastPosition.width = 50;
-                }
-                if (lastPosition.height < 50) {
-                  lastPosition.height = 50;
-                }
+          chrome.storage.sync.get([LAST_POSITION_KEY], r => {
+            // onGot
+            const lastPosition = JSON.parse(r[LAST_POSITION_KEY]);
+            if (lastPosition) {
+              if (lastPosition.width < 50) {
+                lastPosition.width = 50;
               }
-              resolve(lastPosition || {});
-            },
-            () => {
-              // onError: same as "right"
-              left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
-              resolve({ left });
+              if (lastPosition.height < 50) {
+                lastPosition.height = 50;
+              }
             }
-          );
+            resolve(lastPosition || {});
+          });
           break;
         default:
           resolve({});
@@ -272,7 +200,7 @@ const main = () => {
       draggable.onchange = e => {
         const positionData = {};
         positionData[LAST_POSITION_KEY] = JSON.stringify(e);
-        chrome.storage.local.set(positionData, () => {
+        chrome.storage.sync.set(positionData, () => {
           // saved
         });
       };
