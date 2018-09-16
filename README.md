@@ -3,11 +3,15 @@
 
 # Mouse Dictionary
 
-A dictionary for Google Chrome.
+A dictionary for Google Chrome and Firefox.
 
 - Blazing fast
 - Can show collocations
 - Divide a string like "camelCase" into "camel" and "case" and look up them at once
+
+
+- Chrome: https://chrome.google.com/webstore/detail/mouse-dictionary/dnclbikcihnpjohihfcmmldgkjnebgnj
+- Firefox: https://addons.mozilla.org/ja/firefox/addon/mousedictionary/
 
 ## Screenshots
 
