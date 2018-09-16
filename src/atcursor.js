@@ -47,7 +47,7 @@ const searchEndIndex = (text, index) => {
         spaceCount += 1;
       }
       theLastIsSpace = true;
-      if (spaceCount >= 4) {
+      if (spaceCount >= 5) {
         endIndex = i;
         break;
       }

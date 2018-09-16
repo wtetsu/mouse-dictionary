@@ -20,6 +20,7 @@
     "copy-webpack-plugin": "^4.5.2",
     "hogan.js": "^3.0.2",
     "react": "^16.5.0",
+    "react-color": "^2.14.1",
     "react-dom": "^16.5.0",
     "sprintf-js": "^1.1.1",
     "sweetalert": "^2.1.0"

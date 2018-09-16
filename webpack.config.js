@@ -55,6 +55,7 @@ module.exports = {
     })
   ],
   devtool: process.env.NODE_ENV === "production" ? false : "cheap-module-source-map",
+
   performance: {
     maxEntrypointSize: 500000,
     maxAssetSize: 3000000
