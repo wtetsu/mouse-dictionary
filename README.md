@@ -9,6 +9,7 @@ A dictionary for Google Chrome and Firefox.
 - Can show collocations
 - Divide a string like "camelCase" into "camel" and "case" and look up them at once
 
+Download it.
 
 - Chrome: https://chrome.google.com/webstore/detail/mouse-dictionary/dnclbikcihnpjohihfcmmldgkjnebgnj
 - Firefox: https://addons.mozilla.org/ja/firefox/addon/mousedictionary/
