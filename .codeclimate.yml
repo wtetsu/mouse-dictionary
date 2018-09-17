@@ -3,11 +3,14 @@ checks:
   method-lines:
     enabled: true
     config:
-      threshold: 100
+      threshold: 150
   method-complexity:
     enabled: true
     config:
-      threshold: 20
+      threshold: 25
+  file-lines:
+    config:
+      threshold: 250
 plugins:
   eslint:
     enabled: true
@@ -17,8 +20,8 @@ plugins:
     enabled: true
     config:
       languages:
-        - javascript
+        javascript:
+          count_threshold: 3
 exclude_paths:
   - "__test__/"
-  - "dist/data/initial_dic.json"
-  - "dist/options/milligram.min.css"
+  - "static/data/"
