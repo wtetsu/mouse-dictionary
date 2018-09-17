@@ -85,99 +85,126 @@ const UserSettings = props => {
     );
   });
 
+  const settings1 = (
+    <fieldset>
+      <br />
+      <br />
+      <br />
+      <h2>各種設定</h2>
+
+      <input type="button" value="保存する" onClick={props.onClickSaveSettings.bind(this)} />
+      <span> </span>
+      <input type="button" value="初期状態に戻す" onClick={props.onClickBackToDefaultSettings.bind(this)} />
+
+      <hr />
+
+      <label>お試し用テキスト</label>
+      <input type="text" value={props.trialText} onChange={props.onChangeState.bind(this, "trialText")} />
+
+      <label>短い単語の切り詰め</label>
+      <input type="number" value={settings.shortWordLength} onChange={props.onChange.bind(this, "shortWordLength")} style={{ width: 60 }} />
+      <span> 文字以内の短い単語は、説明を </span>
+      <input
+        type="number"
+        value={settings.cutShortWordDescription}
+        onChange={props.onChange.bind(this, "cutShortWordDescription")}
+        style={{ width: 60 }}
+      />
+      <span> 文字に切り詰める</span>
+      <label>初期サイズ</label>
+      <span>幅:</span>
+      <input type="number" value={settings.width} onChange={props.onChange.bind(this, "width")} style={{ width: 90 }} />
+      <span> 高さ:</span>
+      <input type="number" value={settings.height} onChange={props.onChange.bind(this, "height")} style={{ width: 90 }} />
+      <label>初期表示位置</label>
+      <select value={settings.initialPosition} onChange={props.onChange.bind(this, "initialPosition")} style={{ width: 250 }}>
+        {positionOptions}
+      </select>
+      <hr />
+      <h3>サイズや色等</h3>
+      <label>見出し文字サイズ</label>
+      <select value={settings.headFontSize} onChange={props.onChange.bind(this, "headFontSize")} style={{ width: 250 }}>
+        {fontSizeOptions}
+      </select>
+      <label>説明文字サイズ</label>
+      <select value={settings.descFontSize} onChange={props.onChange.bind(this, "descFontSize")} style={{ width: 250 }}>
+        {fontSizeOptions}
+      </select>
+      <label>背景色</label>
+      <TwitterPicker
+        color={settings.backgroundColor}
+        colors={bgColors}
+        onChangeComplete={props.onChangeColorSettings.bind(this, "backgroundColor")}
+      />
+      <label>タイトルバー色</label>
+      <TwitterPicker
+        color={settings.titlebarBackgroundColor}
+        colors={titleColors}
+        onChangeComplete={props.onChangeColorSettings.bind(this, "titlebarBackgroundColor")}
+      />
+      <label>文字色(見出し)</label>
+      <TwitterPicker color={settings.headFontColor} colors={headColors} onChangeComplete={props.onChangeColorSettings.bind(this, "headFontColor")} />
+      <label>文字色(説明)</label>
+      <TwitterPicker color={settings.descFontColor} colors={descColors} onChangeComplete={props.onChangeColorSettings.bind(this, "descFontColor")} />
+
+      <hr />
+      {props.settings2Opened ? (
+        settings2
+      ) : (
+        <div>
+          <img src="settings2.png" style={{ verticalAlign: "middle" }} />
+          <a onClick={props.onClickOpenSettings2} style={{ cursor: "pointer" }}>
+            上級者設定を開く
+          </a>
+        </div>
+      )}
+    </fieldset>
+  );
+
+  const settings2 = (
+    <fieldset>
+      <h2>上級者設定</h2>
+      <hr />
+      <h3>HTMLテンプレート</h3>
+      <label>Mouse Dictionaryウィンドウ全体</label>
+      <textarea value={dialogTemplate} style={{ width: 800, height: 200 }} onChange={e => props.onChange("dialogTemplate", e)} />
+      <label>タイトルバー</label>
+      <textarea value={titlebarTemplate} style={{ width: 800, height: 100 }} onChange={e => props.onChange("titlebarTemplate", e)} />
+      <label>説明全体を囲う領域</label>
+      <textarea value={contentWrapperTemplate} style={{ width: 800, height: 30 }} onChange={e => props.onChange("contentWrapperTemplate", e)} />
+      <label>説明テキスト</label>
+      <textarea value={contentTemplate} style={{ width: 800, height: 350 }} onChange={e => props.onChange("contentTemplate", e)} />
+
+      <h3>状態ごとのスタイル</h3>
+      <label>スタイル:アクティブ</label>
+      <textarea value={normalDialogStyles} style={{ width: 800, height: 90 }} onChange={e => props.onChange("normalDialogStyles", e)} />
+      <label>スタイル:移動中</label>
+      <textarea value={movingDialogStyles} style={{ width: 800, height: 90 }} onChange={e => props.onChange("movingDialogStyles", e)} />
+      <label>スタイル:非アクティブ</label>
+      <textarea value={hiddenDialogStyles} style={{ width: 800, height: 90 }} onChange={e => props.onChange("hiddenDialogStyles", e)} />
+      <hr />
+
+      <h3>置換ルール</h3>
+      {replaceRulesList}
+      <button type="button" onClick={props.onClickAddReplaceRule}>
+        追加
+      </button>
+    </fieldset>
+  );
+
   return (
     <form>
-      <fieldset>
-        <h2>各種設定</h2>
-
-        <input type="button" value="保存する" onClick={props.onClickSaveSettings.bind(this)} />
-        <span> </span>
-        <input type="button" value="初期状態に戻す" onClick={props.onClickBackToDefaultSettings.bind(this)} />
-
-        <hr />
-
-        <label>お試し用テキスト</label>
-        <input type="text" value={props.trialText} onChange={props.onChangeState.bind(this, "trialText")} />
-
-        <label>短い単語の切り詰め</label>
-        <input type="number" value={settings.shortWordLength} onChange={props.onChange.bind(this, "shortWordLength")} style={{ width: 60 }} />
-        <span> 文字以内の短い単語は、説明を </span>
-        <input
-          type="number"
-          value={settings.cutShortWordDescription}
-          onChange={props.onChange.bind(this, "cutShortWordDescription")}
-          style={{ width: 60 }}
-        />
-        <span> 文字に切り詰める</span>
-        <label>初期サイズ</label>
-        <span>幅:</span>
-        <input type="number" value={settings.width} onChange={props.onChange.bind(this, "width")} style={{ width: 90 }} />
-        <span> 高さ:</span>
-        <input type="number" value={settings.height} onChange={props.onChange.bind(this, "height")} style={{ width: 90 }} />
-        <label>初期表示位置</label>
-        <select value={settings.initialPosition} onChange={props.onChange.bind(this, "initialPosition")} style={{ width: 250 }}>
-          {positionOptions}
-        </select>
-        <hr />
-        <h2>サイズや色等</h2>
-        <label>見出し文字サイズ</label>
-        <select value={settings.headFontSize} onChange={props.onChange.bind(this, "headFontSize")} style={{ width: 250 }}>
-          {fontSizeOptions}
-        </select>
-        <label>説明文字サイズ</label>
-        <select value={settings.descFontSize} onChange={props.onChange.bind(this, "descFontSize")} style={{ width: 250 }}>
-          {fontSizeOptions}
-        </select>
-        <label>背景色</label>
-        <TwitterPicker
-          color={settings.backgroundColor}
-          colors={bgColors}
-          onChangeComplete={props.onChangeColorSettings.bind(this, "backgroundColor")}
-        />
-        <label>タイトルバー色</label>
-        <TwitterPicker
-          color={settings.titlebarBackgroundColor}
-          colors={titleColors}
-          onChangeComplete={props.onChangeColorSettings.bind(this, "titlebarBackgroundColor")}
-        />
-        <label>文字色(見出し)</label>
-        <TwitterPicker
-          color={settings.headFontColor}
-          colors={headColors}
-          onChangeComplete={props.onChangeColorSettings.bind(this, "headFontColor")}
-        />
-        <label>文字色(説明)</label>
-        <TwitterPicker
-          color={settings.descFontColor}
-          colors={descColors}
-          onChangeComplete={props.onChangeColorSettings.bind(this, "descFontColor")}
-        />
-        <hr />
-        <h2>HTMLテンプレート</h2>
-        <label>Mouse Dictionaryウィンドウ全体</label>
-        <textarea value={dialogTemplate} style={{ width: 800, height: 200 }} onChange={e => props.onChange("dialogTemplate", e)} />
-        <label>タイトルバー</label>
-        <textarea value={titlebarTemplate} style={{ width: 800, height: 100 }} onChange={e => props.onChange("titlebarTemplate", e)} />
-        <label>説明全体を囲う領域</label>
-        <textarea value={contentWrapperTemplate} style={{ width: 800, height: 30 }} onChange={e => props.onChange("contentWrapperTemplate", e)} />
-        <label>説明テキスト</label>
-        <textarea value={contentTemplate} style={{ width: 800, height: 350 }} onChange={e => props.onChange("contentTemplate", e)} />
-
-        <h2>状態ごとのスタイル</h2>
-        <label>スタイル:アクティブ</label>
-        <textarea value={normalDialogStyles} style={{ width: 800, height: 90 }} onChange={e => props.onChange("normalDialogStyles", e)} />
-        <label>スタイル:移動中</label>
-        <textarea value={movingDialogStyles} style={{ width: 800, height: 90 }} onChange={e => props.onChange("movingDialogStyles", e)} />
-        <label>スタイル:非アクティブ</label>
-        <textarea value={hiddenDialogStyles} style={{ width: 800, height: 90 }} onChange={e => props.onChange("hiddenDialogStyles", e)} />
-        <hr />
-
-        <h2>置換ルール</h2>
-        {replaceRulesList}
-        <button type="button" onClick={props.onClickAddReplaceRule}>
-          追加
-        </button>
-      </fieldset>
+      {props.settings1Opened ? (
+        settings1
+      ) : (
+        <div>
+          <img src="settings1.png" style={{ verticalAlign: "middle" }} />
+          <a onClick={props.onClickOpenSettings1} style={{ cursor: "pointer" }}>
+            設定を開く
+          </a>
+        </div>
+      )}
+      {props.settings2Opened && settings2}
     </form>
   );
 };
@@ -196,22 +223,16 @@ const MouseDictionaryOptions = props => {
     <div>
       <label>{res("dictDataEncoding")}</label>
       <SimpleSelect name="encoding" value={props.encoding} options={ENCODINGS} onChange={props.onChange} />
-
       <label>{res("dictDataFormat")}</label>
       <SimpleSelect name="format" value={props.format} options={FORMATS} onChange={props.onChange} />
-
       <label>{res("readDictData")}</label>
-
       <input type="file" id="dictdata" />
-
       <br />
       <input type="button" value="load" style={{ marginRight: 5 }} onClick={props.doLoad} disabled={props.busy ? "disabled" : null} />
       <input type="button" value="clear" style={{ marginRight: 5 }} onClick={props.doClear} disabled={props.busy ? "disabled" : null} />
       <img src="loading.gif" width="32" height="32" style={{ verticalAlign: "middle", display: props.busy ? "inline" : "none" }} />
-
       <div>{props.progress}</div>
       <div style={{ fontSize: "75%" }}>{props.dictDataUsage}</div>
-
       <hr />
 
       <UserSettings
@@ -224,6 +245,10 @@ const MouseDictionaryOptions = props => {
         onChangeReplaceRule={props.onChangeReplaceRule}
         onClickSaveSettings={props.onClickSaveSettings}
         onClickBackToDefaultSettings={props.onClickBackToDefaultSettings}
+        onClickOpenSettings1={props.onClickOpenSettings1}
+        onClickOpenSettings2={props.onClickOpenSettings2}
+        settings1Opened={props.settings1Opened}
+        settings2Opened={props.settings2Opened}
       />
     </div>
   );

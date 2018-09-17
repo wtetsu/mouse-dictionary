@@ -88,10 +88,7 @@ const main = async () => {
     parseTextAndLookup(_selection);
   });
 
-  let _start;
   document.body.addEventListener("mousemove", ev => {
-    _start = new Date().getTime();
-
     let textAtCursor;
     if (_selection) {
       textAtCursor = _selection;
@@ -131,8 +128,6 @@ const main = async () => {
       _area.content.innerHTML = "";
       _area.content.appendChild(newDom);
 
-      //const t = new Date().getTime() - _start;
-      //console.info(`${textToLookup}(${t}ms)`);
       return newDom;
     });
   };

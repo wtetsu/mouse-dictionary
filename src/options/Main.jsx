@@ -23,8 +23,11 @@ class Main extends React.Component {
       busy: false,
       progress: "",
       settings: null,
-      trialText: "rained cats and dogs"
+      trialText: "rained cats and dogs",
+      settings1Opened: false,
+      settings2Opened: false
     };
+
     this.doChangeState = this.doChangeState.bind(this);
     this.doChangeSettings = this.doChangeSettings.bind(this);
     this.doChangeColorSettings = this.doChangeColorSettings.bind(this);
@@ -37,6 +40,9 @@ class Main extends React.Component {
     this.doBackToDefaultSettings = this.doBackToDefaultSettings.bind(this);
 
     this.doAddReplaceRule = this.doAddReplaceRule.bind(this);
+
+    this.doOpenSettings1 = this.doOpenSettings1.bind(this);
+    this.doOpenSettings2 = this.doOpenSettings2.bind(this);
   }
 
   render() {
@@ -53,6 +59,10 @@ class Main extends React.Component {
         onClickAddReplaceRule={this.doAddReplaceRule}
         onClickSaveSettings={this.doSaveSettings}
         onClickBackToDefaultSettings={this.doBackToDefaultSettings}
+        onClickOpenSettings1={this.doOpenSettings1}
+        onClickOpenSettings2={this.doOpenSettings2}
+        settings1Opened={state.settings1Opened}
+        settings2Opened={state.settings2Opened}
         doLoad={this.doLoad}
         doClear={this.doClear}
         dictDataUsage={state.dictDataUsage}
@@ -86,10 +96,6 @@ class Main extends React.Component {
 
       this.setState({ settings });
       this.contentGenerator = new mdwindow.ContentGenerator(settings);
-
-      //this.trialWindow = mdwindow.create(defaultSettings);
-      //document.body.appendChild(this.trialWindow.dialog);
-      this.updateTrialWindow(settings);
 
       setInterval(() => {
         if (!this.newSettingsTime) {
@@ -367,6 +373,20 @@ class Main extends React.Component {
     const settings = Object.assign({}, defaultSettings);
     this.setState({ settings });
     this.updateTrialWindow(settings);
+  }
+
+  doOpenSettings1() {
+    this.updateTrialWindow(this.state.settings);
+
+    this.setState({
+      settings1Opened: true
+    });
+  }
+
+  doOpenSettings2() {
+    this.setState({
+      settings2Opened: true
+    });
   }
 }
 
