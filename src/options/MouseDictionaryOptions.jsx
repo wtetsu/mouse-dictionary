@@ -91,16 +91,12 @@ const UserSettings = props => {
       <br />
       <br />
       <h2>各種設定</h2>
-
       <input type="button" value="保存する" onClick={props.onClickSaveSettings.bind(this)} />
       <span> </span>
       <input type="button" value="初期状態に戻す" onClick={props.onClickBackToDefaultSettings.bind(this)} />
-
       <hr />
-
       <label>お試し用テキスト</label>
       <input type="text" value={props.trialText} onChange={props.onChangeState.bind(this, "trialText")} />
-
       <label>短い単語の切り詰め</label>
       <input type="number" value={settings.shortWordLength} onChange={props.onChange.bind(this, "shortWordLength")} style={{ width: 60 }} />
       <span> 文字以内の短い単語は、説明を </span>
@@ -146,7 +142,6 @@ const UserSettings = props => {
       <TwitterPicker color={settings.headFontColor} colors={headColors} onChangeComplete={props.onChangeColorSettings.bind(this, "headFontColor")} />
       <label>文字色(説明)</label>
       <TwitterPicker color={settings.descFontColor} colors={descColors} onChangeComplete={props.onChangeColorSettings.bind(this, "descFontColor")} />
-
       <hr />
       {props.settings2Opened ? (
         settings2
@@ -222,9 +217,9 @@ const MouseDictionaryOptions = props => {
   return (
     <div>
       <label>{res("dictDataEncoding")}</label>
-      <SimpleSelect name="encoding" value={props.encoding} options={ENCODINGS} onChange={props.onChange} />
+      <SimpleSelect name="encoding" value={props.encoding} options={ENCODINGS} onChange={props.onChangeState} />
       <label>{res("dictDataFormat")}</label>
-      <SimpleSelect name="format" value={props.format} options={FORMATS} onChange={props.onChange} />
+      <SimpleSelect name="format" value={props.format} options={FORMATS} onChange={props.onChangeState} />
       <label>{res("readDictData")}</label>
       <input type="file" id="dictdata" />
       <br />

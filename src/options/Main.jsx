@@ -90,8 +90,10 @@ class Main extends React.Component {
       }
 
       let userSettings = this.tryToParseJson(r[KEY_USER_CONFIG]);
-      for (let key of Object.keys(userSettings)) {
-        settings[key] = userSettings[key];
+      if (userSettings) {
+        for (let key of Object.keys(userSettings)) {
+          settings[key] = userSettings[key];
+        }
       }
 
       this.setState({ settings });

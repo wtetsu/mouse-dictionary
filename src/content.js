@@ -13,7 +13,13 @@ const KEY_USER_CONFIG = "**** config ****";
 const loadUserSettings = async () => {
   return new Promise(resolve => {
     chrome.storage.sync.get([KEY_USER_CONFIG], d => {
-      const userSettings = JSON.parse(d[KEY_USER_CONFIG]);
+      const userSettingsJson = d[KEY_USER_CONFIG];
+      let userSettings = null;
+      if (userSettingsJson) {
+        userSettings = JSON.parse(userSettingsJson);
+      } else {
+        userSettings = {};
+      }
       resolve(userSettings);
     });
   });
@@ -23,7 +29,9 @@ const processSettings = settings => {
   const jsonItems = ["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"];
   for (let i = 0; i < jsonItems.length; i++) {
     const item = jsonItems[i];
-    settings[item] = JSON.parse(settings[item]);
+    if (settings[item]) {
+      settings[item] = JSON.parse(settings[item]);
+    }
   }
 
   if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
