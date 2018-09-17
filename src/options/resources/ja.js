@@ -1,3 +1,9 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
+ */
+
 export default {
   dictDataEncoding: "辞書データの文字コード：",
   dictDataFormat: "辞書データの形式：",

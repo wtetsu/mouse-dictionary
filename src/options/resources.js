@@ -1,5 +1,10 @@
-import sprintf from "sprintf-js";
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
+ */
 
+import sprintf from "sprintf-js";
 import ja from "./resources/ja";
 
 export default (key, ...params) => {

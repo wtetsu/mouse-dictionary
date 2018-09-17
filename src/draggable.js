@@ -1,3 +1,9 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu, suiheilibe
+ * Licensed under MIT
+ */
+
 import dom from "./dom";
 
 export default class Draggable {

@@ -1,3 +1,9 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
+ */
+
 import React from "react";
 
 const SimpleSelect = props => {

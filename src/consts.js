@@ -1,3 +1,9 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
+ */
+
 // Mouse Dictionary regards only these characters as target characters to look up dictionary data.
 const targetCharacters = {
   // 32: true, //

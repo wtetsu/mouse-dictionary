@@ -1,3 +1,9 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
+ */
+
 import text from "./text";
 import res from "./resources";
 import Draggable from "./draggable";
