@@ -10,7 +10,7 @@ checks:
       threshold: 25
   file-lines:
     config:
-      threshold: 250
+      threshold: 500
 plugins:
   eslint:
     enabled: true
