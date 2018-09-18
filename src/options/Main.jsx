@@ -8,7 +8,10 @@ import "babel-polyfill";
 import React from "react";
 import { render } from "react-dom";
 import swal from "sweetalert";
-import MouseDictionaryOptions from "./MouseDictionaryOptions";
+import LoadDictionary from "./components/LoadDictionary";
+import BasicSettings from "./components/BasicSettings";
+import AdvancedSettings from "./components/AdvancedSettings";
+import PersistenceSettings from "./components/PersistenceSettings";
 import res from "./resources";
 import dict from "./dict";
 import defaultSettings from "../defaultsettings";
@@ -47,36 +50,76 @@ class Main extends React.Component {
 
     this.doAddReplaceRule = this.doAddReplaceRule.bind(this);
 
-    this.doOpenSettings1 = this.doOpenSettings1.bind(this);
-    this.doOpenSettings2 = this.doOpenSettings2.bind(this);
+    this.doToggleSettings1 = this.doToggleSettings1.bind(this);
+    this.doToggleSettings2 = this.doToggleSettings2.bind(this);
   }
 
   render() {
     const state = this.state;
 
     return (
-      <MouseDictionaryOptions
-        encoding={state.encoding}
-        format={state.format}
-        onChangeState={this.doChangeState}
-        onChangeSettings={this.doChangeSettings}
-        onChangeColorSettings={this.doChangeColorSettings}
-        onChangeReplaceRule={this.doChangeReplaceRule}
-        onClickAddReplaceRule={this.doAddReplaceRule}
-        onClickSaveSettings={this.doSaveSettings}
-        onClickBackToDefaultSettings={this.doBackToDefaultSettings}
-        onClickOpenSettings1={this.doOpenSettings1}
-        onClickOpenSettings2={this.doOpenSettings2}
-        settings1Opened={state.settings1Opened}
-        settings2Opened={state.settings2Opened}
-        doLoad={this.doLoad}
-        doClear={this.doClear}
-        dictDataUsage={state.dictDataUsage}
-        busy={state.busy}
-        progress={state.progress}
-        settings={state.settings}
-        trialText={state.trialText}
-      />
+      <div>
+        <LoadDictionary
+          encoding={state.encoding}
+          format={state.format}
+          onChangeState={this.doChangeState}
+          doLoad={this.doLoad}
+          doClear={this.doClear}
+          dictDataUsage={state.dictDataUsage}
+          busy={state.busy}
+          progress={state.progress}
+        />
+        <hr />
+
+        <div>
+          <img src="settings1.png" style={{ verticalAlign: "middle" }} />
+          <a onClick={this.doToggleSettings1} style={{ cursor: "pointer" }}>
+            {this.state.settings1Opened ? "設定を閉じる" : "設定を開く"}
+          </a>
+        </div>
+
+        <br />
+
+        {(this.state.settings1Opened || this.state.settings2Opened) && (
+          <PersistenceSettings
+            onClickSaveSettings={this.doSaveSettings}
+            onClickBackToDefaultSettings={this.doBackToDefaultSettings}
+          />
+        )}
+
+        {this.state.settings1Opened && (
+          <BasicSettings
+            onChange={this.doChangeSettings}
+            onChangeState={this.doChangeState}
+            onChangeSettings={this.doChangeSettings}
+            onChangeColorSettings={this.doChangeColorSettings}
+            settings={state.settings}
+            trialText={state.trialText}
+          />
+        )}
+
+        {this.state.settings1Opened && (
+          <div>
+            <img src="settings2.png" style={{ verticalAlign: "middle" }} />
+            <a onClick={this.doToggleSettings2} style={{ cursor: "pointer" }}>
+              {this.state.settings2Opened ? "上級者設定を閉じる" : "上級者設定を開く"}
+            </a>
+          </div>
+        )}
+
+        <br />
+
+        {this.state.settings2Opened && (
+          <AdvancedSettings
+            onChange={this.doChangeSettings}
+            onChangeState={this.doChangeState}
+            onChangeSettings={this.doChangeSettings}
+            onChangeReplaceRule={this.doChangeReplaceRule}
+            onClickAddReplaceRule={this.doAddReplaceRule}
+            settings={state.settings}
+          />
+        )}
+      </div>
     );
   }
 
@@ -383,17 +426,25 @@ class Main extends React.Component {
     this.updateTrialWindow(settings);
   }
 
-  doOpenSettings1() {
+  doToggleSettings1() {
     this.updateTrialWindow(this.state.settings);
 
-    this.setState({
-      settings1Opened: true
-    });
+    if (this.state.settings1Opened) {
+      this.setState({
+        settings1Opened: false,
+        settings2Opened: false
+      });
+    } else {
+      this.setState({
+        settings1Opened: true,
+        settings2Opened: false
+      });
+    }
   }
 
-  doOpenSettings2() {
+  doToggleSettings2() {
     this.setState({
-      settings2Opened: true
+      settings2Opened: !this.state.settings2Opened
     });
   }
 }
