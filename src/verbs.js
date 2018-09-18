@@ -27,7 +27,20 @@ const verbTrailingRules = [
   [{ search: "ier", new: "y" }],
   [{ search: "s", new: "" }],
   [{ search: "es", new: "" }],
-  [{ search: "nning", new: "n" }, { search: "ing", new: "" }]
+  [
+    { search: "nning", new: "n" },
+    { search: "tting", new: "t" },
+    { search: "dding", new: "d" },
+    { search: "gging", new: "g" },
+    { search: "pping", new: "p" },
+    { search: "mming", new: "m" },
+    { search: "bbing", new: "b" },
+    { search: "rring", new: "r" },
+    { search: "lling", new: "l" },
+    { search: "ing", new: "" }
+  ],
+  [{ search: "ying", new: "ie" }],
+  [{ search: "ing", new: "e" }]
 ];
 
 // This data is based on ejdic-hand
