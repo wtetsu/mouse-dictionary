@@ -24,5 +24,8 @@ export default {
 
   positionLeft: "左",
   positionRight: "右",
-  positionKeep: "前回位置を記憶"
+  positionKeep: "前回位置とサイズを記憶",
+
+  scrollOff: "なし",
+  scrollOn: "あり"
 };

@@ -58,16 +58,16 @@ const UserSettings = props => {
 
   const fontSizes = ["xx-small", "x-small", "smaller", "small", "medium", "large", "larger", "x-large", "xx-large"];
 
-  const positions = [];
-  positions.push({
-    name: res("positionLeft"),
-    value: "left"
-  });
-  positions.push({
-    name: res("positionRight"),
-    value: "right"
-  });
-
+  const positions = [
+    {
+      name: res("positionLeft"),
+      value: "left"
+    },
+    {
+      name: res("positionRight"),
+      value: "right"
+    }
+  ];
   if (!env.disableKeepingWindowStatus) {
     positions.push({
       name: res("positionKeep"),
@@ -76,6 +76,24 @@ const UserSettings = props => {
   }
 
   const positionOptions = positions.map(p => {
+    return (
+      <option key={p.value} value={p.value}>
+        {p.name}
+      </option>
+    );
+  });
+
+  const scrolls = [
+    {
+      name: res("scrollOn"),
+      value: "scroll"
+    },
+    {
+      name: res("scrollOff"),
+      value: "hidden"
+    }
+  ];
+  const scrollOptions = scrolls.map(p => {
     return (
       <option key={p.value} value={p.value}>
         {p.name}
@@ -121,6 +139,10 @@ const UserSettings = props => {
       <label>初期表示位置</label>
       <select value={settings.initialPosition} onChange={props.onChange.bind(this, "initialPosition")} style={{ width: 250 }}>
         {positionOptions}
+      </select>
+      <label>スクロールバー</label>
+      <select value={settings.scroll} onChange={props.onChange.bind(this, "scroll")} style={{ width: 250 }}>
+        {scrollOptions}
       </select>
       <hr />
       <h3>サイズや色等</h3>

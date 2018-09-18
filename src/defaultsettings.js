@@ -9,6 +9,7 @@ export default {
   cutShortWordDescription: 30,
   lookupWithCapitalized: true,
   initialPosition: "right",
+  scroll: "hidden",
 
   titlebarBackgroundColor: "#EBEBEB",
   backgroundColor: "#ffffff",
@@ -75,7 +76,8 @@ export default {
             height: {{height}}px;
             position: fixed;
             resize: both;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: {{scroll}};
             top: 5px;
             background-color: {{backgroundColor}};
             z-index: 2147483647;
@@ -94,7 +96,7 @@ export default {
     {{/isShort}}
     {{#isShort}}
       {{! 短い単語 }}
-      <span style="color:{{headFontColor}};font-weight:bold;">{{head}}</span>
+      <span style="font-size:{{headFontSize}};font-weight:bold;color:{{headFontColor}}">{{head}}</span>
       <span style="color:#505050;font-size:x-small;">{{shortDesc}}</span>
     {{/isShort}}
     {{^isLast}}

@@ -25,11 +25,12 @@ class ContentGenerator {
     this.descFontColor = settings.descFontColor;
     this.headFontSize = settings.headFontSize;
     this.descFontSize = settings.descFontSize;
+    this.scroll = settings.scroll;
 
     this.compiledReplaceRules = this.createReplaceRule(settings.replaceRules);
 
     // Since contentTemplate is executed fairly frequently,
-    // it's compiled first and should be used the result repeatedly.
+    // it's compiled first and the produced result should be used repeatedly.
 
     this.compiledContentTemplate = Hogan.compile(settings.contentTemplate);
   }
@@ -47,6 +48,7 @@ class ContentGenerator {
     }
     return compiledReplaceRule;
   }
+
   async generate(words) {
     return new Promise((resolve, reject) => {
       chrome.storage.local.get(words, meanings => {
@@ -113,7 +115,8 @@ const createDialogElement = settings => {
     backgroundColor: settings.backgroundColor,
     titlebarBackgroundColor: settings.titlebarBackgroundColor,
     width: settings.width,
-    height: settings.height
+    height: settings.height,
+    scroll: settings.scroll
   });
   const dialog = dom.create(html);
   dom.applyStyles(dialog, settings.normalDialogStyles);
