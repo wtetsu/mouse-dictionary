@@ -27,6 +27,12 @@ npm install
 npm run build
 ```
 
+For Firefox:
+
+```sh
+npm run build-ff
+```
+
 ## License
 
 Mouse Dictionary is published under the MIT license.
