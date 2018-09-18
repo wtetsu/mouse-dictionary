@@ -17,7 +17,9 @@
   "rules": {
     "no-console": 0,
     "max-len": [2, { "code": 150, "tabWidth": 2, "ignoreUrls": true }],
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "linebreak-style": ["error", "unix"],
+    "semi": ["error", "always"]
   },
   "settings": {
     "react": {
