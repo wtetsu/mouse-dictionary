@@ -6,7 +6,7 @@
 
 import consts from "./consts";
 
-export default (element, clientX, clientY) => {
+export default (element, clientX, clientY, maxWords = 5) => {
   let textOnCursor = null;
 
   try {
@@ -14,13 +14,43 @@ export default (element, clientX, clientY) => {
     if (range) {
       const { node, offset } = range;
       if (node.nodeType === Node.TEXT_NODE) {
-        textOnCursor = getTextFromRange(node.data, offset);
+        textOnCursor = getTextFromRange(node.data, offset, maxWords);
       }
     }
   } catch (err) {
     textOnCursor = null;
   }
-  return textOnCursor;
+  return removeQuotes(textOnCursor);
+};
+
+const removeQuotes = text => {
+  if (!text) {
+    return text;
+  }
+  let start = 0;
+  for (;;) {
+    if (start >= text.length) {
+      break;
+    }
+    const ch = text.charCodeAt(start);
+    if (!consts.quoteCharacters[ch]) {
+      break;
+    }
+    start += 1;
+  }
+
+  let end = text.length - 1;
+  for (;;) {
+    if (end <= 0) {
+      break;
+    }
+    const ch = text.charCodeAt(end);
+    if (!consts.quoteCharacters[ch]) {
+      break;
+    }
+    end -= 1;
+  }
+  return text.substring(start, end + 1);
 };
 
 const searchStartIndex = (text, index) => {
@@ -41,7 +71,7 @@ const searchStartIndex = (text, index) => {
   return startIndex;
 };
 
-const searchEndIndex = (text, index) => {
+const searchEndIndex = (text, index, maxWords) => {
   let endIndex;
   let i = index + 1;
   let spaceCount = 0;
@@ -53,7 +83,7 @@ const searchEndIndex = (text, index) => {
         spaceCount += 1;
       }
       theLastIsSpace = true;
-      if (spaceCount >= 5) {
+      if (spaceCount >= maxWords) {
         endIndex = i;
         break;
       }
@@ -74,7 +104,7 @@ const searchEndIndex = (text, index) => {
   return endIndex;
 };
 
-const getTextFromRange = (text, offset) => {
+const getTextFromRange = (text, offset, maxWords) => {
   if (!text) {
     return null;
   }
@@ -85,7 +115,7 @@ const getTextFromRange = (text, offset) => {
   }
 
   const startIndex = searchStartIndex(text, offset);
-  const endIndex = searchEndIndex(text, offset);
+  const endIndex = searchEndIndex(text, offset, maxWords);
 
   return text.substring(startIndex, endIndex);
 };

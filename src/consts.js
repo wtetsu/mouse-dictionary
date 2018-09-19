@@ -13,7 +13,7 @@ const targetCharacters = {
   // 36: true, // $
   // 37: true, // %
   // 38: true, // &
-  // 39: true, // '
+  39: true, // '
   // 40: true, // (
   // 41: true, // )
   // 42: true, // *
@@ -103,4 +103,9 @@ const targetCharacters = {
   //126: true // ~
 };
 
-export default { targetCharacters };
+const quoteCharacters = {
+  34: true, // "
+  39: true // '
+};
+
+export default { targetCharacters, quoteCharacters };

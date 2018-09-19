@@ -95,7 +95,6 @@ test("", () => {
 
   expect(text.splitIntoWords("American English")).toEqual(["American", "English"]);
   expect(text.splitIntoWords(".American English.")).toEqual(["American", "English"]);
-  expect(text.splitIntoWords("'American English'")).toEqual(["American", "English"]);
 
   expect(text.splitIntoWords("American\rEnglish")).toEqual(["American", "English"]);
   expect(text.splitIntoWords("American\nEnglish")).toEqual(["American", "English"]);
