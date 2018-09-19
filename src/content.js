@@ -103,32 +103,35 @@ const main = async () => {
   });
 
   document.body.addEventListener("mousemove", ev => {
-    let textAtCursor;
+    let textAtCursor, mustIncludeOriginalText;
     if (_selection) {
       textAtCursor = _selection;
+      mustIncludeOriginalText = true;
     } else {
-      textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY);
+      textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY, _settings.parseWordsLimit);
+      mustIncludeOriginalText = false;
     }
     if (!textAtCursor) {
       return;
     }
 
-    parseTextAndLookup(textAtCursor);
+    parseTextAndLookup(textAtCursor, mustIncludeOriginalText);
   });
 
-  const parseTextAndLookup = textToLookup => {
-    if (!textToLookup || _lastText == textToLookup) {
-      return;
+  const parseTextAndLookup = (textToLookup, mustIncludeOriginalText) => {
+    if (!mustIncludeOriginalText) {
+      if (!textToLookup || _lastText == textToLookup) {
+        return;
+      }
+      const cache = _shortCache.get(textToLookup);
+      if (cache) {
+        _area.content.innerHTML = "";
+        _area.content.appendChild(cache);
+        return;
+      }
     }
 
-    const cache = _shortCache.get(textToLookup);
-    if (cache) {
-      _area.content.innerHTML = "";
-      _area.content.appendChild(cache);
-      return;
-    }
-
-    const lookupWords = text.createLookupWords(textToLookup, _settings.lookupWithCapitalized);
+    const lookupWords = text.createLookupWords(textToLookup, _settings.lookupWithCapitalized, mustIncludeOriginalText);
 
     return lookup(lookupWords).then(newDom => {
       _shortCache.put(textToLookup, newDom);

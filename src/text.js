@@ -9,12 +9,15 @@ import verbs from "./verbs";
 
 const text = {};
 
-text.createLookupWords = (sourceStr, withCapitalized = false) => {
+text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
   const lowerStr = sourceStr.toLowerCase();
   const isAllLower = lowerStr === sourceStr;
   const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
 
   const result = [];
+  if (mustIncludeOriginalText) {
+    result.push(sourceStr);
+  }
   for (let i = 0; i < strList.length; i++) {
     const str = strList[i];
 
