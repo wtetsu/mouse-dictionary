@@ -62,7 +62,7 @@ const AdvancedSettings = props => {
         <label>タイトルバー</label>
         <textarea
           value={titlebarTemplate}
-          style={{ width: 800, height: 100 }}
+          style={{ width: 800, height: 110 }}
           onChange={e => props.onChange("titlebarTemplate", e)}
         />
         <label>説明全体を囲う領域</label>
@@ -82,19 +82,19 @@ const AdvancedSettings = props => {
         <label>スタイル:アクティブ</label>
         <textarea
           value={normalDialogStyles}
-          style={{ width: 800, height: 90 }}
+          style={{ width: 800, height: 80 }}
           onChange={e => props.onChange("normalDialogStyles", e)}
         />
         <label>スタイル:移動中</label>
         <textarea
           value={movingDialogStyles}
-          style={{ width: 800, height: 90 }}
+          style={{ width: 800, height: 80 }}
           onChange={e => props.onChange("movingDialogStyles", e)}
         />
         <label>スタイル:非アクティブ</label>
         <textarea
           value={hiddenDialogStyles}
-          style={{ width: 800, height: 90 }}
+          style={{ width: 800, height: 80 }}
           onChange={e => props.onChange("hiddenDialogStyles", e)}
         />
         <hr />

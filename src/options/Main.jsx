@@ -98,8 +98,9 @@ class Main extends React.Component {
           />
         )}
 
+        <br />
         {this.state.settings1Opened && (
-          <div>
+          <div style={{ fontSize: "10px" }}>
             <img src="settings2.png" style={{ verticalAlign: "middle" }} />
             <a onClick={this.doToggleSettings2} style={{ cursor: "pointer" }}>
               {this.state.settings2Opened ? "上級者設定を閉じる" : "上級者設定を開く"}
