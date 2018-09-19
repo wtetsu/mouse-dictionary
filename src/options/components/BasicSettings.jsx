@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { TwitterPicker } from "react-color";
+import { ChromePicker } from "react-color";
 import res from "../resources";
 import env from "../../env";
 
@@ -14,13 +14,7 @@ const BasicSettings = props => {
   if (!settings) {
     return "<div></div>";
   }
-
-  const bgColors = ["#F0F0F0", "#FAFAFA", "#FFFFFF"];
-  const headColors = ["#000000", "#ABB8C3", "#000088"];
-  const descColors = ["#101010", "#A0A0A0", "#000088"];
-
   const fontSizes = ["xx-small", "x-small", "smaller", "small", "medium", "large", "larger", "x-large", "xx-large"];
-
   const positions = [
     {
       name: res("positionLeft"),
@@ -74,30 +68,30 @@ const BasicSettings = props => {
 
   const settings1 = (
     <fieldset>
-      <h2>基本設定</h2>
-      <label>お試し用テキスト</label>
+      <h2>{res("basicSettings")}</h2>
+      <label>{res("trialText")}</label>
       <input type="text" value={props.trialText} onChange={props.onChangeState.bind(this, "trialText")} />
-      <label>短い単語の説明を省略</label>
+      <label>{res("abbreviateShortWordDesc")}</label>
       <input
         type="number"
         value={settings.shortWordLength}
         onChange={props.onChange.bind(this, "shortWordLength")}
         style={{ width: 60 }}
       />
-      <span> 文字以内の短い単語は、説明を </span>
+      <span> {res("abbreviateShortWordDesc1")} </span>
       <input
         type="number"
         value={settings.cutShortWordDescription}
         onChange={props.onChange.bind(this, "cutShortWordDescription")}
         style={{ width: 60 }}
       />
-      <span> 文字に切り詰める</span>
-      <label>初期サイズ</label>
-      <span>幅:</span>
+      <span> {res("abbreviateShortWordDesc2")}</span>
+      <label>{res("initialSize")}</label>
+      <span>{res("width")}</span>
       <input type="number" value={settings.width} onChange={props.onChange.bind(this, "width")} style={{ width: 90 }} />
-      <span> 高さ:</span>
+      <span> {res("height")}</span>
       <input type="number" value={settings.height} onChange={props.onChange.bind(this, "height")} style={{ width: 90 }} />
-      <label>初期表示位置</label>
+      <label>{res("initialPosition")}</label>
       <select
         value={settings.initialPosition}
         onChange={props.onChange.bind(this, "initialPosition")}
@@ -105,37 +99,44 @@ const BasicSettings = props => {
       >
         {positionOptions}
       </select>
-      <label>スクロールバー</label>
+      <label>{res("scrollBar")}</label>
       <select value={settings.scroll} onChange={props.onChange.bind(this, "scroll")} style={{ width: 250 }}>
         {scrollOptions}
       </select>
       <hr />
-      <h3>サイズや色等</h3>
-      <label>見出し文字サイズ</label>
+      <h3>{res("colorAndFont")}</h3>
+      <label>{res("backgroundColor")}</label>
+      <ChromePicker
+        color={settings.backgroundColor}
+        onChangeComplete={props.onChangeColorSettings.bind(this, "backgroundColor")}
+        disableAlpha={true}
+      />
+      <br />
+      <br />
+
+      <label>{res("headFontSize")}</label>
       <select value={settings.headFontSize} onChange={props.onChange.bind(this, "headFontSize")} style={{ width: 250 }}>
         {fontSizeOptions}
       </select>
-      <label>説明文字サイズ</label>
+      <label>{res("colorAndFont")}</label>
+      <ChromePicker
+        color={settings.headFontColor}
+        onChangeComplete={props.onChangeColorSettings.bind(this, "headFontColor")}
+        disableAlpha={true}
+      />
+
+      <br />
+      <br />
+
+      <label>{res("descFontSize")}</label>
       <select value={settings.descFontSize} onChange={props.onChange.bind(this, "descFontSize")} style={{ width: 250 }}>
         {fontSizeOptions}
       </select>
-      <label>背景色</label>
-      <TwitterPicker
-        color={settings.backgroundColor}
-        colors={bgColors}
-        onChangeComplete={props.onChangeColorSettings.bind(this, "backgroundColor")}
-      />
-      <label>文字色(見出し)</label>
-      <TwitterPicker
-        color={settings.headFontColor}
-        colors={headColors}
-        onChangeComplete={props.onChangeColorSettings.bind(this, "headFontColor")}
-      />
-      <label>文字色(説明)</label>
-      <TwitterPicker
+      <label>{res("descFontcolor")}</label>
+      <ChromePicker
         color={settings.descFontColor}
-        colors={descColors}
         onChangeComplete={props.onChangeColorSettings.bind(this, "descFontColor")}
+        disableAlpha={true}
       />
     </fieldset>
   );

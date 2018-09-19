@@ -33,8 +33,8 @@ class Main extends React.Component {
       progress: "",
       settings: null,
       trialText: "rained cats and dogs",
-      settings1Opened: false,
-      settings2Opened: false
+      basicSettingsOpened: false,
+      advancedSettingsOpened: false
     };
 
     this.doChangeState = this.doChangeState.bind(this);
@@ -50,8 +50,8 @@ class Main extends React.Component {
 
     this.doAddReplaceRule = this.doAddReplaceRule.bind(this);
 
-    this.doToggleSettings1 = this.doToggleSettings1.bind(this);
-    this.doToggleSettings2 = this.doToggleSettings2.bind(this);
+    this.doToggleBasicSettings = this.doToggleBasicSettings.bind(this);
+    this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
   }
 
   render() {
@@ -72,22 +72,22 @@ class Main extends React.Component {
         <hr />
 
         <div>
-          <img src="settings1.png" style={{ verticalAlign: "middle" }} />
-          <a onClick={this.doToggleSettings1} style={{ cursor: "pointer" }}>
-            {this.state.settings1Opened ? "設定を閉じる" : "設定を開く"}
+          <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
+          <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
+            {this.state.basicSettingsOpened ? res("closeBasicSettings") : res("openBasicSettings")}
           </a>
         </div>
 
         <br />
 
-        {(this.state.settings1Opened || this.state.settings2Opened) && (
+        {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
           <PersistenceSettings
             onClickSaveSettings={this.doSaveSettings}
             onClickBackToDefaultSettings={this.doBackToDefaultSettings}
           />
         )}
 
-        {this.state.settings1Opened && (
+        {this.state.basicSettingsOpened && (
           <BasicSettings
             onChange={this.doChangeSettings}
             onChangeState={this.doChangeState}
@@ -99,18 +99,18 @@ class Main extends React.Component {
         )}
 
         <br />
-        {this.state.settings1Opened && (
+        {this.state.basicSettingsOpened && (
           <div style={{ fontSize: "10px" }}>
-            <img src="settings2.png" style={{ verticalAlign: "middle" }} />
-            <a onClick={this.doToggleSettings2} style={{ cursor: "pointer" }}>
-              {this.state.settings2Opened ? "上級者設定を閉じる" : "上級者設定を開く"}
+            <img src="settings2.png" style={{ verticalAlign: "bottom" }} />
+            <a onClick={this.doToggleAdvancedSettings} style={{ cursor: "pointer" }}>
+              {this.state.advancedSettingsOpened ? res("closeAdvancedSettings") : res("openAdvancedSettings")}
             </a>
           </div>
         )}
 
         <br />
 
-        {this.state.settings2Opened && (
+        {this.state.advancedSettingsOpened && (
           <AdvancedSettings
             onChange={this.doChangeSettings}
             onChangeState={this.doChangeState}
@@ -378,10 +378,7 @@ class Main extends React.Component {
   }
 
   updateTrialWindow(settings) {
-    if (this.trialWindow && this.trialWindow.dialog) {
-      document.body.removeChild(this.trialWindow.dialog);
-      this.trialWindow = null;
-    }
+    this.removeTrialWindow();
     if (settings) {
       try {
         this.contentGenerator = new mdwindow.ContentGenerator(settings);
@@ -391,6 +388,13 @@ class Main extends React.Component {
       } catch (e) {
         this.contentGenerator = null;
       }
+    }
+  }
+
+  removeTrialWindow() {
+    if (this.trialWindow && this.trialWindow.dialog) {
+      document.body.removeChild(this.trialWindow.dialog);
+      this.trialWindow = null;
     }
   }
 
@@ -409,13 +413,11 @@ class Main extends React.Component {
     if (settings.replaceRules) {
       settings.replaceRules = settings.replaceRules.filter(r => r.search && r.replace);
     }
-
     const newData = {};
     newData[KEY_USER_CONFIG] = JSON.stringify(settings);
-
     chrome.storage.sync.set(newData, () => {
       swal({
-        text: "保存しました。",
+        text: res("finishSaving"),
         icon: "info"
       });
     });
@@ -427,25 +429,26 @@ class Main extends React.Component {
     this.updateTrialWindow(settings);
   }
 
-  doToggleSettings1() {
+  doToggleBasicSettings() {
     this.updateTrialWindow(this.state.settings);
 
-    if (this.state.settings1Opened) {
+    if (this.state.basicSettingsOpened) {
       this.setState({
-        settings1Opened: false,
-        settings2Opened: false
+        basicSettingsOpened: false,
+        advancedSettingsOpened: false
       });
+      this.removeTrialWindow();
     } else {
       this.setState({
-        settings1Opened: true,
-        settings2Opened: false
+        basicSettingsOpened: true,
+        advancedSettingsOpened: false
       });
     }
   }
 
-  doToggleSettings2() {
+  doToggleAdvancedSettings() {
     this.setState({
-      settings2Opened: !this.state.settings2Opened
+      advancedSettingsOpened: !this.state.advancedSettingsOpened
     });
   }
 }

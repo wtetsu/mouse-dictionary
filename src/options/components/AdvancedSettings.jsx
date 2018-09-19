@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+import res from "../resources";
 
 const AdvancedSettings = props => {
   const settings = props.settings;
@@ -33,7 +34,7 @@ const AdvancedSettings = props => {
           style={{ width: 300 }}
           onChange={props.onChangeReplaceRule}
         />
-        <span>を</span>
+        <span>{res("replaceRule1")}</span>
         <input
           type="text"
           name={`replaceRule.replace.${i}`}
@@ -42,7 +43,7 @@ const AdvancedSettings = props => {
           style={{ width: 300 }}
           onChange={props.onChangeReplaceRule}
         />
-        <span>に置換</span>
+        <span>{res("replaceRule2")}</span>
       </div>
     );
   });
@@ -50,48 +51,48 @@ const AdvancedSettings = props => {
   return (
     <form>
       <fieldset>
-        <h2>上級者設定</h2>
+        <h2>{res("advancedSettings")}</h2>
         <hr />
-        <h3>HTMLテンプレート</h3>
-        <label>Mouse Dictionaryウィンドウ全体</label>
+        <h3>{res("htmlTemplate")}</h3>
+        <label>{res("htmlTemplateWindow")}</label>
         <textarea
           value={dialogTemplate}
           style={{ width: 800, height: 200 }}
           onChange={e => props.onChange("dialogTemplate", e)}
         />
-        <label>タイトルバー</label>
+        <label>{res("htmlTemplateTitleBar")}</label>
         <textarea
           value={titlebarTemplate}
           style={{ width: 800, height: 110 }}
           onChange={e => props.onChange("titlebarTemplate", e)}
         />
-        <label>説明全体を囲う領域</label>
+        <label>{res("htmlTemplateDesc")}</label>
         <textarea
           value={contentWrapperTemplate}
           style={{ width: 800, height: 30 }}
           onChange={e => props.onChange("contentWrapperTemplate", e)}
         />
-        <label>説明テキスト</label>
+        <label>{res("htmlTemplateDescText")}</label>
         <textarea
           value={contentTemplate}
           style={{ width: 800, height: 350 }}
           onChange={e => props.onChange("contentTemplate", e)}
         />
 
-        <h3>状態ごとのスタイル</h3>
-        <label>スタイル:アクティブ</label>
+        <h3>{res("styles")}</h3>
+        <label>{res("stylesActive")}</label>
         <textarea
           value={normalDialogStyles}
           style={{ width: 800, height: 80 }}
           onChange={e => props.onChange("normalDialogStyles", e)}
         />
-        <label>スタイル:移動中</label>
+        <label>{res("stylesMoving")}</label>
         <textarea
           value={movingDialogStyles}
           style={{ width: 800, height: 80 }}
           onChange={e => props.onChange("movingDialogStyles", e)}
         />
-        <label>スタイル:非アクティブ</label>
+        <label>{res("stylesInactive")}</label>
         <textarea
           value={hiddenDialogStyles}
           style={{ width: 800, height: 80 }}
@@ -99,10 +100,10 @@ const AdvancedSettings = props => {
         />
         <hr />
 
-        <h3>置換ルール</h3>
+        <h3>{res("replaceRules")}</h3>
         {replaceRulesList}
         <button type="button" onClick={props.onClickAddReplaceRule}>
-          追加
+          {res("add")}
         </button>
       </fieldset>
     </form>

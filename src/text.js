@@ -215,7 +215,6 @@ text.linkWords = words => {
         currentString += " " + word;
       }
       newLinkedWord[wordList.length - j - 1] = currentString;
-      //linkedWords.unshift(currentString);
     }
     linkedWords.push(...newLinkedWord);
   }

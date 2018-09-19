@@ -27,5 +27,47 @@ export default {
   positionKeep: "前回位置とサイズを記憶",
 
   scrollOff: "なし",
-  scrollOn: "あり"
+  scrollOn: "あり",
+
+  saveSettings: "設定を保存する",
+  defaultSettings: "初期状態に戻す",
+  finishSaving: "保存しました。",
+
+  openBasicSettings: "設定を開く",
+  closeBasicSettings: "設定を閉じる",
+  openAdvancedSettings: "上級設定を開く",
+  closeAdvancedSettings: "上級設定を閉じる",
+
+  basicSettings: "基本設定",
+  trialText: "お試し用テキスト",
+  abbreviateShortWordDesc: "短い単語の説明を省略",
+  abbreviateShortWordDesc1: "文字以内の短い単語は、説明を",
+  abbreviateShortWordDesc2: "文字に切り詰める",
+
+  initialSize: "初期サイズ",
+  width: "幅",
+  height: "高さ",
+  initialPosition: "初期表示位置",
+  scrollBar: "スクロールバー",
+  colorAndFont: "色と文字サイズ",
+  backgroundColor: "背景色",
+  headFontSize: "文字サイズ(見出し)",
+  headFontColor: "文字色(見出し)",
+  descFontSize: "文字サイズ(説明)",
+  descFontcolor: "文字色(説明)",
+
+  replaceRules: "文字列置換ルール",
+  replaceRule1: "を",
+  replaceRule2: "に置換",
+  advancedSettings: "上級者設定",
+  htmlTemplate: "HTMLテンプレート",
+  htmlTemplateWindow: "Mouse Dictionaryウィンドウ全体",
+  htmlTemplateTitleBar: "タイトルバー",
+  htmlTemplateDesc: "説明全体を囲う領域",
+  htmlTemplateDescText: "説明テキスト",
+  styles: "状態ごとのスタイル",
+  stylesActive: "スタイル:アクティブ",
+  stylesMoving: "スタイル:移動中",
+  stylesInactive: "スタイル:非アクティブ",
+  add: "追加"
 };

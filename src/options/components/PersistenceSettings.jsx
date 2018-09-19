@@ -5,13 +5,14 @@
  */
 
 import React from "react";
+import res from "../resources";
 
 const PersistenceSettings = props => {
   return (
     <div>
-      <input type="button" value="保存する" onClick={props.onClickSaveSettings.bind(this)} />
+      <input type="button" value={res("saveSettings")} onClick={props.onClickSaveSettings.bind(this)} />
       <span> </span>
-      <input type="button" value="初期状態に戻す" onClick={props.onClickBackToDefaultSettings.bind(this)} />
+      <input type="button" value={res("defaultSettings")} onClick={props.onClickBackToDefaultSettings.bind(this)} />
     </div>
   );
 };
