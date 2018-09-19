@@ -16,7 +16,6 @@ const BasicSettings = props => {
   }
 
   const bgColors = ["#F0F0F0", "#FAFAFA", "#FFFFFF"];
-  const titleColors = ["#000000", "#ABB8C3", "#FFFFFF"];
   const headColors = ["#000000", "#ABB8C3", "#000088"];
   const descColors = ["#101010", "#A0A0A0", "#000088"];
 
@@ -125,12 +124,6 @@ const BasicSettings = props => {
         color={settings.backgroundColor}
         colors={bgColors}
         onChangeComplete={props.onChangeColorSettings.bind(this, "backgroundColor")}
-      />
-      <label>タイトルバー色</label>
-      <TwitterPicker
-        color={settings.titlebarBackgroundColor}
-        colors={titleColors}
-        onChangeComplete={props.onChangeColorSettings.bind(this, "titlebarBackgroundColor")}
       />
       <label>文字色(見出し)</label>
       <TwitterPicker

@@ -11,7 +11,6 @@ export default {
   initialPosition: "right",
   scroll: "hidden",
 
-  titlebarBackgroundColor: "#EBEBEB",
   backgroundColor: "#ffffff",
 
   headFontColor: "#000088",
@@ -67,7 +66,8 @@ export default {
             display:block;
             font-size:small;
             cursor:pointer;
-            background-color:{{titlebarBackgroundColor}};">Mouse Dictionary</div>`,
+            color:#101010;
+            background-color:#EBEBEB;">Mouse Dictionary</div>`,
 
   contentWrapperTemplate: `<div style="text-align:left;"></div>`,
 
@@ -81,8 +81,7 @@ export default {
             top: 5px;
             background-color: {{backgroundColor}};
             z-index: 2147483647;
-            border: 1px solid #A0A0A0;
-  "></div>`,
+            border: 1px solid #A0A0A0;"></div>`,
 
   contentTemplate: `<div style="all:initial;">
   {{#words}}
