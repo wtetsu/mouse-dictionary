@@ -25,14 +25,14 @@ export default class LineReader {
   }
 
   eachLine(fnEachLine, fnFinished) {
-    this.prosessNextLine(fnEachLine, fnFinished, 0);
+    this.processNextLine(fnEachLine, fnFinished, 0);
   }
 
-  prosessNextLine(fnEachLine, fnFinished, linenum) {
+  processNextLine(fnEachLine, fnFinished, linenum) {
     let line = this.getNextLine();
     if (line !== null) {
       return Promise.all([fnEachLine(line, linenum)]).then(() => {
-        return this.prosessNextLine(fnEachLine, fnFinished, linenum + 1);
+        return this.processNextLine(fnEachLine, fnFinished, linenum + 1);
       });
     } else {
       if (fnFinished) {
