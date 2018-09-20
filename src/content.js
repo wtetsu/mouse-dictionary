@@ -17,6 +17,9 @@ import mdwindow from "./mdwindow";
 const KEY_USER_CONFIG = "**** config ****";
 
 const loadUserSettings = async () => {
+  if (env.disableUserSettings) {
+    return {};
+  }
   return new Promise(resolve => {
     chrome.storage.sync.get([KEY_USER_CONFIG], d => {
       const userSettingsJson = d[KEY_USER_CONFIG];
@@ -208,7 +211,7 @@ const main = async () => {
     dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
 
     const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
-    if (!_settings.disableKeepingWindowStatus) {
+    if (!env.disableKeepingWindowStatus) {
       draggable.onchange = e => {
         const positionData = {};
         positionData[LAST_POSITION_KEY] = JSON.stringify(e);

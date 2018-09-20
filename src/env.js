@@ -14,9 +14,11 @@ if (BROWSER === "FIREFOX") {
   // About storing data of windows status(e.g. position, size)
   // I was not able to make the feature stable on Firefox, so it is disabled for now.
   env.disableKeepingWindowStatus = true;
+  env.disableUserSettings = true;
 } else {
   env.registerRecordsAtOnce = 100000;
   env.disableKeepingWindowStatus = false;
+  env.disableUserSettings = false;
 }
 
 export default env;

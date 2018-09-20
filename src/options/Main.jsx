@@ -18,6 +18,7 @@ import defaultSettings from "../defaultsettings";
 import mdwindow from "../mdwindow";
 import text from "../text";
 import dom from "../dom";
+import env from "../env";
 
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";
@@ -71,12 +72,14 @@ class Main extends React.Component {
         />
         <hr />
 
-        <div>
-          <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-          <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
-            {this.state.basicSettingsOpened ? res("closeBasicSettings") : res("openBasicSettings")}
-          </a>
-        </div>
+        {!env.disableUserSettings && (
+          <div>
+            <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
+            <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
+              {this.state.basicSettingsOpened ? res("closeBasicSettings") : res("openBasicSettings")}
+            </a>
+          </div>
+        )}
 
         <br />
 
