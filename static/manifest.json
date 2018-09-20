@@ -2,7 +2,7 @@
   "name": "Mouse Dictionary(Beta)",
   "description": "Mouse Dictionary(Beta)",
   "author": "wtetsu",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
