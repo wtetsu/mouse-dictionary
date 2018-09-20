@@ -118,7 +118,7 @@ const BasicSettings = props => {
       <select value={settings.headFontSize} onChange={props.onChange.bind(this, "headFontSize")} style={{ width: 250 }}>
         {fontSizeOptions}
       </select>
-      <label>{res("colorAndFont")}</label>
+      <label>{res("headFontColor")}</label>
       <ChromePicker
         color={settings.headFontColor}
         onChangeComplete={props.onChangeColorSettings.bind(this, "headFontColor")}
