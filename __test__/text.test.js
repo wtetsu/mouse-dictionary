@@ -154,3 +154,10 @@ test("", () => {
   expect(text.linkWords(["American", "English"])).toEqual(["American English", "American"]);
   expect(text.linkWords(["dealt", "with"])).toEqual(["dealt with", "dealt", "deal with", "deal"]);
 });
+
+test("", () => {
+  expect(text.splitString("camelCase")).toEqual(["camel", "Case", "case"]);
+  expect(text.splitString("PascalCase")).toEqual(["Pascal", "pascal", "Case", "case"]);
+  expect(text.splitString("snake_case")).toEqual(["snake", "case"]);
+  expect(text.splitString("UPPER_SNAKE_CASE")).toEqual(["UPPER", "upper", "SNAKE", "snake", "CASE", "case"]);
+});

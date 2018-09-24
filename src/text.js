@@ -46,6 +46,13 @@ const mergeArray = (destArray, srcArray) => {
   }
 };
 
+/**
+ * "American English" -> ["American", "English"]
+ * "American.English" -> ["American", "English"]
+ * "American,English" -> ["American", "English"]
+ * "American-English" -> ["American-English"]
+ * "American_English" -> ["American_English"]
+ */
 text.splitIntoWords = str => {
   const words = [];
   let startIndex = null;
@@ -77,7 +84,10 @@ text.splitIntoWords = str => {
   return words;
 };
 
-text._splitString = str => {
+/**
+ * "camelCase" -> ["camel", "case"]
+ */
+text.splitString = str => {
   const arr = [];
   let startIndex = 0;
   let i = 0;
@@ -143,7 +153,7 @@ text.parseString = (sourceStr, ignoreLowerCase) => {
       result.push(str);
     }
     result = result.concat(text.tryToReplaceTrailingStrings(str, trailingRules));
-    const arr = text._splitString(str);
+    const arr = text.splitString(str);
     for (let j = 0; j < arr.length; j++) {
       const w = arr[j];
       if (!result.includes(w)) {
@@ -184,7 +194,7 @@ text.tryToReplaceTrailingStrings = (str, trailingRule) => {
 
 /**
  * ["American", "English"
- * -> ["American English", "American", "american engish", "american"]);
+ * -> ["American English", "American", "american english", "american"]);
  *
  * ["dealt", "with"]
  * -> ["dealt with", "dealt", "deal with", "deal"]
