@@ -136,9 +136,18 @@ const main = async () => {
 
     const lookupWords = text.createLookupWords(textToLookup, _settings.lookupWithCapitalized, mustIncludeOriginalText);
 
+    let startTime;
+    if (process.env.NODE_ENV !== "production") {
+      startTime = new Date().getTime();
+    }
     return lookup(lookupWords).then(newDom => {
       _shortCache.put(textToLookup, newDom);
       _lastText = textToLookup;
+
+      if (process.env.NODE_ENV !== "production") {
+        const time = new Date().getTime() - startTime;
+        console.info(`${time}ms:${textToLookup}`);
+      }
     });
   };
 

@@ -12,7 +12,8 @@
   "globals": {
     "chrome": true,
     "Promise": true,
-    "BROWSER": true
+    "BROWSER": true,
+    "process": true
   },
   "rules": {
     "no-console": 0,
