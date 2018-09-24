@@ -19,15 +19,15 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
     result.push(sourceStr);
   }
   for (let i = 0; i < strList.length; i++) {
-    const str = strList[i];
-
-    const arr = text.splitIntoWords(str);
-    const linkedWords = text.linkWords(arr);
-    const wlist = text.parseString(arr[0], !isAllLower);
-    for (let i = 0; i < wlist.length; i++) {
-      linkedWords.push(wlist[i]);
-    }
+    const words = text.splitIntoWords(strList[i]);
+    const linkedWords = createLinkedWordList(words, !isAllLower);
     mergeArray(result, linkedWords);
+
+    const convertedWords = doOtherConversions(words);
+    if (convertedWords) {
+      const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower);
+      mergeArray(result, linkedConvertedWords);
+    }
   }
 
   if (withCapitalized) {
@@ -35,6 +35,63 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
   }
 
   return result;
+};
+
+const createLinkedWordList = (arr, ignoreLowerCase) => {
+  const linkedWords = text.linkWords(arr);
+  const wlist = text.parseString(arr[0], ignoreLowerCase);
+  for (let i = 0; i < wlist.length; i++) {
+    linkedWords.push(wlist[i]);
+  }
+  return linkedWords;
+};
+
+const doOtherConversions = words => {
+  let result = null;
+
+  let changed = false;
+  const convertedWords = Object.assign([], words);
+  for (let i = 0; i < convertedWords.length; i++) {
+    const w = doConvert(convertedWords[i]);
+    if (w) {
+      convertedWords[i] = w;
+      changed = true;
+    }
+  }
+  if (changed) {
+    result = convertedWords;
+  }
+
+  return result;
+};
+
+const doConvert = word => {
+  let result = null;
+  const w = otherConversions[word];
+  if (w) {
+    result = w;
+  } else {
+    if (word.endsWith("'s")) {
+      result = "one's";
+    }
+  }
+  return result;
+};
+
+const otherConversions = {
+  my: "one's",
+  your: "one's",
+  his: "one's",
+  her: "one's",
+  its: "one's",
+  our: "one's",
+  their: "one's",
+  myself: "oneself",
+  yourself: "oneself",
+  himself: "oneself",
+  herself: "oneself",
+  ourselves: "oneself",
+  themselves: "oneself"
 };
 
 const mergeArray = (destArray, srcArray) => {
@@ -138,6 +195,10 @@ const trailingRules = [
   [{ search: "'s", new: "" }]
 ];
 
+/**
+ * "wordone-wordtwo-wordthree" -> ["wordone", "wordtwo", "wordthree"]
+ * "Announcements" -> ["Announcement", "announcements", "announcement]
+ */
 text.parseString = (sourceStr, ignoreLowerCase) => {
   let result = [];
   if (!sourceStr) {
