@@ -102,28 +102,27 @@ const main = async () => {
 
   document.body.addEventListener("mouseup", () => {
     _selection = window.getSelection().toString();
-    parseTextAndLookup(_selection);
+    if (_selection) {
+      const text = _selection.substring(0, 256);
+      parseTextAndLookup(text, true);
+    }
   });
 
   document.body.addEventListener("mousemove", ev => {
-    let textAtCursor, mustIncludeOriginalText;
     if (_selection) {
-      textAtCursor = _selection;
-      mustIncludeOriginalText = true;
-    } else {
-      textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY, _settings.parseWordsLimit);
-      mustIncludeOriginalText = false;
-    }
-    if (!textAtCursor) {
       return;
     }
 
-    parseTextAndLookup(textAtCursor, mustIncludeOriginalText);
+    let textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY, _settings.parseWordsLimit);
+    if (!textAtCursor) {
+      return;
+    }
+    parseTextAndLookup(textAtCursor, false);
   });
 
   const parseTextAndLookup = (textToLookup, mustIncludeOriginalText) => {
     if (!mustIncludeOriginalText) {
-      if (!textToLookup || _lastText == textToLookup) {
+      if (!textToLookup || _lastText === textToLookup) {
         return;
       }
       const cache = _shortCache.get(textToLookup);
@@ -147,6 +146,7 @@ const main = async () => {
       if (process.env.NODE_ENV !== "production") {
         const time = new Date().getTime() - startTime;
         console.info(`${time}ms:${textToLookup}`);
+        console.info(lookupWords);
       }
     });
   };

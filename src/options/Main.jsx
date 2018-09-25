@@ -234,10 +234,15 @@ class Main extends React.Component {
     }
     const newSettings = Object.assign({}, this.state.settings);
     let newValue;
-    if (e.target.type === "number") {
-      newValue = parseInt(e.target.value, 10);
-    } else {
-      newValue = e.target.value;
+    switch (e.target.type) {
+      case "number":
+        newValue = parseInt(e.target.value, 10);
+        break;
+      case "checkbox":
+        newValue = e.target.checked;
+        break;
+      default:
+        newValue = e.target.value;
     }
     newSettings[name] = newValue;
 
@@ -404,10 +409,22 @@ class Main extends React.Component {
   updateTrialText(settings, trialText) {
     const actualTrialText = trialText || this.state.trialText;
     const lookupWords = text.createLookupWords(actualTrialText, settings.lookupWithCapitalized);
+
+    let startTime;
+    if (process.env.NODE_ENV !== "production") {
+      startTime = new Date().getTime();
+      console.info(lookupWords);
+    }
+
     this.contentGenerator.generate(lookupWords).then(contentHtml => {
       const newDom = dom.create(contentHtml);
       this.trialWindow.content.innerHTML = "";
       this.trialWindow.content.appendChild(newDom);
+
+      if (process.env.NODE_ENV !== "production") {
+        const time = new Date().getTime() - startTime;
+        console.info(`${time}ms:${lookupWords}`);
+      }
     });
   }
 

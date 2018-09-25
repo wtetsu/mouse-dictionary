@@ -13,6 +13,7 @@ const AdvancedSettings = props => {
     return "<div></div>";
   }
 
+  const lookupWithCapitalized = (settings && settings.lookupWithCapitalized) || false;
   const titlebarTemplate = (settings && settings.titlebarTemplate) || "";
   const contentWrapperTemplate = (settings && settings.contentWrapperTemplate) || "";
   const dialogTemplate = (settings && settings.dialogTemplate) || "";
@@ -53,6 +54,15 @@ const AdvancedSettings = props => {
       <fieldset>
         <h2>{res("advancedSettings")}</h2>
         <hr />
+        <label>
+          {res("lookupWithCapitalized")}
+          <input
+            type="checkbox"
+            checked={lookupWithCapitalized}
+            onChange={e => props.onChange("lookupWithCapitalized", e)}
+          />
+        </label>
+
         <h3>{res("htmlTemplate")}</h3>
         <label>{res("htmlTemplateWindow")}</label>
         <textarea

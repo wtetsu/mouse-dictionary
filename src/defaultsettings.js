@@ -7,8 +7,8 @@
 export default {
   shortWordLength: 2,
   cutShortWordDescription: 30,
-  parseWordsLimit: 10,
-  lookupWithCapitalized: true,
+  parseWordsLimit: 8,
+  lookupWithCapitalized: false,
   initialPosition: "right",
   scroll: "hidden",
 
