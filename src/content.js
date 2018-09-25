@@ -103,7 +103,8 @@ const main = async () => {
   document.body.addEventListener("mouseup", () => {
     _selection = window.getSelection().toString();
     if (_selection) {
-      const text = _selection.substring(0, 256);
+      const SELECTION_LENGTH_LIMIT = 128;
+      const text = _selection.trim().substring(0, SELECTION_LENGTH_LIMIT);
       parseTextAndLookup(text, true);
     }
   });
@@ -181,7 +182,11 @@ const main = async () => {
         case "keep":
           chrome.storage.sync.get([LAST_POSITION_KEY], r => {
             // onGot
-            const lastPosition = JSON.parse(r[LAST_POSITION_KEY]);
+            let lastPosition = null;
+            let lastPositionJson = r[LAST_POSITION_KEY];
+            if (lastPositionJson) {
+              lastPosition = JSON.parse(lastPositionJson);
+            }
             if (lastPosition) {
               if (lastPosition.width < 50) {
                 lastPosition.width = 50;
