@@ -107,7 +107,15 @@ test("", () => {
 
 test("", () => {
   expect(text.createLookupWords("on one's own")).toEqual(["on one's own", "on one's", "on"]);
-  expect(text.createLookupWords("on his own")).toEqual(["on his own", "on his", "on", "on one's own", "on one's"]);
+  expect(text.createLookupWords("on his own")).toEqual([
+    "on his own",
+    "on his",
+    "on",
+    "on one's own",
+    "on one's",
+    "on someone's own",
+    "on someone's"
+  ]);
 
   expect(text.createLookupWords("by oneself")).toEqual(["by oneself", "by"]);
   expect(text.createLookupWords("by myself")).toEqual(["by myself", "by", "by oneself"]);
@@ -118,7 +126,9 @@ test("", () => {
     "brush taro's",
     "brush",
     "brush one's dog",
-    "brush one's"
+    "brush one's",
+    "brush someone's dog",
+    "brush someone's"
   ]);
 });
 

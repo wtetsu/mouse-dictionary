@@ -22,11 +22,14 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
     const words = text.splitIntoWords(strList[i]);
     const linkedWords = createLinkedWordList(words, !isAllLower);
     mergeArray(result, linkedWords);
-
-    const convertedWords = doOtherConversions(words);
-    if (convertedWords) {
-      const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower);
-      mergeArray(result, linkedConvertedWords);
+    // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
+    const convertedWordsList = doOtherConversions(words);
+    for (let j = 0; j < convertedWordsList.length; j++) {
+      const convertedWords = convertedWordsList[j];
+      if (convertedWords) {
+        const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower);
+        mergeArray(result, linkedConvertedWords);
+      }
     }
   }
 
@@ -46,53 +49,82 @@ const createLinkedWordList = (arr, ignoreLowerCase) => {
   return linkedWords;
 };
 
+/**
+ * ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
+ */
 const doOtherConversions = words => {
-  let result = null;
+  let result = [];
 
   let changed = false;
-  const convertedWords = Object.assign([], words);
-  for (let i = 0; i < convertedWords.length; i++) {
-    const w = doConvert(convertedWords[i]);
-    if (w) {
-      convertedWords[i] = w;
-      changed = true;
+
+  for (let i = 0; i < otherConversions.length; i++) {
+    const convertedWords = Object.assign([], words);
+    for (let j = 0; j < convertedWords.length; j++) {
+      const w = doConvert(convertedWords[j], otherConversions[i]);
+      if (w) {
+        convertedWords[j] = w;
+        changed = true;
+      }
     }
-  }
-  if (changed) {
-    result = convertedWords;
+    if (changed) {
+      result.push(convertedWords);
+    }
   }
 
   return result;
 };
 
-const doConvert = word => {
+const doConvert = (word, conversionRule) => {
   let result = null;
-  const w = otherConversions[word];
+  const w = conversionRule[word];
   if (w) {
     result = w;
   } else {
-    if (word.endsWith("'s")) {
-      result = "one's";
+    if (word.endsWith("'s") || word.endsWith("s'")) {
+      result = conversionRule["'s"];
     }
   }
   return result;
 };
 
-const otherConversions = {
-  my: "one's",
-  your: "one's",
-  his: "one's",
-  her: "one's",
-  its: "one's",
-  our: "one's",
-  their: "one's",
-  myself: "oneself",
-  yourself: "oneself",
-  himself: "oneself",
-  herself: "oneself",
-  ourselves: "oneself",
-  themselves: "oneself"
-};
+const otherConversions = [
+  {
+    my: "one's",
+    your: "one's",
+    his: "one's",
+    her: "one's",
+    its: "one's",
+    our: "one's",
+    their: "one's",
+    "'s": "one's",
+    "one's": "one's",
+    "someone's": "someone's",
+    myself: "oneself",
+    yourself: "oneself",
+    himself: "oneself",
+    herself: "oneself",
+    ourselves: "oneself",
+    themselves: "oneself"
+  },
+  {
+    my: "someone's",
+    your: "someone's",
+    his: "someone's",
+    her: "someone's",
+    its: "someone's",
+    our: "someone's",
+    their: "someone's",
+    "'s": "someone's",
+    "one's": "one's",
+    "someone's": "someone's",
+    myself: "oneself",
+    yourself: "oneself",
+    himself: "oneself",
+    herself: "oneself",
+    ourselves: "oneself",
+    themselves: "oneself"
+  }
+];
 
 const mergeArray = (destArray, srcArray) => {
   for (let i = 0; i < srcArray.length; i++) {
