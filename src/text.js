@@ -6,6 +6,7 @@
 
 import consts from "./consts";
 import verbs from "./verbs";
+import UniqArray from "./uniqarray";
 
 const text = {};
 
@@ -14,30 +15,32 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
   const isAllLower = lowerStr === sourceStr;
   const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
 
-  const result = [];
+  const lookupWords = new UniqArray();
+
   if (mustIncludeOriginalText) {
-    result.push(sourceStr);
+    lookupWords.push(sourceStr);
   }
   for (let i = 0; i < strList.length; i++) {
     const words = text.splitIntoWords(strList[i]);
     const linkedWords = createLinkedWordList(words, !isAllLower);
-    mergeArray(result, linkedWords);
+    lookupWords.merge(linkedWords);
+
     // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
     const convertedWordsList = doOtherConversions(words);
     for (let j = 0; j < convertedWordsList.length; j++) {
       const convertedWords = convertedWordsList[j];
       if (convertedWords) {
         const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower);
-        mergeArray(result, linkedConvertedWords);
+        lookupWords.merge(linkedConvertedWords);
       }
     }
   }
 
   if (withCapitalized) {
-    mergeArray(result, result.map(s => s.toUpperCase()));
+    lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
 
-  return result;
+  return lookupWords.toArray();
 };
 
 const createLinkedWordList = (arr, ignoreLowerCase) => {
@@ -125,15 +128,6 @@ const otherConversions = [
     themselves: "oneself"
   }
 ];
-
-const mergeArray = (destArray, srcArray) => {
-  for (let i = 0; i < srcArray.length; i++) {
-    const a = srcArray[i];
-    if (!destArray.includes(a)) {
-      destArray.push(a);
-    }
-  }
-};
 
 /**
  * "American English" -> ["American", "English"]
@@ -232,10 +226,10 @@ const trailingRules = [
  * "Announcements" -> ["Announcement", "announcements", "announcement]
  */
 text.parseString = (sourceStr, ignoreLowerCase) => {
-  let result = [];
   if (!sourceStr) {
-    return result;
+    return [];
   }
+  const wordList = new UniqArray();
 
   const lowerStr = sourceStr.toLowerCase();
   const strList = ignoreLowerCase || lowerStr === sourceStr ? [sourceStr] : [sourceStr, lowerStr];
@@ -243,19 +237,17 @@ text.parseString = (sourceStr, ignoreLowerCase) => {
   for (let i = 0; i < strList.length; i++) {
     const str = strList[i];
     if (i >= 1) {
-      result.push(str);
+      wordList.push(str);
     }
-    result = result.concat(text.tryToReplaceTrailingStrings(str, trailingRules));
+    wordList.merge(text.tryToReplaceTrailingStrings(str, trailingRules));
+
     const arr = text.splitString(str);
     for (let j = 0; j < arr.length; j++) {
       const w = arr[j];
-      if (!result.includes(w)) {
-        result.push(w);
-      }
+      wordList.push(w);
     }
   }
-
-  return result;
+  return wordList.toArray();
 };
 
 text.replaceTrailingCharacters = (str, searchValue, newValue) => {

@@ -13,7 +13,8 @@
     "chrome": true,
     "Promise": true,
     "BROWSER": true,
-    "process": true
+    "process": true,
+    "Set": true
   },
   "rules": {
     "no-console": 0,
