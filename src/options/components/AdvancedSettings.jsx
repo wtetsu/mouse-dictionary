@@ -53,7 +53,6 @@ const AdvancedSettings = props => {
     <form>
       <fieldset>
         <h2>{res("advancedSettings")}</h2>
-        <hr />
         <label>
           {res("lookupWithCapitalized")}
           <input
@@ -62,6 +61,14 @@ const AdvancedSettings = props => {
             onChange={e => props.onChange("lookupWithCapitalized", e)}
           />
         </label>
+
+        <span>{res("parseWordsLimit")}</span>
+        <input
+          type="number"
+          value={settings.parseWordsLimit}
+          onChange={props.onChange.bind(this, "parseWordsLimit")}
+          style={{ width: 60 }}
+        />
 
         <h3>{res("htmlTemplate")}</h3>
         <label>{res("htmlTemplateWindow")}</label>
