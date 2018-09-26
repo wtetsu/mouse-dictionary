@@ -99,8 +99,14 @@ const main = async () => {
   const _shortCache = new ShortCache(100);
 
   let _selection = null;
+  let _mouseDown = false;
+
+  document.body.addEventListener("mousedown", () => {
+    _mouseDown = true;
+  });
 
   document.body.addEventListener("mouseup", () => {
+    _mouseDown = false;
     _selection = window.getSelection().toString();
     if (_selection) {
       const SELECTION_LENGTH_LIMIT = 128;
@@ -110,6 +116,9 @@ const main = async () => {
   });
 
   document.body.addEventListener("mousemove", ev => {
+    if (_mouseDown) {
+      return;
+    }
     if (_selection) {
       return;
     }
