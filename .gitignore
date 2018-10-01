@@ -58,7 +58,6 @@ typings/
 .env
 
 .*/
-dist/
-dist-ff/
+dist-chrome/
+dist-firefox/
 *.zip
-

@@ -5,15 +5,17 @@
   "author": "wtetsu",
   "license": "MIT",
   "scripts": {
-    "build": "webpack",
-    "watch": "webpack -w",
+    "build": "npm run build-chrome & npm run build-firefox",
+    "release": "npm run release-chrome & npm run release-firefox",
     "lint": "eslint src/*.js",
-    "release": "NODE_ENV=production npm run build",
     "test": "jest",
     "test-watch": "jest --watch",
-    "build-ff": "webpack --config webpack.config.ff.js",
-    "watch-ff": "webpack -w --config webpack.config.ff.js",
-    "release-ff": "NODE_ENV=production npm run build-ff"
+    "build-chrome": "webpack --config webpack.config.chrome.js",
+    "watch-chrome": "webpack -w --config webpack.config.chrome.js",
+    "release-chrome": "NODE_ENV=production npm run build-chrome",
+    "build-firefox": "webpack --config webpack.config.firefox.js",
+    "watch-firefox": "webpack -w --config webpack.config.firefox.js",
+    "release-firefox": "NODE_ENV=production npm run build-firefox"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",

@@ -22,15 +22,22 @@ Download it.
 
 Use npm 6+.
 
+Preparation:
+
 ```sh
 npm install
-npm run build
+```
+
+For Chrome:
+
+```sh
+npm run build-chrome
 ```
 
 For Firefox:
 
 ```sh
-npm run build-ff
+npm run build-firefox
 ```
 
 ## License
@@ -48,6 +55,6 @@ This project includes some third-party data:
   - License: Public domain
 
 - Images
-  - Book, bookmark icon
-  - https://www.iconfinder.com/icons/111113/book_bookmark_icon
+  - bookmark icon, gear icon
+  - https://www.iconfinder.com/iconsets/wpzoom-developer-icon-set
   - License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
