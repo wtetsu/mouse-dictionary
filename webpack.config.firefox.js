@@ -1,15 +1,16 @@
 const DefinePlugin = require("webpack/lib/DefinePlugin");
 
-const exp = require("./webpack.config");
+const commonConfig = require("./webpack.config");
+const specificConfig = Object.assign({}, commonConfig);
 
-exp.output = {
+specificConfig.output = {
   path: __dirname + "/dist-firefox"
 };
 
-exp.plugins.push(
+specificConfig.plugins.push(
   new DefinePlugin({
     BROWSER: JSON.stringify("FIREFOX")
   })
 );
 
-module.exports = exp;
+module.exports = specificConfig;
