@@ -32,15 +32,23 @@ export default {
       replace: '<font color="#008000">$1</font>'
     },
     {
-      search: "(【.+】)",
+      search: "(【.+?】)",
       replace: '<font color="#008000">$1</font>'
     },
     {
-      search: "({.+})",
+      search: "({.+?})",
       replace: '<font color="#008000">$1</font>'
     },
     {
-      search: "(《.+》)",
+      search: "(《.+?》)",
+      replace: '<font color="#008000">$1</font>'
+    },
+    {
+      search: "(〈.+?〉)",
+      replace: '<font color="#008000">$1</font>'
+    },
+    {
+      search: "(〔.+?〕)",
       replace: '<font color="#008000">$1</font>'
     },
     {
