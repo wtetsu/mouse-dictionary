@@ -12,6 +12,8 @@ export default {
   initialPosition: "right",
   scroll: "hidden",
 
+  showTitlebar: false,
+
   backgroundColor: "#ffffff",
 
   headFontColor: "#000088",
@@ -74,7 +76,7 @@ export default {
   titlebarTemplate: `<div style="all:initial;
             display:block;
             font-size:small;
-            cursor:pointer;
+            cursor:move;
             color:#101010;
             background-color:#EBEBEB;">Mouse Dictionary</div>`,
 
@@ -84,15 +86,16 @@ export default {
             width: {{width}}px;
             height: {{height}}px;
             position: fixed;
-            resize: both;
             overflow-x: hidden;
             overflow-y: {{scroll}};
             top: 5px;
             background-color: {{backgroundColor}};
-            z-index: 2147483647;
+            z-index: 2147483646;
+            padding: 8px;
+            border-radius: 8px 8px 8px 8px;
             border: 1px solid #A0A0A0;"></div>`,
 
-  contentTemplate: `<div style="all:initial;">
+  contentTemplate: `<div style="all:initial;cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
   {{#words}}
     {{^isShort}}
       {{! 通常の単語 }}

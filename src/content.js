@@ -243,7 +243,11 @@ const main = async () => {
         });
       };
     }
-    draggable.add(_area.dialog, _area.header);
+    if (_settings.showTitlebar) {
+      draggable.add(_area.dialog, _area.header);
+    } else {
+      draggable.add(_area.dialog);
+    }
   });
 };
 

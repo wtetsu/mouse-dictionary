@@ -10,7 +10,8 @@ export default class Draggable {
   constructor(normalStyles, movingStyles) {
     this.normalStyles = normalStyles;
     this.movingStyles = movingStyles;
-    this.targetElement = null;
+    this.mainElement = null;
+    this.mode = null;
     this.startingX = null;
     this.startingY = null;
     this.elementX = null;
@@ -24,28 +25,179 @@ export default class Draggable {
     this.lastTop = null;
     this.lastWidth = null;
     this.lastHeight = null;
+    this.cursorEdgePosition = null;
+    this.defaultCursor = null;
 
     document.body.addEventListener("mousemove", e => {
-      if (this.targetElement) {
-        let x = this.parseInt(e.pageX);
-        let y = this.parseInt(e.pageY);
-        this.currentLeft = this.elementX + x - this.startingX;
-        this.currentTop = this.elementY + y - this.startingY;
-        this.targetElement.style.left = this.currentLeft.toString() + "px";
-        this.targetElement.style.top = this.currentTop.toString() + "px";
+      if (this.currentWidth === null) {
+        this.currentWidth = this.mainElement.clientWidth;
+      }
+      if (this.currentHeight === null) {
+        this.currentHeight = this.mainElement.clientHeight;
+      }
+
+      switch (this.mode) {
+        case "moving":
+          this.move(e);
+          break;
+        case "resizing":
+          this.resize(e);
+          break;
+        default:
+          this.updateEdgeState(e);
       }
     });
+
     document.body.addEventListener("mouseup", () => {
-      if (this.targetElement) {
-        dom.applyStyles(this.targetElement, this.normalStyles);
-        this.targetElement = null;
-        this.startingX = null;
-        this.startingY = null;
-        this.elementX = null;
-        this.elementY = null;
-        this.callOnChange();
+      switch (this.mode) {
+        case "moving":
+          dom.applyStyles(this.mainElement, this.normalStyles);
+          break;
+        case "resizing":
+          break;
       }
+      this.mode = null;
+      this.startingX = null;
+      this.startingY = null;
+      this.startingWidth = null;
+      this.startingHeight = null;
+      this.elementX = null;
+      this.elementY = null;
+      this.callOnChange();
     });
+  }
+
+  updateEdgeState(e) {
+    let cursor;
+    let onE, onW, onN, onS;
+    if (this.onEdge(e.x - this.currentLeft)) {
+      onW = true;
+    } else if (this.onEdge(this.currentLeft + this.currentWidth - e.x)) {
+      onE = true;
+    }
+    if (this.onEdge(e.y - this.currentTop)) {
+      onN = true;
+    } else if (this.onEdge(this.currentTop + this.currentHeight - e.y)) {
+      onS = true;
+    }
+
+    if (onW && onN) {
+      this.cursorEdgePosition = "nw";
+      cursor = "nwse-resize";
+    } else if (onE && onS) {
+      this.cursorEdgePosition = "se";
+      cursor = "nwse-resize";
+    } else if (onE && onN) {
+      this.cursorEdgePosition = "ne";
+      cursor = "nesw-resize";
+    } else if (onW && onS) {
+      this.cursorEdgePosition = "sw";
+      cursor = "nesw-resize";
+    } else if (onW) {
+      this.cursorEdgePosition = "w";
+      cursor = "ew-resize";
+    } else if (onE) {
+      this.cursorEdgePosition = "e";
+      cursor = "ew-resize";
+    } else if (onN) {
+      this.cursorEdgePosition = "n";
+      cursor = "ns-resize";
+    } else if (onS) {
+      this.cursorEdgePosition = "s";
+      cursor = "ns-resize";
+    } else {
+      this.cursorEdgePosition = null;
+      cursor = this.defaultCursor;
+    }
+    if (cursor) {
+      this.mainElement.style.cursor = cursor;
+    }
+  }
+
+  onEdge(num) {
+    return num >= 0 && num <= 10;
+  }
+
+  move(e) {
+    const x = convertToInt(e.pageX);
+    const y = convertToInt(e.pageY);
+
+    const newLeft = this.elementX + x - this.startingX;
+    const newTop = this.elementY + y - this.startingY;
+
+    if (newLeft !== this.currentLeft || newTop !== this.currentTop) {
+      this.currentLeft = newLeft;
+      this.currentTop = newTop;
+      this.mainElement.style.left = this.currentLeft.toString() + "px";
+      this.mainElement.style.top = this.currentTop.toString() + "px";
+      dom.applyStyles(this.mainElement, this.movingStyles);
+    }
+  }
+
+  resize(e) {
+    const x = convertToInt(e.pageX);
+    const y = convertToInt(e.pageY);
+
+    let newWidth = null;
+    let newHeight = null;
+    let newLeft = null;
+    let newTop = null;
+    switch (this.cursorEdgePosition) {
+      case "s":
+        newHeight = this.startingHeight + y - this.startingY;
+        break;
+      case "e":
+        newWidth = this.startingWidth + x - this.startingX;
+        break;
+      case "w":
+        newWidth = this.startingWidth - x + this.startingX;
+        newLeft = this.elementX + x - this.startingX;
+        break;
+      case "n":
+        newHeight = this.startingHeight - y + this.startingY;
+        newTop = this.elementY + y - this.startingY;
+        break;
+      case "nw":
+        newHeight = this.startingHeight - y + this.startingY;
+        newTop = this.elementY + y - this.startingY;
+        newWidth = this.startingWidth - x + this.startingX;
+        newLeft = this.elementX + x - this.startingX;
+        break;
+      case "ne":
+        newHeight = this.startingHeight - y + this.startingY;
+        newTop = this.elementY + y - this.startingY;
+        newWidth = this.startingWidth + x - this.startingX;
+        break;
+      case "se":
+        newHeight = this.startingHeight + y - this.startingY;
+        newWidth = this.startingWidth + x - this.startingX;
+        break;
+      case "sw":
+        newHeight = this.startingHeight + y - this.startingY;
+        newWidth = this.startingWidth - x + this.startingX;
+        newLeft = this.elementX + x - this.startingX;
+        break;
+      default:
+        newWidth = null;
+        newHeight = null;
+    }
+
+    if (newWidth !== null && newWidth !== this.currentWidth) {
+      this.currentWidth = newWidth;
+      this.mainElement.style.width = this.currentWidth.toString() + "px";
+    }
+    if (newHeight !== null && newHeight !== this.currentHeight) {
+      this.currentHeight = newHeight;
+      this.mainElement.style.height = this.currentHeight.toString() + "px";
+    }
+    if (newLeft !== null && newLeft !== this.currentLeft) {
+      this.currentLeft = newLeft;
+      this.mainElement.style.left = this.currentLeft.toString() + "px";
+    }
+    if (newTop !== null && newTop !== this.currentTop) {
+      this.currentTop = newTop;
+      this.mainElement.style.top = this.currentTop.toString() + "px";
+    }
   }
 
   callOnChange() {
@@ -53,10 +205,10 @@ export default class Draggable {
       return;
     }
     if (
-      this.currentLeft != this.lastLeft ||
-      this.currentTop != this.lastTop ||
-      this.currentWidth != this.lastWidth ||
-      this.currentHeight != this.lastHeight
+      this.currentLeft !== this.lastLeft ||
+      this.currentTop !== this.lastTop ||
+      this.currentWidth !== this.lastWidth ||
+      this.currentHeight !== this.lastHeight
     ) {
       const e = {
         left: this.currentLeft,
@@ -73,8 +225,15 @@ export default class Draggable {
     }
   }
 
-  add(elem, titleBar) {
-    this.makeElementDraggable(elem, titleBar);
+  add(elem, movePinch) {
+    if (movePinch) {
+      this.defaultCursor = "auto";
+    } else {
+      this.defaultCursor = "move";
+    }
+
+    this.mainElement = elem;
+    this.makeElementDraggable(elem, movePinch);
 
     elem.addEventListener("click", () => {
       this.currentWidth = elem.clientWidth;
@@ -82,31 +241,55 @@ export default class Draggable {
       this.callOnChange();
     });
   }
-  makeElementDraggable(elem, titleBar) {
-    titleBar.addEventListener("mousedown", e => {
-      this.targetElement = elem;
-      dom.applyStyles(this.targetElement, this.movingStyles);
-      this.startingX = this.parseInt(e.pageX);
-      this.startingY = this.parseInt(e.pageY);
-      this.currentWidth = elem.clientWidth;
-      this.currentHeight = elem.clientHeight;
-      this.elementX = this.parseInt(this.targetElement.style.left);
-      this.elementY = this.parseInt(this.targetElement.style.top);
-    });
-    this.currentLeft = this.parseInt(elem.style.left);
-    this.currentTop = this.parseInt(elem.style.top);
-  }
-
-  parseInt(str) {
-    let r;
-    if (str === null || str === undefined || str === "") {
-      r = 0;
+  makeElementDraggable(elem, movePinch) {
+    if (movePinch) {
+      elem.addEventListener("mousedown", e => {
+        if (this.cursorEdgePosition) {
+          this.mode = "resizing";
+        }
+        this.startChanging(e, elem);
+      });
+      movePinch.addEventListener("mousedown", e => {
+        if (this.cursorEdgePosition) {
+          this.mode = "resizing";
+        } else {
+          this.mode = "moving";
+        }
+        this.startChanging(e, elem);
+      });
     } else {
-      r = parseInt(str, 10);
-      if (isNaN(r)) {
-        r = 0;
-      }
+      elem.style.cursor = this.defaultCursor;
+      elem.addEventListener("mousedown", e => {
+        if (this.cursorEdgePosition) {
+          this.mode = "resizing";
+        } else {
+          this.mode = "moving";
+        }
+        this.startChanging(e, elem);
+      });
     }
-    return r;
+    this.currentLeft = convertToInt(elem.style.left);
+    this.currentTop = convertToInt(elem.style.top);
+  }
+  startChanging(e, elem) {
+    this.startingX = convertToInt(e.pageX);
+    this.startingY = convertToInt(e.pageY);
+    this.startingWidth = convertToInt(elem.style.width);
+    this.startingHeight = convertToInt(elem.style.height);
+    this.elementX = convertToInt(elem.style.left);
+    this.elementY = convertToInt(elem.style.top);
   }
 }
+
+const convertToInt = str => {
+  let r;
+  if (str === null || str === undefined || str === "") {
+    r = 0;
+  } else {
+    r = parseInt(str, 10);
+    if (isNaN(r)) {
+      r = 0;
+    }
+  }
+  return r;
+};
