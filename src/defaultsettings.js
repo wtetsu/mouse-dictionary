@@ -65,7 +65,7 @@ export default {
 }`,
 
   movingDialogStyles: `{
-  "opacity": 0.35
+  "opacity": 0.5
 }`,
 
   hiddenDialogStyles: `{
@@ -91,7 +91,7 @@ export default {
             top: 5px;
             background-color: {{backgroundColor}};
             z-index: 2147483646;
-            padding: 8px;
+            padding: 2px 4px 2px 4px;
             border-radius: 8px 8px 8px 8px;
             border: 1px solid #A0A0A0;"></div>`,
 

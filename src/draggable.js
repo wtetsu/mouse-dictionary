@@ -30,10 +30,10 @@ export default class Draggable {
 
     document.body.addEventListener("mousemove", e => {
       if (this.currentWidth === null) {
-        this.currentWidth = this.mainElement.clientWidth;
+        this.currentWidth = convertToInt(this.mainElement.style.width);
       }
       if (this.currentHeight === null) {
-        this.currentHeight = this.mainElement.clientHeight;
+        this.currentHeight = convertToInt(this.mainElement.style.height);
       }
 
       switch (this.mode) {
@@ -121,10 +121,8 @@ export default class Draggable {
   move(e) {
     const x = convertToInt(e.pageX);
     const y = convertToInt(e.pageY);
-
     const newLeft = this.elementX + x - this.startingX;
     const newTop = this.elementY + y - this.startingY;
-
     if (newLeft !== this.currentLeft || newTop !== this.currentTop) {
       this.currentLeft = newLeft;
       this.currentTop = newTop;
@@ -144,37 +142,37 @@ export default class Draggable {
     let newTop = null;
     switch (this.cursorEdgePosition) {
       case "s":
-        newHeight = this.startingHeight + y - this.startingY;
+        newHeight = Math.max(this.startingHeight + y - this.startingY, 50);
         break;
       case "e":
-        newWidth = this.startingWidth + x - this.startingX;
+        newWidth = Math.max(this.startingWidth + x - this.startingX, 50);
         break;
       case "w":
-        newWidth = this.startingWidth - x + this.startingX;
+        newWidth = Math.max(this.startingWidth - x + this.startingX, 50);
         newLeft = this.elementX + x - this.startingX;
         break;
       case "n":
-        newHeight = this.startingHeight - y + this.startingY;
+        newHeight = Math.max(this.startingHeight - y + this.startingY, 50);
         newTop = this.elementY + y - this.startingY;
         break;
       case "nw":
-        newHeight = this.startingHeight - y + this.startingY;
+        newHeight = Math.max(this.startingHeight - y + this.startingY, 50);
         newTop = this.elementY + y - this.startingY;
-        newWidth = this.startingWidth - x + this.startingX;
+        newWidth = Math.max(this.startingWidth - x + this.startingX, 50);
         newLeft = this.elementX + x - this.startingX;
         break;
       case "ne":
-        newHeight = this.startingHeight - y + this.startingY;
+        newHeight = Math.max(this.startingHeight - y + this.startingY, 50);
         newTop = this.elementY + y - this.startingY;
         newWidth = this.startingWidth + x - this.startingX;
         break;
       case "se":
-        newHeight = this.startingHeight + y - this.startingY;
-        newWidth = this.startingWidth + x - this.startingX;
+        newHeight = Math.max(this.startingHeight + y - this.startingY, 50);
+        newWidth = Math.max(this.startingWidth + x - this.startingX, 50);
         break;
       case "sw":
-        newHeight = this.startingHeight + y - this.startingY;
-        newWidth = this.startingWidth - x + this.startingX;
+        newHeight = Math.max(this.startingHeight + y - this.startingY, 50);
+        newWidth = Math.max(this.startingWidth - x + this.startingX, 50);
         newLeft = this.elementX + x - this.startingX;
         break;
       default:
@@ -236,9 +234,8 @@ export default class Draggable {
     this.makeElementDraggable(elem, movePinch);
 
     elem.addEventListener("click", () => {
-      this.currentWidth = elem.clientWidth;
-      this.currentHeight = elem.clientHeight;
-      this.callOnChange();
+      this.currentWidth = convertToInt(elem.style.width);
+      this.currentHeight = convertToInt(elem.style.height);
     });
   }
   makeElementDraggable(elem, movePinch) {

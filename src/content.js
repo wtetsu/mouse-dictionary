@@ -15,6 +15,7 @@ import env from "./env";
 import mdwindow from "./mdwindow";
 
 const KEY_USER_CONFIG = "**** config ****";
+const KEY_LAST_POSITION = "**** last_position ****";
 
 const loadUserSettings = async () => {
   if (env.disableUserSettings) {
@@ -42,7 +43,6 @@ const processSettings = settings => {
       settings[item] = JSON.parse(settings[item]);
     }
   }
-
   if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
     settings.initialPosition = "right";
   }
@@ -59,6 +59,83 @@ const initializeSettings = async () => {
     settings[item] = userSettings[item];
   }
   return settings;
+};
+
+const fetchInitialPosition = options => {
+  return new Promise(resolve => {
+    let left;
+    switch (options.type) {
+      case "right":
+        left = options.documentWidth - options.dialogWidth - 5;
+        resolve({ left: `${left}px` });
+        break;
+      case "left":
+        left = 5;
+        resolve({ left: `${left}px` });
+        break;
+      case "keep":
+        chrome.storage.sync.get([KEY_LAST_POSITION], r => {
+          // onGot
+          const lastPositionJson = r[KEY_LAST_POSITION];
+          const lastPosition = lastPositionJson ? JSON.parse(lastPositionJson) : {};
+          const pos = optimizeInitialPosition(lastPosition, options);
+
+          const styles = {};
+          if (Number.isFinite(pos.left)) {
+            styles.left = `${pos.left}px`;
+          }
+          if (Number.isFinite(pos.top)) {
+            styles.top = `${pos.top}px`;
+          }
+          if (Number.isFinite(pos.width)) {
+            styles.width = `${pos.width}px`;
+          }
+          if (Number.isFinite(pos.height)) {
+            styles.height = `${pos.height}px`;
+          }
+          resolve(styles);
+        });
+        break;
+      default:
+        resolve({});
+    }
+  });
+};
+
+const optimizeInitialPosition = (position, options) => {
+  let newLeft;
+  if (position.left < 0) {
+    newLeft = 5;
+  } else if (position.left + position.width > options.windowWidth) {
+    newLeft = options.windowWidth - position.width - 5;
+  } else {
+    newLeft = position.left;
+  }
+
+  let newTop;
+  if (position.top < 0) {
+    newTop = 5;
+  } else if (position.top + position.height > options.windowHeight) {
+    newTop = options.windowHeight - position.height - 5;
+  } else {
+    newTop = position.top;
+  }
+
+  const newPosition = {
+    left: newLeft,
+    top: newTop,
+    width: max(position.width, 50),
+    height: max(position.height, 50)
+  };
+  return newPosition;
+};
+
+const max = (a, b) => {
+  if (Number.isFinite(a)) {
+    return Math.max(a, b);
+  } else {
+    return null;
+  }
 };
 
 const main = async () => {
@@ -166,7 +243,6 @@ const main = async () => {
       const newDom = dom.create(contentHtml);
       _area.content.innerHTML = "";
       _area.content.appendChild(newDom);
-
       return newDom;
     });
   };
@@ -174,81 +250,37 @@ const main = async () => {
   _area = mdwindow.create(_settings);
   _area.dialog.id = DIALOG_ID;
 
-  const LAST_POSITION_KEY = "**** last_position ****";
-
-  const fetchInitialPosition = () => {
-    return new Promise(resolve => {
-      let left;
-      switch (_settings.initialPosition) {
-        case "right":
-          left = document.documentElement.clientWidth - _area.dialog.clientWidth - 5;
-          resolve({ left });
-          break;
-        case "left":
-          left = 5;
-          resolve({ left });
-          break;
-        case "keep":
-          chrome.storage.sync.get([LAST_POSITION_KEY], r => {
-            // onGot
-            let lastPosition = null;
-            let lastPositionJson = r[LAST_POSITION_KEY];
-            if (lastPositionJson) {
-              lastPosition = JSON.parse(lastPositionJson);
-            }
-            if (lastPosition) {
-              if (lastPosition.width < 50) {
-                lastPosition.width = 50;
-              }
-              if (lastPosition.height < 50) {
-                lastPosition.height = 50;
-              }
-            }
-            resolve(lastPosition || {});
-          });
-          break;
-        default:
-          resolve({});
-          left = 5;
-      }
-    });
-  };
-
   dom.applyStyles(_area.dialog, _settings.hiddenDialogStyles);
   document.body.appendChild(_area.dialog);
 
-  fetchInitialPosition().then(position => {
-    if (Number.isFinite(position.left)) {
-      _area.dialog.style["left"] = `${position.left}px`;
-    }
-    if (Number.isFinite(position.top)) {
-      _area.dialog.style["top"] = `${position.top}px`;
-    }
-    if (Number.isFinite(position.width)) {
-      _area.dialog.style["width"] = `${position.width}px`;
-    }
-    if (Number.isFinite(position.height)) {
-      _area.dialog.style["height"] = `${position.height}px`;
-    }
-
-    dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
-
-    const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
-    if (!env.disableKeepingWindowStatus) {
-      draggable.onchange = e => {
-        const positionData = {};
-        positionData[LAST_POSITION_KEY] = JSON.stringify(e);
-        chrome.storage.sync.set(positionData, () => {
-          // saved
-        });
-      };
-    }
-    if (_settings.showTitlebar) {
-      draggable.add(_area.dialog, _area.header);
-    } else {
-      draggable.add(_area.dialog);
-    }
+  const position = await fetchInitialPosition({
+    type: _settings.initialPosition,
+    windowWidth: window.innerWidth,
+    windowHeight: window.innerHeight,
+    documentWidth: document.documentElement.clientWidth,
+    documentHeight: document.documentElement.clientHeight,
+    dialogWidth: _area.dialog.clientWidth,
+    dialogHeight: _area.dialog.clientHeight
   });
+  console.warn(position);
+  dom.applyStyles(_area.dialog, position);
+  dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
+
+  const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
+  if (!env.disableKeepingWindowStatus) {
+    draggable.onchange = e => {
+      const positionData = {};
+      positionData[KEY_LAST_POSITION] = JSON.stringify(e);
+      chrome.storage.sync.set(positionData, () => {
+        // saved
+      });
+    };
+  }
+  if (_settings.showTitlebar) {
+    draggable.add(_area.dialog, _area.header);
+  } else {
+    draggable.add(_area.dialog);
+  }
 };
 
 main();
