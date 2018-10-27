@@ -14,6 +14,7 @@ const AdvancedSettings = props => {
   }
 
   const lookupWithCapitalized = (settings && settings.lookupWithCapitalized) || false;
+  const showTitlebar = (settings && settings.showTitlebar) || false;
   const titlebarTemplate = (settings && settings.titlebarTemplate) || "";
   const contentWrapperTemplate = (settings && settings.contentWrapperTemplate) || "";
   const dialogTemplate = (settings && settings.dialogTemplate) || "";
@@ -62,13 +63,21 @@ const AdvancedSettings = props => {
           />
         </label>
 
-        <span>{res("parseWordsLimit")}</span>
-        <input
-          type="number"
-          value={settings.parseWordsLimit}
-          onChange={props.onChange.bind(this, "parseWordsLimit")}
-          style={{ width: 60 }}
-        />
+        <label>
+          {res("showTitlebar")}
+          <input type="checkbox" checked={showTitlebar} onChange={e => props.onChange("showTitlebar", e)} />
+        </label>
+
+        <label>
+          {res("parseWordsLimit")}
+          &nbsp;
+          <input
+            type="number"
+            value={settings.parseWordsLimit}
+            onChange={props.onChange.bind(this, "parseWordsLimit")}
+            style={{ width: 60 }}
+          />
+        </label>
 
         <h3>{res("htmlTemplate")}</h3>
         <label>{res("htmlTemplateWindow")}</label>

@@ -70,6 +70,7 @@ export default {
   stylesMoving: "スタイル:移動中",
   stylesInactive: "スタイル:非アクティブ",
   lookupWithCapitalized: "大文字の辞書データも参照する",
+  showTitlebar: "タイトルバーを表示する",
   parseWordsLimit: "一度に解析する単語数",
   add: "追加"
 };

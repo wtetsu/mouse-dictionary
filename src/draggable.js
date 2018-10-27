@@ -100,8 +100,10 @@ export default class Draggable {
       this.cursorEdgePosition = "e";
       cursor = "ew-resize";
     } else if (onN) {
-      this.cursorEdgePosition = "n";
-      cursor = "ns-resize";
+      if (!this.movePinch) {
+        this.cursorEdgePosition = "n";
+        cursor = "ns-resize";
+      }
     } else if (onS) {
       this.cursorEdgePosition = "s";
       cursor = "ns-resize";
@@ -223,50 +225,43 @@ export default class Draggable {
     }
   }
 
-  add(elem, movePinch) {
+  add(mainElement, movePinch) {
     if (movePinch) {
       this.defaultCursor = "auto";
     } else {
       this.defaultCursor = "move";
     }
 
-    this.mainElement = elem;
-    this.makeElementDraggable(elem, movePinch);
+    this.mainElement = mainElement;
+    this.movePinch = movePinch;
+    this.makeElementDraggable(mainElement, movePinch);
 
-    elem.addEventListener("click", () => {
-      this.currentWidth = convertToInt(elem.style.width);
-      this.currentHeight = convertToInt(elem.style.height);
+    this.mainElement.addEventListener("click", () => {
+      this.currentWidth = convertToInt(this.mainElement.style.width);
+      this.currentHeight = convertToInt(this.mainElement.style.height);
     });
   }
-  makeElementDraggable(elem, movePinch) {
+  makeElementDraggable(mainElement, movePinch) {
     if (movePinch) {
-      elem.addEventListener("mousedown", e => {
-        if (this.cursorEdgePosition) {
-          this.mode = "resizing";
-        }
-        this.startChanging(e, elem);
-      });
       movePinch.addEventListener("mousedown", e => {
-        if (this.cursorEdgePosition) {
-          this.mode = "resizing";
-        } else {
-          this.mode = "moving";
-        }
-        this.startChanging(e, elem);
+        this.mode = "moving";
+        this.startChanging(e, mainElement);
+        e.stopPropagation();
+      });
+      mainElement.addEventListener("mousedown", e => {
+        this.mode = this.cursorEdgePosition ? "resizing" : null;
+        this.startChanging(e, mainElement);
       });
     } else {
-      elem.style.cursor = this.defaultCursor;
-      elem.addEventListener("mousedown", e => {
-        if (this.cursorEdgePosition) {
-          this.mode = "resizing";
-        } else {
-          this.mode = "moving";
-        }
-        this.startChanging(e, elem);
+      mainElement.style.cursor = this.defaultCursor;
+      mainElement.addEventListener("mousedown", e => {
+        this.mode = this.cursorEdgePosition ? "resizing" : "moving";
+        this.startChanging(e, mainElement);
       });
     }
-    this.currentLeft = convertToInt(elem.style.left);
-    this.currentTop = convertToInt(elem.style.top);
+
+    this.currentLeft = convertToInt(mainElement.style.left);
+    this.currentTop = convertToInt(mainElement.style.top);
   }
   startChanging(e, elem) {
     this.startingX = convertToInt(e.pageX);
