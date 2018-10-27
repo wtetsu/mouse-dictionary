@@ -27,7 +27,23 @@ const AdvancedSettings = props => {
   const replaceRules = (settings && settings.replaceRules) || [];
   const replaceRulesList = replaceRules.map((r, i) => {
     return (
-      <div key={`replaceRule.search.${i}`}>
+      <div key={r.key || r.search}>
+        <button
+          type="button"
+          className="button button-outline button-arrow"
+          onClick={() => props.onClickMoveReplaceRule(i, -1)}
+          disabled={i === 0}
+        >
+          ↑
+        </button>
+        <button
+          type="button"
+          className="button button-outline button-arrow"
+          onClick={() => props.onClickMoveReplaceRule(i, +1)}
+          disabled={i === replaceRules.length - 1}
+        >
+          ↓
+        </button>
         <input
           type="text"
           name={`replaceRule.search.${i}`}
@@ -46,6 +62,15 @@ const AdvancedSettings = props => {
           onChange={props.onChangeReplaceRule}
         />
         <span>{res("replaceRule2")}</span>
+
+        <button
+          type="button"
+          className="button button-arrow"
+          onClick={() => props.onClickRemoveReplaceRule(i)}
+          style={{ marginLeft: 3 }}
+        >
+          ×
+        </button>
       </div>
     );
   });

@@ -19,6 +19,7 @@ import mdwindow from "../mdwindow";
 import text from "../text";
 import dom from "../dom";
 import env from "../env";
+import { timingSafeEqual } from "crypto";
 
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";
@@ -34,14 +35,18 @@ class Main extends React.Component {
       progress: "",
       settings: null,
       trialText: "rained cats and dogs",
-      basicSettingsOpened: false,
-      advancedSettingsOpened: false
+      // basicSettingsOpened: false,
+      // advancedSettingsOpened: false
+      basicSettingsOpened: true,
+      advancedSettingsOpened: true
     };
 
     this.doChangeState = this.doChangeState.bind(this);
     this.doChangeSettings = this.doChangeSettings.bind(this);
     this.doChangeColorSettings = this.doChangeColorSettings.bind(this);
     this.doChangeReplaceRule = this.doChangeReplaceRule.bind(this);
+    this.doMoveReplaceRule = this.doMoveReplaceRule.bind(this);
+    this.doRemoveReplaceRule = this.doRemoveReplaceRule.bind(this);
 
     this.doLoad = this.doLoad.bind(this);
     this.doClear = this.doClear.bind(this);
@@ -120,6 +125,8 @@ class Main extends React.Component {
             onChangeSettings={this.doChangeSettings}
             onChangeReplaceRule={this.doChangeReplaceRule}
             onClickAddReplaceRule={this.doAddReplaceRule}
+            onClickMoveReplaceRule={this.doMoveReplaceRule}
+            onClickRemoveReplaceRule={this.doRemoveReplaceRule}
             settings={state.settings}
           />
         )}
@@ -340,7 +347,7 @@ class Main extends React.Component {
 
   doAddReplaceRule() {
     const newReplaceRules = [].concat(this.state.settings.replaceRules);
-    newReplaceRules.push({ search: "", replace: "" });
+    newReplaceRules.push({ key: new Date().toString(), search: "", replace: "" });
 
     const newSettings = Object.assign({}, this.state.settings);
     newSettings.replaceRules = newReplaceRules;
@@ -375,14 +382,35 @@ class Main extends React.Component {
           newReplaceRules[index].replace = e.target.value;
           break;
       }
-
-      const newSettings = Object.assign({}, this.state.settings);
-      newSettings.replaceRules = newReplaceRules;
-      this.setState({
-        settings: newSettings
-      });
-      this.updateTrialWindow(newSettings);
+      this.updateReplaceRules(newReplaceRules);
     }
+  }
+
+  doMoveReplaceRule(index, offset) {
+    const newReplaceRules = [].concat(this.state.settings.replaceRules);
+    const a = newReplaceRules[index];
+    const b = newReplaceRules[index + offset];
+    if (a && b) {
+      newReplaceRules[index] = b;
+      newReplaceRules[index + offset] = a;
+      this.updateReplaceRules(newReplaceRules);
+    }
+  }
+
+  doRemoveReplaceRule(index) {
+    const newReplaceRules = [].concat(this.state.settings.replaceRules);
+    newReplaceRules.splice(index, 1);
+    this.setState(newReplaceRules);
+    this.updateReplaceRules(newReplaceRules);
+  }
+
+  updateReplaceRules(newReplaceRules) {
+    const newSettings = Object.assign({}, this.state.settings);
+    newSettings.replaceRules = newReplaceRules;
+    this.setState({
+      settings: newSettings
+    });
+    this.updateTrialWindow(newSettings);
   }
 
   updateTrialWindow(settings) {

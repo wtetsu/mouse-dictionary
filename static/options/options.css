@@ -10,3 +10,9 @@ body {
   padding-top: 0px;
   padding-bottom: 0px;
 }
+
+.button-arrow {
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-right: 1px;
+}
