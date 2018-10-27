@@ -115,7 +115,7 @@ export default class Draggable {
   }
 
   onEdge(num) {
-    return num >= 0 && num <= 10;
+    return num >= 0 && num <= 20;
   }
 
   move(e) {

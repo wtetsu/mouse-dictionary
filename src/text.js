@@ -43,12 +43,23 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
   return lookupWords.toArray();
 };
 
+/**
+ *  ['cut', 'back'] -> [ 'cut back', 'cut' ]
+ *  [ 'ran', 'with' ]  -> [ 'ran with', 'ran', 'run with', 'run' ]
+ */
 const createLinkedWordList = (arr, ignoreLowerCase) => {
   const linkedWords = text.linkWords(arr);
-  const wlist = text.parseString(arr[0], ignoreLowerCase);
+  const wlist = text.parseFirstWord(arr[0], ignoreLowerCase);
   for (let i = 0; i < wlist.length; i++) {
-    linkedWords.push(wlist[i]);
+    const phrase = wlist[i];
+    linkedWords.push(phrase);
   }
+  const newPhrases = [];
+  for (let i = 0; i < linkedWords.length; i++) {
+    const arr = text.tryToReplaceTrailingStrings(linkedWords[i], trailingRules);
+    newPhrases.push(...arr);
+  }
+  linkedWords.push(...newPhrases);
   return linkedWords;
 };
 
@@ -214,18 +225,18 @@ text.splitString = str => {
 };
 
 const trailingRules = [
-  [{ search: "s", new: "" }],
+  [{ search: "'s", new: "" }, { search: "s", new: "" }],
   [{ search: "er", new: "" }],
   [{ search: "iest", new: "y" }],
-  [{ search: "est", new: "" }],
-  [{ search: "'s", new: "" }]
+  [{ search: "est", new: "" }]
 ];
 
 /**
  * "wordone-wordtwo-wordthree" -> ["wordone", "wordtwo", "wordthree"]
  * "Announcements" -> ["Announcement", "announcements", "announcement]
+ * "third-party" -> ["third party", "third", "party"]
  */
-text.parseString = (sourceStr, ignoreLowerCase) => {
+text.parseFirstWord = (sourceStr, ignoreLowerCase) => {
   if (!sourceStr) {
     return [];
   }
@@ -242,6 +253,9 @@ text.parseString = (sourceStr, ignoreLowerCase) => {
     wordList.merge(text.tryToReplaceTrailingStrings(str, trailingRules));
 
     const arr = text.splitString(str);
+    if (arr.length >= 2) {
+      wordList.push(arr.join(" "));
+    }
     for (let j = 0; j < arr.length; j++) {
       const w = arr[j];
       wordList.push(w);

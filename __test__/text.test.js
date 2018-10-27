@@ -1,7 +1,12 @@
 import text from "../src/text";
 
 test("", () => {
-  expect(text.createLookupWords("thousand miles down")).toEqual(["thousand miles down", "thousand miles", "thousand"]);
+  expect(text.createLookupWords("thousand miles down")).toEqual([
+    "thousand miles down",
+    "thousand miles",
+    "thousand",
+    "thousand mile"
+  ]);
 
   expect(text.createLookupWords("american english")).toEqual(["american english", "american"]);
   expect(text.createLookupWords("American English")).toEqual([
@@ -29,6 +34,12 @@ test("", () => {
     "wonder if i shall",
     "wonder if i"
   ]);
+});
+
+test("", () => {
+  expect(text.createLookupWords("blue-gray")).toEqual(["blue-gray", "blue gray", "blue", "gray"]);
+  expect(text.createLookupWords("third-party")).toEqual(["third-party", "third party", "third", "party"]);
+  expect(text.createLookupWords("folk tales")).toEqual(["folk tales", "folk", "folk tale"]);
 });
 
 test("", () => {
@@ -86,6 +97,28 @@ test("", () => {
     "dye out",
     "dye"
   ]);
+
+  expect(text.createLookupWords("play with")).toEqual(["play with", "play"]);
+  expect(text.createLookupWords("played with")).toEqual([
+    "played with",
+    "played",
+    "play with",
+    "play",
+    "playe with",
+    "playe"
+  ]);
+
+  expect(text.createLookupWords("pop up")).toEqual(["pop up", "pop"]);
+  expect(text.createLookupWords("popped up")).toEqual([
+    "popped up",
+    "popped",
+    "pop up",
+    "pop",
+    "popp up",
+    "popp",
+    "poppe up",
+    "poppe"
+  ]);
 });
 
 test("", () => {
@@ -106,36 +139,43 @@ test("", () => {
 });
 
 test("", () => {
-  expect(text.createLookupWords("on one's own")).toEqual(["on one's own", "on one's", "on"]);
+  expect(text.createLookupWords("on one's own")).toEqual(["on one's own", "on one's", "on", "on one"]);
   expect(text.createLookupWords("on his own")).toEqual([
     "on his own",
     "on his",
     "on",
+    "on hi",
     "on one's own",
     "on one's",
+    "on one",
     "on someone's own",
-    "on someone's"
+    "on someone's",
+    "on someone"
   ]);
 
   expect(text.createLookupWords("by oneself")).toEqual(["by oneself", "by"]);
   expect(text.createLookupWords("by myself")).toEqual(["by myself", "by", "by oneself"]);
 
-  expect(text.createLookupWords("brush one's dog")).toEqual(["brush one's dog", "brush one's", "brush"]);
+  expect(text.createLookupWords("brush one's dog")).toEqual(["brush one's dog", "brush one's", "brush", "brush one"]);
   expect(text.createLookupWords("brush taro's dog")).toEqual([
     "brush taro's dog",
     "brush taro's",
     "brush",
+    "brush taro",
     "brush one's dog",
     "brush one's",
+    "brush one",
     "brush someone's dog",
-    "brush someone's"
+    "brush someone's",
+    "brush someone"
   ]);
 });
 
 test("", () => {
-  expect(text.parseString("word")).toEqual([]);
+  expect(text.parseFirstWord("word")).toEqual([]);
 
-  expect(text.parseString("WordoneWordtwoWordthree")).toEqual([
+  expect(text.parseFirstWord("WordoneWordtwoWordthree")).toEqual([
+    "Wordone wordone Wordtwo wordtwo Wordthree wordthree",
     "Wordone",
     "wordone",
     "Wordtwo",
@@ -145,22 +185,29 @@ test("", () => {
     "wordonewordtwowordthree"
   ]);
 
-  expect(text.parseString("wordone-wordtwo-wordthree")).toEqual(["wordone", "wordtwo", "wordthree"]);
+  expect(text.parseFirstWord("wordone-wordtwo-wordthree")).toEqual([
+    "wordone wordtwo wordthree",
+    "wordone",
+    "wordtwo",
+    "wordthree"
+  ]);
 
-  expect(text.parseString("WORDONE_WORDTWO_WORDTHREE")).toEqual([
+  expect(text.parseFirstWord("WORDONE_WORDTWO_WORDTHREE")).toEqual([
+    "WORDONE wordone WORDTWO wordtwo WORDTHREE wordthree",
     "WORDONE",
     "wordone",
     "WORDTWO",
     "wordtwo",
     "WORDTHREE",
     "wordthree",
-    "wordone_wordtwo_wordthree"
+    "wordone_wordtwo_wordthree",
+    "wordone wordtwo wordthree"
   ]);
 
-  //expect(text.getAllVerbForms("running")).toEqual(["run"]);
+  expect(text.parseFirstWord("announcements")).toEqual(["announcement"]);
+  expect(text.parseFirstWord("Announcements")).toEqual(["Announcement", "announcements", "announcement"]);
 
-  expect(text.parseString("announcements")).toEqual(["announcement"]);
-  expect(text.parseString("Announcements")).toEqual(["Announcement", "announcements", "announcement"]);
+  expect(text.parseFirstWord("third-party")).toEqual(["third party", "third", "party"]);
 });
 
 test("", () => {
