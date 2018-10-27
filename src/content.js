@@ -177,12 +177,13 @@ const main = async () => {
 
   let _selection = null;
   let _mouseDown = false;
+  let _isLastMouseUpOnTheWindow = false;
 
   document.body.addEventListener("mousedown", () => {
     _mouseDown = true;
   });
 
-  document.body.addEventListener("mouseup", () => {
+  document.body.addEventListener("mouseup", e => {
     _mouseDown = false;
     _selection = window.getSelection().toString();
     if (_selection) {
@@ -190,14 +191,32 @@ const main = async () => {
       const text = _selection.trim().substring(0, SELECTION_LENGTH_LIMIT);
       parseTextAndLookup(text, true);
     }
+
+    const s = _area.dialog.style;
+    const top = parseInt(s.top, 10);
+    const left = parseInt(s.left, 10);
+    const width = parseInt(s.width, 10);
+    const height = parseInt(s.height, 10);
+    if (e.clientX >= left && e.clientX <= left + width && (e.clientY >= top && e.clientY <= top + height)) {
+      _isLastMouseUpOnTheWindow = true;
+    } else {
+      _isLastMouseUpOnTheWindow = false;
+    }
   });
 
   document.body.addEventListener("mousemove", ev => {
     if (_mouseDown) {
       return;
     }
-    if (_selection) {
-      return;
+
+    if (_isLastMouseUpOnTheWindow) {
+      if (_selection) {
+        return;
+      }
+    } else {
+      if (window.getSelection().toString()) {
+        return;
+      }
     }
 
     let textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY, _settings.parseWordsLimit);
