@@ -19,7 +19,6 @@ import mdwindow from "../mdwindow";
 import text from "../text";
 import dom from "../dom";
 import env from "../env";
-import { timingSafeEqual } from "crypto";
 
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";
@@ -35,10 +34,8 @@ class Main extends React.Component {
       progress: "",
       settings: null,
       trialText: "rained cats and dogs",
-      // basicSettingsOpened: false,
-      // advancedSettingsOpened: false
-      basicSettingsOpened: true,
-      advancedSettingsOpened: true
+      basicSettingsOpened: false,
+      advancedSettingsOpened: false
     };
 
     this.doChangeState = this.doChangeState.bind(this);
