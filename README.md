@@ -6,7 +6,7 @@
 A dictionary for Google Chrome and Firefox.
 
 - Blazing fast
-- Can show collocations
+- Fuss-free to look up phrases
 - Divide a string like "camelCase" into "camel" and "case" and look up them at once
 
 Download it.
@@ -16,7 +16,7 @@ Download it.
 
 ## Screenshots
 
-![ss01.gif](https://github.com/wtetsu/mouse-dictionary/blob/images/ss01.gif)
+![ss02.gif](https://github.com/wtetsu/mouse-dictionary/blob/images/ss02.gif)
 
 ## How to develop
 
