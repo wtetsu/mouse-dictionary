@@ -58,3 +58,7 @@ This project includes some third-party data:
   - bookmark icon, gear icon
   - https://www.iconfinder.com/iconsets/wpzoom-developer-icon-set
   - License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
+  
+## See also
+
+[Chrome拡張の高速な英語辞書ツールをつくりました](https://qiita.com/wtetsu/items/c43232c6c44918e977c9)(a Japanese tutorial)
