@@ -6,12 +6,12 @@
 
 /**
  * Author: wtetsu
- * Corrector: David
+ * Corrector: David, Macropyre
  */
 export default {
   dictDataEncoding: "Character set of dictionary data:",
   dictDataFormat: "Format of dictionary data:",
-  readDictData: "Loading dictionary data:",
+  readDictData: "Load dictionary data:",
 
   selectDictFile: "Select dictionary data",
   progressRegister: "%d words have registered(%s)",
