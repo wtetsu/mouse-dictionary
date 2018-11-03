@@ -4,12 +4,16 @@
  * Licensed under MIT
  */
 
+/**
+ * Author: wtetsu
+ * Corrector: David
+ */
 export default {
-  dictDataEncoding: "Character set of dictionary data：",
-  dictDataFormat: "Format of dictionary data：",
-  readDictData: "Loading dictionary data：",
+  dictDataEncoding: "Character set of dictionary data:",
+  dictDataFormat: "Format of dictionary data:",
+  readDictData: "Loading dictionary data:",
 
-  selectDictFile: "Select dictionary data.",
+  selectDictFile: "Select dictionary data",
   progressRegister: "%d words have registered(%s)",
   finishRegister: "Loading has finished(%d words)",
   clearAllDictData: "Are you sure you want to clear all the dictionary data?",
@@ -31,7 +35,7 @@ export default {
 
   saveSettings: "Save settings",
   defaultSettings: "Reset to default",
-  finishSaving: "Saved.",
+  finishSaving: "Saving has finished",
 
   openBasicSettings: "Open settings",
   closeBasicSettings: "Close settings",
@@ -57,7 +61,7 @@ export default {
   descFontSize: "Description font size",
   descFontcolor: "Description font color",
 
-  replaceRules: "Rules to replace text ",
+  replaceRules: "Rules to replace text",
   replaceRule1: " ",
   replaceRule2: " ",
   advancedSettings: "Advanced settings",
