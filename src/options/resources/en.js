@@ -12,9 +12,9 @@ export default {
   selectDictFile: "Select dictionary data.",
   progressRegister: "%d words have registered(%s)",
   finishRegister: "Loading has finished(%d words)",
-  clearAllDictData: "Are you sure to clear all the dictionary data?",
-  finishedClear: "All the dictionary data has removed",
-  dictDataUsage: "%s KB used",
+  clearAllDictData: "Are you sure you want to clear all the dictionary data?",
+  finishedClear: "All the dictionary data has been removed",
+  dictDataUsage: "%s kilobytes used",
   confirmLoadInitialDict: "There is no dictionary data yet.\nDo you want to register free dictionary data?",
 
   formatEijiroText: "EIJIRO text data",
@@ -40,7 +40,7 @@ export default {
 
   basicSettings: "Basic settings",
   trialText: "Text for trial",
-  abbreviateShortWordDesc: "Truncate short words descriptions",
+  abbreviateShortWordDesc: "Truncate short word descriptions",
   abbreviateShortWordDesc0: "Truncate",
   abbreviateShortWordDesc1: "-letter or less word descriptions into",
   abbreviateShortWordDesc2: "characters",
@@ -70,7 +70,7 @@ export default {
   stylesActive: "Style(active)",
   stylesMoving: "Style(moving)",
   stylesInactive: "Style(not active)",
-  lookupWithCapitalized: "Lookup capitalized headers too",
+  lookupWithCapitalized: "Lookup both capitalized and non-capitalized headers",
   showTitlebar: "Show title bar",
   parseWordsLimit: "Number of words to parse at once",
   add: "Add"
