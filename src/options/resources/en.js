@@ -6,7 +6,7 @@
 
 /**
  * Author: wtetsu
- * Corrector: David, Macropyre
+ * Corrector: David, Macropyre, Akarumbra
  */
 export default {
   dictDataEncoding: "Character set of dictionary data:",
@@ -40,7 +40,7 @@ export default {
   openBasicSettings: "Open settings",
   closeBasicSettings: "Close settings",
   openAdvancedSettings: "Open advanced settings",
-  closeAdvancedSettings: "Open advanced settings",
+  closeAdvancedSettings: "Close advanced settings",
 
   basicSettings: "Basic settings",
   trialText: "Text for trial",
