@@ -25,7 +25,8 @@
     "react-dom": "^16.6.1",
     "react-color": "^2.14.1",
     "sprintf-js": "^1.1.1",
-    "sweetalert": "^2.1.2"
+    "sweetalert": "^2.1.2",
+    "merge": ">=1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",
