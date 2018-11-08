@@ -49,10 +49,10 @@ const AdvancedSettings = props => {
           name={`replaceRule.search.${i}`}
           key={`replaceRule.search.${i}`}
           defaultValue={r.search}
-          style={{ width: 300 }}
+          style={{ width: 200 }}
           onChange={props.onChangeReplaceRule}
         />
-        <span>{res("replaceRule1")}</span>
+        <span>{res.get("replaceRule1")}</span>
         <input
           type="text"
           name={`replaceRule.replace.${i}`}
@@ -61,7 +61,7 @@ const AdvancedSettings = props => {
           style={{ width: 300 }}
           onChange={props.onChangeReplaceRule}
         />
-        <span>{res("replaceRule2")}</span>
+        <span>{res.get("replaceRule2")}</span>
 
         <button
           type="button"
@@ -76,11 +76,11 @@ const AdvancedSettings = props => {
   });
 
   return (
-    <form>
+    <form className="settingsForm">
       <fieldset>
-        <h2>{res("advancedSettings")}</h2>
+        <h2>{res.get("advancedSettings")}</h2>
         <label>
-          {res("lookupWithCapitalized")}
+          {res.get("lookupWithCapitalized")}
           <input
             type="checkbox"
             checked={lookupWithCapitalized}
@@ -89,12 +89,12 @@ const AdvancedSettings = props => {
         </label>
 
         <label>
-          {res("showTitlebar")}
+          {res.get("showTitlebar")}
           <input type="checkbox" checked={showTitlebar} onChange={e => props.onChange("showTitlebar", e)} />
         </label>
 
         <label>
-          {res("parseWordsLimit")}
+          {res.get("parseWordsLimit")}
           &nbsp;
           <input
             type="number"
@@ -104,46 +104,46 @@ const AdvancedSettings = props => {
           />
         </label>
 
-        <h3>{res("htmlTemplate")}</h3>
-        <label>{res("htmlTemplateWindow")}</label>
+        <h3>{res.get("htmlTemplate")}</h3>
+        <label>{res.get("htmlTemplateWindow")}</label>
         <textarea
           value={dialogTemplate}
           style={{ width: 800, height: 200 }}
           onChange={e => props.onChange("dialogTemplate", e)}
         />
-        <label>{res("htmlTemplateTitleBar")}</label>
+        <label>{res.get("htmlTemplateTitleBar")}</label>
         <textarea
           value={titlebarTemplate}
           style={{ width: 800, height: 110 }}
           onChange={e => props.onChange("titlebarTemplate", e)}
         />
-        <label>{res("htmlTemplateDesc")}</label>
+        <label>{res.get("htmlTemplateDesc")}</label>
         <textarea
           value={contentWrapperTemplate}
           style={{ width: 800, height: 30 }}
           onChange={e => props.onChange("contentWrapperTemplate", e)}
         />
-        <label>{res("htmlTemplateDescText")}</label>
+        <label>{res.get("htmlTemplateDescText")}</label>
         <textarea
           value={contentTemplate}
           style={{ width: 800, height: 350 }}
           onChange={e => props.onChange("contentTemplate", e)}
         />
 
-        <h3>{res("styles")}</h3>
-        <label>{res("stylesActive")}</label>
+        <h3>{res.get("styles")}</h3>
+        <label>{res.get("stylesActive")}</label>
         <textarea
           value={normalDialogStyles}
           style={{ width: 800, height: 80 }}
           onChange={e => props.onChange("normalDialogStyles", e)}
         />
-        <label>{res("stylesMoving")}</label>
+        <label>{res.get("stylesMoving")}</label>
         <textarea
           value={movingDialogStyles}
           style={{ width: 800, height: 80 }}
           onChange={e => props.onChange("movingDialogStyles", e)}
         />
-        <label>{res("stylesInactive")}</label>
+        <label>{res.get("stylesInactive")}</label>
         <textarea
           value={hiddenDialogStyles}
           style={{ width: 800, height: 80 }}
@@ -151,10 +151,10 @@ const AdvancedSettings = props => {
         />
         <hr />
 
-        <h3>{res("replaceRules")}</h3>
+        <h3>{res.get("replaceRules")}</h3>
         {replaceRulesList}
         <button type="button" onClick={props.onClickAddReplaceRule}>
-          {res("add")}
+          {res.get("add")}
         </button>
       </fieldset>
     </form>

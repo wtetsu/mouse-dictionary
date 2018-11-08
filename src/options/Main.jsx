@@ -25,6 +25,9 @@ const KEY_USER_CONFIG = "**** config ****";
 
 class Main extends React.Component {
   constructor(props) {
+    const initialLang = "ja";
+    res.setLang(initialLang);
+
     super(props);
     this.state = {
       encoding: "Shift-JIS",
@@ -35,7 +38,8 @@ class Main extends React.Component {
       settings: null,
       trialText: "rained cats and dogs",
       basicSettingsOpened: false,
-      advancedSettingsOpened: false
+      advancedSettingsOpened: false,
+      lang: initialLang
     };
 
     this.doChangeState = this.doChangeState.bind(this);
@@ -55,6 +59,7 @@ class Main extends React.Component {
 
     this.doToggleBasicSettings = this.doToggleBasicSettings.bind(this);
     this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
+    this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
   }
 
   render() {
@@ -62,6 +67,9 @@ class Main extends React.Component {
 
     return (
       <div>
+        <div onClick={this.doSwitchLanguage} style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}>
+          {this.state.lang}
+        </div>
         <LoadDictionary
           encoding={state.encoding}
           format={state.format}
@@ -78,7 +86,7 @@ class Main extends React.Component {
           <div>
             <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
             <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
-              {this.state.basicSettingsOpened ? res("closeBasicSettings") : res("openBasicSettings")}
+              {this.state.basicSettingsOpened ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
             </a>
           </div>
         )}
@@ -108,7 +116,7 @@ class Main extends React.Component {
           <div style={{ fontSize: "10px" }}>
             <img src="settings2.png" style={{ verticalAlign: "bottom" }} />
             <a onClick={this.doToggleAdvancedSettings} style={{ cursor: "pointer" }}>
-              {this.state.advancedSettingsOpened ? res("closeAdvancedSettings") : res("openAdvancedSettings")}
+              {this.state.advancedSettingsOpened ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
             </a>
           </div>
         )}
@@ -132,8 +140,6 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
-    this.updateDictDataUsage();
-
     chrome.storage.local.get([KEY_LOADED], r => {
       if (!r[KEY_LOADED]) {
         this.registerDefaultDict();
@@ -169,6 +175,8 @@ class Main extends React.Component {
         }
       }, 10);
     });
+
+    this.updateDictDataUsage();
   }
 
   tryToParseJson(json) {
@@ -186,7 +194,7 @@ class Main extends React.Component {
       chrome.storage.local.getBytesInUse(null, byteSize => {
         const kb = Math.floor(byteSize / 1024).toLocaleString();
         this.setState({
-          dictDataUsage: res("dictDataUsage", kb)
+          dictDataUsage: res.get("dictDataUsage", kb)
         });
       });
     } else {
@@ -197,7 +205,7 @@ class Main extends React.Component {
 
   async registerDefaultDict() {
     const willLoad = await swal({
-      text: res("confirmLoadInitialDict"),
+      text: res.get("confirmLoadInitialDict"),
       icon: "info",
       buttons: true,
       closeOnClickOutside: false
@@ -214,7 +222,7 @@ class Main extends React.Component {
       this.setState({ busy: false, progress: "" });
 
       await swal({
-        text: res("finishRegister", wordCount),
+        text: res.get("finishRegister", wordCount),
         icon: "success"
       });
     }
@@ -277,7 +285,7 @@ class Main extends React.Component {
     const file = document.getElementById("dictdata").files[0];
     if (!file) {
       swal({
-        title: res("selectDictFile"),
+        title: res.get("selectDictFile"),
         icon: "info"
       });
       return;
@@ -293,7 +301,7 @@ class Main extends React.Component {
           break;
         }
         case "loading": {
-          this.setState({ progress: res("progressRegister", ev.count, ev.word.head) });
+          this.setState({ progress: res.get("progressRegister", ev.count, ev.word.head) });
           break;
         }
       }
@@ -302,7 +310,7 @@ class Main extends React.Component {
     try {
       const { wordCount } = await dict.load({ file, encoding, format, event });
       swal({
-        text: res("finishRegister", wordCount),
+        text: res.get("finishRegister", wordCount),
         icon: "success"
       });
       const loaded = {};
@@ -322,7 +330,7 @@ class Main extends React.Component {
 
   doClear() {
     swal({
-      text: res("clearAllDictData"),
+      text: res.get("clearAllDictData"),
       icon: "warning",
       buttons: true,
       dangerMode: true
@@ -332,7 +340,7 @@ class Main extends React.Component {
 
         chrome.storage.local.clear(() => {
           swal({
-            text: res("finishedClear"),
+            text: res.get("finishedClear"),
             icon: "success"
           });
           this.setState({ busy: false });
@@ -462,7 +470,7 @@ class Main extends React.Component {
     newData[KEY_USER_CONFIG] = JSON.stringify(settings);
     chrome.storage.sync.set(newData, () => {
       swal({
-        text: res("finishSaving"),
+        text: res.get("finishSaving"),
         icon: "info"
       });
     });
@@ -494,6 +502,14 @@ class Main extends React.Component {
   doToggleAdvancedSettings() {
     this.setState({
       advancedSettingsOpened: !this.state.advancedSettingsOpened
+    });
+  }
+
+  doSwitchLanguage() {
+    const newLang = this.state.lang === "ja" ? "en" : "ja";
+    res.setLang(newLang);
+    this.setState({
+      lang: newLang
     });
   }
 }
