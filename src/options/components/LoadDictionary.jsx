@@ -16,19 +16,19 @@ const LoadDictionary = props => {
   ];
 
   const FORMATS = [
-    { id: "EIJIRO", name: res("formatEijiroText") },
-    { id: "TSV", name: res("formatTsv") },
-    { id: "PDIC_LINE", name: res("formatPdicOneLine") },
-    { id: "JSON", name: res("formatJson") }
+    { id: "EIJIRO", name: res.get("formatEijiroText") },
+    { id: "TSV", name: res.get("formatTsv") },
+    { id: "PDIC_LINE", name: res.get("formatPdicOneLine") },
+    { id: "JSON", name: res.get("formatJson") }
   ];
 
   return (
     <div>
-      <label>{res("dictDataEncoding")}</label>
+      <label>{res.get("dictDataEncoding")}</label>
       <SimpleSelect name="encoding" value={props.encoding} options={ENCODINGS} onChange={props.onChangeState} />
-      <label>{res("dictDataFormat")}</label>
+      <label>{res.get("dictDataFormat")}</label>
       <SimpleSelect name="format" value={props.format} options={FORMATS} onChange={props.onChangeState} />
-      <label>{res("readDictData")}</label>
+      <label>{res.get("readDictData")}</label>
       <input type="file" id="dictdata" />
       <br />
       <input
