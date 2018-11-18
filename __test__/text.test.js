@@ -5,6 +5,8 @@ test("", () => {
     "thousand miles down",
     "thousand miles",
     "thousand",
+    "thousand ~ down",
+    "thousand down",
     "thousand mile"
   ]);
 
@@ -20,9 +22,13 @@ test("", () => {
     "Announcement of Hoge",
     "Announcement of",
     "Announcement",
+    "Announcement ~ Hoge",
+    "Announcement Hoge",
     "announcement of hoge",
     "announcement of",
-    "announcement"
+    "announcement",
+    "announcement ~ hoge",
+    "announcement hoge"
   ]);
 
   expect(text.createLookupWords("wonder if I shall")).toEqual([
@@ -30,9 +36,20 @@ test("", () => {
     "wonder if I",
     "wonder if",
     "wonder",
+    "wonder ~ I",
+    "wonder I",
+    "wonder if ~ shall",
+    "wonder ~ I shall",
+    "wonder A I B",
+    "wonder ~ shall",
+    "wonder shall",
     "wond",
     "wonder if i shall",
-    "wonder if i"
+    "wonder if i",
+    "wonder ~ i",
+    "wonder i",
+    "wonder ~ i shall",
+    "wonder A i B"
   ]);
 });
 
@@ -71,7 +88,9 @@ test("", () => {
     "dealt",
     "deal dealt dealt",
     "deal dealt",
-    "deal"
+    "deal",
+    "dealt ~ dealt",
+    "deal ~ dealt"
   ]);
 });
 
@@ -139,11 +158,21 @@ test("", () => {
 });
 
 test("", () => {
-  expect(text.createLookupWords("on one's own")).toEqual(["on one's own", "on one's", "on", "on one"]);
+  expect(text.createLookupWords("on one's own")).toEqual([
+    "on one's own",
+    "on one's",
+    "on",
+    //"on one",
+    "on ~ own",
+    "on own",
+    "on one"
+  ]);
   expect(text.createLookupWords("on his own")).toEqual([
     "on his own",
     "on his",
     "on",
+    "on ~ own",
+    "on own",
     "on hi",
     "on one's own",
     "on one's",
@@ -153,14 +182,54 @@ test("", () => {
     "on someone"
   ]);
 
+  expect(text.createLookupWords("his only son")).toEqual([
+    "his only son",
+    "his only",
+    "his",
+    "hi only son",
+    "hi only",
+    "hi",
+    "his ~ son",
+    "his son",
+    "hi ~ son",
+    "hi son",
+    "one's only son",
+    "one's only",
+    "one' only son",
+    "one' only",
+    "one's ~ son",
+    "one's son",
+    "one' ~ son",
+    "one' son",
+    "someone's only son",
+    "someone's only",
+    "someone' only son",
+    "someone' only",
+    "someone's ~ son",
+    "someone's son",
+    "someone' ~ son",
+    "someone' son"
+  ]);
+
+  expect(text.createLookupWords("Senete's")).toEqual(["Senete's", "Senete'", "Senete", "senete's", "senete'", "senete"]);
+
   expect(text.createLookupWords("by oneself")).toEqual(["by oneself", "by"]);
   expect(text.createLookupWords("by myself")).toEqual(["by myself", "by", "by oneself"]);
 
-  expect(text.createLookupWords("brush one's dog")).toEqual(["brush one's dog", "brush one's", "brush", "brush one"]);
+  expect(text.createLookupWords("brush one's dog")).toEqual([
+    "brush one's dog",
+    "brush one's",
+    "brush",
+    "brush ~ dog",
+    "brush dog",
+    "brush one"
+  ]);
   expect(text.createLookupWords("brush taro's dog")).toEqual([
     "brush taro's dog",
     "brush taro's",
     "brush",
+    "brush ~ dog",
+    "brush dog",
     "brush taro",
     "brush one's dog",
     "brush one's",
@@ -214,16 +283,26 @@ test("", () => {
   expect(text.linkWords([])).toEqual([]);
   expect(text.linkWords(["word0"])).toEqual(["word0"]);
   expect(text.linkWords(["word0", "word1"])).toEqual(["word0 word1", "word0"]);
-  expect(text.linkWords(["word0", "word1", "word2"])).toEqual(["word0 word1 word2", "word0 word1", "word0"]);
+  expect(text.linkWords(["word0", "word1", "word2"])).toEqual([
+    "word0 word1 word2",
+    "word0 word1",
+    "word0",
+    "word0 ~ word2",
+    "word0 word2"
+  ]);
   expect(text.linkWords(["announcement", "of", "hoge"])).toEqual([
     "announcement of hoge",
     "announcement of",
-    "announcement"
+    "announcement",
+    "announcement ~ hoge",
+    "announcement hoge"
   ]);
   expect(text.linkWords(["Announcement", "of", "Hoge"])).toEqual([
     "Announcement of Hoge",
     "Announcement of",
-    "Announcement"
+    "Announcement",
+    "Announcement ~ Hoge",
+    "Announcement Hoge"
   ]);
   expect(text.linkWords(["American", "English"])).toEqual(["American English", "American"]);
   expect(text.linkWords(["dealt", "with"])).toEqual(["dealt with", "dealt", "deal with", "deal"]);

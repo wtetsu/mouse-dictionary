@@ -6,6 +6,7 @@
 
 import consts from "./consts";
 import verbs from "./verbs";
+import phrase from "./phrase";
 import UniqArray from "./uniqarray";
 
 const text = {};
@@ -22,15 +23,15 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
   }
   for (let i = 0; i < strList.length; i++) {
     const words = text.splitIntoWords(strList[i]);
-    const linkedWords = createLinkedWordList(words, !isAllLower);
+    const linkedWords = createLinkedWordList(words, !isAllLower, 1);
     lookupWords.merge(linkedWords);
 
     // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
-    const convertedWordsList = doOtherConversions(words);
+    const convertedWordsList = words.length >= 2 ? doPronounConversions(words) : [];
     for (let j = 0; j < convertedWordsList.length; j++) {
       const convertedWords = convertedWordsList[j];
       if (convertedWords) {
-        const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower);
+        const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower, 2);
         lookupWords.merge(linkedConvertedWords);
       }
     }
@@ -47,12 +48,14 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
  *  ['cut', 'back'] -> [ 'cut back', 'cut' ]
  *  [ 'ran', 'with' ]  -> [ 'ran with', 'ran', 'run with', 'run' ]
  */
-const createLinkedWordList = (arr, ignoreLowerCase) => {
-  const linkedWords = text.linkWords(arr);
-  const wlist = text.parseFirstWord(arr[0], ignoreLowerCase);
-  for (let i = 0; i < wlist.length; i++) {
-    const phrase = wlist[i];
-    linkedWords.push(phrase);
+const createLinkedWordList = (arr, ignoreLowerCase, minWordNum = 1) => {
+  const linkedWords = text.linkWords(arr, minWordNum);
+  if (minWordNum <= 1) {
+    const wlist = text.parseFirstWord(arr[0], ignoreLowerCase);
+    for (let i = 0; i < wlist.length; i++) {
+      const phrase = wlist[i];
+      linkedWords.push(phrase);
+    }
   }
   const newPhrases = [];
   for (let i = 0; i < linkedWords.length; i++) {
@@ -66,15 +69,15 @@ const createLinkedWordList = (arr, ignoreLowerCase) => {
 /**
  * ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
  */
-const doOtherConversions = words => {
+const doPronounConversions = words => {
   let result = [];
 
   let changed = false;
 
-  for (let i = 0; i < otherConversions.length; i++) {
+  for (let i = 0; i < pronounConversions.length; i++) {
     const convertedWords = Object.assign([], words);
     for (let j = 0; j < convertedWords.length; j++) {
-      const w = doConvert(convertedWords[j], otherConversions[i]);
+      const w = doConvert(convertedWords[j], pronounConversions[i]);
       if (w) {
         convertedWords[j] = w;
         changed = true;
@@ -101,7 +104,7 @@ const doConvert = (word, conversionRule) => {
   return result;
 };
 
-const otherConversions = [
+const pronounConversions = [
   {
     my: "one's",
     your: "one's",
@@ -301,7 +304,7 @@ text.tryToReplaceTrailingStrings = (str, trailingRule) => {
  * ["running", "away"]
  * -> ["running away", "running", "run away", "run"]
  */
-text.linkWords = words => {
+text.linkWords = (words, minWordNum = 1) => {
   let linkedWords = [];
   if (words.length === 0) {
     return linkedWords;
@@ -310,22 +313,30 @@ text.linkWords = words => {
   const firstWord = words[0];
   const firstWordList = [firstWord].concat(verbs(firstWord));
 
+  const appendedList = [];
   for (let i = 0; i < firstWordList.length; i++) {
     const wordList = [].concat(words);
     wordList[0] = firstWordList[i];
 
-    let currentString;
-    const newLinkedWord = new Array(wordList.length);
+    const currentWords = [];
+    const newLinkedWord = [];
     for (let j = 0; j < wordList.length; j++) {
       let word = wordList[j];
-      if (j === 0) {
-        currentString = word;
-      } else {
-        currentString += " " + word;
+      currentWords.push(word);
+      if (j >= minWordNum - 1) {
+        newLinkedWord.push(currentWords.join(" "));
+        appendedList.push([].concat(currentWords));
       }
-      newLinkedWord[wordList.length - j - 1] = currentString;
     }
-    linkedWords.push(...newLinkedWord);
+    linkedWords.push(...newLinkedWord.reverse());
+  }
+
+  // Add string like ""word0 ~ word2
+  for (let i = 0; i < appendedList.length; i++) {
+    const w = appendedList[i];
+    const ww = phrase.normalize(w);
+    const www = ww.map(a => a.join(" "));
+    linkedWords.push(...www);
   }
 
   return linkedWords;

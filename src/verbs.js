@@ -21,6 +21,7 @@ export default verb => {
 
 const verbTrailingRules = [
   [
+    { search: "bbed", new: "b" },
     { search: "pped", new: "p" },
     { search: "nned", new: "n" },
     { search: "tted", new: "t" },
