@@ -70,14 +70,15 @@ export default class Draggable {
   updateEdgeState(e) {
     let cursor;
     let onE, onW, onN, onS;
+    const offset = 8;
     if (this.onEdge(e.x - this.currentLeft)) {
       onW = true;
-    } else if (this.onEdge(this.currentLeft + this.currentWidth - e.x)) {
+    } else if (this.onEdge(this.currentLeft + (this.currentWidth + offset) - e.x)) {
       onE = true;
     }
     if (this.onEdge(e.y - this.currentTop)) {
       onN = true;
-    } else if (this.onEdge(this.currentTop + this.currentHeight - e.y)) {
+    } else if (this.onEdge(this.currentTop + (this.currentHeight + offset) - e.y)) {
       onS = true;
     }
 
@@ -117,7 +118,7 @@ export default class Draggable {
   }
 
   onEdge(num) {
-    return num >= 0 && num <= 20;
+    return num <= 20;
   }
 
   move(e) {
