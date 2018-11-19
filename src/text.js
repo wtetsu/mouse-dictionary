@@ -21,8 +21,12 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
   if (mustIncludeOriginalText) {
     lookupWords.push(sourceStr);
   }
+  let theFirstWord = null;
   for (let i = 0; i < strList.length; i++) {
     const words = text.splitIntoWords(strList[i]);
+    if (i == 0) {
+      theFirstWord = words[0];
+    }
     const linkedWords = createLinkedWordList(words, !isAllLower, 1);
     lookupWords.merge(linkedWords);
 
@@ -41,7 +45,7 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
 
-  return lookupWords.toArray();
+  return lookupWords.toArray().filter(s => s.length >= 2 || s === theFirstWord);
 };
 
 /**

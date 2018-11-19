@@ -5,7 +5,6 @@
  */
 
 import dom from "./dom";
-
 export default class Draggable {
   constructor(normalStyles, movingStyles) {
     this.normalStyles = normalStyles;
@@ -56,31 +55,24 @@ export default class Draggable {
         case "resizing":
           break;
       }
-      this.mode = null;
-      this.startingX = null;
-      this.startingY = null;
-      this.startingWidth = null;
-      this.startingHeight = null;
-      this.elementX = null;
-      this.elementY = null;
-      this.callOnChange();
+      this.finishChanging();
     });
   }
 
-  updateEdgeState(e) {
-    let cursor;
-    let onE, onW, onN, onS;
-    if (this.onEdge(e.x - this.currentLeft)) {
-      onW = true;
-    } else if (this.onEdge(this.currentLeft + this.currentWidth - e.x)) {
-      onE = true;
-    }
-    if (this.onEdge(e.y - this.currentTop)) {
-      onN = true;
-    } else if (this.onEdge(this.currentTop + this.currentHeight - e.y)) {
-      onS = true;
-    }
+  finishChanging() {
+    this.mode = null;
+    this.startingX = null;
+    this.startingY = null;
+    this.startingWidth = null;
+    this.startingHeight = null;
+    this.elementX = null;
+    this.elementY = null;
+    this.callOnChange();
+  }
 
+  updateEdgeState(e) {
+    const { onE, onW, onN, onS } = this.getEdgeState(e.x, e.y);
+    let cursor;
     if (onW && onN) {
       this.cursorEdgePosition = "nw";
       cursor = "nwse-resize";
@@ -116,8 +108,27 @@ export default class Draggable {
     }
   }
 
+  getEdgeState(x, y) {
+    let onE = false;
+    let onW = false;
+    let onN = false;
+    let onS = false;
+    const offset = 8;
+    if (this.onEdge(x - this.currentLeft)) {
+      onW = true;
+    } else if (this.onEdge(this.currentLeft + (this.currentWidth + offset) - x)) {
+      onE = true;
+    }
+    if (this.onEdge(y - this.currentTop)) {
+      onN = true;
+    } else if (this.onEdge(this.currentTop + (this.currentHeight + offset) - y)) {
+      onS = true;
+    }
+    return { onE, onW, onN, onS };
+  }
+
   onEdge(num) {
-    return num >= 0 && num <= 20;
+    return num <= 20;
   }
 
   move(e) {
@@ -128,10 +139,14 @@ export default class Draggable {
     if (newLeft !== this.currentLeft || newTop !== this.currentTop) {
       this.currentLeft = newLeft;
       this.currentTop = newTop;
-      this.mainElement.style.left = this.currentLeft.toString() + "px";
-      this.mainElement.style.top = this.currentTop.toString() + "px";
+      this.moveElement(this.currentLeft, this.currentTop);
       dom.applyStyles(this.mainElement, this.movingStyles);
     }
+  }
+
+  moveElement(left, top) {
+    this.mainElement.style.left = left.toString() + "px";
+    this.mainElement.style.top = top.toString() + "px";
   }
 
   resize(e) {
@@ -253,10 +268,31 @@ export default class Draggable {
         this.startChanging(e, mainElement);
       });
     } else {
+      mainElement.addEventListener("dblclick", e => {
+        const { onE, onW, onN, onS } = this.getEdgeState(e.x, e.y);
+        if (!onE && !onW && !onN && !onS) {
+          return;
+        }
+        if (onW) {
+          this.currentLeft = 5;
+        }
+        if (onN) {
+          this.currentTop = 5;
+        }
+        if (onE) {
+          this.currentLeft = window.innerWidth - this.currentWidth - 5;
+        }
+        if (onS) {
+          this.currentTop = window.innerHeight - this.currentHeight - 5;
+        }
+        this.moveElement(this.currentLeft, this.currentTop);
+        this.finishChanging();
+      });
       mainElement.style.cursor = this.defaultCursor;
       mainElement.addEventListener("mousedown", e => {
         this.mode = this.cursorEdgePosition ? "resizing" : "moving";
         this.startChanging(e, mainElement);
+        e.preventDefault();
       });
     }
 

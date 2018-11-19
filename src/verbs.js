@@ -21,10 +21,13 @@ export default verb => {
 
 const verbTrailingRules = [
   [
-    { search: "bbed", new: "b" },
-    { search: "pped", new: "p" },
     { search: "nned", new: "n" },
     { search: "tted", new: "t" },
+    { search: "dded", new: "b" },
+    { search: "gged", new: "b" },
+    { search: "pped", new: "p" },
+    { search: "mmed", new: "b" },
+    { search: "bbed", new: "b" },
     { search: "rred", new: "r" },
     { search: "ied", new: "y" }
   ],
