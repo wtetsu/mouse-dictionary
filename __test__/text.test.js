@@ -1,6 +1,10 @@
 import text from "../src/text";
 
 test("", () => {
+  expect(text.createLookupWords("Test")).toEqual(["Test", "test"]);
+});
+
+test("", () => {
   expect(text.createLookupWords("thousand miles down")).toEqual([
     "thousand miles down",
     "thousand miles",
