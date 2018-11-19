@@ -42,6 +42,7 @@ test("", () => {
     "wonder ~ I shall",
     "wonder A I B",
     "wonder ~ shall",
+    "wonder I shall",
     "wonder shall",
     "wond",
     "wonder if i shall",
@@ -49,7 +50,8 @@ test("", () => {
     "wonder ~ i",
     "wonder i",
     "wonder ~ i shall",
-    "wonder A i B"
+    "wonder A i B",
+    "wonder i shall"
   ]);
 });
 
