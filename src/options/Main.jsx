@@ -25,10 +25,9 @@ const KEY_USER_CONFIG = "**** config ****";
 
 class Main extends React.Component {
   constructor(props) {
-    const initialLang = "ja";
-    res.setLang(initialLang);
-
     super(props);
+    const initialLang = this.decideInitialLanguage(navigator.languages);
+    res.setLang(initialLang);
     this.state = {
       encoding: "Shift-JIS",
       format: "EIJIRO",
@@ -503,6 +502,22 @@ class Main extends React.Component {
     this.setState({
       advancedSettingsOpened: !this.state.advancedSettingsOpened
     });
+  }
+
+  decideInitialLanguage(languages) {
+    if (!languages) {
+      return "en";
+    }
+    const validLanguages = ["en", "ja"];
+    let result = "en";
+    for (let i = 0; i < languages.length; i++) {
+      const lang = languages[i].toLowerCase().split("-")[0];
+      if (validLanguages.includes(lang)) {
+        result = lang;
+        break;
+      }
+    }
+    return result;
   }
 
   doSwitchLanguage() {
