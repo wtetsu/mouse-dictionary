@@ -67,7 +67,6 @@ export default {
   advancedSettings: "Advanced settings",
   htmlTemplate: "HTML templates",
   htmlTemplateWindow: "Mouse Dictionary window frame",
-  htmlTemplateTitleBar: "Title bar",
   htmlTemplateDesc: "Description frame",
   htmlTemplateDescText: "Description",
   styles: "Style of each state",
@@ -75,7 +74,6 @@ export default {
   stylesMoving: "Style(moving)",
   stylesInactive: "Style(not active)",
   lookupWithCapitalized: "Lookup both capitalized and non-capitalized headers",
-  showTitlebar: "Show title bar",
   parseWordsLimit: "Number of words to parse at once",
   add: "Add"
 };

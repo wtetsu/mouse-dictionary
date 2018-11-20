@@ -12,10 +12,7 @@ export default {
   initialPosition: "right",
   scroll: "hidden",
 
-  showTitlebar: false,
-
   backgroundColor: "#ffffff",
-
   headFontColor: "#000088",
   descFontColor: "#101010",
   headFontSize: "small",
@@ -80,13 +77,6 @@ export default {
   "opacity": 0.0,
   "zIndex": -1
 }`,
-
-  titlebarTemplate: `<div style="all:initial;
-            display:block;
-            font-size:small;
-            cursor:move;
-            color:#101010;
-            background-color:#EBEBEB;">Mouse Dictionary</div>`,
 
   contentWrapperTemplate: `<div style="text-align:left;"></div>`,
 

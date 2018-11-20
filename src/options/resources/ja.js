@@ -63,7 +63,6 @@ export default {
   advancedSettings: "上級者設定",
   htmlTemplate: "HTMLテンプレート",
   htmlTemplateWindow: "Mouse Dictionaryウィンドウ全体",
-  htmlTemplateTitleBar: "タイトルバー",
   htmlTemplateDesc: "説明全体を囲う領域",
   htmlTemplateDescText: "説明テキスト",
   styles: "状態ごとのスタイル",
@@ -71,7 +70,6 @@ export default {
   stylesMoving: "スタイル:移動中",
   stylesInactive: "スタイル:非アクティブ",
   lookupWithCapitalized: "大文字の辞書データも参照する",
-  showTitlebar: "タイトルバーを表示する",
   parseWordsLimit: "一度に解析する単語数",
   add: "追加"
 };
