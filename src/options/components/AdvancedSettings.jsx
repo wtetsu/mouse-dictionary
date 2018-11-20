@@ -14,8 +14,6 @@ const AdvancedSettings = props => {
   }
 
   const lookupWithCapitalized = (settings && settings.lookupWithCapitalized) || false;
-  const showTitlebar = (settings && settings.showTitlebar) || false;
-  const titlebarTemplate = (settings && settings.titlebarTemplate) || "";
   const contentWrapperTemplate = (settings && settings.contentWrapperTemplate) || "";
   const dialogTemplate = (settings && settings.dialogTemplate) || "";
   const contentTemplate = (settings && settings.contentTemplate) || "";
@@ -89,11 +87,6 @@ const AdvancedSettings = props => {
         </label>
 
         <label>
-          {res.get("showTitlebar")}
-          <input type="checkbox" checked={showTitlebar} onChange={e => props.onChange("showTitlebar", e)} />
-        </label>
-
-        <label>
           {res.get("parseWordsLimit")}
           &nbsp;
           <input
@@ -110,12 +103,6 @@ const AdvancedSettings = props => {
           value={dialogTemplate}
           style={{ width: 800, height: 200 }}
           onChange={e => props.onChange("dialogTemplate", e)}
-        />
-        <label>{res.get("htmlTemplateTitleBar")}</label>
-        <textarea
-          value={titlebarTemplate}
-          style={{ width: 800, height: 110 }}
-          onChange={e => props.onChange("titlebarTemplate", e)}
         />
         <label>{res.get("htmlTemplateDesc")}</label>
         <textarea

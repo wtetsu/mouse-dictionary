@@ -281,7 +281,6 @@ const main = async () => {
     dialogWidth: _area.dialog.clientWidth,
     dialogHeight: _area.dialog.clientHeight
   });
-  console.warn(position);
   dom.applyStyles(_area.dialog, position);
   dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
 
@@ -295,11 +294,7 @@ const main = async () => {
       });
     };
   }
-  if (_settings.showTitlebar) {
-    draggable.add(_area.dialog, _area.header);
-  } else {
-    draggable.add(_area.dialog);
-  }
+  draggable.add(_area.dialog);
 };
 
 main();

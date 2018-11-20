@@ -92,10 +92,8 @@ export default class Draggable {
       this.cursorEdgePosition = "e";
       cursor = "ew-resize";
     } else if (onN) {
-      if (!this.movePinch) {
-        this.cursorEdgePosition = "n";
-        cursor = "ns-resize";
-      }
+      this.cursorEdgePosition = "n";
+      cursor = "ns-resize";
     } else if (onS) {
       this.cursorEdgePosition = "s";
       cursor = "ns-resize";
@@ -240,61 +238,44 @@ export default class Draggable {
     }
   }
 
-  add(mainElement, movePinch) {
-    if (movePinch) {
-      this.defaultCursor = "auto";
-    } else {
-      this.defaultCursor = "move";
-    }
+  add(mainElement) {
+    this.defaultCursor = "move";
 
     this.mainElement = mainElement;
-    this.movePinch = movePinch;
-    this.makeElementDraggable(mainElement, movePinch);
+    this.makeElementDraggable(mainElement);
 
     this.mainElement.addEventListener("click", () => {
       this.currentWidth = convertToInt(this.mainElement.style.width);
       this.currentHeight = convertToInt(this.mainElement.style.height);
     });
   }
-  makeElementDraggable(mainElement, movePinch) {
-    if (movePinch) {
-      movePinch.addEventListener("mousedown", e => {
-        this.mode = "moving";
-        this.startChanging(e, mainElement);
-        e.stopPropagation();
-      });
-      mainElement.addEventListener("mousedown", e => {
-        this.mode = this.cursorEdgePosition ? "resizing" : null;
-        this.startChanging(e, mainElement);
-      });
-    } else {
-      mainElement.addEventListener("dblclick", e => {
-        const { onE, onW, onN, onS } = this.getEdgeState(e.x, e.y);
-        if (!onE && !onW && !onN && !onS) {
-          return;
-        }
-        if (onW) {
-          this.currentLeft = 5;
-        }
-        if (onN) {
-          this.currentTop = 5;
-        }
-        if (onE) {
-          this.currentLeft = window.innerWidth - this.currentWidth - 5;
-        }
-        if (onS) {
-          this.currentTop = window.innerHeight - this.currentHeight - 5;
-        }
-        this.moveElement(this.currentLeft, this.currentTop);
-        this.finishChanging();
-      });
-      mainElement.style.cursor = this.defaultCursor;
-      mainElement.addEventListener("mousedown", e => {
-        this.mode = this.cursorEdgePosition ? "resizing" : "moving";
-        this.startChanging(e, mainElement);
-        e.preventDefault();
-      });
-    }
+  makeElementDraggable(mainElement) {
+    mainElement.addEventListener("dblclick", e => {
+      const { onE, onW, onN, onS } = this.getEdgeState(e.x, e.y);
+      if (!onE && !onW && !onN && !onS) {
+        return;
+      }
+      if (onW) {
+        this.currentLeft = 5;
+      }
+      if (onN) {
+        this.currentTop = 5;
+      }
+      if (onE) {
+        this.currentLeft = window.innerWidth - this.currentWidth - 5;
+      }
+      if (onS) {
+        this.currentTop = window.innerHeight - this.currentHeight - 5;
+      }
+      this.moveElement(this.currentLeft, this.currentTop);
+      this.finishChanging();
+    });
+    mainElement.style.cursor = this.defaultCursor;
+    mainElement.addEventListener("mousedown", e => {
+      this.mode = this.cursorEdgePosition ? "resizing" : "moving";
+      this.startChanging(e, mainElement);
+      e.preventDefault();
+    });
 
     this.currentLeft = convertToInt(mainElement.style.left);
     this.currentTop = convertToInt(mainElement.style.top);
