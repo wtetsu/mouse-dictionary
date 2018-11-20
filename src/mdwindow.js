@@ -56,18 +56,17 @@ class ContentGenerator {
 
   async generate(words) {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get(words, meanings => {
-        const contentHtml = this.createContentHtml(words, meanings, this.compiledContentTemplate);
-        resolve(contentHtml);
+      chrome.storage.local.get(words, descriptions => {
+        const html = this.createContentHtml(words, descriptions, this.compiledContentTemplate);
+        const hitCount = Object.keys(descriptions).length;
+        resolve({ html, hitCount });
       }),
-        e => {
-          reject(e);
-        };
+        e => reject(e);
     });
   }
 
-  createContentHtml(words, meanings, compiledContentTemplate) {
-    const data = this.createContentTemplateData(words, meanings);
+  createContentHtml(words, descriptions, compiledContentTemplate) {
+    const data = this.createContentTemplateData(words, descriptions);
     const html = compiledContentTemplate.render({ words: data });
     return html;
   }
@@ -81,12 +80,12 @@ class ContentGenerator {
     return result;
   }
 
-  createContentTemplateData(words, meanings) {
+  createContentTemplateData(words, descriptions) {
     const data = [];
 
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
-      const desc = meanings[word];
+      const desc = descriptions[word];
       if (desc) {
         data.push({
           head: escapeHtml(word),

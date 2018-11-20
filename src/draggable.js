@@ -26,6 +26,7 @@ export default class Draggable {
     this.lastHeight = null;
     this.cursorEdgePosition = null;
     this.defaultCursor = null;
+    this.selectable = false;
 
     document.body.addEventListener("mousemove", e => {
       if (this.currentWidth === null) {
@@ -34,7 +35,6 @@ export default class Draggable {
       if (this.currentHeight === null) {
         this.currentHeight = convertToInt(this.mainElement.style.height);
       }
-
       switch (this.mode) {
         case "moving":
           this.move(e);
@@ -71,7 +71,18 @@ export default class Draggable {
   }
 
   updateEdgeState(e) {
-    const { onE, onW, onN, onS } = this.getEdgeState(e.x, e.y);
+    const { onE, onW, onN, onS, onWindow } = this.getEdgeState(e.x, e.y);
+    if (this.selectable) {
+      if (onWindow) {
+        this.cursorEdgePosition = null;
+        this.mainElement.style.cursor = "text";
+      } else {
+        this.selectable = false;
+        this.mainElement.style.cursor = this.defaultCursor;
+      }
+      return;
+    }
+
     let cursor;
     if (onW && onN) {
       this.cursorEdgePosition = "nw";
@@ -122,7 +133,12 @@ export default class Draggable {
     } else if (this.onEdge(this.currentTop + (this.currentHeight + offset) - y)) {
       onS = true;
     }
-    return { onE, onW, onN, onS };
+    const onWindow =
+      x >= this.currentLeft &&
+      x <= this.currentLeft + this.currentWidth &&
+      y >= this.currentTop &&
+      y <= this.currentTop + this.currentHeight;
+    return { onE, onW, onN, onS, onWindow };
   }
 
   onEdge(num) {
@@ -251,8 +267,13 @@ export default class Draggable {
   }
   makeElementDraggable(mainElement) {
     mainElement.addEventListener("dblclick", e => {
-      const { onE, onW, onN, onS } = this.getEdgeState(e.x, e.y);
-      if (!onE && !onW && !onN && !onS) {
+      if (this.selectable) {
+        return;
+      }
+      const { onE, onW, onN, onS, onWindow } = this.getEdgeState(e.x, e.y);
+      if (onWindow && !onE && !onW && !onN && !onS) {
+        this.selectable = true;
+        this.mainElement.style.cursor = "text";
         return;
       }
       if (onW) {
@@ -272,6 +293,9 @@ export default class Draggable {
     });
     mainElement.style.cursor = this.defaultCursor;
     mainElement.addEventListener("mousedown", e => {
+      if (this.selectable) {
+        return;
+      }
       this.mode = this.cursorEdgePosition ? "resizing" : "moving";
       this.startChanging(e, mainElement);
       e.preventDefault();

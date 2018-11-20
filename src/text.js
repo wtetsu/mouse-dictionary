@@ -337,10 +337,8 @@ text.linkWords = (words, minWordNum = 1) => {
 
   // Add string like ""word0 ~ word2
   for (let i = 0; i < appendedList.length; i++) {
-    const w = appendedList[i];
-    const ww = phrase.normalize(w);
-    const www = ww.map(a => a.join(" "));
-    linkedWords.push(...www);
+    const normalizedPhrases = phrase.normalize(appendedList[i]).map(a => a.join(" "));
+    linkedWords.push(...normalizedPhrases);
   }
 
   return linkedWords;
