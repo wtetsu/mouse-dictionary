@@ -448,8 +448,8 @@ class Main extends React.Component {
       console.info(lookupWords);
     }
 
-    this.contentGenerator.generate(lookupWords).then(contentHtml => {
-      const newDom = dom.create(contentHtml);
+    this.contentGenerator.generate(lookupWords).then(({ html }) => {
+      const newDom = dom.create(html);
       this.trialWindow.content.innerHTML = "";
       this.trialWindow.content.appendChild(newDom);
 

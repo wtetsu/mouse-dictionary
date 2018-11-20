@@ -231,10 +231,9 @@ const main = async () => {
       if (!textToLookup || _lastText === textToLookup) {
         return;
       }
-      const cache = _shortCache.get(textToLookup);
-      if (cache) {
-        _area.content.innerHTML = "";
-        _area.content.appendChild(cache);
+      const cacheData = _shortCache.get(textToLookup);
+      if (cacheData) {
+        updateContent(cacheData.dom, cacheData.hitCount);
         return;
       }
     }
@@ -245,8 +244,8 @@ const main = async () => {
     if (process.env.NODE_ENV !== "production") {
       startTime = new Date().getTime();
     }
-    return lookup(lookupWords).then(newDom => {
-      _shortCache.put(textToLookup, newDom);
+    return lookup(lookupWords).then(({ dom, hitCount }) => {
+      _shortCache.put(textToLookup, { dom, hitCount });
       _lastText = textToLookup;
 
       if (process.env.NODE_ENV !== "production") {
@@ -258,11 +257,10 @@ const main = async () => {
   };
 
   const lookup = lookupWords => {
-    return _contentGenerator.generate(lookupWords).then(contentHtml => {
-      const newDom = dom.create(contentHtml);
-      _area.content.innerHTML = "";
-      _area.content.appendChild(newDom);
-      return newDom;
+    return _contentGenerator.generate(lookupWords).then(({ html, hitCount }) => {
+      const newDom = dom.create(html);
+      updateContent(newDom, hitCount);
+      return { dom: newDom, hitCount };
     });
   };
 
@@ -295,6 +293,14 @@ const main = async () => {
     };
   }
   draggable.add(_area.dialog);
+
+  const updateContent = (newDom, count) => {
+    if (draggable.selectable && count === 0) {
+      return;
+    }
+    _area.content.innerHTML = "";
+    _area.content.appendChild(newDom);
+  };
 };
 
 main();
