@@ -6,6 +6,8 @@
 
 import Hogan from "hogan.js";
 import dom from "./dom";
+import storage from "./storage";
+
 const mdwindow = {};
 mdwindow.create = settings => {
   const dialog = createDialogElement(settings);
@@ -55,14 +57,10 @@ class ContentGenerator {
   }
 
   async generate(words) {
-    return new Promise((resolve, reject) => {
-      chrome.storage.local.get(words, descriptions => {
-        const html = this.createContentHtml(words, descriptions, this.compiledContentTemplate);
-        const hitCount = Object.keys(descriptions).length;
-        resolve({ html, hitCount });
-      }),
-        e => reject(e);
-    });
+    const descriptions = await storage.local.get(words);
+    const html = this.createContentHtml(words, descriptions, this.compiledContentTemplate);
+    const hitCount = Object.keys(descriptions).length;
+    return { html, hitCount };
   }
 
   createContentHtml(words, descriptions, compiledContentTemplate) {

@@ -13,26 +13,19 @@ import dom from "./dom";
 import defaultSettings from "./defaultsettings";
 import env from "./env";
 import mdwindow from "./mdwindow";
+import position from "./position";
+import storage from "./storage";
 
 const KEY_USER_CONFIG = "**** config ****";
-const KEY_LAST_POSITION = "**** last_position ****";
 
 const loadUserSettings = async () => {
   if (env.disableUserSettings) {
     return {};
   }
-  return new Promise(resolve => {
-    chrome.storage.sync.get([KEY_USER_CONFIG], d => {
-      const userSettingsJson = d[KEY_USER_CONFIG];
-      let userSettings = null;
-      if (userSettingsJson) {
-        userSettings = JSON.parse(userSettingsJson);
-      } else {
-        userSettings = {};
-      }
-      resolve(userSettings);
-    });
-  });
+  const data = await storage.sync.get(KEY_USER_CONFIG);
+  const userSettingsJson = data[KEY_USER_CONFIG];
+  const userSettings = userSettingsJson ? JSON.parse(userSettingsJson) : {};
+  return userSettings;
 };
 
 const processSettings = settings => {
@@ -59,83 +52,6 @@ const initializeSettings = async () => {
     settings[item] = userSettings[item];
   }
   return settings;
-};
-
-const fetchInitialPosition = options => {
-  return new Promise(resolve => {
-    let left;
-    switch (options.type) {
-      case "right":
-        left = options.documentWidth - options.dialogWidth - 5;
-        resolve({ left: `${left}px` });
-        break;
-      case "left":
-        left = 5;
-        resolve({ left: `${left}px` });
-        break;
-      case "keep":
-        chrome.storage.sync.get([KEY_LAST_POSITION], r => {
-          // onGot
-          const lastPositionJson = r[KEY_LAST_POSITION];
-          const lastPosition = lastPositionJson ? JSON.parse(lastPositionJson) : {};
-          const pos = optimizeInitialPosition(lastPosition, options);
-
-          const styles = {};
-          if (Number.isFinite(pos.left)) {
-            styles.left = `${pos.left}px`;
-          }
-          if (Number.isFinite(pos.top)) {
-            styles.top = `${pos.top}px`;
-          }
-          if (Number.isFinite(pos.width)) {
-            styles.width = `${pos.width}px`;
-          }
-          if (Number.isFinite(pos.height)) {
-            styles.height = `${pos.height}px`;
-          }
-          resolve(styles);
-        });
-        break;
-      default:
-        resolve({});
-    }
-  });
-};
-
-const optimizeInitialPosition = (position, options) => {
-  let newLeft;
-  if (position.left < 0) {
-    newLeft = 5;
-  } else if (position.left + position.width > options.windowWidth) {
-    newLeft = options.windowWidth - position.width - 5;
-  } else {
-    newLeft = position.left;
-  }
-
-  let newTop;
-  if (position.top < 0) {
-    newTop = 5;
-  } else if (position.top + position.height > options.windowHeight) {
-    newTop = options.windowHeight - position.height - 5;
-  } else {
-    newTop = position.top;
-  }
-
-  const newPosition = {
-    left: newLeft,
-    top: newTop,
-    width: max(position.width, 50),
-    height: max(position.height, 50)
-  };
-  return newPosition;
-};
-
-const max = (a, b) => {
-  if (Number.isFinite(a)) {
-    return Math.max(a, b);
-  } else {
-    return null;
-  }
 };
 
 const main = async () => {
@@ -208,17 +124,12 @@ const main = async () => {
     if (_mouseDown) {
       return;
     }
-
-    if (_isLastMouseUpOnTheWindow) {
-      if (_selection) {
-        return;
-      }
-    } else {
-      if (window.getSelection().toString()) {
-        return;
-      }
+    if (_isLastMouseUpOnTheWindow && _selection) {
+      return;
     }
-
+    if (!_isLastMouseUpOnTheWindow && window.getSelection().toString()) {
+      return;
+    }
     let textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY, _settings.parseWordsLimit);
     if (!textAtCursor) {
       return;
@@ -270,7 +181,7 @@ const main = async () => {
   dom.applyStyles(_area.dialog, _settings.hiddenDialogStyles);
   document.body.appendChild(_area.dialog);
 
-  const position = await fetchInitialPosition({
+  const positions = await position.fetchInitialPosition({
     type: _settings.initialPosition,
     windowWidth: window.innerWidth,
     windowHeight: window.innerHeight,
@@ -279,18 +190,12 @@ const main = async () => {
     dialogWidth: _area.dialog.clientWidth,
     dialogHeight: _area.dialog.clientHeight
   });
-  dom.applyStyles(_area.dialog, position);
+  dom.applyStyles(_area.dialog, positions);
   dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
 
   const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
   if (!env.disableKeepingWindowStatus) {
-    draggable.onchange = e => {
-      const positionData = {};
-      positionData[KEY_LAST_POSITION] = JSON.stringify(e);
-      chrome.storage.sync.set(positionData, () => {
-        // saved
-      });
-    };
+    draggable.onchange = e => position.save(e);
   }
   draggable.add(_area.dialog);
 
