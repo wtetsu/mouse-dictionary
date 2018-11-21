@@ -283,10 +283,10 @@ export default class Draggable {
         this.currentTop = 5;
       }
       if (onE) {
-        this.currentLeft = window.innerWidth - this.currentWidth - 5;
+        this.currentLeft = document.documentElement.clientWidth - this.mainElement.clientWidth - 5;
       }
       if (onS) {
-        this.currentTop = window.innerHeight - this.currentHeight - 5;
+        this.currentTop = window.innerHeight - this.mainElement.clientHeight - 5;
       }
       this.moveElement(this.currentLeft, this.currentTop);
       this.finishChanging();
