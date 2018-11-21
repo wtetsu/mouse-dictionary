@@ -30,8 +30,8 @@ export default {
   positionRight: "Right",
   positionKeep: "Restore the last position and size",
 
-  scrollOff: "Available",
-  scrollOn: "Not available",
+  scrollOff: "Not available",
+  scrollOn: "Available",
 
   saveSettings: "Save settings",
   defaultSettings: "Reset to default",
