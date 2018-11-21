@@ -423,7 +423,13 @@ class Main extends React.Component {
       try {
         this.contentGenerator = new mdwindow.ContentGenerator(settings);
         this.trialWindow = mdwindow.create(settings);
+        this.trialWindow.dialog.style.cursor = "zoom-out";
+        this.trialWindow.dialog.addEventListener("click", () => {
+          this.trialWindow.dialog.style.width = "100px";
+          this.trialWindow.dialog.style.height = "100px";
+        });
         document.body.appendChild(this.trialWindow.dialog);
+
         this.updateTrialText(settings);
       } catch (e) {
         this.contentGenerator = null;
