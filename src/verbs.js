@@ -23,10 +23,10 @@ const verbTrailingRules = [
   [
     { search: "nned", new: "n" },
     { search: "tted", new: "t" },
-    { search: "dded", new: "b" },
-    { search: "gged", new: "b" },
+    { search: "dded", new: "d" },
+    { search: "gged", new: "g" },
     { search: "pped", new: "p" },
-    { search: "mmed", new: "b" },
+    { search: "mmed", new: "m" },
     { search: "bbed", new: "b" },
     { search: "rred", new: "r" },
     { search: "ied", new: "y" }
