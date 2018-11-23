@@ -25,7 +25,7 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
   let theFirstWord = null;
   for (let i = 0; i < strList.length; i++) {
     const words = text.splitIntoWords(strList[i]);
-    if (i == 0) {
+    if (i === 0) {
       theFirstWord = words[0];
     }
     const linkedWords = createLinkedWordList(words, !isAllLower, 1);

@@ -388,7 +388,7 @@ const normalizeByRule = (words, rule) => {
   const replaceIndices = [];
   for (let i = 0; i < rule.length; i++) {
     const p = rule[i];
-    if (p == 0) {
+    if (p === 0) {
       result.push(words[wordIndex]);
       wordIndex += 1;
     } else if (p > 0) {
@@ -399,7 +399,7 @@ const normalizeByRule = (words, rule) => {
       wordIndex += -p;
     }
   }
-  if (replaceIndices.length == 1) {
+  if (replaceIndices.length === 1) {
     result[replaceIndices[0]] = "~";
   } else {
     let charCode = 65;

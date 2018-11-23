@@ -26,7 +26,8 @@
     "max-len": [2, { "code": 150, "tabWidth": 2, "ignoreUrls": true }],
     "react/prop-types": 0,
     "linebreak-style": ["error", "unix"],
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "eqeqeq": 2
   },
   "settings": {
     "react": {

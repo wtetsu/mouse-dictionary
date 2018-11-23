@@ -99,8 +99,8 @@ class ContentGenerator {
     }
     for (let i = 0; i < data.length; i++) {
       const d = data[i];
-      d.isFirst = i == 0;
-      d.isLast = i == data.length - 1;
+      d.isFirst = i === 0;
+      d.isLast = i === data.length - 1;
     }
 
     return data;
