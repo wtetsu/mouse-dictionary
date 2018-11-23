@@ -11,7 +11,8 @@ import UniqArray from "./uniqarray";
 
 const text = {};
 
-text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
+text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
+  const sourceStr = text.dealWithAfterHyphens(rawSourceStr);
   const lowerStr = sourceStr.toLowerCase();
   const isAllLower = lowerStr === sourceStr;
   const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
@@ -41,11 +42,45 @@ text.createLookupWords = (sourceStr, withCapitalized = false, mustIncludeOrigina
     }
   }
 
+  lookupWords.push(theFirstWord.replace(/-/g, ""), "");
+
   if (withCapitalized) {
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
-
   return lookupWords.toArray().filter(s => s.length >= 2 || s === theFirstWord);
+};
+
+// aaa-\nbbb -> aaa-bbb
+text.dealWithAfterHyphens = str => {
+  let result = "";
+  let currentIndex = 0;
+
+  for (;;) {
+    if (currentIndex >= str.length) {
+      result += str.substring(currentIndex);
+      break;
+    }
+    const nextHyphenIndex = str.indexOf("-", currentIndex);
+    if (nextHyphenIndex === -1) {
+      result += str.substring(currentIndex);
+      break;
+    }
+
+    let found = false;
+    result += str.substring(currentIndex, nextHyphenIndex + 1);
+    for (let i = nextHyphenIndex + 1; i < str.length; i++) {
+      const code = str.charCodeAt(i);
+      if (consts.targetCharacters[code]) {
+        currentIndex = i;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      currentIndex = str.length;
+    }
+  }
+  return result;
 };
 
 /**

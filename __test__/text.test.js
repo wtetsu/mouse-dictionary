@@ -60,8 +60,8 @@ test("", () => {
 });
 
 test("", () => {
-  expect(text.createLookupWords("blue-gray")).toEqual(["blue-gray", "blue gray", "blue", "gray"]);
-  expect(text.createLookupWords("third-party")).toEqual(["third-party", "third party", "third", "party"]);
+  expect(text.createLookupWords("blue-gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "bluegray"]);
+  expect(text.createLookupWords("third-party")).toEqual(["third-party", "third party", "third", "party", "thirdparty"]);
   expect(text.createLookupWords("folk tales")).toEqual(["folk tales", "folk", "folk tale"]);
 });
 
@@ -319,4 +319,16 @@ test("", () => {
   expect(text.splitString("PascalCase")).toEqual(["Pascal", "pascal", "Case", "case"]);
   expect(text.splitString("snake_case")).toEqual(["snake", "case"]);
   expect(text.splitString("UPPER_SNAKE_CASE")).toEqual(["UPPER", "upper", "SNAKE", "snake", "CASE", "case"]);
+});
+
+test("", () => {
+  // text.dealWithHyphens
+  expect(text.dealWithAfterHyphens("aaa")).toEqual("aaa");
+  expect(text.dealWithAfterHyphens("aaa-abc")).toEqual("aaa-abc");
+  expect(text.dealWithAfterHyphens("aaa-bbb-ccc")).toEqual("aaa-bbb-ccc");
+  expect(text.dealWithAfterHyphens("aaa bbb ccc")).toEqual("aaa bbb ccc");
+  expect(text.dealWithAfterHyphens("aaa-\nbbb ccc")).toEqual("aaa-bbb ccc");
+  expect(text.dealWithAfterHyphens("aaa-\nbbb ccc-@*+ddd")).toEqual("aaa-bbb ccc-ddd");
+  expect(text.dealWithAfterHyphens("aaa-")).toEqual("aaa-");
+  expect(text.dealWithAfterHyphens("emo- ↵tional")).toEqual("emo-tional");
 });
