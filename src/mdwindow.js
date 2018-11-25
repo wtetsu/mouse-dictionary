@@ -139,10 +139,15 @@ const createContentWrapperElement = settings => {
   return dialog;
 };
 
+const mapForEscapeHtml = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;"
+};
+
+const reForEscapeHtml = /&|<|>|"/g;
+
 const escapeHtml = str => {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  return str.replace(reForEscapeHtml, ch => mapForEscapeHtml[ch]);
 };
