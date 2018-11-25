@@ -105,7 +105,7 @@ const main = async () => {
     if (_selection) {
       const SELECTION_LENGTH_LIMIT = 128;
       const text = _selection.trim().substring(0, SELECTION_LENGTH_LIMIT);
-      parseTextAndLookup(text, true);
+      parseTextAndLookup(text, true, false);
     }
 
     const s = _area.dialog.style;
@@ -134,10 +134,10 @@ const main = async () => {
     if (!textAtCursor) {
       return;
     }
-    parseTextAndLookup(textAtCursor, false);
+    parseTextAndLookup(textAtCursor, false, true);
   });
 
-  const parseTextAndLookup = (textToLookup, mustIncludeOriginalText) => {
+  const parseTextAndLookup = (textToLookup, mustIncludeOriginalText, enableShortWord) => {
     if (!mustIncludeOriginalText) {
       if (!textToLookup || _lastText === textToLookup) {
         return;
@@ -155,7 +155,7 @@ const main = async () => {
     if (process.env.NODE_ENV !== "production") {
       startTime = new Date().getTime();
     }
-    return lookup(lookupWords).then(({ dom, hitCount }) => {
+    return lookup(lookupWords, enableShortWord).then(({ dom, hitCount }) => {
       _shortCache.put(textToLookup, { dom, hitCount });
       _lastText = textToLookup;
 
@@ -167,8 +167,8 @@ const main = async () => {
     });
   };
 
-  const lookup = lookupWords => {
-    return _contentGenerator.generate(lookupWords).then(({ html, hitCount }) => {
+  const lookup = (lookupWords, enableShortWord) => {
+    return _contentGenerator.generate(lookupWords, enableShortWord).then(({ html, hitCount }) => {
       const newDom = dom.create(html);
       updateContent(newDom, hitCount);
       return { dom: newDom, hitCount };

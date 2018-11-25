@@ -56,15 +56,15 @@ class ContentGenerator {
     return compiledReplaceRule;
   }
 
-  async generate(words) {
+  async generate(words, enableShortWordLength = false) {
     const descriptions = await storage.local.get(words);
-    const html = this.createContentHtml(words, descriptions, this.compiledContentTemplate);
+    const html = this.createContentHtml(words, descriptions, this.compiledContentTemplate, enableShortWordLength);
     const hitCount = Object.keys(descriptions).length;
     return { html, hitCount };
   }
 
-  createContentHtml(words, descriptions, compiledContentTemplate) {
-    const data = this.createContentTemplateData(words, descriptions);
+  createContentHtml(words, descriptions, compiledContentTemplate, enableShortWordLength) {
+    const data = this.createContentTemplateData(words, descriptions, enableShortWordLength);
     const html = compiledContentTemplate.render({ words: data });
     return html;
   }
@@ -78,9 +78,10 @@ class ContentGenerator {
     return result;
   }
 
-  createContentTemplateData(words, descriptions) {
+  createContentTemplateData(words, descriptions, enableShortWordLength) {
     const data = [];
 
+    const shortWordLength = enableShortWordLength ? this.shortWordLength : 0;
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
       const desc = descriptions[word];
@@ -88,7 +89,7 @@ class ContentGenerator {
         data.push({
           head: escapeHtml(word),
           desc: this.createDescriptionHtml(desc),
-          isShort: word.length <= this.shortWordLength,
+          isShort: word.length <= shortWordLength,
           shortDesc: desc.substring(0, this.cutShortWordDescription),
           headFontColor: this.headFontColor,
           descFontColor: this.descFontColor,
