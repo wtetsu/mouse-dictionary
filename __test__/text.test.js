@@ -323,12 +323,16 @@ test("", () => {
 
 test("", () => {
   // text.dealWithHyphens
-  expect(text.dealWithAfterHyphens("aaa")).toEqual("aaa");
-  expect(text.dealWithAfterHyphens("aaa-abc")).toEqual("aaa-abc");
-  expect(text.dealWithAfterHyphens("aaa-bbb-ccc")).toEqual("aaa-bbb-ccc");
-  expect(text.dealWithAfterHyphens("aaa bbb ccc")).toEqual("aaa bbb ccc");
-  expect(text.dealWithAfterHyphens("aaa-\nbbb ccc")).toEqual("aaa-bbb ccc");
-  expect(text.dealWithAfterHyphens("aaa-\nbbb ccc-@*+ddd")).toEqual("aaa-bbb ccc-ddd");
+  expect(text.dealWithAfterHyphens("abc")).toEqual("abc");
+  expect(text.dealWithAfterHyphens("abc-efg")).toEqual("abc-efg");
+  expect(text.dealWithAfterHyphens("abc-efg-hij")).toEqual("abc-efg-hij");
+  expect(text.dealWithAfterHyphens("abc-\nefg")).toEqual("abcefg");
+
+  expect(text.dealWithAfterHyphens("abc efg hij")).toEqual("abc efg hij");
+  expect(text.dealWithAfterHyphens("abc-\nefg hij")).toEqual("abcefg hij");
+  expect(text.dealWithAfterHyphens("abc-\nefg hij-\nklm")).toEqual("abcefg hijklm");
+  expect(text.dealWithAfterHyphens("aaa-\nbbb ccc-@*+ddd")).toEqual("aaabbb cccddd");
   expect(text.dealWithAfterHyphens("aaa-")).toEqual("aaa-");
-  expect(text.dealWithAfterHyphens("emo- ↵tional")).toEqual("emo-tional");
+  expect(text.dealWithAfterHyphens("emo- ↵tional")).toEqual("emotional");
+  expect(text.dealWithAfterHyphens("emo- @*tional")).toEqual("emotional");
 });

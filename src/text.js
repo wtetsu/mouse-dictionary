@@ -42,7 +42,11 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
     }
   }
 
-  lookupWords.push(theFirstWord.replace(/-/g, ""), "");
+  if (theFirstWord) {
+    const theFirstWordWithoutHyphen = theFirstWord.replace(/-/g, "");
+    lookupWords.push(theFirstWordWithoutHyphen);
+    lookupWords.push(theFirstWordWithoutHyphen.toLowerCase());
+  }
 
   if (withCapitalized) {
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
@@ -50,7 +54,9 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
   return lookupWords.toArray().filter(s => s.length >= 2 || s === theFirstWord);
 };
 
-// aaa-\nbbb -> aaa-bbb
+// aaa-bbb -> aaa-bbb
+// aaa-\nbbb -> aaabbb
+// aaa-%&*bbb -> aaabbb
 text.dealWithAfterHyphens = str => {
   let result = "";
   let currentIndex = 0;
@@ -60,17 +66,21 @@ text.dealWithAfterHyphens = str => {
       result += str.substring(currentIndex);
       break;
     }
-    const nextHyphenIndex = str.indexOf("-", currentIndex);
-    if (nextHyphenIndex === -1) {
+    const hyphenIndex = str.indexOf("-", currentIndex);
+    if (hyphenIndex === -1 || hyphenIndex === str.length - 1) {
       result += str.substring(currentIndex);
       break;
     }
 
     let found = false;
-    result += str.substring(currentIndex, nextHyphenIndex + 1);
-    for (let i = nextHyphenIndex + 1; i < str.length; i++) {
+    result += str.substring(currentIndex, hyphenIndex);
+    for (let i = hyphenIndex + 1; i < str.length; i++) {
       const code = str.charCodeAt(i);
       if (consts.targetCharacters[code]) {
+        if (i === hyphenIndex + 1) {
+          // right after the hyphen
+          result += "-";
+        }
         currentIndex = i;
         found = true;
         break;

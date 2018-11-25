@@ -32,7 +32,9 @@ const fetchTextFromTextNode = (textNode, offset, maxWords) => {
   let textOnCursor;
   const { text, end } = getTextFromRange(textNode.data, offset, maxWords);
   if (!end) {
-    textOnCursor = text;
+    if (text) {
+      textOnCursor = text;
+    }
   } else {
     const siblingsText = fetchSiblingsText(textNode);
     if (siblingsText) {
