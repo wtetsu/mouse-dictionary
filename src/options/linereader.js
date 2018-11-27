@@ -15,7 +15,7 @@ export default class LineReader {
     let code = null;
     let index = data.indexOf("\n");
     if (index >= 0) {
-      if (data[index - 1] == "\r") {
+      if (data[index - 1] === "\r") {
         code = "\r\n";
       } else {
         code = "\n";
