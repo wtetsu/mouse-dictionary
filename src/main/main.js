@@ -5,10 +5,10 @@
  */
 
 import res from "./resources";
-import dom from "./dom";
-import env from "./env";
+import dom from "../lib/dom";
+import env from "../settings/env";
 import mdwindow from "./mdwindow";
-import settings from "./settings";
+import loader from "./settingsloader";
 import events from "./events";
 import Draggable from "./draggable";
 
@@ -21,7 +21,7 @@ const main = async () => {
     return;
   }
 
-  const userSettings = await settings.initializeSettings();
+  const userSettings = await loader.loadInitialSettings();
 
   let existingElement = document.getElementById(DIALOG_ID);
   if (existingElement) {
@@ -64,7 +64,7 @@ const initialize = async userSettings => {
   dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
   document.body.appendChild(area.dialog);
 
-  const positions = await settings.fetchInitialPosition({
+  const positions = await loader.loadInitialPosition({
     type: userSettings.initialPosition,
     dialogWidth: area.dialog.clientWidth,
     dialogHeight: area.dialog.clientHeight
@@ -74,7 +74,7 @@ const initialize = async userSettings => {
 
   const draggable = new Draggable(userSettings.normalDialogStyles, userSettings.movingDialogStyles);
   if (!env.disableKeepingWindowStatus) {
-    draggable.onchange = e => settings.save(e);
+    draggable.onchange = e => loader.savePosition(e);
   }
   draggable.add(area.dialog);
 };

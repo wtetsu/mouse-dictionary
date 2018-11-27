@@ -7,7 +7,7 @@
 import React from "react";
 import { ChromePicker } from "react-color";
 import res from "../resources";
-import env from "../../env";
+import env from "../../settings/env";
 
 const BasicSettings = props => {
   const settings = props.settings;

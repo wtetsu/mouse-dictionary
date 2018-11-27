@@ -4,9 +4,9 @@
  * Licensed under MIT
  */
 
-import storage from "./storage";
-import defaultSettings from "./defaultsettings";
-import env from "./env";
+import storage from "../lib/storage";
+import defaultSettings from "../settings/defaultsettings";
+import env from "../settings/env";
 
 const KEY_LAST_POSITION = "**** last_position ****";
 const KEY_USER_CONFIG = "**** config ****";
@@ -34,7 +34,7 @@ const processSettings = settings => {
   }
 };
 
-const fetchUserSettings = async () => {
+const loadInitialSettings = async () => {
   const settings = Object.assign({}, defaultSettings);
   processSettings(settings);
 
@@ -47,7 +47,7 @@ const fetchUserSettings = async () => {
   return settings;
 };
 
-const fetchInitialPosition = async options => {
+const loadInitialPosition = async options => {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   const documentWidth = document.documentElement.clientWidth;
@@ -130,13 +130,10 @@ const max = (a, b) => {
     return null;
   }
 };
-
-export default {
-  fetchInitialPosition: fetchInitialPosition,
-  initializeSettings: fetchUserSettings,
-  save(e) {
-    const positionData = {};
-    positionData[KEY_LAST_POSITION] = JSON.stringify(e);
-    return storage.sync.set(positionData);
-  }
+const savePosition = async e => {
+  const positionData = {};
+  positionData[KEY_LAST_POSITION] = JSON.stringify(e);
+  return storage.sync.set(positionData);
 };
+
+export default { loadInitialPosition, loadInitialSettings, savePosition };

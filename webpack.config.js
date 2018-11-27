@@ -6,7 +6,7 @@ module.exports = {
   mode: process.env.NODE_ENV || "development",
   entry: {
     "options/options": "./src/options/Main.jsx",
-    content: "./src/content.js"
+    main: "./src/main/main.js"
   },
   output: {
     path: __dirname + "/dist"

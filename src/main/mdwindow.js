@@ -5,7 +5,7 @@
  */
 
 import Hogan from "hogan.js";
-import dom from "./dom";
+import dom from "../lib/dom";
 
 const mdwindow = {};
 mdwindow.create = settings => {

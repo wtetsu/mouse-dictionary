@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import storage from "./storage";
+import storage from "../lib/storage";
 import Hogan from "hogan.js";
 
 export default class ContentGenerator {

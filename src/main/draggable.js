@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import dom from "./dom";
+import dom from "../lib/dom";
 export default class Draggable {
   constructor(normalStyles, movingStyles) {
     this.normalStyles = normalStyles;

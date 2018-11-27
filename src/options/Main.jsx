@@ -14,11 +14,11 @@ import AdvancedSettings from "./components/AdvancedSettings";
 import PersistenceSettings from "./components/PersistenceSettings";
 import res from "./resources";
 import dict from "./dict";
-import defaultSettings from "../defaultsettings";
-import mdwindow from "../mdwindow";
-import text from "../text";
-import dom from "../dom";
-import env from "../env";
+import defaultSettings from "../settings/defaultsettings";
+import text from "../lib/text";
+import dom from "../lib/dom";
+import env from "../settings/env";
+import mdwindow from "../main/mdwindow";
 
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";

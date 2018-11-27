@@ -4,11 +4,11 @@
  * Licensed under MIT
  */
 
-import atcursor from "./atcursor";
-import text from "./text";
-import dom from "./dom";
+import atcursor from "../lib/atcursor";
+import text from "../lib/text";
+import dom from "../lib/dom";
 import ContentGenerator from "./contentgenerator";
-import ShortCache from "./shortcache";
+import ShortCache from "../lib/shortcache";
 
 export default {
   attach(dialog, settings, updateContent) {
