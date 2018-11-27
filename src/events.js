@@ -11,7 +11,7 @@ import ContentGenerator from "./contentgenerator";
 import ShortCache from "./shortcache";
 
 export default {
-  attach(body, _settings, dialog, updateContent) {
+  attach(dialog, settings, updateContent) {
     let _selection = null;
     let _mouseDown = false;
     let _isLastMouseUpOnTheWindow = false;
@@ -19,17 +19,17 @@ export default {
     // Compile templates, regular expressions so that it works fast
     let _contentGenerator;
     try {
-      _contentGenerator = new ContentGenerator(_settings);
+      _contentGenerator = new ContentGenerator(settings);
     } catch (e) {
       _contentGenerator = null;
       console.error(e);
     }
 
-    body.addEventListener("mousedown", () => {
+    document.body.addEventListener("mousedown", () => {
       _mouseDown = true;
     });
 
-    body.addEventListener("mouseup", e => {
+    document.body.addEventListener("mouseup", e => {
       _mouseDown = false;
       _selection = window.getSelection().toString();
       if (_selection) {
@@ -51,7 +51,7 @@ export default {
       }
     });
 
-    body.addEventListener("mousemove", ev => {
+    document.body.addEventListener("mousemove", ev => {
       if (_mouseDown) {
         return;
       }
@@ -61,7 +61,7 @@ export default {
       if (!_isLastMouseUpOnTheWindow && window.getSelection().toString()) {
         return;
       }
-      let textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY, _settings.parseWordsLimit);
+      let textAtCursor = atcursor(ev.target, ev.clientX, ev.clientY, settings.parseWordsLimit);
       if (!textAtCursor) {
         return;
       }
@@ -83,7 +83,7 @@ export default {
         }
       }
 
-      const lookupWords = text.createLookupWords(textToLookup, _settings.lookupWithCapitalized, mustIncludeOriginalText);
+      const lookupWords = text.createLookupWords(textToLookup, settings.lookupWithCapitalized, mustIncludeOriginalText);
 
       let startTime;
       if (process.env.NODE_ENV !== "production") {

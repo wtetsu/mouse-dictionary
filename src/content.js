@@ -6,110 +6,77 @@
 
 import res from "./resources";
 import dom from "./dom";
-import defaultSettings from "./defaultsettings";
 import env from "./env";
 import mdwindow from "./mdwindow";
-import position from "./position";
-import storage from "./storage";
+import settings from "./settings";
 import events from "./events";
 import Draggable from "./draggable";
 
-const KEY_USER_CONFIG = "**** config ****";
-
-const loadUserSettings = async () => {
-  if (env.disableUserSettings) {
-    return {};
-  }
-  const data = await storage.sync.get(KEY_USER_CONFIG);
-  const userSettingsJson = data[KEY_USER_CONFIG];
-  const userSettings = userSettingsJson ? JSON.parse(userSettingsJson) : {};
-  return userSettings;
-};
-
-const processSettings = settings => {
-  const jsonItems = ["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"];
-  for (let i = 0; i < jsonItems.length; i++) {
-    const item = jsonItems[i];
-    if (settings[item]) {
-      settings[item] = JSON.parse(settings[item]);
-    }
-  }
-  if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
-    settings.initialPosition = "right";
-  }
-};
-
-const initializeSettings = async () => {
-  const settings = Object.assign({}, defaultSettings);
-  processSettings(settings);
-
-  const userSettings = await loadUserSettings();
-  processSettings(userSettings);
-
-  for (const item of Object.keys(userSettings)) {
-    settings[item] = userSettings[item];
-  }
-  return settings;
-};
+const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
 
 const main = async () => {
   // Pages which have frames are not supported.
-  const frames = document.getElementsByTagName("frame");
-  if (frames && frames.length >= 1) {
+  if (isFramePage()) {
     alert(res("doesntSupportFrame"));
     return;
   }
 
-  const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
-  let _area = document.getElementById(DIALOG_ID);
+  const userSettings = await settings.initializeSettings();
 
-  const _settings = await initializeSettings();
-
-  if (_area) {
-    const isHidden = _area.getAttribute("data-mouse-dictionary-hidden");
-    if (isHidden === "true") {
-      dom.applyStyles(_area, _settings.normalDialogStyles);
-      _area.setAttribute("data-mouse-dictionary-hidden", "false");
-    } else {
-      dom.applyStyles(_area, _settings.hiddenDialogStyles);
-      _area.setAttribute("data-mouse-dictionary-hidden", "true");
-    }
+  let existingElement = document.getElementById(DIALOG_ID);
+  if (existingElement) {
+    toggleDialog(existingElement, userSettings);
     return;
   }
 
-  const updateContent = (newDom, count) => {
+  await initialize(userSettings);
+};
+
+const isFramePage = () => {
+  const frames = document.getElementsByTagName("frame");
+  return frames && frames.length >= 1;
+};
+
+const toggleDialog = (area, userSettings) => {
+  const isHidden = area.getAttribute("data-mouse-dictionary-hidden");
+  if (isHidden === "true") {
+    dom.applyStyles(area, userSettings.normalDialogStyles);
+    area.setAttribute("data-mouse-dictionary-hidden", "false");
+  } else {
+    dom.applyStyles(area, userSettings.hiddenDialogStyles);
+    area.setAttribute("data-mouse-dictionary-hidden", "true");
+  }
+};
+
+const initialize = async userSettings => {
+  const area = mdwindow.create(userSettings);
+  area.dialog.id = DIALOG_ID;
+
+  events.attach(area.dialog, userSettings, (newDom, count) => {
+    // update contents
     if (draggable.selectable && count === 0) {
       return;
     }
-    _area.content.innerHTML = "";
-    _area.content.appendChild(newDom);
-  };
-
-  _area = mdwindow.create(_settings);
-  _area.dialog.id = DIALOG_ID;
-
-  events.attach(document.body, _settings, _area.dialog, updateContent);
-
-  dom.applyStyles(_area.dialog, _settings.hiddenDialogStyles);
-  document.body.appendChild(_area.dialog);
-
-  const positions = await position.fetchInitialPosition({
-    type: _settings.initialPosition,
-    windowWidth: window.innerWidth,
-    windowHeight: window.innerHeight,
-    documentWidth: document.documentElement.clientWidth,
-    documentHeight: document.documentElement.clientHeight,
-    dialogWidth: _area.dialog.clientWidth,
-    dialogHeight: _area.dialog.clientHeight
+    area.content.innerHTML = "";
+    area.content.appendChild(newDom);
   });
-  dom.applyStyles(_area.dialog, positions);
-  dom.applyStyles(_area.dialog, _settings.normalDialogStyles);
 
-  const draggable = new Draggable(_settings.normalDialogStyles, _settings.movingDialogStyles);
+  dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
+  document.body.appendChild(area.dialog);
+
+  const positions = await settings.fetchInitialPosition({
+    type: userSettings.initialPosition,
+    dialogWidth: area.dialog.clientWidth,
+    dialogHeight: area.dialog.clientHeight
+  });
+  dom.applyStyles(area.dialog, positions);
+  dom.applyStyles(area.dialog, userSettings.normalDialogStyles);
+
+  const draggable = new Draggable(userSettings.normalDialogStyles, userSettings.movingDialogStyles);
   if (!env.disableKeepingWindowStatus) {
-    draggable.onchange = e => position.save(e);
+    draggable.onchange = e => settings.save(e);
   }
-  draggable.add(_area.dialog);
+  draggable.add(area.dialog);
 };
 
 main();

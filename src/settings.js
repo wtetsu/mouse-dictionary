@@ -5,15 +5,58 @@
  */
 
 import storage from "./storage";
+import defaultSettings from "./defaultsettings";
+import env from "./env";
 
 const KEY_LAST_POSITION = "**** last_position ****";
+const KEY_USER_CONFIG = "**** config ****";
+
+const loadUserSettings = async () => {
+  if (env.disableUserSettings) {
+    return {};
+  }
+  const data = await storage.sync.get(KEY_USER_CONFIG);
+  const userSettingsJson = data[KEY_USER_CONFIG];
+  const userSettings = userSettingsJson ? JSON.parse(userSettingsJson) : {};
+  return userSettings;
+};
+
+const processSettings = settings => {
+  const jsonItems = ["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"];
+  for (let i = 0; i < jsonItems.length; i++) {
+    const item = jsonItems[i];
+    if (settings[item]) {
+      settings[item] = JSON.parse(settings[item]);
+    }
+  }
+  if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
+    settings.initialPosition = "right";
+  }
+};
+
+const fetchUserSettings = async () => {
+  const settings = Object.assign({}, defaultSettings);
+  processSettings(settings);
+
+  const userSettings = await loadUserSettings();
+  processSettings(userSettings);
+
+  for (const item of Object.keys(userSettings)) {
+    settings[item] = userSettings[item];
+  }
+  return settings;
+};
 
 const fetchInitialPosition = async options => {
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  const documentWidth = document.documentElement.clientWidth;
+
   let result;
   switch (options.type) {
     case "right":
       {
-        const left = options.documentWidth - options.dialogWidth - 5;
+        const left = documentWidth - options.dialogWidth - 5;
         result = { left: `${left}px` };
       }
       break;
@@ -28,7 +71,7 @@ const fetchInitialPosition = async options => {
         const data = await storage.sync.get(KEY_LAST_POSITION);
         const lastPositionJson = data[KEY_LAST_POSITION];
         const lastPosition = lastPositionJson ? JSON.parse(lastPositionJson) : {};
-        const pos = optimizeInitialPosition(lastPosition, options);
+        const pos = optimizeInitialPosition(lastPosition, { windowWidth, windowHeight });
 
         const styles = {};
         if (Number.isFinite(pos.left)) {
@@ -90,6 +133,7 @@ const max = (a, b) => {
 
 export default {
   fetchInitialPosition: fetchInitialPosition,
+  initializeSettings: fetchUserSettings,
   save(e) {
     const positionData = {};
     positionData[KEY_LAST_POSITION] = JSON.stringify(e);
