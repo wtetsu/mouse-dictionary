@@ -1,4 +1,4 @@
-import phrase from "../src/phrase";
+import phrase from "../src/lib/phrase";
 
 test("3", () => {
   testNormalize(["a", "b", "c"], [["a", "~", "c"], ["a", "c"]]);

@@ -1,4 +1,4 @@
-import ShortCache from "../src/shortcache";
+import ShortCache from "../src/lib/shortcache";
 
 test("", () => {
   const cache = new ShortCache(3);

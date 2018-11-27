@@ -1,4 +1,4 @@
-import text from "../src/text";
+import text from "../src/lib/text";
 
 test("", () => {
   expect(text.createLookupWords("Test")).toEqual(["Test", "test"]);
