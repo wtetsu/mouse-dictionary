@@ -4,27 +4,10 @@
  * Licensed under MIT
  */
 
+import storage from "../lib/storage";
 import Hogan from "hogan.js";
-import dom from "./dom";
-import storage from "./storage";
 
-const mdwindow = {};
-mdwindow.create = settings => {
-  const dialog = createDialogElement(settings);
-
-  let header;
-  if (settings.showTitlebar) {
-    header = createHeaderElement(settings);
-    dialog.appendChild(header);
-  }
-
-  const content = createContentWrapperElement(settings);
-  dialog.appendChild(content);
-
-  return { dialog, header, content };
-};
-
-class ContentGenerator {
+export default class ContentGenerator {
   constructor(settings) {
     this.shortWordLength = settings.shortWordLength;
     this.cutShortWordDescription = settings.cutShortWordDescription;
@@ -107,38 +90,6 @@ class ContentGenerator {
     return data;
   }
 }
-
-mdwindow.ContentGenerator = ContentGenerator;
-
-export default mdwindow;
-
-const createDialogElement = settings => {
-  const compiledTemplate = Hogan.compile(settings.dialogTemplate);
-  const html = compiledTemplate.render({
-    backgroundColor: settings.backgroundColor,
-    titlebarBackgroundColor: settings.titlebarBackgroundColor,
-    width: settings.width,
-    height: settings.height,
-    scroll: settings.scroll
-  });
-  const dialog = dom.create(html);
-  dom.applyStyles(dialog, settings.normalDialogStyles);
-  return dialog;
-};
-
-const createHeaderElement = settings => {
-  const compiledTemplate = Hogan.compile(settings.titlebarTemplate);
-  const html = compiledTemplate.render({
-    backgroundColor: settings.backgroundColor,
-    titlebarBackgroundColor: settings.titlebarBackgroundColor
-  });
-  return dom.create(html);
-};
-
-const createContentWrapperElement = settings => {
-  const dialog = dom.create(settings.contentWrapperTemplate);
-  return dialog;
-};
 
 const mapForEscapeHtml = {
   "&": "&amp;",

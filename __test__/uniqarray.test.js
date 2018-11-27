@@ -1,4 +1,4 @@
-import UniqArray from "../src/uniqarray";
+import UniqArray from "../src/lib/uniqarray";
 
 test("", () => {
   const ua = new UniqArray();

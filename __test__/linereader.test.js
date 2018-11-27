@@ -1,7 +1,6 @@
 import LineReader from "../src/options/linereader";
 
 test("", () => {
-  /*
   let reader = new LineReader("aaa\nbbb\nccc");
 
   let lines = [];
@@ -20,11 +19,9 @@ test("", () => {
       test.done();
     }
   );
-  */
 });
 
 test("", () => {
-  /*
   let reader = new LineReader("aaa\r\nbbb\r\nccc");
 
   let lines = [];
@@ -43,5 +40,4 @@ test("", () => {
       test.done();
     }
   );
-  */
 });

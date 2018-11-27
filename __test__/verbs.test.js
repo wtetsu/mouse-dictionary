@@ -1,4 +1,4 @@
-import verbs from "../src/verbs";
+import verbs from "../src/lib/verbs";
 
 test("", () => {
   expect(verbs("word")).toEqual([]);
