@@ -22,6 +22,8 @@ plugins:
       languages:
         javascript:
           count_threshold: 3
+          patterns:
+            - "*.js"
 exclude_paths:
   - "__test__/"
   - "static/data/"

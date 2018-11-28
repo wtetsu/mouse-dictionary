@@ -5,8 +5,8 @@
  */
 
 import sprintf from "sprintf-js";
-import ja from "./resources/ja";
-import en from "./resources/en";
+import ja from "../resources/ja";
+import en from "../resources/en";
 
 let _lang = null;
 

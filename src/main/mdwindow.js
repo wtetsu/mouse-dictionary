@@ -7,23 +7,22 @@
 import Hogan from "hogan.js";
 import dom from "../lib/dom";
 
-const mdwindow = {};
-mdwindow.create = settings => {
-  const dialog = createDialogElement(settings);
+export default {
+  create(settings) {
+    const dialog = createDialogElement(settings);
 
-  let header;
-  if (settings.showTitlebar) {
-    header = createHeaderElement(settings);
-    dialog.appendChild(header);
+    let header;
+    if (settings.showTitlebar) {
+      header = createHeaderElement(settings);
+      dialog.appendChild(header);
+    }
+
+    const content = createContentWrapperElement(settings);
+    dialog.appendChild(content);
+
+    return { dialog, header, content };
   }
-
-  const content = createContentWrapperElement(settings);
-  dialog.appendChild(content);
-
-  return { dialog, header, content };
 };
-
-export default mdwindow;
 
 const createDialogElement = settings => {
   const compiledTemplate = Hogan.compile(settings.dialogTemplate);

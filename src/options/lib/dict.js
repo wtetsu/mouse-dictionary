@@ -8,7 +8,7 @@ import LineReader from "./linereader";
 import EijiroParser from "./eijiroparser";
 import SimpleDictParser from "./simpledictparser";
 import JsonDictParser from "./jsondictparser";
-import env from "../settings/env";
+import env from "../../settings/env";
 
 const save = dictData => {
   return new Promise(resolve => {

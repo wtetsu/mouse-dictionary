@@ -39,7 +39,7 @@ export default class ContentGenerator {
     return compiledReplaceRule;
   }
 
-  async generate(words, enableShortWordLength = false) {
+  async generate(words, enableShortWordLength = true) {
     const descriptions = await storage.local.get(words);
     const html = this.createContentHtml(words, descriptions, this.compiledContentTemplate, enableShortWordLength);
     const hitCount = Object.keys(descriptions).length;

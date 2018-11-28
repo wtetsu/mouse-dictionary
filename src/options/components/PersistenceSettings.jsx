@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import res from "../resources";
+import res from "../lib/resources";
 
 const PersistenceSettings = props => {
   return (
