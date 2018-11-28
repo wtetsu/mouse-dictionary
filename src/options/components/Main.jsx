@@ -146,7 +146,7 @@ export default class Main extends React.Component {
   }
 
   async componentDidMount() {
-    const isLoaded = storage.local.pickOut(KEY_LOADED);
+    const isLoaded = await storage.local.pickOut(KEY_LOADED);
     if (!isLoaded) {
       this.registerDefaultDict();
     }
