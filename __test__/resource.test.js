@@ -1,4 +1,4 @@
-import res from "../src/options/resources";
+import res from "../src/options/lib/resources";
 
 test("", () => {
   res.setLang("ja");
