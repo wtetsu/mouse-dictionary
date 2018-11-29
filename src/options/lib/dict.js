@@ -8,15 +8,8 @@ import LineReader from "./linereader";
 import EijiroParser from "./eijiroparser";
 import SimpleDictParser from "./simpledictparser";
 import JsonDictParser from "./jsondictparser";
+import storage from "../../lib/storage";
 import env from "../../settings/env";
-
-const save = dictData => {
-  return new Promise(resolve => {
-    chrome.storage.local.set(dictData, () => {
-      resolve();
-    });
-  });
-};
 
 const load = async ({ file, encoding, format, event }) => {
   let parser = null;
@@ -115,6 +108,10 @@ const registerDict = async fname => {
   await save(dictData);
 
   return wordCount;
+};
+
+const save = dictData => {
+  return storage.local.set(dictData);
 };
 
 export default { load, registerDefaultDict };

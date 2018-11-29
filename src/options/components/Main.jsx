@@ -434,9 +434,11 @@ export default class Main extends React.Component {
     }
 
     this.contentGenerator.generate(lookupWords, true).then(({ html }) => {
-      const newDom = dom.create(html);
-      this.trialWindow.content.innerHTML = "";
-      this.trialWindow.content.appendChild(newDom);
+      if (this.trialWindow) {
+        const newDom = dom.create(html);
+        this.trialWindow.content.innerHTML = "";
+        this.trialWindow.content.appendChild(newDom);
+      }
 
       if (process.env.NODE_ENV !== "production") {
         const time = new Date().getTime() - startTime;
@@ -452,7 +454,7 @@ export default class Main extends React.Component {
     }
     const newData = {};
     newData[KEY_USER_CONFIG] = JSON.stringify(settings);
-    await chrome.storage.sync.set(newData);
+    await storage.sync.set(newData);
     swal({
       text: res.get("finishSaving"),
       icon: "info"

@@ -11,6 +11,7 @@ export default (element, clientX, clientY, maxWords = 5) => {
   try {
     textOnCursor = fetchTextOnCursor(element, clientX, clientY, maxWords);
   } catch (err) {
+    console.error(err);
     textOnCursor = null;
   }
   return removeQuotes(textOnCursor);
