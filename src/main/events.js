@@ -7,8 +7,9 @@
 import atcursor from "../lib/atcursor";
 import text from "../lib/text";
 import dom from "../lib/dom";
-import ContentGenerator from "./contentgenerator";
 import ShortCache from "../lib/shortcache";
+import storage from "../lib/storage";
+import ContentGenerator from "./contentgenerator";
 
 export default {
   attach(dialog, settings, updateContent) {
@@ -37,18 +38,7 @@ export default {
         const text = _selection.trim().substring(0, SELECTION_LENGTH_LIMIT);
         parseTextAndLookup(text, true, false);
       }
-
-      //const s = _area.dialog.style;
-      const s = dialog.style;
-      const top = parseInt(s.top, 10);
-      const left = parseInt(s.left, 10);
-      const width = parseInt(s.width, 10);
-      const height = parseInt(s.height, 10);
-      if (e.clientX >= left && e.clientX <= left + width && (e.clientY >= top && e.clientY <= top + height)) {
-        _isLastMouseUpOnTheWindow = true;
-      } else {
-        _isLastMouseUpOnTheWindow = false;
-      }
+      _isLastMouseUpOnTheWindow = isOnTheWindow(dialog.style, e);
     });
 
     document.body.addEventListener("mousemove", ev => {
@@ -71,7 +61,7 @@ export default {
     let _lastText = null;
     const _shortCache = new ShortCache(100);
 
-    const parseTextAndLookup = (textToLookup, mustIncludeOriginalText, enableShortWord) => {
+    const parseTextAndLookup = async (textToLookup, mustIncludeOriginalText, enableShortWord) => {
       if (!mustIncludeOriginalText) {
         if (!textToLookup || _lastText === textToLookup) {
           return;
@@ -83,30 +73,33 @@ export default {
         }
       }
 
-      const lookupWords = text.createLookupWords(textToLookup, settings.lookupWithCapitalized, mustIncludeOriginalText);
-
       let startTime;
       if (process.env.NODE_ENV !== "production") {
         startTime = new Date().getTime();
       }
-      return lookup(lookupWords, enableShortWord).then(({ dom, hitCount }) => {
-        _shortCache.put(textToLookup, { dom, hitCount });
-        _lastText = textToLookup;
 
-        if (process.env.NODE_ENV !== "production") {
-          const time = new Date().getTime() - startTime;
-          console.info(`${time}ms:${textToLookup}`);
-          console.info(lookupWords);
-        }
-      });
-    };
+      const wordsToLookup = text.createLookupWords(textToLookup, settings.lookupWithCapitalized, mustIncludeOriginalText);
+      const descriptions = await storage.local.get(wordsToLookup);
+      const { html, hitCount } = _contentGenerator.generate(wordsToLookup, descriptions, enableShortWord);
+      const newDom = dom.create(html);
+      updateContent(newDom, hitCount);
 
-    const lookup = (lookupWords, enableShortWord) => {
-      return _contentGenerator.generate(lookupWords, enableShortWord).then(({ html, hitCount }) => {
-        const newDom = dom.create(html);
-        updateContent(newDom, hitCount);
-        return { dom: newDom, hitCount };
-      });
+      _shortCache.put(textToLookup, { dom: newDom, hitCount });
+      _lastText = textToLookup;
+
+      if (process.env.NODE_ENV !== "production") {
+        const time = new Date().getTime() - startTime;
+        console.info(`${time}ms:${textToLookup}`);
+        console.info(wordsToLookup);
+      }
     };
   }
+};
+
+const isOnTheWindow = (style, e) => {
+  const top = parseInt(style.top, 10);
+  const left = parseInt(style.left, 10);
+  const width = parseInt(style.width, 10);
+  const height = parseInt(style.height, 10);
+  return e.clientX >= left && e.clientX <= left + width && (e.clientY >= top && e.clientY <= top + height);
 };

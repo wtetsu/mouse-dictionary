@@ -420,31 +420,32 @@ export default class Main extends React.Component {
     }
   }
 
-  updateTrialText(settings, trialText) {
+  async updateTrialText(settings, trialText) {
     if (!this.trialWindow) {
       return;
     }
     const actualTrialText = trialText || this.state.trialText;
-    const lookupWords = text.createLookupWords(actualTrialText, settings.lookupWithCapitalized);
+    const wordsToLookup = text.createLookupWords(actualTrialText, settings.lookupWithCapitalized);
 
     let startTime;
     if (process.env.NODE_ENV !== "production") {
       startTime = new Date().getTime();
-      console.info(lookupWords);
+      console.info(wordsToLookup);
     }
 
-    this.contentGenerator.generate(lookupWords, true).then(({ html }) => {
-      if (this.trialWindow) {
-        const newDom = dom.create(html);
-        this.trialWindow.content.innerHTML = "";
-        this.trialWindow.content.appendChild(newDom);
-      }
+    const descriptions = await storage.local.get(wordsToLookup);
+    const { html } = await this.contentGenerator.generate(wordsToLookup, descriptions, true);
 
-      if (process.env.NODE_ENV !== "production") {
-        const time = new Date().getTime() - startTime;
-        console.info(`${time}ms:${lookupWords}`);
-      }
-    });
+    if (this.trialWindow) {
+      const newDom = dom.create(html);
+      this.trialWindow.content.innerHTML = "";
+      this.trialWindow.content.appendChild(newDom);
+    }
+
+    if (process.env.NODE_ENV !== "production") {
+      const time = new Date().getTime() - startTime;
+      console.info(`${time}ms:${wordsToLookup}`);
+    }
   }
 
   async doSaveSettings() {

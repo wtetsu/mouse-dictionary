@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import storage from "../lib/storage";
 import Hogan from "hogan.js";
 
 export default class ContentGenerator {
@@ -17,15 +16,14 @@ export default class ContentGenerator {
     this.descFontSize = settings.descFontSize;
     this.scroll = settings.scroll;
 
-    this.compiledReplaceRules = this.createReplaceRule(settings.replaceRules);
+    this.compiledReplaceRules = this.compileReplaceRules(settings.replaceRules);
 
     // Since contentTemplate is executed fairly frequently,
     // it's compiled first and the produced result should be used repeatedly.
-
     this.compiledContentTemplate = Hogan.compile(settings.contentTemplate);
   }
 
-  createReplaceRule(replaceRules) {
+  compileReplaceRules(replaceRules) {
     const compiledReplaceRule = [];
     for (let i = 0; i < replaceRules.length; i++) {
       const rule = replaceRules[i];
@@ -39,8 +37,7 @@ export default class ContentGenerator {
     return compiledReplaceRule;
   }
 
-  async generate(words, enableShortWordLength = true) {
-    const descriptions = await storage.local.get(words);
+  generate(words, descriptions, enableShortWordLength = true) {
     const html = this.createContentHtml(words, descriptions, this.compiledContentTemplate, enableShortWordLength);
     const hitCount = Object.keys(descriptions).length;
     return { html, hitCount };
