@@ -151,13 +151,14 @@ export default class Main extends React.Component {
     }
     await this.initializeUserSettings();
     await this.updateDictDataUsage();
+    this.setState({ initialized: true });
   }
 
   async initializeUserSettings() {
     const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
     const userSettings = utils.tryToParseJson(userSettingsJson);
     const settings = Object.assign({}, defaultSettings, userSettings);
-    this.setState({ settings, initialized: true });
+    this.setState({ settings });
     this.contentGenerator = new ContentGenerator(settings);
     setInterval(() => {
       if (!this.newSettingsTime) {
