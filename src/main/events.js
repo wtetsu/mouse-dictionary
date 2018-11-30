@@ -69,6 +69,7 @@ export default {
         const cacheData = _shortCache.get(textToLookup);
         if (cacheData) {
           updateContent(cacheData.dom, cacheData.hitCount);
+          _lastText = textToLookup;
           return;
         }
       }
