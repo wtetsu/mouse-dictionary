@@ -5,7 +5,7 @@ const isProd = process.env.NODE_ENV === "production";
 module.exports = {
   mode: process.env.NODE_ENV || "development",
   entry: {
-    "options/options": "./src/options/Main.jsx",
+    "options/options": "./src/options/main.jsx",
     main: "./src/main/main.js"
   },
   output: {
