@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import "babel-polyfill";
 import React from "react";
 import swal from "sweetalert";
 import LoadDictionary from "./LoadDictionary";
