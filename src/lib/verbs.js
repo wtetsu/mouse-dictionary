@@ -12,14 +12,17 @@ export default verb => {
   if (v) {
     result.push(v);
   }
-
-  const otherForms = text.tryToReplaceTrailingStrings(verb, verbTrailingRules);
+  const n = nouns[verb];
+  if (n) {
+    result.push(n);
+  }
+  const otherForms = text.tryToReplaceTrailingStrings(verb, replaceTrailingRules);
   result.push(...otherForms);
 
   return result;
 };
 
-const verbTrailingRules = [
+const replaceTrailingRules = [
   [
     { search: "nned", new: "n" },
     { search: "tted", new: "t" },
@@ -31,12 +34,6 @@ const verbTrailingRules = [
     { search: "rred", new: "r" },
     { search: "ied", new: "y" }
   ],
-  [{ search: "ed", new: "" }],
-  [{ search: "ed", new: "e" }],
-  [{ search: "ies", new: "y" }],
-  [{ search: "ier", new: "y" }],
-  [{ search: "s", new: "" }],
-  [{ search: "es", new: "" }],
   [
     { search: "nning", new: "n" },
     { search: "tting", new: "t" },
@@ -50,7 +47,16 @@ const verbTrailingRules = [
     { search: "ing", new: "" }
   ],
   [{ search: "ying", new: "ie" }],
-  [{ search: "ing", new: "e" }]
+  [{ search: "ing", new: "e" }],
+  [{ search: "ed", new: "" }],
+  [{ search: "ed", new: "e" }],
+  [{ search: "ies", new: "y" }],
+  [{ search: "ier", new: "y" }],
+  [{ search: "ves", new: "fe" }],
+  [{ search: "ves", new: "f" }],
+  [{ search: "es", new: "" }],
+  [{ search: "s", new: "" }],
+  [{ search: "men", new: "man" }]
 ];
 
 // This data is based on ejdic-hand
@@ -353,4 +359,110 @@ const verbs = {
   wrote: "write",
   wrought: "work",
   wrung: "wring"
+};
+
+const nouns = {
+  abaci: "abacus",
+  addenda: "addendum",
+  alumnae: "alumna",
+  alumni: "alumnus",
+  apices: "apex",
+  appendices: "appendix",
+  automata: "automaton",
+  axes: "axis",
+  bases: "basis",
+  beaux: "beau",
+  beeves: "beef",
+  bronchi: "bronchus",
+  bureaux: "bureau",
+  busses: "bus",
+  calves: "calf",
+  calyces: "calyx",
+  cantharides: "cantharis",
+  cherubim: "cherub",
+  children: "child",
+  cola: "colon",
+  corpora: "corpus",
+  criteria: "criterion",
+  dicta: "dictum",
+  elves: "elf",
+  errata: "erratum",
+  feet: "foot",
+  flagella: "flagellum",
+  foci: "focus",
+  fora: "forum",
+  frusta: "frustum",
+  geese: "goose",
+  genera: "genus",
+  genii: "genius, genie",
+  gymnasia: "gymnasium",
+  halfpence: "halfpenny",
+  halves: "half",
+  hooves: "hoof",
+  indices: "index",
+  jinn: "jinni",
+  knives: "knife",
+  labia: "labium",
+  leaves: "leaf",
+  lei: "leu",
+  lice: "louse",
+  lives: "life",
+  loaves: "loaf",
+  loci: "locus",
+  maria: "mare",
+  matrices: "matrix",
+  maxima: "maximum",
+  media: "medium",
+  memoranda: "memorandum",
+  men: "man",
+  mesdames: "madame",
+  mesdemoiselles: "mademoiselle",
+  Messeigneurs: "Monseigneur",
+  messieurs: "monsieur",
+  mice: "mouse",
+  micra: "micron",
+  minima: "minimum",
+  nimbi: "nimbus",
+  nuclei: "nucleus",
+  ova: "ovum",
+  oxen: "ox",
+  pease: "pea",
+  pelves: "pelvis",
+  pence: "penny",
+  phenomena: "phenomenon",
+  pix: "pic",
+  plena: "plenum",
+  quanta: "quantum",
+  radii: "radius",
+  sancta: "sanctum",
+  selves: "self",
+  sera: "serum",
+  seraphim: "seraph",
+  sheaves: "sheaf",
+  shelves: "shelf",
+  sox: "sock",
+  spectra: "spectrum",
+  staves: "staff",
+  stimuli: "stimulus",
+  stomata: "stoma",
+  strata: "stratum",
+  strati: "stratus",
+  styli: "stylus",
+  syllabi: "syllabus",
+  syntheses: "synthesis",
+  tableaux: "tableau",
+  tali: "talus",
+  teeth: "tooth",
+  termini: "terminus",
+  testes: "testis",
+  theses: "thesis",
+  thieves: "thief",
+  tympana: "tympanum",
+  ultimata: "ultimatum",
+  vortices: "vortex",
+  wharves: "wharf",
+  wives: "wife",
+  wolves: "wolf",
+  women: "woman",
+  yourselves: "yourself"
 };
