@@ -153,42 +153,45 @@ const doConvert = (word, conversionRule) => {
   return result;
 };
 
+const ONES = "one's";
+const SOMEONES = "someone's";
+const ONESELF = "oneself";
 const pronounConversions = [
   {
-    my: "one's",
-    your: "one's",
-    his: "one's",
-    her: "one's",
-    its: "one's",
-    our: "one's",
-    their: "one's",
-    "'s": "one's",
-    "one's": "one's",
-    "someone's": "someone's",
-    myself: "oneself",
-    yourself: "oneself",
-    himself: "oneself",
-    herself: "oneself",
-    ourselves: "oneself",
-    themselves: "oneself"
+    my: ONES,
+    your: ONES,
+    his: ONES,
+    her: ONES,
+    its: ONES,
+    our: ONES,
+    their: ONES,
+    "'s": ONES,
+    "one's": ONES,
+    "someone's": SOMEONES,
+    myself: ONESELF,
+    yourself: ONESELF,
+    himself: ONESELF,
+    herself: ONESELF,
+    ourselves: ONESELF,
+    themselves: ONESELF
   },
   {
-    my: "someone's",
-    your: "someone's",
-    his: "someone's",
-    her: "someone's",
-    its: "someone's",
-    our: "someone's",
-    their: "someone's",
-    "'s": "someone's",
-    "one's": "one's",
-    "someone's": "someone's",
-    myself: "oneself",
-    yourself: "oneself",
-    himself: "oneself",
-    herself: "oneself",
-    ourselves: "oneself",
-    themselves: "oneself"
+    my: SOMEONES,
+    your: SOMEONES,
+    his: SOMEONES,
+    her: SOMEONES,
+    its: SOMEONES,
+    our: SOMEONES,
+    their: SOMEONES,
+    "'s": SOMEONES,
+    "one's": ONES,
+    "someone's": SOMEONES,
+    myself: ONESELF,
+    yourself: ONESELF,
+    himself: ONESELF,
+    herself: ONESELF,
+    ourselves: ONESELF,
+    themselves: ONESELF
   }
 ];
 
