@@ -5,7 +5,7 @@
  */
 
 import consts from "./consts";
-import verbs from "./transform";
+import transform from "./transform";
 import phrase from "./phrase";
 import UniqArray from "./uniqarray";
 
@@ -363,7 +363,7 @@ text.linkWords = (words, minWordNum = 1) => {
   }
 
   const firstWord = words[0];
-  const firstWordList = [firstWord].concat(verbs(firstWord));
+  const firstWordList = [firstWord].concat(transform(firstWord));
 
   const appendedList = [];
   for (let i = 0; i < firstWordList.length; i++) {

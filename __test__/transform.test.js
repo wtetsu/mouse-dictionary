@@ -1,14 +1,14 @@
-import verbs from "../src/lib/transform";
+import transform from "../src/lib/transform";
 
 test("", () => {
-  expect(verbs("word")).toEqual([]);
-  expect(verbs("deal")).toEqual([]);
-  expect(verbs("deals")).toEqual(["deal"]);
-  expect(verbs("dealt")).toEqual(["deal"]);
-  expect(verbs("dealing")).toEqual(["deal", "deale"]);
+  expect(transform("word")).toEqual([]);
+  expect(transform("deal")).toEqual([]);
+  expect(transform("deals")).toEqual(["deal"]);
+  expect(transform("dealt")).toEqual(["deal"]);
+  expect(transform("dealing")).toEqual(["deal", "deale"]);
 
-  expect(verbs("run")).toEqual([]);
-  expect(verbs("runs")).toEqual(["run"]);
-  expect(verbs("ran")).toEqual(["run"]);
-  expect(verbs("running")).toEqual(["run", "runne"]);
+  expect(transform("run")).toEqual([]);
+  expect(transform("runs")).toEqual(["run"]);
+  expect(transform("ran")).toEqual(["run"]);
+  expect(transform("running")).toEqual(["run", "runne"]);
 });

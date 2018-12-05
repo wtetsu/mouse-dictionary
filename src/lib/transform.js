@@ -5,21 +5,21 @@
  */
 
 import text from "./text";
+import UniqArray from "./uniqarray";
 
-export default verb => {
-  const result = [];
-  const v = verbs[verb];
+export default word => {
+  const list = new UniqArray();
+  const v = verbs[word];
   if (v) {
-    result.push(v);
+    list.push(v);
   }
-  const n = nouns[verb];
+  const n = nouns[word];
   if (n) {
-    result.push(n);
+    list.push(n);
   }
-  const otherForms = text.tryToReplaceTrailingStrings(verb, replaceTrailingRules);
-  result.push(...otherForms);
-
-  return result;
+  const otherForms = text.tryToReplaceTrailingStrings(word, replaceTrailingRules);
+  list.merge(otherForms);
+  return list.toArray();
 };
 
 const replaceTrailingRules = [
