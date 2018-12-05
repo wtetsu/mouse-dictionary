@@ -62,6 +62,13 @@ test("", () => {
 test("", () => {
   expect(text.createLookupWords("blue-gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "bluegray"]);
   expect(text.createLookupWords("third-party")).toEqual(["third-party", "third party", "third", "party", "thirdparty"]);
+
+  // non-breaking hyphen(U+2011)
+  expect(text.createLookupWords("blue‑gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "bluegray"]);
+  expect(text.createLookupWords("third‑party")).toEqual(["third-party", "third party", "third", "party", "thirdparty"]);
+});
+
+test("", () => {
   expect(text.createLookupWords("folk tales")).toEqual(["folk tales", "folk", "folk tale"]);
 });
 
@@ -322,17 +329,29 @@ test("", () => {
 });
 
 test("", () => {
-  // text.dealWithHyphens
-  expect(text.dealWithAfterHyphens("abc")).toEqual("abc");
-  expect(text.dealWithAfterHyphens("abc-efg")).toEqual("abc-efg");
-  expect(text.dealWithAfterHyphens("abc-efg-hij")).toEqual("abc-efg-hij");
-  expect(text.dealWithAfterHyphens("abc-\nefg")).toEqual("abcefg");
+  // normal hyphen
+  expect(text.dealWithHyphens("abc")).toEqual("abc");
+  expect(text.dealWithHyphens("abc-efg")).toEqual("abc-efg");
+  expect(text.dealWithHyphens("abc-efg-hij")).toEqual("abc-efg-hij");
+  expect(text.dealWithHyphens("abc-\nefg")).toEqual("abcefg");
+  expect(text.dealWithHyphens("abc efg hij")).toEqual("abc efg hij");
+  expect(text.dealWithHyphens("abc-\nefg hij")).toEqual("abcefg hij");
+  expect(text.dealWithHyphens("abc-\nefg hij-\nklm")).toEqual("abcefg hijklm");
+  expect(text.dealWithHyphens("aaa-\nbbb ccc-@*+ddd")).toEqual("aaabbb cccddd");
+  expect(text.dealWithHyphens("aaa-")).toEqual("aaa-");
+  expect(text.dealWithHyphens("emo- ↵tional")).toEqual("emotional");
+  expect(text.dealWithHyphens("emo- @*tional")).toEqual("emotional");
 
-  expect(text.dealWithAfterHyphens("abc efg hij")).toEqual("abc efg hij");
-  expect(text.dealWithAfterHyphens("abc-\nefg hij")).toEqual("abcefg hij");
-  expect(text.dealWithAfterHyphens("abc-\nefg hij-\nklm")).toEqual("abcefg hijklm");
-  expect(text.dealWithAfterHyphens("aaa-\nbbb ccc-@*+ddd")).toEqual("aaabbb cccddd");
-  expect(text.dealWithAfterHyphens("aaa-")).toEqual("aaa-");
-  expect(text.dealWithAfterHyphens("emo- ↵tional")).toEqual("emotional");
-  expect(text.dealWithAfterHyphens("emo- @*tional")).toEqual("emotional");
+  // non-breaking hyphen(U+2011)
+  expect(text.dealWithHyphens("abc")).toEqual("abc");
+  expect(text.dealWithHyphens("abc‑efg")).toEqual("abc-efg");
+  expect(text.dealWithHyphens("abc‑efg‑hij")).toEqual("abc-efg-hij");
+  expect(text.dealWithHyphens("abc‑\nefg")).toEqual("abcefg");
+  expect(text.dealWithHyphens("abc efg hij")).toEqual("abc efg hij");
+  expect(text.dealWithHyphens("abc‑\nefg hij")).toEqual("abcefg hij");
+  expect(text.dealWithHyphens("abc‑\nefg hij‑\nklm")).toEqual("abcefg hijklm");
+  expect(text.dealWithHyphens("aaa‑\nbbb ccc‑@*+ddd")).toEqual("aaabbb cccddd");
+  expect(text.dealWithHyphens("aaa‑")).toEqual("aaa-");
+  expect(text.dealWithHyphens("emo‑ ↵tional")).toEqual("emotional");
+  expect(text.dealWithHyphens("emo‑ @*tional")).toEqual("emotional");
 });
