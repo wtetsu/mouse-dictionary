@@ -5,7 +5,7 @@
  */
 
 import consts from "./consts";
-import verbs from "./verbs";
+import verbs from "./transform";
 import phrase from "./phrase";
 import UniqArray from "./uniqarray";
 
