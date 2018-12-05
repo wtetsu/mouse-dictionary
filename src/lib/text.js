@@ -12,7 +12,7 @@ import UniqArray from "./uniqarray";
 const text = {};
 
 text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
-  const sourceStr = text.dealWithAfterHyphens(rawSourceStr);
+  const sourceStr = text.dealWithHyphens(rawSourceStr);
   const lowerStr = sourceStr.toLowerCase();
   const isAllLower = lowerStr === sourceStr;
   const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
@@ -54,10 +54,13 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
   return lookupWords.toArray().filter(s => s.length >= 2 || s === theFirstWord);
 };
 
+const RE_NON_BREAKING_HYPHEN = /‑/g;
+
 // aaa-bbb -> aaa-bbb
 // aaa-\nbbb -> aaabbb
 // aaa-%&*bbb -> aaabbb
-text.dealWithAfterHyphens = str => {
+text.dealWithHyphens = sourceStr => {
+  const str = sourceStr.replace(RE_NON_BREAKING_HYPHEN, "-");
   let result = "";
   let currentIndex = 0;
 
@@ -275,7 +278,6 @@ text.splitString = str => {
       arr.push(lLastWord);
     }
   }
-
   return arr;
 };
 

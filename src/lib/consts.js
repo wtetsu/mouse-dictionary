@@ -96,11 +96,12 @@ const targetCharacters = {
   119: true, // w
   120: true, // x
   121: true, // y
-  122: true // z
+  122: true, // z
   //123: true, // {
   //124: true, // |
   //125: true, // }
-  //126: true // ~
+  //126: true // ~,
+  8209: true // ‑
 };
 
 const quoteCharacters = {
