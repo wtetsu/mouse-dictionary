@@ -237,19 +237,22 @@ test("", () => {
     "brush dog",
     "brush one"
   ]);
-  expect(text.createLookupWords("brush taro's dog")).toEqual([
-    "brush taro's dog",
-    "brush taro's",
+  expect(text.createLookupWords("brush Taro's dog")).toEqual([
+    "brush Taro's dog",
+    "brush Taro's",
     "brush",
     "brush ~ dog",
     "brush dog",
-    "brush taro",
+    "brush Taro",
     "brush one's dog",
     "brush one's",
     "brush one",
     "brush someone's dog",
     "brush someone's",
-    "brush someone"
+    "brush someone",
+    "brush taro's dog",
+    "brush taro's",
+    "brush taro"
   ]);
 });
 
