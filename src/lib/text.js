@@ -149,7 +149,8 @@ const doConvert = (word, conversionRule) => {
   if (w) {
     result = w;
   } else {
-    if (word.endsWith("'s") || word.endsWith("s'")) {
+    const firstCode = word.charCodeAt(0);
+    if (firstCode >= 65 && firstCode <= 90 && (word.endsWith("'s") || word.endsWith("s'"))) {
       result = conversionRule["'s"];
     }
   }
@@ -157,6 +158,7 @@ const doConvert = (word, conversionRule) => {
 };
 
 const ONES = "one's";
+const SOMEONE = "someone";
 const SOMEONES = "someone's";
 const ONESELF = "oneself";
 const pronounConversions = [
@@ -176,7 +178,10 @@ const pronounConversions = [
     himself: ONESELF,
     herself: ONESELF,
     ourselves: ONESELF,
-    themselves: ONESELF
+    themselves: ONESELF,
+    him: SOMEONE,
+    them: SOMEONE,
+    us: SOMEONE
   },
   {
     my: SOMEONES,
@@ -194,7 +199,10 @@ const pronounConversions = [
     himself: ONESELF,
     herself: ONESELF,
     ourselves: ONESELF,
-    themselves: ONESELF
+    themselves: ONESELF,
+    him: SOMEONE,
+    them: SOMEONE,
+    us: SOMEONE
   }
 ];
 
