@@ -32,6 +32,7 @@ const replaceTrailingRules = [
     { search: "mmed", new: "m" },
     { search: "bbed", new: "b" },
     { search: "rred", new: "r" },
+    { search: "zzed", new: "z" },
     { search: "ied", new: "y" }
   ],
   [
@@ -44,6 +45,7 @@ const replaceTrailingRules = [
     { search: "bbing", new: "b" },
     { search: "rring", new: "r" },
     { search: "lling", new: "l" },
+    { search: "zzing", new: "z" },
     { search: "ing", new: "" }
   ],
   [{ search: "ying", new: "ie" }],
@@ -54,6 +56,7 @@ const replaceTrailingRules = [
   [{ search: "ier", new: "y" }],
   [{ search: "ves", new: "fe" }],
   [{ search: "ves", new: "f" }],
+  [{ search: "zzes", new: "z" }],
   [{ search: "es", new: "" }],
   [{ search: "s", new: "" }],
   [{ search: "men", new: "man" }]
@@ -216,6 +219,8 @@ const verbs = {
   overcame: "overcome",
   overdone: "overdo",
   overdrew: "overdraw",
+  overflew: "overfly",
+  overflown: "overfly",
   overhung: "overhang",
   overran: "overrun",
   overshot: "overshoot",
@@ -291,6 +296,7 @@ const verbs = {
   stolen: "steal",
   stood: "stand",
   stove: "stave",
+  strewn: "strew",
   stricken: "strike",
   stridden: "stride",
   striven: "strive",

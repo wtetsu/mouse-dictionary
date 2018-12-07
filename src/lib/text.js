@@ -203,6 +203,27 @@ const pronounConversions = [
     him: SOMEONE,
     them: SOMEONE,
     us: SOMEONE
+  },
+  {
+    my: SOMEONES,
+    your: SOMEONES,
+    his: SOMEONES,
+    her: SOMEONE,
+    its: SOMEONES,
+    our: SOMEONES,
+    their: SOMEONES,
+    "'s": SOMEONES,
+    "one's": ONES,
+    "someone's": SOMEONES,
+    myself: ONESELF,
+    yourself: ONESELF,
+    himself: ONESELF,
+    herself: ONESELF,
+    ourselves: ONESELF,
+    themselves: ONESELF,
+    him: SOMEONE,
+    them: SOMEONE,
+    us: SOMEONE
   }
 ];
 
