@@ -342,9 +342,10 @@ text.parseFirstWord = (sourceStr, ignoreLowerCase) => {
     if (arr.length >= 2) {
       wordList.push(arr.join(" "));
     }
-    for (let j = 0; j < arr.length; j++) {
-      const w = arr[j];
-      wordList.push(w);
+    wordList.merge(arr);
+    const arrayArray = arr.map(transform);
+    for (let i = 0; i < arrayArray.length; i++) {
+      wordList.merge(arrayArray[i]);
     }
   }
   return wordList.toArray();

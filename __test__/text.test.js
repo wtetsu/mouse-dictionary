@@ -171,6 +171,24 @@ test("", () => {
 });
 
 test("", () => {
+  expect(text.createLookupWords("aaa_bbb")).toEqual(["aaa_bbb", "aaa bbb", "aaa", "bbb"]);
+  expect(text.createLookupWords("worker_processes")).toEqual([
+    "worker_processes",
+    "worker_process",
+    "worker_processe",
+    "worker processes",
+    "worker",
+    "processes",
+    "process",
+    "processe",
+    "worker_proces",
+    "worker processe",
+    "work",
+    "proces"
+  ]);
+});
+
+test("", () => {
   expect(text.createLookupWords("on one's own")).toEqual([
     "on one's own",
     "on one's",
