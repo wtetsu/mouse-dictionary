@@ -6,13 +6,19 @@
 A dictionary for Google Chrome and Firefox.
 
 - Blazing fast
-- Fuss-free to look up phrases
-- Divide a string like "camelCase" into "camel" and "case" and look up them at once
+- Detect phrases in text intelligently
+- You can import your own text data
+- Divide special expression into individual words and look them up at once(e.g. camelCase, snake_case)
+- Customizable
 
 Download it.
 
 - Chrome: https://chrome.google.com/webstore/detail/mouse-dictionary/dnclbikcihnpjohihfcmmldgkjnebgnj
 - Firefox: https://addons.mozilla.org/ja/firefox/addon/mousedictionary/
+
+Use it:
+
+- [Getting started](https://github.com/wtetsu/mouse-dictionary/wiki/Getting-started)
 
 ## Screenshots
 
@@ -55,10 +61,11 @@ This project includes some third-party data:
   - License: Public domain
 
 - Images
+
   - bookmark icon, gear icon
   - https://www.iconfinder.com/iconsets/wpzoom-developer-icon-set
   - License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
-  
+
 ## See also
 
-[Chrome拡張の高速な英語辞書ツールをつくりました](https://qiita.com/wtetsu/items/c43232c6c44918e977c9)(a Japanese tutorial)
+[Chrome 拡張の高速な英語辞書ツールをつくりました](https://qiita.com/wtetsu/items/c43232c6c44918e977c9)(a Japanese tutorial)
