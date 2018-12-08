@@ -119,16 +119,7 @@ test("", () => {
   ]);
 
   expect(text.createLookupWords("die out")).toEqual(["die out", "die"]);
-  expect(text.createLookupWords("dying out")).toEqual([
-    "dying out",
-    "dying",
-    "dy out",
-    "dy",
-    "die out",
-    "die",
-    "dye out",
-    "dye"
-  ]);
+  expect(text.createLookupWords("dying out")).toEqual(["dying out", "dying", "dy out", "dy", "die out", "die"]);
 
   expect(text.createLookupWords("play with")).toEqual(["play with", "play"]);
   expect(text.createLookupWords("played with")).toEqual([
@@ -176,15 +167,19 @@ test("", () => {
     "worker_processes",
     "worker_process",
     "worker_processe",
+    "worker_processis",
     "worker processes",
     "worker",
     "processes",
     "process",
     "processe",
+    "processis",
     "worker_proces",
+    "worker_processi",
     "worker processe",
     "work",
-    "proces"
+    "proces",
+    "processi"
   ]);
 });
 
