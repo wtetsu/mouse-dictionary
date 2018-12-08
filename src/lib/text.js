@@ -25,9 +25,11 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
   let theFirstWord = null;
   for (let i = 0; i < strList.length; i++) {
     const words = text.splitIntoWords(strList[i]);
+
     if (i === 0) {
       theFirstWord = words[0];
     }
+
     const linkedWords = createLinkedWordList(words, !isAllLower, 1);
     lookupWords.merge(linkedWords);
 
@@ -317,11 +319,12 @@ const trailingRules = [
  * "Announcements" -> ["Announcement", "announcements", "announcement]
  * "third-party" -> ["third party", "third", "party"]
  */
-text.parseFirstWord = (sourceStr, ignoreLowerCase) => {
+text.parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
   if (!sourceStr) {
     return [];
   }
   const wordList = new UniqArray();
+  wordList.filer = a => a.length >= minLength;
 
   const lowerStr = sourceStr.toLowerCase();
   const strList = ignoreLowerCase || lowerStr === sourceStr ? [sourceStr] : [sourceStr, lowerStr];
@@ -354,7 +357,7 @@ text.replaceTrailingCharacters = (str, searchValue, newValue) => {
   return result;
 };
 
-text.tryToReplaceTrailingStrings = (str, trailingRule) => {
+text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
   let words = [];
 
   for (let i = 0; i < trailingRule.length; i++) {
@@ -363,7 +366,7 @@ text.tryToReplaceTrailingStrings = (str, trailingRule) => {
     for (let j = 0; j < tlist.length; j++) {
       const t = tlist[j];
       let w = text.replaceTrailingCharacters(str, t.search, t.new);
-      if (w) {
+      if (w && w.length >= minLength) {
         words.push(w);
         break;
       }
@@ -437,7 +440,11 @@ const dealWithFirstWordHyphen = theFirstWord => {
 
   for (let i = 0; i < transformedList.length; i++) {
     wordList[0] = transformedList[i];
-    const joined = wordList.join("-");
+    const joinedWithHyphen = wordList.join("-");
+    result.push(joinedWithHyphen);
+    result.push(joinedWithHyphen.toLowerCase());
+
+    const joined = wordList.join("");
     result.push(joined);
     result.push(joined.toLowerCase());
   }

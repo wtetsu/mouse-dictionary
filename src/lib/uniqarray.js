@@ -8,9 +8,13 @@ class UniqArray {
   constructor() {
     this.array = [];
     this.set = new Set();
+    this.filter = null;
   }
 
   push(newItem) {
+    if (this.filter !== null && !this.filter(newItem)) {
+      return;
+    }
     if (this.set.has(newItem)) {
       return;
     }

@@ -7,8 +7,9 @@
 import text from "./text";
 import UniqArray from "./uniqarray";
 
-export default word => {
+export default (word, minLength = 3) => {
   const list = new UniqArray();
+  list.filter = a => a.length >= minLength;
   const v = verbs[word];
   if (v) {
     list.push(v);

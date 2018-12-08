@@ -130,7 +130,7 @@ test("", () => {
   ]);
 
   expect(text.createLookupWords("die out")).toEqual(["die out", "die"]);
-  expect(text.createLookupWords("dying out")).toEqual(["dying out", "dying", "dy out", "dy", "die out", "die"]);
+  expect(text.createLookupWords("dying out")).toEqual(["dying out", "dying", "die out", "die"]);
 
   expect(text.createLookupWords("play with")).toEqual(["play with", "play"]);
   expect(text.createLookupWords("played with")).toEqual([
@@ -223,13 +223,8 @@ test("", () => {
     "his only son",
     "his only",
     "his",
-    "hi only son",
-    "hi only",
-    "hi",
     "his ~ son",
     "his son",
-    "hi ~ son",
-    "hi son",
     "one's only son",
     "one's only",
     "one' only son",
