@@ -1,4 +1,5 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -40,9 +41,19 @@ module.exports = {
     ])
   ],
   devtool: isProd ? false : "cheap-module-source-map",
-
   performance: {
     maxEntrypointSize: 500000,
     maxAssetSize: 3000000
+  },
+  optimization: {
+    minimize: isProd,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: true,
+          warnings: false
+        }
+      })
+    ]
   }
 };
