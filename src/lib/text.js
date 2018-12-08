@@ -43,9 +43,7 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
   }
 
   if (theFirstWord) {
-    const theFirstWordWithoutHyphen = theFirstWord.replace(/-/g, "");
-    lookupWords.push(theFirstWordWithoutHyphen);
-    lookupWords.push(theFirstWordWithoutHyphen.toLowerCase());
+    lookupWords.merge(dealWithFirstWordHyphen(theFirstWord));
   }
 
   if (withCapitalized) {
@@ -104,10 +102,7 @@ const createLinkedWordList = (arr, ignoreLowerCase, minWordNum = 1) => {
   const linkedWords = text.linkWords(arr, minWordNum);
   if (minWordNum <= 1) {
     const wlist = text.parseFirstWord(arr[0], ignoreLowerCase);
-    for (let i = 0; i < wlist.length; i++) {
-      const phrase = wlist[i];
-      linkedWords.push(phrase);
-    }
+    linkedWords.push(...wlist);
   }
   const newPhrases = [];
   for (let i = 0; i < linkedWords.length; i++) {
@@ -422,6 +417,32 @@ text.linkWords = (words, minWordNum = 1) => {
   }
 
   return linkedWords;
+};
+
+// "ladies-in-waiting" -> ["ladies-in-waiting", "lady-in-waiting", ...]
+const dealWithFirstWordHyphen = theFirstWord => {
+  const wordList = theFirstWord.split("-");
+  if (wordList.length <= 1) {
+    return [];
+  }
+
+  const result = new UniqArray();
+  const splittedFirstWord = wordList[0];
+
+  const phraseWithoutHyphen = wordList.join("");
+  result.push(phraseWithoutHyphen);
+  result.push(phraseWithoutHyphen.toLowerCase());
+
+  const transformedList = transform(splittedFirstWord);
+
+  for (let i = 0; i < transformedList.length; i++) {
+    wordList[0] = transformedList[i];
+    const joined = wordList.join("-");
+    result.push(joined);
+    result.push(joined.toLowerCase());
+  }
+
+  return result.toArray();
 };
 
 export default text;

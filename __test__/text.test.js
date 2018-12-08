@@ -5,6 +5,17 @@ test("", () => {
 });
 
 test("", () => {
+  let r;
+  r = text.createLookupWords("ladies-in-waiting");
+  expect(r.includes("ladies-in-waiting")).toBeTruthy();
+  expect(r.includes("lady-in-waiting")).toBeTruthy();
+
+  r = text.createLookupWords("stands-by");
+  expect(r.includes("stands-by")).toBeTruthy();
+  expect(r.includes("stand-by")).toBeTruthy();
+});
+
+test("", () => {
   expect(text.createLookupWords("thousand miles down")).toEqual([
     "thousand miles down",
     "thousand miles",
