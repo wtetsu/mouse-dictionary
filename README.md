@@ -13,8 +13,9 @@ A dictionary for Google Chrome and Firefox.
 
 Download it.
 
-- Chrome: https://chrome.google.com/webstore/detail/mouse-dictionary/dnclbikcihnpjohihfcmmldgkjnebgnj
-- Firefox: https://addons.mozilla.org/ja/firefox/addon/mousedictionary/
+- [For Chrome](https://chrome.google.com/webstore/detail/mouse-dictionary/dnclbikcihnpjohihfcmmldgkjnebgnj)
+- [For Firefox](https://addons.mozilla.org/ja/firefox/addon/mousedictionary/)
+- [For Chrome(Beta) ... **Japanese-English is available!**](https://chrome.google.com/webstore/detail/mouse-dictionarybeta/ehebancbhejilcmjkoaiphmponbmgbeb)
 
 Use it:
 
@@ -22,7 +23,13 @@ Use it:
 
 ## Screenshots
 
+### English-Japanese
+
 ![ss02.gif](https://github.com/wtetsu/mouse-dictionary/blob/images/ss02.gif)
+
+### Japanese-English
+
+![ss03.gif](https://github.com/wtetsu/mouse-dictionary/blob/images/ss03.png)
 
 ## How to develop
 
@@ -54,17 +61,24 @@ Mouse Dictionary is published under the MIT license.
 
 This project includes some third-party data:
 
-- dictionary data
+### Dictionary data
 
-  - ejdic-hand
-  - https://kujirahand.com/web-tools/
-  - License: Public domain
+ejdic-hand
 
-- Images
+- https://kujirahand.com/web-tools/
+- License: Public domain
 
-  - bookmark icon, gear icon
-  - https://www.iconfinder.com/iconsets/wpzoom-developer-icon-set
-  - License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
+EDICT
+
+- http://www.edrdg.org/jmdict/edict.html
+- License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
+
+### Images
+
+bookmark icon, gear icon
+
+- https://www.iconfinder.com/iconsets/wpzoom-developer-icon-set
+- License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
 
 ## See also
 
