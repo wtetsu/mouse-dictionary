@@ -60,7 +60,7 @@ export default {
     {
       key: "7",
       search: "(\\[.+?\\])",
-      replace: '<font color="#008000">$1</font>'
+      replace: '<strong><font color="#008000">$1</font></strong>'
     },
     {
       key: "8",

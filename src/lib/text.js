@@ -409,4 +409,21 @@ text.isEnglishText = str => {
   return result;
 };
 
+text.isHiraKana = str => {
+  if (!str) {
+    return false;
+  }
+  let result = true;
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    const isHiragana = code >= 0x3040 && code <= 0x309f;
+    const isKatakana = code >= 0x30a0 && code <= 0x30ff;
+    if (!isHiragana || !isKatakana) {
+      result = false;
+      break;
+    }
+  }
+  return result;
+};
+
 export default text;
