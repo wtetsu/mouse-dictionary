@@ -100,9 +100,17 @@ export default {
         startTime = new Date().getTime();
       }
 
-      const wordsToLookup = text.createLookupWords(textToLookup, settings.lookupWithCapitalized, mustIncludeOriginalText);
+      const code = textToLookup.charCodeAt(0);
+      const isEnglishLike = 0x20 <= code && code <= 0x7e;
+
+      const wordsToLookup = text.createLookupWords(
+        textToLookup,
+        settings.lookupWithCapitalized,
+        mustIncludeOriginalText,
+        isEnglishLike
+      );
       const descriptions = await storage.local.get(wordsToLookup);
-      const { html, hitCount } = _contentGenerator.generate(wordsToLookup, descriptions, enableShortWord);
+      const { html, hitCount } = _contentGenerator.generate(wordsToLookup, descriptions, enableShortWord && isEnglishLike);
       const newDom = dom.create(html);
       updateContent(newDom, hitCount);
 

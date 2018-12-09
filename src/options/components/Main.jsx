@@ -194,7 +194,9 @@ export default class Main extends React.Component {
       return;
     }
     this.setState({ busy: true });
-    const { wordCount } = await dict.registerDefaultDict();
+    const { wordCount } = await dict.registerDefaultDict(progress => {
+      this.setState({ dictDataUsage: progress });
+    });
 
     this.updateDictDataUsage();
     this.setState({ busy: false, progress: "" });

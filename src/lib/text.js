@@ -4,6 +4,7 @@
  * Licensed under MIT
  */
 
+import deinja from "deinja";
 import consts from "./consts";
 import transform from "./transform";
 import phrase from "./phrase";
@@ -13,7 +14,17 @@ import UniqArray from "./uniqarray";
 
 const text = {};
 
-text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
+text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false, isEnglish = true) => {
+  let r;
+  if (isEnglish) {
+    r = createLookupWordsEn(rawSourceStr, withCapitalized, mustIncludeOriginalText);
+  } else {
+    r = createLookupWordsJa(rawSourceStr, withCapitalized, mustIncludeOriginalText);
+  }
+  return r;
+};
+
+const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
   const sourceStr = text.dealWithHyphens(rawSourceStr);
   const lowerStr = sourceStr.toLowerCase();
   const isAllLower = lowerStr === sourceStr;
@@ -71,6 +82,21 @@ const createLinkedWords = (words, isAllLower) => {
     }
   }
   return lookupWords;
+};
+
+const createLookupWordsJa = sourceStr => {
+  const str = sourceStr.substring(0, 20).replace(/[A-Za-z0-9]/g, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
+
+  const result = new UniqArray();
+
+  for (let i = str.length; i >= 2; i--) {
+    const part = str.substring(0, i);
+    result.push(part);
+
+    const deinedWords = deinja.convert(part);
+    result.merge(deinedWords.map(a => a.baseForm));
+  }
+  return result.toArray();
 };
 
 const RE_NON_BREAKING_HYPHEN = /‑/g;

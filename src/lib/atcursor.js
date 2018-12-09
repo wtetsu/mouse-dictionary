@@ -31,7 +31,7 @@ const fetchTextOnCursor = (element, clientX, clientY, maxWords) => {
 
 const fetchTextFromTextNode = (textNode, offset, maxWords) => {
   let textOnCursor;
-  const { text, end } = getTextFromRange(textNode.data, offset, maxWords);
+  const { text, end, isEnglish } = getTextFromRange(textNode.data, offset, maxWords);
   if (!end) {
     if (text) {
       textOnCursor = text;
@@ -39,8 +39,14 @@ const fetchTextFromTextNode = (textNode, offset, maxWords) => {
   } else {
     const siblingsText = fetchSiblingsText(textNode);
     if (siblingsText) {
-      const concatenatedText = text + " " + siblingsText;
-      const endIndex = searchEndIndex(concatenatedText, 0, maxWords);
+      let concatenatedText, endIndex;
+      if (isEnglish) {
+        concatenatedText = text + " " + siblingsText;
+        endIndex = searchEndIndex(concatenatedText, 0, maxWords);
+      } else {
+        concatenatedText = text + siblingsText;
+        endIndex = 15;
+      }
       textOnCursor = concatenatedText.substring(0, endIndex);
     } else {
       textOnCursor = text;
@@ -163,14 +169,18 @@ const getTextFromRange = (text, offset, maxWords) => {
   }
   const code = text.charCodeAt(offset);
   const isEnglishLikeCharacter = 0x20 <= code && code <= 0x7e;
-  if (!isEnglishLikeCharacter) {
-    return {};
+
+  let startIndex, endIndex;
+  if (isEnglishLikeCharacter) {
+    startIndex = searchStartIndex(text, offset);
+    endIndex = searchEndIndex(text, offset, maxWords);
+  } else {
+    startIndex = offset;
+    endIndex = offset + 20;
   }
-  const startIndex = searchStartIndex(text, offset);
-  const endIndex = searchEndIndex(text, offset, maxWords);
   const resultText = text.substring(startIndex, endIndex);
-  const end = endIndex >= text.length;
-  return { text: resultText, end };
+  const result = { text: resultText, end: endIndex >= text.length, isEnglish: isEnglishLikeCharacter };
+  return result;
 };
 
 let getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
