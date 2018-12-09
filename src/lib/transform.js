@@ -7,9 +7,8 @@
 import text from "./text";
 import UniqArray from "./uniqarray";
 
-export default (word, minLength = 3) => {
+export default word => {
   const list = new UniqArray();
-  list.filter = a => a.length >= minLength;
   const v = verbs[word];
   if (v) {
     list.push(v);
@@ -125,6 +124,7 @@ const verbs = {
   cried: "cry",
   dealt: "deal",
   did: "do",
+  does: "do",
   done: "do",
   dove: "dive",
   drank: "drink",
@@ -169,6 +169,7 @@ const verbs = {
   gilt: "gild",
   girt: "gird",
   given: "give",
+  goes: "go",
   gone: "go",
   got: "get",
   gotten: "get",
@@ -349,6 +350,9 @@ const verbs = {
   unstrung: "unstring",
   unwound: "unwind",
   upheld: "uphold",
+  ups: "up",
+  upping: "up",
+  upped: "up",
   wend: "go",
   went: "go",
   wept: "weep",
