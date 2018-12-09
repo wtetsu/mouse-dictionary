@@ -422,6 +422,8 @@ text.linkWords = (words, minWordNum = 1) => {
   return linkedWords;
 };
 
+const JOINER_LIST = ["-", "", " "];
+
 // "ladies-in-waiting" -> ["ladies-in-waiting", "lady-in-waiting", ...]
 const dealWithFirstWordHyphen = theFirstWord => {
   const wordList = theFirstWord.split("-");
@@ -440,15 +442,14 @@ const dealWithFirstWordHyphen = theFirstWord => {
 
   for (let i = 0; i < transformedList.length; i++) {
     wordList[0] = transformedList[i];
-    const joinedWithHyphen = wordList.join("-");
-    result.push(joinedWithHyphen);
-    result.push(joinedWithHyphen.toLowerCase());
 
-    const joined = wordList.join("");
-    result.push(joined);
-    result.push(joined.toLowerCase());
+    for (let j = 0; j < JOINER_LIST.length; j++) {
+      const joiner = JOINER_LIST[j];
+      const joinedWithHyphen = wordList.join(joiner);
+      result.push(joinedWithHyphen);
+      result.push(joinedWithHyphen.toLowerCase());
+    }
   }
-
   return result.toArray();
 };
 
