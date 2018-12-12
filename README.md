@@ -3,6 +3,8 @@
 
 # Mouse Dictionary
 
+https://wtetsu.github.io/mouse-dictionary/en/
+
 A dictionary for Google Chrome and Firefox.
 
 - Blazing fast
