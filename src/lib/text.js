@@ -4,13 +4,13 @@
  * Licensed under MIT
  */
 
+import UniqList from "uniqlist";
 import deinja from "deinja";
 import consts from "./consts";
 import transform from "./transform";
 import phrase from "./phrase";
 import possessive from "./possessive";
 import spelling from "./spelling";
-import UniqArray from "./uniqarray";
 
 const text = {};
 
@@ -30,7 +30,7 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   const isAllLower = lowerStr === sourceStr;
   const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
 
-  const lookupWords = new UniqArray();
+  const lookupWords = new UniqList();
 
   if (mustIncludeOriginalText) {
     lookupWords.merge(sourceStr);
@@ -87,7 +87,7 @@ const createLinkedWords = (words, isAllLower) => {
 const createLookupWordsJa = sourceStr => {
   const str = sourceStr.substring(0, 40).replace(/[A-Za-z0-9]/g, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
 
-  const result = new UniqArray();
+  const result = new UniqList();
 
   for (let i = str.length; i >= 1; i--) {
     const part = str.substring(0, i);
@@ -95,7 +95,7 @@ const createLookupWordsJa = sourceStr => {
 
     if (i >= 2) {
       const deinedWords = deinja.convert(part);
-      result.merge(deinedWords.map(a => a.baseForm));
+      result.merge(deinedWords);
     }
   }
   return result.toArray();
@@ -261,7 +261,7 @@ text.parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
   if (!sourceStr) {
     return [];
   }
-  const wordList = new UniqArray();
+  const wordList = new UniqList();
   wordList.filer = a => a.length >= minLength;
 
   const lowerStr = sourceStr.toLowerCase();
@@ -374,7 +374,7 @@ const dealWithFirstWordHyphen = theFirstWord => {
     return [];
   }
 
-  const result = new UniqArray();
+  const result = new UniqList();
   const splittedFirstWord = wordList[0];
 
   const phraseWithoutHyphen = wordList.join("");
