@@ -58,6 +58,7 @@ typings/
 .env
 
 .*/
-dist-chrome/
-dist-firefox/
+dist-*/
 *.zip
+*.sh
+coverage/
