@@ -17,10 +17,7 @@
     "release-chrome": "NODE_ENV=production npm run build-chrome",
     "build-firefox": "webpack --config webpack.config.firefox.js",
     "watch-firefox": "webpack -w --config webpack.config.firefox.js",
-    "release-firefox": "NODE_ENV=production npm run build-firefox",
-    "build-chrome-ja": "webpack --config webpack.config.chrome.ja.js",
-    "watch-chrome-ja": "webpack -w --config webpack.config.chrome.ja.js",
-    "release-chrome-ja": "NODE_ENV=production npm run build-chrome-ja"
+    "release-firefox": "NODE_ENV=production npm run build-firefox"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
