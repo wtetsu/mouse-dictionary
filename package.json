@@ -5,9 +5,9 @@
   "author": "wtetsu",
   "license": "MIT",
   "scripts": {
-    "build": "npm run build-chrome & npm run build-firefox",
+    "build": "npm run build-chrome && npm run build-firefox",
     "watch": "webpack -w --config webpack.config.chrome.js",
-    "release": "npm run release-chrome & npm run release-firefox",
+    "release": "npm run release-chrome && npm run release-firefox",
     "lint": "eslint src/**/*.js",
     "test": "jest",
     "test-watch": "jest --watch",
