@@ -315,9 +315,9 @@ const trailingRules = [
 ];
 
 /**
- * "wordone-wordtwo-wordthree" -> ["wordone", "wordtwo", "wordthree"]
+ * "wordone-wordtwo-wordthree" -> ["wordone", "wordtwo", "wordthree", "-wordthree"]
  * "Announcements" -> ["Announcement", "announcements", "announcement]
- * "third-party" -> ["third party", "third", "party"]
+ * "third-party" -> ["third party", "third", "party", "-party"]
  */
 text.parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
   if (!sourceStr) {
@@ -344,6 +344,13 @@ text.parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
     const arrayArray = arr.map(transform);
     for (let i = 0; i < arrayArray.length; i++) {
       wordList.merge(arrayArray[i]);
+    }
+    if (arr.length >= 2) {
+      const last = arr[arr.length - 1];
+      const code = sourceStr.charCodeAt(sourceStr.length - last.length - 1);
+      if (code === 45 || code === 8209) {
+        wordList.push("-" + last);
+      }
     }
   }
   return wordList.toArray();

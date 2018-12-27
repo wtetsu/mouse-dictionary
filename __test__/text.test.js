@@ -71,12 +71,26 @@ test("", () => {
 });
 
 test("", () => {
-  expect(text.createLookupWords("blue-gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "bluegray"]);
-  expect(text.createLookupWords("third-party")).toEqual(["third-party", "third party", "third", "party", "thirdparty"]);
+  expect(text.createLookupWords("blue-gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "-gray", "bluegray"]);
+  expect(text.createLookupWords("third-party")).toEqual([
+    "third-party",
+    "third party",
+    "third",
+    "party",
+    "-party",
+    "thirdparty"
+  ]);
 
   // non-breaking hyphen(U+2011)
-  expect(text.createLookupWords("blue‑gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "bluegray"]);
-  expect(text.createLookupWords("third‑party")).toEqual(["third-party", "third party", "third", "party", "thirdparty"]);
+  expect(text.createLookupWords("blue‑gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "-gray", "bluegray"]);
+  expect(text.createLookupWords("third‑party")).toEqual([
+    "third-party",
+    "third party",
+    "third",
+    "party",
+    "-party",
+    "thirdparty"
+  ]);
 });
 
 test("", () => {
@@ -293,7 +307,8 @@ test("", () => {
     "wordone wordtwo wordthree",
     "wordone",
     "wordtwo",
-    "wordthree"
+    "wordthree",
+    "-wordthree"
   ]);
 
   expect(text.parseFirstWord("WORDONE_WORDTWO_WORDTHREE")).toEqual([
@@ -311,7 +326,7 @@ test("", () => {
   expect(text.parseFirstWord("announcements")).toEqual(["announcement"]);
   expect(text.parseFirstWord("Announcements")).toEqual(["Announcement", "announcements", "announcement"]);
 
-  expect(text.parseFirstWord("third-party")).toEqual(["third party", "third", "party"]);
+  expect(text.parseFirstWord("third-party")).toEqual(["third party", "third", "party", "-party"]);
 });
 
 test("", () => {
