@@ -1,6 +1,6 @@
 {
   "name": "mouse-dictionary",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "repository": "https://github.com/wtetsu/mouse-dictionary.git",
   "author": "wtetsu",
   "license": "MIT",
@@ -20,17 +20,17 @@
     "release-firefox": "NODE_ENV=production npm run build-firefox"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
+    "@babel/polyfill": "^7.2.5",
     "hogan.js": "^3.0.2",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-color": "^2.14.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-color": "^2.17.0",
     "sprintf-js": "^1.1.2",
     "sweetalert": "^2.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
     "acorn": "^6.0.4",
     "babel-core": "^7.0.0-bridge.0",
@@ -38,12 +38,12 @@
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
     "copy-webpack-plugin": "^4.6.0",
-    "eslint": "^5.10.0",
-    "eslint-plugin-react": "^7.11.1",
+    "eslint": "^5.11.1",
+    "eslint-plugin-react": "^7.12.0",
     "jest": "^23.6.0",
     "milligram": "^1.3.0",
     "regenerator-runtime": "^0.13.1",
-    "webpack": "^4.27.1",
+    "webpack": "^4.28.2",
     "webpack-cli": "^3.1.2"
   }
 }
