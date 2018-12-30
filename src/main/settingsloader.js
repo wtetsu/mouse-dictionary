@@ -115,12 +115,19 @@ const optimizeInitialPosition = (position, options) => {
   }
 
   const newPosition = {
-    left: newLeft,
-    top: newTop,
-    width: max(position.width, 50),
-    height: max(position.height, 50)
+    left: max(newLeft, 5),
+    top: max(newTop, 5),
+    width: range(50, position.width, options.windowWidth - 10),
+    height: range(50, position.height, options.windowHeight - 10)
   };
   return newPosition;
+};
+
+const range = (minValue, value, maxValue) => {
+  let r = value;
+  r = min(r, maxValue);
+  r = max(r, minValue);
+  return r;
 };
 
 const max = (a, b) => {
@@ -130,6 +137,15 @@ const max = (a, b) => {
     return null;
   }
 };
+
+const min = (a, b) => {
+  if (Number.isFinite(a)) {
+    return Math.min(a, b);
+  } else {
+    return null;
+  }
+};
+
 const savePosition = async e => {
   const positionData = {};
   positionData[KEY_LAST_POSITION] = JSON.stringify(e);
