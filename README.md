@@ -3,9 +3,11 @@
 
 # Mouse Dictionary
 
-https://wtetsu.github.io/mouse-dictionary/en/
+[Mouse Dictionary](https://wtetsu.github.io/mouse-dictionary/en/) is a super fast dictionary for Chrome and Firefox.
 
-A dictionary for Google Chrome and Firefox.
+<img src="https://github.com/wtetsu/mouse-dictionary/blob/images/logo.png" title="Mouse Dictionary" width="300" height="200">
+
+Features:
 
 - Blazing fast
 - Detect phrases in text intelligently
