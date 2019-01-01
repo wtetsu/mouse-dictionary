@@ -1,11 +1,11 @@
 [![Build Status](https://travis-ci.org/wtetsu/mouse-dictionary.svg?branch=master)](https://travis-ci.org/wtetsu/mouse-dictionary)
 [![Code Climate](https://codeclimate.com/github/wtetsu/mouse-dictionary/badges/gpa.svg)](https://codeclimate.com/github/wtetsu/mouse-dictionary)
 
-# Mouse Dictionary
+# Mouse Dictionary: Super Fast Dictionary
+
+<img src="logo.png" title="Mouse Dictionary" width="400" height="229">
 
 [Mouse Dictionary](https://wtetsu.github.io/mouse-dictionary/en/) is a super fast dictionary for Chrome and Firefox.
-
-<img src="https://github.com/wtetsu/mouse-dictionary/blob/images/logo.png" title="Mouse Dictionary" width="300" height="200">
 
 Features:
 
