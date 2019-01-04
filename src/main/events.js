@@ -58,6 +58,12 @@ export default {
       parseTextAndLookup(textAtCursor, false, true);
     });
 
+    chrome.runtime.onMessage.addListener(request => {
+      console.info("background.js");
+      console.info(request.message.text);
+      parseTextAndLookup(request.message.text, false, true);
+    });
+
     let _lastText = null;
     const _shortCache = new ShortCache(100);
 
