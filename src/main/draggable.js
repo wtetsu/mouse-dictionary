@@ -27,36 +27,36 @@ export default class Draggable {
     this.cursorEdgePosition = null;
     this.defaultCursor = null;
     this.selectable = false;
+  }
 
-    document.body.addEventListener("mousemove", e => {
-      if (this.currentWidth === null) {
-        this.currentWidth = convertToInt(this.mainElement.style.width);
-      }
-      if (this.currentHeight === null) {
-        this.currentHeight = convertToInt(this.mainElement.style.height);
-      }
-      switch (this.mode) {
-        case "moving":
-          this.move(e);
-          break;
-        case "resizing":
-          this.resize(e);
-          break;
-        default:
-          this.updateEdgeState(e);
-      }
-    });
+  onMouseMove(e) {
+    if (this.currentWidth === null) {
+      this.currentWidth = convertToInt(this.mainElement.style.width);
+    }
+    if (this.currentHeight === null) {
+      this.currentHeight = convertToInt(this.mainElement.style.height);
+    }
+    switch (this.mode) {
+      case "moving":
+        this.move(e);
+        break;
+      case "resizing":
+        this.resize(e);
+        break;
+      default:
+        this.updateEdgeState(e);
+    }
+  }
 
-    document.body.addEventListener("mouseup", () => {
-      switch (this.mode) {
-        case "moving":
-          dom.applyStyles(this.mainElement, this.normalStyles);
-          break;
-        case "resizing":
-          break;
-      }
-      this.finishChanging();
-    });
+  onMouseUp() {
+    switch (this.mode) {
+      case "moving":
+        dom.applyStyles(this.mainElement, this.normalStyles);
+        break;
+      case "resizing":
+        break;
+    }
+    this.finishChanging();
   }
 
   finishChanging() {

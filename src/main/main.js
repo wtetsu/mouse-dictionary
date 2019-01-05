@@ -52,15 +52,6 @@ const initialize = async userSettings => {
   const area = mdwindow.create(userSettings);
   area.dialog.id = DIALOG_ID;
 
-  events.attach(area.dialog, userSettings, (newDom, count) => {
-    // update contents
-    if (draggable.selectable && count === 0) {
-      return;
-    }
-    area.content.innerHTML = "";
-    area.content.appendChild(newDom);
-  });
-
   dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
   document.body.appendChild(area.dialog);
 
@@ -77,6 +68,15 @@ const initialize = async userSettings => {
     draggable.onchange = e => loader.savePosition(e);
   }
   draggable.add(area.dialog);
+
+  events.attach(area.dialog, draggable, userSettings, (newDom, count) => {
+    // update contents
+    if (draggable.selectable && count === 0) {
+      return;
+    }
+    area.content.innerHTML = "";
+    area.content.appendChild(newDom);
+  });
 };
 
 main();
