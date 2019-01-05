@@ -17,6 +17,8 @@ export default {
     let _mouseDown = false;
     let _isLastMouseUpOnTheWindow = false;
 
+    const TEXT_LENGTH_LIMIT = 128;
+
     // Compile templates, regular expressions so that it works fast
     let _contentGenerator;
     try {
@@ -36,8 +38,7 @@ export default {
       _mouseDown = false;
       _selection = window.getSelection().toString();
       if (_selection) {
-        const SELECTION_LENGTH_LIMIT = 128;
-        const text = _selection.trim().substring(0, SELECTION_LENGTH_LIMIT);
+        const text = _selection.trim().substring(0, TEXT_LENGTH_LIMIT);
         parseTextAndLookup(text, true, false);
       }
       _isLastMouseUpOnTheWindow = isOnTheWindow(dialog.style, e);
@@ -62,7 +63,6 @@ export default {
       parseTextAndLookup(textAtCursor, false, true);
     });
 
-    // cross-extension messaging
     chrome.runtime.onMessage.addListener(request => {
       const m = request.message;
       switch (m.type) {
@@ -81,7 +81,8 @@ export default {
     let _lastText = null;
     const _shortCache = new ShortCache(100);
 
-    const parseTextAndLookup = async (textToLookup, mustIncludeOriginalText, enableShortWord) => {
+    const parseTextAndLookup = async (rawTextToLookup, mustIncludeOriginalText, enableShortWord) => {
+      const textToLookup = rawTextToLookup.substring(0, TEXT_LENGTH_LIMIT);
       if (!mustIncludeOriginalText) {
         if (!textToLookup || _lastText === textToLookup) {
           return;
