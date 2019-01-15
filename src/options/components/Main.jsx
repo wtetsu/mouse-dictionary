@@ -6,6 +6,7 @@
 
 import React from "react";
 import swal from "sweetalert";
+import debounce from "lodash.debounce";
 import LoadDictionary from "./LoadDictionary";
 import BasicSettings from "./BasicSettings";
 import AdvancedSettings from "./AdvancedSettings";
@@ -57,6 +58,14 @@ export default class Main extends React.Component {
     this.doToggleBasicSettings = this.doToggleBasicSettings.bind(this);
     this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
     this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
+
+    this.updateTrialWindowWithDebounce = debounce(
+      () => {
+        this.updateTrialWindow(this.state.settings);
+      },
+      500,
+      { leading: true }
+    );
   }
 
   render() {
@@ -154,22 +163,17 @@ export default class Main extends React.Component {
     this.setState({ initialized: true });
   }
 
+  componentDidUpdate() {
+    console.info("componentDidUpdate");
+    this.updateTrialWindowWithDebounce();
+  }
+
   async initializeUserSettings() {
     const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
     const userSettings = utils.tryToParseJson(userSettingsJson);
     const settings = Object.assign({}, defaultSettings, userSettings);
     this.setState({ settings });
     this.contentGenerator = new ContentGenerator(settings);
-    setInterval(() => {
-      if (!this.newSettingsTime) {
-        return;
-      }
-      if (this.newSettingsTime + 100 <= new Date().getTime()) {
-        this.updateTrialWindow(this.newSettings);
-        this.newSettingsTime = null;
-        this.newSettings = null;
-      }
-    }, 10);
   }
 
   async updateDictDataUsage() {
@@ -239,7 +243,6 @@ export default class Main extends React.Component {
     this.setState({
       settings: newSettings
     });
-    this.setUpdateTrialWindowTimer(newSettings);
   }
 
   doChangeColorSettings(name, e) {
@@ -251,12 +254,6 @@ export default class Main extends React.Component {
     this.setState({
       settings: newSettings
     });
-    this.setUpdateTrialWindowTimer(newSettings);
-  }
-
-  setUpdateTrialWindowTimer(newSettings) {
-    this.newSettingsTime = new Date().getTime();
-    this.newSettings = newSettings;
   }
 
   async doLoad() {
@@ -336,7 +333,6 @@ export default class Main extends React.Component {
     this.setState({
       settings: newSettings
     });
-    this.setUpdateTrialWindowTimer(newSettings);
   }
 
   doChangeReplaceRule(e) {
@@ -389,10 +385,9 @@ export default class Main extends React.Component {
     this.setState({
       settings: newSettings
     });
-    this.updateTrialWindow(newSettings);
   }
 
-  updateTrialWindow(settings) {
+  removeAndCreateTrialWindow(settings) {
     if (!settings) {
       return;
     }
@@ -406,11 +401,17 @@ export default class Main extends React.Component {
         this.trialWindow.dialog.style.height = "100px";
       });
       document.body.appendChild(this.trialWindow.dialog);
-
       this.updateTrialText(settings);
     } catch (e) {
       this.contentGenerator = null;
     }
+  }
+
+  updateTrialWindow(settings) {
+    if (!this.trialWindow) {
+      return;
+    }
+    this.removeAndCreateTrialWindow(settings);
   }
 
   removeTrialWindow() {
@@ -465,23 +466,23 @@ export default class Main extends React.Component {
   doBackToDefaultSettings() {
     const settings = Object.assign({}, defaultSettings);
     this.setState({ settings });
-    this.updateTrialWindow(settings);
   }
 
   doToggleBasicSettings() {
-    this.updateTrialWindow(this.state.settings);
-
-    if (this.state.basicSettingsOpened) {
+    if (!this.state.basicSettingsOpened) {
+      // Open
+      this.setState({
+        basicSettingsOpened: true,
+        advancedSettingsOpened: false
+      });
+      this.removeAndCreateTrialWindow(this.state.settings);
+    } else {
+      // Close
       this.setState({
         basicSettingsOpened: false,
         advancedSettingsOpened: false
       });
       this.removeTrialWindow();
-    } else {
-      this.setState({
-        basicSettingsOpened: true,
-        advancedSettingsOpened: false
-      });
     }
   }
 

@@ -22,9 +22,10 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "hogan.js": "^3.0.2",
+    "lodash.debounce": "^4.0.8",
     "react": "^16.7.0",
-    "react-dom": "^16.7.0",
     "react-color": "^2.17.0",
+    "react-dom": "^16.7.0",
     "sprintf-js": "^1.1.2",
     "sweetalert": "^2.1.2"
   },
