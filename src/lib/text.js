@@ -22,14 +22,20 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
   if (mustIncludeOriginalText) {
     lookupWords.push(sourceStr);
   }
-  let theFirstWord = null;
+
+  const wordListList = [];
   for (let i = 0; i < strList.length; i++) {
-    const words = text.splitIntoWords(strList[i]);
-
-    if (i === 0) {
-      theFirstWord = words[0];
+    const str = strList[i];
+    const words = text.splitIntoWords(str);
+    wordListList.push(words);
+    const consistentifiedWords = consistentifySpelling(words);
+    if (consistentifiedWords) {
+      wordListList.push(consistentifiedWords);
     }
+  }
 
+  for (let i = 0; i < wordListList.length; i++) {
+    const words = wordListList[i];
     const linkedWords = createLinkedWordList(words, !isAllLower, 1);
     lookupWords.merge(linkedWords);
 
@@ -44,6 +50,7 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
     }
   }
 
+  const theFirstWord = wordListList[0] && wordListList[0][0];
   if (theFirstWord) {
     lookupWords.merge(dealWithFirstWordHyphen(theFirstWord));
   }
@@ -52,6 +59,30 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
   return lookupWords.toArray().filter(s => s.length >= 2 || s === theFirstWord);
+};
+
+const SPELLING = {
+  centre: "center",
+  colour: "color"
+};
+
+const consistentifySpelling = words => {
+  let converted = false;
+  const convertedWords = [];
+  for (let j = 0; j < words.length; j++) {
+    const word = words[j];
+    const w = SPELLING[word];
+    if (w) {
+      converted = true;
+      convertedWords.push(w);
+    } else {
+      convertedWords.push(word);
+    }
+  }
+  if (!converted) {
+    return null;
+  }
+  return convertedWords;
 };
 
 const RE_NON_BREAKING_HYPHEN = /‑/g;
