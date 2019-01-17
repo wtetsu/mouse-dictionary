@@ -290,6 +290,10 @@ test("", () => {
 });
 
 test("", () => {
+  expect(text.createLookupWords("colour")).toEqual(["colour", "color"]);
+});
+
+test("", () => {
   expect(text.parseFirstWord("word")).toEqual([]);
 
   expect(text.parseFirstWord("WordoneWordtwoWordthree")).toEqual([
