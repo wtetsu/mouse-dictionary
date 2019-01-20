@@ -7,6 +7,7 @@
 import consts from "./consts";
 import transform from "./transform";
 import phrase from "./phrase";
+import possessive from "./possessive";
 import UniqArray from "./uniqarray";
 
 const text = {};
@@ -40,7 +41,7 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
     lookupWords.merge(linkedWords);
 
     // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
-    const convertedWordsList = words.length >= 2 ? doPronounConversions(words) : [];
+    const convertedWordsList = words.length >= 2 ? possessive.normalize(words) : [];
     for (let j = 0; j < convertedWordsList.length; j++) {
       const convertedWords = convertedWordsList[j];
       if (convertedWords) {
@@ -145,115 +146,6 @@ const createLinkedWordList = (arr, ignoreLowerCase, minWordNum = 1) => {
   linkedWords.push(...newPhrases);
   return linkedWords;
 };
-
-/**
- * ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
- */
-const doPronounConversions = words => {
-  let result = [];
-
-  let changed = false;
-
-  for (let i = 0; i < pronounConversions.length; i++) {
-    const convertedWords = Object.assign([], words);
-    for (let j = 0; j < convertedWords.length; j++) {
-      const w = doConvert(convertedWords[j], pronounConversions[i]);
-      if (w) {
-        convertedWords[j] = w;
-        changed = true;
-      }
-    }
-    if (changed) {
-      result.push(convertedWords);
-    }
-  }
-
-  return result;
-};
-
-const doConvert = (word, conversionRule) => {
-  let result = null;
-  const w = conversionRule[word];
-  if (w) {
-    result = w;
-  } else {
-    const firstCode = word.charCodeAt(0);
-    if (firstCode >= 65 && firstCode <= 90 && (word.endsWith("'s") || word.endsWith("s'"))) {
-      result = conversionRule["'s"];
-    }
-  }
-  return result;
-};
-
-const ONES = "one's";
-const SOMEONE = "someone";
-const SOMEONES = "someone's";
-const ONESELF = "oneself";
-const pronounConversions = [
-  {
-    my: ONES,
-    your: ONES,
-    his: ONES,
-    her: ONES,
-    its: ONES,
-    our: ONES,
-    their: ONES,
-    "'s": ONES,
-    "one's": ONES,
-    "someone's": SOMEONES,
-    myself: ONESELF,
-    yourself: ONESELF,
-    himself: ONESELF,
-    herself: ONESELF,
-    ourselves: ONESELF,
-    themselves: ONESELF,
-    him: SOMEONE,
-    them: SOMEONE,
-    us: SOMEONE
-  },
-  {
-    my: SOMEONES,
-    your: SOMEONES,
-    his: SOMEONES,
-    her: SOMEONES,
-    its: SOMEONES,
-    our: SOMEONES,
-    their: SOMEONES,
-    "'s": SOMEONES,
-    "one's": ONES,
-    "someone's": SOMEONES,
-    myself: ONESELF,
-    yourself: ONESELF,
-    himself: ONESELF,
-    herself: ONESELF,
-    ourselves: ONESELF,
-    themselves: ONESELF,
-    him: SOMEONE,
-    them: SOMEONE,
-    us: SOMEONE
-  },
-  {
-    my: SOMEONES,
-    your: SOMEONES,
-    his: SOMEONES,
-    her: SOMEONE,
-    its: SOMEONES,
-    our: SOMEONES,
-    their: SOMEONES,
-    "'s": SOMEONES,
-    "one's": ONES,
-    "someone's": SOMEONES,
-    myself: ONESELF,
-    yourself: ONESELF,
-    himself: ONESELF,
-    herself: ONESELF,
-    ourselves: ONESELF,
-    themselves: ONESELF,
-    him: SOMEONE,
-    them: SOMEONE,
-    us: SOMEONE
-  }
-];
 
 /**
  * "American English" -> ["American", "English"]
