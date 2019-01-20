@@ -22,34 +22,12 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
   const lookupWords = new UniqArray();
 
   if (mustIncludeOriginalText) {
-    lookupWords.push(sourceStr);
+    lookupWords.merge(lookupWords.push(sourceStr));
   }
 
-  const wordListList = [];
-  for (let i = 0; i < strList.length; i++) {
-    const str = strList[i];
-    const words = text.splitIntoWords(str);
-    wordListList.push(words);
-    const unifiedSpellingWords = spelling.convert(words);
-    if (unifiedSpellingWords) {
-      wordListList.push(unifiedSpellingWords);
-    }
-  }
-
+  const wordListList = createWordsList(strList);
   for (let i = 0; i < wordListList.length; i++) {
-    const words = wordListList[i];
-    const linkedWords = createLinkedWordList(words, !isAllLower, 1);
-    lookupWords.merge(linkedWords);
-
-    // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
-    const convertedWordsList = words.length >= 2 ? possessive.normalize(words) : [];
-    for (let j = 0; j < convertedWordsList.length; j++) {
-      const convertedWords = convertedWordsList[j];
-      if (convertedWords) {
-        const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower, 2);
-        lookupWords.merge(linkedConvertedWords);
-      }
-    }
+    lookupWords.merge(createLinkedWords(wordListList[i], isAllLower));
   }
 
   const theFirstWord = wordListList[0] && wordListList[0][0];
@@ -61,6 +39,38 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
   return lookupWords.toArray().filter(s => s.length >= 2 || s === theFirstWord);
+};
+
+const createWordsList = stringList => {
+  const wordListList = [];
+  for (let i = 0; i < stringList.length; i++) {
+    const str = stringList[i];
+    const words = text.splitIntoWords(str);
+    wordListList.push(words);
+    const unifiedSpellingWords = spelling.convert(words);
+    if (unifiedSpellingWords) {
+      wordListList.push(unifiedSpellingWords);
+    }
+  }
+  return wordListList;
+};
+
+const createLinkedWords = (words, isAllLower) => {
+  const lookupWords = [];
+
+  const linkedWords = createLinkedWordList(words, !isAllLower, 1);
+  lookupWords.push(...linkedWords);
+
+  // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
+  const convertedWordsList = words.length >= 2 ? possessive.normalize(words) : [];
+  for (let j = 0; j < convertedWordsList.length; j++) {
+    const convertedWords = convertedWordsList[j];
+    if (convertedWords) {
+      const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower, 2);
+      lookupWords.push(...linkedConvertedWords);
+    }
+  }
+  return lookupWords;
 };
 
 const RE_NON_BREAKING_HYPHEN = /‑/g;
@@ -269,7 +279,6 @@ text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
 
   for (let i = 0; i < trailingRule.length; i++) {
     const tlist = trailingRule[i];
-
     for (let j = 0; j < tlist.length; j++) {
       const t = tlist[j];
       let w = text.replaceTrailingCharacters(str, t.search, t.new);
@@ -279,7 +288,6 @@ text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
       }
     }
   }
-
   return words;
 };
 
