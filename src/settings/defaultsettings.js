@@ -24,38 +24,38 @@ export default {
   replaceRules: [
     {
       key: "0",
-      search: "(◆.+)",
-      replace: '<font color="#008000">$1</font>'
+      search: "(■.+)",
+      replace: '<span style="color:#008000;">$1</span>'
     },
     {
       key: "1",
-      search: "(■.+)",
-      replace: '<font color="#008000">$1</font>'
+      search: "(◆.+)",
+      replace: '<span style="color:#008000;">$1</span>'
     },
     {
       key: "2",
       search: "(【.+?】)",
-      replace: '<font color="#008000">$1</font>'
+      replace: '<span style="color:#008000;">$1</span>'
     },
     {
       key: "3",
       search: "({.+?})",
-      replace: '<font color="#008000">$1</font>'
+      replace: '<span style="color:#008000;">$1</span>'
     },
     {
       key: "4",
       search: "(《.+?》)",
-      replace: '<font color="#008000">$1</font>'
+      replace: '<span style="color:#008000;">$1</span>'
     },
     {
       key: "5",
       search: "(〈.+?〉)",
-      replace: '<font color="#008000">$1</font>'
+      replace: '<span style="color:#008000;">$1</span>'
     },
     {
       key: "6",
       search: "(〔.+?〕)",
-      replace: '<font color="#008000">$1</font>'
+      replace: '<span style="color:#008000;">$1</span>'
     },
     {
       key: "7",
