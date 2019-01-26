@@ -22,7 +22,7 @@ text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOrig
   const lookupWords = new UniqArray();
 
   if (mustIncludeOriginalText) {
-    lookupWords.merge(lookupWords.push(sourceStr));
+    lookupWords.merge(sourceStr);
   }
 
   const wordListList = createWordsList(strList);
