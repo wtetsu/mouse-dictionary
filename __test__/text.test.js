@@ -58,6 +58,7 @@ test("", () => {
     "wonder A I B",
     "wonder ~ shall",
     "wonder I shall",
+    "wonder if shall",
     "wonder shall",
     "wond",
     "wonder if i shall",
@@ -68,6 +69,9 @@ test("", () => {
     "wonder A i B",
     "wonder i shall"
   ]);
+
+  expect(text.createLookupWords("in my favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
+  expect(text.createLookupWords("in my best favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
 });
 
 test("", () => {
