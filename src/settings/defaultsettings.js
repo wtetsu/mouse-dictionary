@@ -96,7 +96,6 @@ export default {
   contentTemplate: `<div style="all:initial;cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
   {{#words}}
     {{^isShort}}
-      {{! 通常の単語 }}
       <span style="font-size:{{headFontSize}};font-weight:bold;color:{{headFontColor}}">{{head}}</span>
       <br/>
       <span style="font-size:{{descFontSize}};color:{{descFontColor}};">
@@ -104,7 +103,6 @@ export default {
       </span>
     {{/isShort}}
     {{#isShort}}
-      {{! 短い単語 }}
       <span style="font-size:{{headFontSize}};font-weight:bold;color:{{headFontColor}}">{{head}}</span>
       <span style="color:#505050;font-size:x-small;">{{shortDesc}}</span>
     {{/isShort}}
