@@ -164,7 +164,6 @@ export default class Main extends React.Component {
   }
 
   componentDidUpdate() {
-    console.info("componentDidUpdate");
     this.updateTrialWindowWithDebounce();
   }
 
@@ -396,6 +395,7 @@ export default class Main extends React.Component {
       this.contentGenerator = new ContentGenerator(settings);
       this.trialWindow = mdwindow.create(settings);
       this.trialWindow.dialog.style.cursor = "zoom-out";
+      this.trialWindow.dialog.style.top = "30px";
       this.trialWindow.dialog.addEventListener("click", () => {
         this.trialWindow.dialog.style.width = "100px";
         this.trialWindow.dialog.style.height = "100px";
