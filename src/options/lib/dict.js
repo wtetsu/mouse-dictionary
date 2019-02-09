@@ -90,19 +90,10 @@ const load = async ({ file, encoding, format, event }) => {
   });
 };
 
-const registerDefaultDict = async callback => {
+const registerDefaultDict = async () => {
   let wordCount = 0;
-
-  const fileNames = ["/data/initial_dict1.json", "/data/initial_dict2.json"];
-  for (let i = 0; i <= 9; i++) {
-    fileNames.push(`/data/initial_dict_ja${i}.json`);
-  }
-
-  for (let i = 0; i < fileNames.length; i++) {
-    wordCount += await registerDict(fileNames[i]);
-    callback(`${i + 1}/${fileNames.length}`);
-  }
-
+  wordCount += await registerDict("/data/initial_dict1.json");
+  wordCount += await registerDict("/data/initial_dict2.json");
   return { wordCount };
 };
 
