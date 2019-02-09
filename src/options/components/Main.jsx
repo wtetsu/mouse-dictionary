@@ -6,7 +6,7 @@
 
 import React from "react";
 import swal from "sweetalert";
-import debounce from "lodash.debounce";
+import lodash from "lodash";
 import LoadDictionary from "./LoadDictionary";
 import BasicSettings from "./BasicSettings";
 import AdvancedSettings from "./AdvancedSettings";
@@ -59,7 +59,7 @@ export default class Main extends React.Component {
     this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
     this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
 
-    this.updateTrialWindowWithDebounce = debounce(
+    this.updateTrialWindowWithDebounce = lodash.debounce(
       () => {
         this.updateTrialWindow(this.state.settings);
       },
