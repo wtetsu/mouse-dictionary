@@ -4,22 +4,33 @@
  * Licensed under MIT
  */
 
+import UniqList from "uniqlist";
+import deinja from "deinja";
 import consts from "./consts";
 import transform from "./transform";
 import phrase from "./phrase";
 import possessive from "./possessive";
 import spelling from "./spelling";
-import UniqArray from "./uniqarray";
 
 const text = {};
 
-text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
+text.createLookupWords = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false, isEnglish = true) => {
+  let r;
+  if (isEnglish) {
+    r = createLookupWordsEn(rawSourceStr, withCapitalized, mustIncludeOriginalText);
+  } else {
+    r = createLookupWordsJa(rawSourceStr, withCapitalized, mustIncludeOriginalText);
+  }
+  return r;
+};
+
+const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
   const sourceStr = text.dealWithHyphens(rawSourceStr);
   const lowerStr = sourceStr.toLowerCase();
   const isAllLower = lowerStr === sourceStr;
   const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
 
-  const lookupWords = new UniqArray();
+  const lookupWords = new UniqList();
 
   if (mustIncludeOriginalText) {
     lookupWords.merge(sourceStr);
@@ -71,6 +82,23 @@ const createLinkedWords = (words, isAllLower) => {
     }
   }
   return lookupWords;
+};
+
+const createLookupWordsJa = sourceStr => {
+  const str = sourceStr.substring(0, 40).replace(/[A-Za-z0-9]/g, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
+
+  const result = new UniqList();
+
+  for (let i = str.length; i >= 1; i--) {
+    const part = str.substring(0, i);
+    result.push(part);
+
+    if (i >= 2) {
+      const deinedWords = deinja.convert(part);
+      result.merge(deinedWords);
+    }
+  }
+  return result.toArray();
 };
 
 const RE_NON_BREAKING_HYPHEN = /‑/g;
@@ -233,7 +261,7 @@ text.parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
   if (!sourceStr) {
     return [];
   }
-  const wordList = new UniqArray();
+  const wordList = new UniqList();
   wordList.filer = a => a.length >= minLength;
 
   const lowerStr = sourceStr.toLowerCase();
@@ -346,7 +374,7 @@ const dealWithFirstWordHyphen = theFirstWord => {
     return [];
   }
 
-  const result = new UniqArray();
+  const result = new UniqList();
   const splittedFirstWord = wordList[0];
 
   const phraseWithoutHyphen = wordList.join("");
@@ -366,6 +394,36 @@ const dealWithFirstWordHyphen = theFirstWord => {
     }
   }
   return result.toArray();
+};
+
+text.isEnglishText = str => {
+  let result = true;
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    const isEnglishLike = 0x20 <= code && code <= 0x7e;
+    if (!isEnglishLike) {
+      result = false;
+      break;
+    }
+  }
+  return result;
+};
+
+text.isHiraKana = str => {
+  if (!str) {
+    return false;
+  }
+  let result = true;
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    const isHiragana = code >= 0x3040 && code <= 0x309f;
+    const isKatakana = code >= 0x30a0 && code <= 0x30ff;
+    if (!isHiragana || !isKatakana) {
+      result = false;
+      break;
+    }
+  }
+  return result;
 };
 
 export default text;

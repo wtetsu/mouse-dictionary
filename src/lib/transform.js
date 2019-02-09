@@ -4,11 +4,11 @@
  * Licensed under MIT
  */
 
+import UniqList from "uniqlist";
 import text from "./text";
-import UniqArray from "./uniqarray";
 
 export default word => {
-  const list = new UniqArray();
+  const list = new UniqList();
   const v = verbs[word];
   if (v) {
     list.push(v);

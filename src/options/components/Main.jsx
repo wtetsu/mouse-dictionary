@@ -6,7 +6,7 @@
 
 import React from "react";
 import swal from "sweetalert";
-import debounce from "lodash.debounce";
+import lodash from "lodash";
 import LoadDictionary from "./LoadDictionary";
 import BasicSettings from "./BasicSettings";
 import AdvancedSettings from "./AdvancedSettings";
@@ -59,7 +59,7 @@ export default class Main extends React.Component {
     this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
     this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
 
-    this.updateTrialWindowWithDebounce = debounce(
+    this.updateTrialWindowWithDebounce = lodash.debounce(
       () => {
         this.updateTrialWindow(this.state.settings);
       },
@@ -194,7 +194,9 @@ export default class Main extends React.Component {
       return;
     }
     this.setState({ busy: true });
-    const { wordCount } = await dict.registerDefaultDict();
+    const { wordCount } = await dict.registerDefaultDict(progress => {
+      this.setState({ dictDataUsage: progress });
+    });
 
     this.updateDictDataUsage();
     this.setState({ busy: false, progress: "" });
@@ -257,6 +259,7 @@ export default class Main extends React.Component {
 
   async doLoad() {
     const file = document.getElementById("dictdata").files[0];
+    const encoding = this.state.encoding;
     if (!file) {
       swal({
         title: res.get("selectDictFile"),
@@ -264,6 +267,27 @@ export default class Main extends React.Component {
       });
       return;
     }
+
+    let willContinue;
+    if (encoding === "Shift-JIS") {
+      const fileMayBeSjis = await utils.fileMayBeSjis(file);
+      if (!fileMayBeSjis) {
+        willContinue = await swal({
+          title: res.get("fileMayNotBeShiftJis"),
+          icon: "warning",
+          buttons: true
+        });
+      }
+    } else {
+      willContinue = true;
+    }
+
+    if (willContinue) {
+      this.loadDictionaryFile(file);
+    }
+  }
+
+  async loadDictionaryFile(file) {
     const encoding = this.state.encoding;
     const format = this.state.format;
     const event = ev => {
@@ -426,7 +450,15 @@ export default class Main extends React.Component {
       return;
     }
     const actualTrialText = trialText || this.state.trialText;
-    const wordsToLookup = text.createLookupWords(actualTrialText, settings.lookupWithCapitalized);
+
+    const code = actualTrialText.charCodeAt(0);
+    const isEnglishLike = 0x20 <= code && code <= 0x7e;
+    const wordsToLookup = text.createLookupWords(
+      actualTrialText,
+      settings.lookupWithCapitalized && isEnglishLike,
+      false,
+      isEnglishLike
+    );
 
     let startTime;
     if (process.env.NODE_ENV !== "production") {
@@ -435,7 +467,7 @@ export default class Main extends React.Component {
     }
 
     const descriptions = await storage.local.get(wordsToLookup);
-    const { html } = await this.contentGenerator.generate(wordsToLookup, descriptions, true);
+    const { html } = await this.contentGenerator.generate(wordsToLookup, descriptions, isEnglishLike);
 
     if (this.trialWindow) {
       const newDom = dom.create(html);
