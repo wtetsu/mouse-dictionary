@@ -19,7 +19,8 @@
     "Promise": true,
     "BROWSER": true,
     "process": true,
-    "Set": true
+    "Set": true,
+    "Uint8Array": true
   },
   "rules": {
     "no-console": 0,

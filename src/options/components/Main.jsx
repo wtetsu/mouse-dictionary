@@ -259,6 +259,7 @@ export default class Main extends React.Component {
 
   async doLoad() {
     const file = document.getElementById("dictdata").files[0];
+    const encoding = this.state.encoding;
     if (!file) {
       swal({
         title: res.get("selectDictFile"),
@@ -266,6 +267,27 @@ export default class Main extends React.Component {
       });
       return;
     }
+
+    let willContinue;
+    if (encoding === "Shift-JIS") {
+      const fileMayBeSjis = await utils.fileMayBeSjis(file);
+      if (!fileMayBeSjis) {
+        willContinue = await swal({
+          title: res.get("fileMayNotBeShiftJis"),
+          icon: "warning",
+          buttons: true
+        });
+      }
+    } else {
+      willContinue = true;
+    }
+
+    if (willContinue) {
+      this.loadDictionaryFile(file);
+    }
+  }
+
+  async loadDictionaryFile(file) {
     const encoding = this.state.encoding;
     const format = this.state.format;
     const event = ev => {

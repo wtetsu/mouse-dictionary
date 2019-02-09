@@ -20,6 +20,7 @@ export default {
   finishedClear: "All the dictionary data has been removed",
   dictDataUsage: "%s kilobytes used",
   confirmLoadInitialDict: "There is no dictionary data yet.\nDo you want to register free dictionary data?",
+  fileMayNotBeShiftJis: "The selected file may not be Shift-JIS-encoded. Are you sure you want to import the file?",
 
   formatEijiroText: "EIJIRO text data",
   formatTsv: "TSV(tab-separated text data)",

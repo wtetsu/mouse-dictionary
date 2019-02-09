@@ -16,6 +16,7 @@ export default {
   finishedClear: "辞書データを削除しました",
   dictDataUsage: "%sKB使用中",
   confirmLoadInitialDict: "まだ辞書データが無いようです。\nフリー辞書のデータを自動登録します。",
+  fileMayNotBeShiftJis: "このファイルはShift-JISではないかもしれません。インポート処理を実行しますか？",
 
   formatEijiroText: "英辞郎テキストデータ(■見出し)",
   formatTsv: "TSV(タブ区切り)",
