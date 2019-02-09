@@ -100,9 +100,9 @@ export default {
         startTime = new Date().getTime();
       }
 
-      const code = textToLookup.charCodeAt(0);
-      const isEnglishLike = 0x20 <= code && code <= 0x7e;
-
+      // const code = textToLookup.charCodeAt(0);
+      // const isEnglishLike = 0x20 <= code && code <= 0x7e;
+      const isEnglishLike = text.isEnglishText(textToLookup);
       const wordsToLookup = text.createLookupWords(
         textToLookup,
         settings.lookupWithCapitalized,

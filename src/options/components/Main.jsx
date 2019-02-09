@@ -428,7 +428,15 @@ export default class Main extends React.Component {
       return;
     }
     const actualTrialText = trialText || this.state.trialText;
-    const wordsToLookup = text.createLookupWords(actualTrialText, settings.lookupWithCapitalized);
+
+    const code = actualTrialText.charCodeAt(0);
+    const isEnglishLike = 0x20 <= code && code <= 0x7e;
+    const wordsToLookup = text.createLookupWords(
+      actualTrialText,
+      settings.lookupWithCapitalized && isEnglishLike,
+      false,
+      isEnglishLike
+    );
 
     let startTime;
     if (process.env.NODE_ENV !== "production") {

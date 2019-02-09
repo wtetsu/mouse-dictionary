@@ -59,6 +59,16 @@ export default {
     },
     {
       key: "7",
+      search: "(\\[.+?\\])",
+      replace: '<font color="#008000">$1</font>'
+    },
+    {
+      key: "8",
+      search: "(\\(.+?\\))",
+      replace: '<font color="#008000">$1</font>'
+    },
+    {
+      key: "9",
       search: "\\n",
       replace: "<br/>"
     }

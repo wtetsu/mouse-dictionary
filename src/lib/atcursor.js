@@ -6,6 +6,8 @@
 
 import consts from "./consts";
 
+const JA_MAX_LENGTH = 40;
+
 export default (element, clientX, clientY, maxWords = 5) => {
   let textOnCursor = null;
   try {
@@ -45,7 +47,7 @@ const fetchTextFromTextNode = (textNode, offset, maxWords) => {
         endIndex = searchEndIndex(concatenatedText, 0, maxWords);
       } else {
         concatenatedText = text + siblingsText;
-        endIndex = 15;
+        endIndex = JA_MAX_LENGTH;
       }
       textOnCursor = concatenatedText.substring(0, endIndex);
     } else {
@@ -176,7 +178,7 @@ const getTextFromRange = (text, offset, maxWords) => {
     endIndex = searchEndIndex(text, offset, maxWords);
   } else {
     startIndex = offset;
-    endIndex = offset + 20;
+    endIndex = offset + JA_MAX_LENGTH;
   }
   const resultText = text.substring(startIndex, endIndex);
   const result = { text: resultText, end: endIndex >= text.length, isEnglish: isEnglishLikeCharacter };

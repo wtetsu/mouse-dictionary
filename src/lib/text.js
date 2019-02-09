@@ -85,16 +85,18 @@ const createLinkedWords = (words, isAllLower) => {
 };
 
 const createLookupWordsJa = sourceStr => {
-  const str = sourceStr.substring(0, 20).replace(/[A-Za-z0-9]/g, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
+  const str = sourceStr.substring(0, 40).replace(/[A-Za-z0-9]/g, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
 
   const result = new UniqArray();
 
-  for (let i = str.length; i >= 2; i--) {
+  for (let i = str.length; i >= 1; i--) {
     const part = str.substring(0, i);
     result.push(part);
 
-    const deinedWords = deinja.convert(part);
-    result.merge(deinedWords.map(a => a.baseForm));
+    if (i >= 2) {
+      const deinedWords = deinja.convert(part);
+      result.merge(deinedWords.map(a => a.baseForm));
+    }
   }
   return result.toArray();
 };
@@ -392,6 +394,19 @@ const dealWithFirstWordHyphen = theFirstWord => {
     }
   }
   return result.toArray();
+};
+
+text.isEnglishText = str => {
+  let result = true;
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    const isEnglishLike = 0x20 <= code && code <= 0x7e;
+    if (!isEnglishLike) {
+      result = false;
+      break;
+    }
+  }
+  return result;
 };
 
 export default text;
