@@ -21,13 +21,15 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
+    "deinja": "0.0.1",
     "hogan.js": "^3.0.2",
     "lodash": "4.17.11",
     "react": "^16.8.1",
     "react-color": "^2.17.0",
     "react-dom": "^16.8.1",
     "sprintf-js": "^1.1.2",
-    "sweetalert": "^2.1.2"
+    "sweetalert": "^2.1.2",
+    "uniqlist": "^1.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
