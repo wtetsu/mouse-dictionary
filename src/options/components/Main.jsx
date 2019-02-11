@@ -14,13 +14,13 @@ import PersistenceSettings from "./PersistenceSettings";
 import res from "../lib/resources";
 import dict from "../lib/dict";
 import defaultSettings from "../../settings/defaultsettings";
-import text from "../../lib/text";
 import dom from "../../lib/dom";
 import env from "../../settings/env";
 import ContentGenerator from "../../main/contentgenerator";
 import mdwindow from "../../main/mdwindow";
 import storage from "../../lib/storage";
 import utils from "../lib/utils";
+import generateEntries from "../../lib/entry/generate";
 
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";
@@ -451,23 +451,15 @@ export default class Main extends React.Component {
     }
     const actualTrialText = trialText || this.state.trialText;
 
-    const code = actualTrialText.charCodeAt(0);
-    const isEnglishLike = 0x20 <= code && code <= 0x7e;
-    const wordsToLookup = text.createLookupWords(
-      actualTrialText,
-      settings.lookupWithCapitalized && isEnglishLike,
-      false,
-      isEnglishLike
-    );
+    const { entries, lang } = generateEntries(actualTrialText, settings.lookupWithCapitalized, false);
 
     let startTime;
     if (process.env.NODE_ENV !== "production") {
       startTime = new Date().getTime();
-      console.info(wordsToLookup);
     }
 
-    const descriptions = await storage.local.get(wordsToLookup);
-    const { html } = await this.contentGenerator.generate(wordsToLookup, descriptions, isEnglishLike);
+    const descriptions = await storage.local.get(entries);
+    const { html } = await this.contentGenerator.generate(entries, descriptions, lang === "en");
 
     if (this.trialWindow) {
       const newDom = dom.create(html);
@@ -477,7 +469,7 @@ export default class Main extends React.Component {
 
     if (process.env.NODE_ENV !== "production") {
       const time = new Date().getTime() - startTime;
-      console.info(`${time}ms:${wordsToLookup}`);
+      console.info(`${time}ms:${entries}`);
     }
   }
 

@@ -5,11 +5,11 @@
  */
 
 import atcursor from "../lib/atcursor";
-import text from "../lib/text";
 import dom from "../lib/dom";
 import ShortCache from "../lib/shortcache";
 import storage from "../lib/storage";
 import ContentGenerator from "./contentgenerator";
+import generateEntries from "../lib/entry/generate";
 
 export default {
   attach(dialog, draggable, settings, updateContent) {
@@ -39,7 +39,7 @@ export default {
       _selection = window.getSelection().toString();
       if (_selection) {
         const text = _selection.trim().substring(0, TEXT_LENGTH_LIMIT);
-        parseTextAndLookup(text, true, false);
+        parseTextAndLookup(text, true, false, settings.lookupWithCapitalized);
       }
       _isLastMouseUpOnTheWindow = isOnTheWindow(dialog.style, e);
     });
@@ -60,14 +60,14 @@ export default {
       if (!textAtCursor) {
         return;
       }
-      parseTextAndLookup(textAtCursor, false, true);
+      parseTextAndLookup(textAtCursor, false, true, settings.lookupWithCapitalized);
     });
 
     chrome.runtime.onMessage.addListener(request => {
       const m = request.message;
       switch (m.type) {
         case "text":
-          parseTextAndLookup(m.text, m.mustIncludeOriginalText, m.enableShortWord);
+          parseTextAndLookup(m.text, m.mustIncludeOriginalText, m.enableShortWord, settings.lookupWithCapitalized);
           break;
         case "mousemove":
           draggable.onMouseMove(m);
@@ -81,9 +81,9 @@ export default {
     let _lastText = null;
     const _shortCache = new ShortCache(100);
 
-    const parseTextAndLookup = async (rawTextToLookup, mustIncludeOriginalText, enableShortWord) => {
-      const textToLookup = rawTextToLookup.substring(0, TEXT_LENGTH_LIMIT);
-      if (!mustIncludeOriginalText) {
+    const parseTextAndLookup = async (rawText, includeOrgText, enableShortWord, withCapitalized) => {
+      const textToLookup = rawText.substring(0, TEXT_LENGTH_LIMIT);
+      if (!includeOrgText) {
         if (!textToLookup || _lastText === textToLookup) {
           return;
         }
@@ -100,17 +100,10 @@ export default {
         startTime = new Date().getTime();
       }
 
-      // const code = textToLookup.charCodeAt(0);
-      // const isEnglishLike = 0x20 <= code && code <= 0x7e;
-      const isEnglishLike = text.isEnglishText(textToLookup);
-      const wordsToLookup = text.createLookupWords(
-        textToLookup,
-        settings.lookupWithCapitalized,
-        mustIncludeOriginalText,
-        isEnglishLike
-      );
-      const descriptions = await storage.local.get(wordsToLookup);
-      const { html, hitCount } = _contentGenerator.generate(wordsToLookup, descriptions, enableShortWord && isEnglishLike);
+      const { entries, lang } = generateEntries(textToLookup, withCapitalized, includeOrgText);
+
+      const descriptions = await storage.local.get(entries);
+      const { html, hitCount } = _contentGenerator.generate(entries, descriptions, enableShortWord && lang === "en");
       const newDom = dom.create(html);
       updateContent(newDom, hitCount);
 
@@ -120,7 +113,7 @@ export default {
       if (process.env.NODE_ENV !== "production") {
         const time = new Date().getTime() - startTime;
         console.info(`${time}ms:${textToLookup}`);
-        console.info(wordsToLookup);
+        console.info(entries);
       }
     };
   }
