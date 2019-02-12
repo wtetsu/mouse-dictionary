@@ -71,11 +71,6 @@ ejdic-hand
 - https://kujirahand.com/web-tools/
 - License: Public domain
 
-EDICT
-
-- http://www.edrdg.org/jmdict/edict.html
-- License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
-
 ### Images
 
 bookmark icon, gear icon
