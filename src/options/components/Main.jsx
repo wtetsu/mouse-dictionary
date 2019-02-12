@@ -268,7 +268,7 @@ export default class Main extends React.Component {
       return;
     }
 
-    let willContinue;
+    let willContinue = true;
     if (encoding === "Shift-JIS") {
       const fileMayBeSjis = await utils.fileMayBeSjis(file);
       if (!fileMayBeSjis) {
@@ -278,8 +278,6 @@ export default class Main extends React.Component {
           buttons: true
         });
       }
-    } else {
-      willContinue = true;
     }
 
     if (willContinue) {
