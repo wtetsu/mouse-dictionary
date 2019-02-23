@@ -91,22 +91,24 @@ const load = async ({ file, encoding, format, event }) => {
 };
 
 const registerDefaultDict = async () => {
+  const dict = await loadJsonFile("/data/dict.json");
   let wordCount = 0;
-  wordCount += await registerDict("/data/initial_dict1.json");
-  wordCount += await registerDict("/data/initial_dict2.json");
+  for (let i = 0; i < dict.files.length; i++) {
+    wordCount += await registerDict(dict.files[i]);
+  }
   return { wordCount };
 };
 
-const registerDict = async fname => {
+const loadJsonFile = async fname => {
   const url = chrome.extension.getURL(fname);
-
   const response = await fetch(url);
-  const dictData = await response.json();
+  return response.json();
+};
 
+const registerDict = async fname => {
+  const dictData = await loadJsonFile(fname);
   const wordCount = Object.keys(dictData).length;
-
   await save(dictData);
-
   return wordCount;
 };
 
