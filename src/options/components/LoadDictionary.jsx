@@ -33,18 +33,26 @@ const LoadDictionary = props => {
       <br />
       <input
         type="button"
-        value="load"
+        value={res.get("loadSelectedFile")}
         style={{ marginRight: 5 }}
         onClick={props.doLoad}
         disabled={props.busy ? "disabled" : null}
       />
       <input
         type="button"
-        value="clear"
+        value={res.get("clearLoadedData")}
         style={{ marginRight: 5 }}
         onClick={props.doClear}
         disabled={props.busy ? "disabled" : null}
       />
+      <input
+        type="button"
+        value={res.get("loadInitialDict")}
+        style={{ marginRight: 5 }}
+        onClick={props.doLoadInitialDict}
+        disabled={props.busy ? "disabled" : null}
+      />
+
       <img
         src="loading.gif"
         width="32"

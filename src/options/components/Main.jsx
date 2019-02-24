@@ -158,7 +158,7 @@ export default class Main extends React.Component {
   async componentDidMount() {
     const isLoaded = await storage.local.pickOut(KEY_LOADED);
     if (!isLoaded) {
-      this.registerDefaultDict();
+      this.confirmAndLoadInitialDict("confirmLoadInitialDict");
     }
     await this.initializeUserSettings();
     await this.updateDictDataUsage();
@@ -185,9 +185,9 @@ export default class Main extends React.Component {
     });
   }
 
-  async registerDefaultDict() {
+  async confirmAndLoadInitialDict(messageId) {
     const willLoad = await swal({
-      text: res.get("confirmLoadInitialDict"),
+      text: res.get(messageId),
       icon: "info",
       buttons: true,
       closeOnClickOutside: false
@@ -353,7 +353,7 @@ export default class Main extends React.Component {
   }
 
   doLoadInitialDict() {
-    this.loadInitialDict();
+    this.confirmAndLoadInitialDict("confirmReloadInitialDict");
   }
 
   doAddReplaceRule() {

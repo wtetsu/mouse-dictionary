@@ -20,6 +20,7 @@ export default {
   finishedClear: "All the dictionary data has been removed",
   dictDataUsage: "%s kilobytes used",
   confirmLoadInitialDict: "There is no dictionary data yet.\nDo you want to register free dictionary data?",
+  confirmReloadInitialDict: "Are you sure you want to reload the default dictionary data?",
   fileMayNotBeShiftJis: "The selected file may not be Shift-JIS-encoded. Are you sure you want to import the file?",
 
   formatEijiroText: "EIJIRO text data",
@@ -76,5 +77,8 @@ export default {
   stylesInactive: "Style(not active)",
   lookupWithCapitalized: "Lookup both capitalized and non-capitalized headers",
   parseWordsLimit: "Number of words to parse at once",
-  add: "Add"
+  add: "Add",
+  loadSelectedFile: "LOAD",
+  clearLoadedData: "CLEAR",
+  loadInitialDict: "Reload default dictionary data"
 };

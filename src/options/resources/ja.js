@@ -16,6 +16,7 @@ export default {
   finishedClear: "辞書データを削除しました",
   dictDataUsage: "%sKB使用中",
   confirmLoadInitialDict: "まだ辞書データが無いようです。\nフリー辞書のデータを自動登録します。",
+  confirmReloadInitialDict: "デフォルト辞書データを再登録します",
   fileMayNotBeShiftJis: "このファイルはShift-JISではないかもしれません。インポート処理を実行しますか？",
 
   formatEijiroText: "英辞郎テキストデータ(■見出し)",
@@ -72,5 +73,8 @@ export default {
   stylesInactive: "スタイル:非アクティブ",
   lookupWithCapitalized: "大文字の辞書データも参照する",
   parseWordsLimit: "一度に解析する単語数",
-  add: "追加"
+  add: "追加",
+  loadSelectedFile: "LOAD",
+  clearLoadedData: "CLEAR",
+  loadInitialDict: "デフォルト辞書データの再ロード"
 };
