@@ -52,6 +52,7 @@ export default class Main extends React.Component {
     this.doRemoveReplaceRule = this.doRemoveReplaceRule.bind(this);
     this.doLoad = this.doLoad.bind(this);
     this.doClear = this.doClear.bind(this);
+    this.doLoadInitialDict = this.doLoadInitialDict.bind(this);
     this.doSaveSettings = this.doSaveSettings.bind(this);
     this.doBackToDefaultSettings = this.doBackToDefaultSettings.bind(this);
     this.doAddReplaceRule = this.doAddReplaceRule.bind(this);
@@ -82,6 +83,7 @@ export default class Main extends React.Component {
           onChangeState={this.doChangeState}
           doLoad={this.doLoad}
           doClear={this.doClear}
+          doLoadInitialDict={this.doLoadInitialDict}
           dictDataUsage={state.dictDataUsage}
           busy={state.busy}
           progress={state.progress}
@@ -193,6 +195,11 @@ export default class Main extends React.Component {
     if (!willLoad) {
       return;
     }
+
+    this.loadInitialDict();
+  }
+
+  async loadInitialDict() {
     this.setState({ busy: true });
     const { wordCount } = await dict.registerDefaultDict(progress => {
       this.setState({ dictDataUsage: progress });
@@ -343,6 +350,10 @@ export default class Main extends React.Component {
     });
     this.setState({ busy: false });
     this.updateDictDataUsage();
+  }
+
+  doLoadInitialDict() {
+    this.loadInitialDict();
   }
 
   doAddReplaceRule() {
