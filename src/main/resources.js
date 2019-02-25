@@ -9,10 +9,12 @@
 
 const resources = {
   ja: {
-    doesntSupportFrame: "Mouse Dictionaryは、フレームのあるページで使用することはできません。"
+    doesntSupportFrame: "Mouse Dictionaryは、フレームのあるページで使用することはできません。",
+    needToPrepareDict: "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「オプション」)"
   },
   en: {
-    doesntSupportFrame: "Mouse Dictionary doesn't support frame pages."
+    doesntSupportFrame: "Mouse Dictionary doesn't support frame pages.",
+    needToPrepareDict: 'Please load dictionary data first. Right click on the extension icon and select "Options"'
   }
 };
 
