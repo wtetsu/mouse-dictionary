@@ -11,8 +11,10 @@ import mdwindow from "./mdwindow";
 import loader from "./settingsloader";
 import events from "./events";
 import Draggable from "./draggable";
+import storage from "../lib/storage";
 
 const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
+const KEY_LOADED = "**** loaded ****";
 
 const main = async () => {
   // Pages which have frames are not supported.
@@ -69,7 +71,16 @@ const initialize = async userSettings => {
   }
   draggable.add(area.dialog);
 
+  let canRefreshView = false;
   events.attach(area.dialog, draggable, userSettings, (newDom, count) => {
+    if (!canRefreshView) {
+      storage.local.pickOut(KEY_LOADED).then(isLoaded => {
+        if (isLoaded) {
+          canRefreshView = true;
+        }
+      });
+      return;
+    }
     // update contents
     if (draggable.selectable && count === 0) {
       return;
@@ -77,6 +88,12 @@ const initialize = async userSettings => {
     area.content.innerHTML = "";
     area.content.appendChild(newDom);
   });
+
+  const isLoaded = await storage.local.pickOut(KEY_LOADED);
+  if (!isLoaded) {
+    area.content.innerHTML = res("needToPrepareDict");
+    canRefreshView = false;
+  }
 };
 
 main();
