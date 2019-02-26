@@ -71,7 +71,7 @@ const initialize = async userSettings => {
   }
   draggable.add(area.dialog);
 
-  let canRefreshView = false;
+  let canRefreshView = true;
   events.attach(area.dialog, draggable, userSettings, (newDom, count) => {
     if (!canRefreshView) {
       storage.local.pickOut(KEY_LOADED).then(isLoaded => {
