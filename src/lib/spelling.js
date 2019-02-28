@@ -28,7 +28,7 @@ const convertWord = word => {
   if (w) {
     return w;
   }
-  return w;
+  return null;
 };
 
 const SPELLING = {
