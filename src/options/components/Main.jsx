@@ -64,7 +64,7 @@ export default class Main extends React.Component {
       () => {
         this.updateTrialWindow(this.state.settings);
       },
-      500,
+      64,
       { leading: true }
     );
   }
@@ -248,6 +248,10 @@ export default class Main extends React.Component {
     }
     newSettings[name] = newValue;
 
+    if (this.shouldRecreateTrialWindow(name)) {
+      this.removeAndCreateTrialWindow(newSettings);
+    }
+
     this.setState({
       settings: newSettings
     });
@@ -259,9 +263,19 @@ export default class Main extends React.Component {
     }
     const newSettings = Object.assign({}, this.state.settings);
     newSettings[name] = e.hex;
+
+    if (this.shouldRecreateTrialWindow(name)) {
+      this.removeAndCreateTrialWindow(newSettings);
+    }
+
     this.setState({
       settings: newSettings
     });
+  }
+
+  shouldRecreateTrialWindow(propName) {
+    const props = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
+    return props.has(propName);
   }
 
   async doLoad() {
@@ -419,32 +433,46 @@ export default class Main extends React.Component {
     });
   }
 
+  updateTrialWindow(settings) {
+    if (!this.state.basicSettingsOpened) {
+      return;
+    }
+    try {
+      // Creating a ContentGenerator instance fails when settings is wrong
+      const newContentGenerator = new ContentGenerator(settings);
+      if (newContentGenerator) {
+        this.contentGenerator = newContentGenerator;
+      }
+    } catch {
+      // NOP
+    }
+    if (!this.trialWindow) {
+      this.trialWindow = this.createTrialWindow(settings);
+      document.body.appendChild(this.trialWindow.dialog);
+    }
+    this.updateTrialText(settings);
+
+    this.trialWindow.dialog.style.width = `${settings.width}px`;
+    this.trialWindow.dialog.style.height = `${settings.height}px`;
+    this.trialWindow.dialog.style.zIndex = 9999;
+  }
+
+  createTrialWindow(settings) {
+    const trialWindow = mdwindow.create(settings);
+    trialWindow.dialog.style.cursor = "zoom-out";
+    trialWindow.dialog.style.top = "30px";
+    trialWindow.dialog.addEventListener("click", () => {
+      trialWindow.dialog.style.width = "100px";
+      trialWindow.dialog.style.height = "100px";
+    });
+    return trialWindow;
+  }
+
   removeAndCreateTrialWindow(settings) {
     if (!settings) {
       return;
     }
     this.removeTrialWindow();
-    try {
-      this.contentGenerator = new ContentGenerator(settings);
-      this.trialWindow = mdwindow.create(settings);
-      this.trialWindow.dialog.style.cursor = "zoom-out";
-      this.trialWindow.dialog.style.top = "30px";
-      this.trialWindow.dialog.addEventListener("click", () => {
-        this.trialWindow.dialog.style.width = "100px";
-        this.trialWindow.dialog.style.height = "100px";
-      });
-      document.body.appendChild(this.trialWindow.dialog);
-      this.updateTrialText(settings);
-    } catch (e) {
-      this.contentGenerator = null;
-    }
-  }
-
-  updateTrialWindow(settings) {
-    if (!this.trialWindow) {
-      return;
-    }
-    this.removeAndCreateTrialWindow(settings);
   }
 
   removeTrialWindow() {
