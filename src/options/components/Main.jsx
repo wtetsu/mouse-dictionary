@@ -83,7 +83,6 @@ export default class Main extends React.Component {
           onChangeState={this.doChangeState}
           doLoad={this.doLoad}
           doClear={this.doClear}
-          doLoadInitialDict={this.doLoadInitialDict}
           dictDataUsage={state.dictDataUsage}
           busy={state.busy}
           progress={state.progress}
@@ -122,6 +121,8 @@ export default class Main extends React.Component {
             onChangeState={this.doChangeState}
             onChangeSettings={this.doChangeSettings}
             onChangeColorSettings={this.doChangeColorSettings}
+            doLoadInitialDict={this.doLoadInitialDict}
+            busy={state.busy}
             settings={state.settings}
             trialText={state.trialText}
           />

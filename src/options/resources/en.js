@@ -56,6 +56,7 @@ export default {
   height: "Height",
   initialPosition: "Initial position",
   scrollBar: "Scroll bar",
+  dictionaryData: "Dictionary data",
   colorAndFont: "Font size and color",
   backgroundColor: "Background color",
   headFontSize: "Header font size",

@@ -45,13 +45,6 @@ const LoadDictionary = props => {
         onClick={props.doClear}
         disabled={props.busy ? "disabled" : null}
       />
-      <input
-        type="button"
-        value={res.get("loadInitialDict")}
-        style={{ marginRight: 5 }}
-        onClick={props.doLoadInitialDict}
-        disabled={props.busy ? "disabled" : null}
-      />
 
       <img
         src="loading.gif"

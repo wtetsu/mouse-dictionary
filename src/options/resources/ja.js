@@ -52,6 +52,7 @@ export default {
   height: "高さ",
   initialPosition: "初期表示位置",
   scrollBar: "スクロールバー",
+  dictionaryData: "辞書データ",
   colorAndFont: "色と文字サイズ",
   backgroundColor: "背景色",
   headFontSize: "見出しの文字サイズ",

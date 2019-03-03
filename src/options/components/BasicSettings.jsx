@@ -105,10 +105,24 @@ const BasicSettings = props => {
       >
         {positionOptions}
       </select>
+
       <label>{res.get("scrollBar")}</label>
       <select value={settings.scroll} onChange={props.onChange.bind(this, "scroll")} style={{ width: 250 }}>
         {scrollOptions}
       </select>
+
+      <br />
+
+      <label>{res.get("dictionaryData")}</label>
+      <input
+        type="button"
+        className="button-outline button-small"
+        value={res.get("loadInitialDict")}
+        style={{ marginRight: 5, cursor: "pointer" }}
+        onClick={props.doLoadInitialDict}
+        disabled={props.busy ? "disabled" : null}
+      />
+
       <hr />
       <h3>{res.get("colorAndFont")}</h3>
       <label>{res.get("backgroundColor")}</label>
