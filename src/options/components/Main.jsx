@@ -525,8 +525,9 @@ export default class Main extends React.Component {
   }
 
   doBackToDefaultSettings() {
-    const settings = Object.assign({}, defaultSettings);
-    this.setState({ settings });
+    const newSettings = Object.assign({}, defaultSettings);
+    this.removeAndCreateTrialWindow(newSettings);
+    this.setState({ settings: newSettings });
   }
 
   doToggleBasicSettings() {
