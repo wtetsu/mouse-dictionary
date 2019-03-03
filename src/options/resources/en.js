@@ -81,5 +81,6 @@ export default {
   add: "Add",
   loadSelectedFile: "LOAD",
   clearLoadedData: "CLEAR",
-  loadInitialDict: "Reload default dictionary data"
+  loadInitialDict: "Reload default dictionary data",
+  downloadDictData: "Download additional dictionary data"
 };

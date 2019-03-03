@@ -122,6 +122,16 @@ const BasicSettings = props => {
         onClick={props.doLoadInitialDict}
         disabled={props.busy ? "disabled" : null}
       />
+      <p>
+        <a
+          href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "underline", fontSize: "small" }}
+        >
+          {res.get("downloadDictData")}
+        </a>
+      </p>
 
       <hr />
       <h3>{res.get("colorAndFont")}</h3>

@@ -77,5 +77,6 @@ export default {
   add: "追加",
   loadSelectedFile: "LOAD",
   clearLoadedData: "CLEAR",
-  loadInitialDict: "デフォルト辞書データの再ロード"
+  loadInitialDict: "デフォルト辞書データの再ロード",
+  downloadDictData: "追加辞書データをダウンロードする"
 };
