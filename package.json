@@ -44,7 +44,6 @@
     "eslint-plugin-react": "^7.12.4",
     "jest": "^24.1.0",
     "milligram": "^1.3.0",
-    "regenerator-runtime": "^0.13.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3"
   }
