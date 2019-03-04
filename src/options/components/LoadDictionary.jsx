@@ -53,7 +53,7 @@ const LoadDictionary = props => {
         style={{ verticalAlign: "middle", display: props.busy ? "inline" : "none" }}
       />
       <div>{props.progress}</div>
-      <div style={{ fontSize: "75%" }}>{props.dictDataUsage}</div>
+      <div style={{ fontSize: "75%" }}>{res.get("dictDataUsage", props.dictDataUsage)}</div>
     </div>
   );
 };

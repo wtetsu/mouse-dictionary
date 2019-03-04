@@ -33,7 +33,7 @@ export default class Main extends React.Component {
     this.state = {
       encoding: "Shift-JIS",
       format: "EIJIRO",
-      dictDataUsage: "-",
+      dictDataUsage: 0,
       busy: false,
       progress: "",
       settings: null,
@@ -182,7 +182,7 @@ export default class Main extends React.Component {
     const byteSize = await storage.local.getBytesInUse();
     const kb = isFinite(byteSize) ? Math.floor(byteSize / 1024).toLocaleString() : "";
     this.setState({
-      dictDataUsage: res.get("dictDataUsage", kb)
+      dictDataUsage: kb
     });
   }
 
