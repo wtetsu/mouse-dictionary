@@ -11,13 +11,13 @@ import storage from "../lib/storage";
 import ContentGenerator from "./contentgenerator";
 import generateEntries from "../lib/entry/generate";
 
+const TEXT_LENGTH_LIMIT = 128;
+
 export default {
   attach(dialog, draggable, settings, updateContent) {
-    let _selection = null;
+    let _selection = getSelection();
     let _mouseDown = false;
     let _isLastMouseUpOnTheWindow = false;
-
-    const TEXT_LENGTH_LIMIT = 128;
 
     // Compile templates, regular expressions so that it works fast
     let _contentGenerator;
@@ -36,10 +36,9 @@ export default {
       draggable.onMouseUp();
 
       _mouseDown = false;
-      _selection = window.getSelection().toString();
+      _selection = getSelection();
       if (_selection) {
-        const text = _selection.trim().substring(0, TEXT_LENGTH_LIMIT);
-        parseTextAndLookup(text, true, false, settings.lookupWithCapitalized);
+        parseTextAndLookup(_selection, true, false, settings.lookupWithCapitalized);
       }
       _isLastMouseUpOnTheWindow = isOnTheWindow(dialog.style, e);
     });
@@ -53,7 +52,7 @@ export default {
       if (_isLastMouseUpOnTheWindow && _selection) {
         return;
       }
-      if (!_isLastMouseUpOnTheWindow && window.getSelection().toString()) {
+      if (!_isLastMouseUpOnTheWindow && getSelection()) {
         return;
       }
       let textAtCursor = atcursor(e.target, e.clientX, e.clientY, settings.parseWordsLimit);
@@ -116,7 +115,19 @@ export default {
         console.info(entries);
       }
     };
+
+    // first invoke
+    if (_selection) {
+      const text = _selection.trim().substring(0, TEXT_LENGTH_LIMIT);
+      parseTextAndLookup(text, true, false, settings.lookupWithCapitalized);
+    }
   }
+};
+
+const getSelection = () => {
+  const selection = window.getSelection();
+  const str = selection.toString().trim();
+  return str.substring(0, TEXT_LENGTH_LIMIT);
 };
 
 const isOnTheWindow = (style, e) => {
