@@ -91,6 +91,7 @@ export default {
   contentWrapperTemplate: `<div style="text-align:left;"></div>`,
 
   dialogTemplate: `<div style="all:initial;
+            {{systemStyles}}
             width: {{width}}px;
             height: {{height}}px;
             position: fixed;
@@ -100,7 +101,6 @@ export default {
             background-color: {{backgroundColor}};
             z-index: 2147483646;
             padding: 2px 4px 2px 4px;
-            border-radius: 8px 8px 8px 8px;
             border: 1px solid #A0A0A0;"></div>`,
 
   contentTemplate: `<div style="all:initial;cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">

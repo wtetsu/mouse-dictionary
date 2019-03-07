@@ -26,7 +26,16 @@ export default {
 
 const createDialogElement = settings => {
   const compiledTemplate = Hogan.compile(settings.dialogTemplate);
+
+  let systemStyles;
+  if (settings.scroll === "scroll") {
+    systemStyles = "border-radius: 5px 0px 0px 5px;";
+  } else {
+    systemStyles = "border-radius: 5px 5px 5px 5px;";
+  }
+
   const html = compiledTemplate.render({
+    systemStyles,
     backgroundColor: settings.backgroundColor,
     titlebarBackgroundColor: settings.titlebarBackgroundColor,
     width: settings.width,
