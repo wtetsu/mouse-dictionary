@@ -65,7 +65,8 @@ const initialize = async userSettings => {
   dom.applyStyles(area.dialog, positions);
   dom.applyStyles(area.dialog, userSettings.normalDialogStyles);
 
-  const draggable = new Draggable(userSettings.normalDialogStyles, userSettings.movingDialogStyles);
+  const scrollable = userSettings.scroll === "scroll";
+  const draggable = new Draggable(userSettings.normalDialogStyles, userSettings.movingDialogStyles, scrollable);
   if (!env.disableKeepingWindowStatus) {
     draggable.onchange = e => loader.savePosition(e);
   }

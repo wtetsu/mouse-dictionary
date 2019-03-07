@@ -6,7 +6,7 @@
 
 import dom from "../lib/dom";
 export default class Draggable {
-  constructor(normalStyles, movingStyles) {
+  constructor(normalStyles, movingStyles, scrollable) {
     this.normalStyles = normalStyles;
     this.movingStyles = movingStyles;
     this.mainElement = null;
@@ -27,6 +27,7 @@ export default class Draggable {
     this.cursorEdgePosition = null;
     this.defaultCursor = null;
     this.selectable = false;
+    this.scrollable = scrollable;
   }
 
   onMouseMove(e) {
@@ -125,8 +126,16 @@ export default class Draggable {
     const offset = 8;
     if (this.onEdge(x - this.currentLeft)) {
       onW = true;
-    } else if (this.onEdge(this.currentLeft + (this.currentWidth + offset) - x)) {
-      onE = true;
+    } else {
+      if (this.scrollable) {
+        if (this.onEdgeWithScrollBar(this.currentLeft + (this.currentWidth + offset) - x)) {
+          onE = true;
+        }
+      } else {
+        if (this.onEdge(this.currentLeft + (this.currentWidth + offset) - x)) {
+          onE = true;
+        }
+      }
     }
     if (this.onEdge(y - this.currentTop)) {
       onN = true;
@@ -143,6 +152,9 @@ export default class Draggable {
 
   onEdge(num) {
     return num <= 20;
+  }
+  onEdgeWithScrollBar(num) {
+    return num <= 35;
   }
 
   move(e) {
