@@ -37,6 +37,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       { from: "static", to: "." },
+      { from: "static-overwrite", to: "." },
       { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }
     ])
   ],
