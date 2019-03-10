@@ -90,13 +90,16 @@ const load = async ({ file, encoding, format, event }) => {
   });
 };
 
-const registerDefaultDict = async () => {
+const registerDefaultDict = async fnProgress => {
   const dict = await loadJsonFile("/data/dict.json");
+  fnProgress(0, 0);
   let wordCount = 0;
   for (let i = 0; i < dict.files.length; i++) {
     wordCount += await registerDict(dict.files[i]);
+    const progress = `${i + 1}/${dict.files.length}`;
+    fnProgress(wordCount, progress);
   }
-  return { wordCount };
+  return wordCount;
 };
 
 const loadJsonFile = async fname => {

@@ -202,8 +202,9 @@ export default class Main extends React.Component {
 
   async loadInitialDict() {
     this.setState({ busy: true });
-    const { wordCount } = await dict.registerDefaultDict(progress => {
-      this.setState({ dictDataUsage: progress });
+    const finalWordCount = await dict.registerDefaultDict((wordCount, progress) => {
+      const message = res.get("progressRegister", wordCount, progress);
+      this.setState({ dictDataUsage: message });
     });
 
     this.updateDictDataUsage();
@@ -214,7 +215,7 @@ export default class Main extends React.Component {
     await storage.local.set(loaded);
 
     await swal({
-      text: res.get("finishRegister", wordCount),
+      text: res.get("finishRegister", finalWordCount),
       icon: "success"
     });
   }
