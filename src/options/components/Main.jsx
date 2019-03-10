@@ -95,9 +95,9 @@ export default class Main extends React.Component {
           style={{ verticalAlign: "middle", display: this.state.initialized ? "none" : "inline" }}
         />
 
-        {!env.disableUserSettings && this.state.initialized && <hr />}
+        {!this.state.busy && !env.disableUserSettings && this.state.initialized && <hr />}
 
-        {!env.disableUserSettings && this.state.initialized && (
+        {!this.state.busy && !env.disableUserSettings && this.state.initialized && (
           <div>
             <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
             <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
@@ -201,7 +201,7 @@ export default class Main extends React.Component {
   }
 
   async loadInitialDict() {
-    this.setState({ busy: true });
+    this.setState({ busy: true, basicSettingsOpened: false, advancedSettingsOpened: false });
     const finalWordCount = await dict.registerDefaultDict((wordCount, progress) => {
       const message = res.get("progressRegister", wordCount, progress);
       this.setState({ progress: message });
