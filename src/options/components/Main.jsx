@@ -204,7 +204,7 @@ export default class Main extends React.Component {
     this.setState({ busy: true });
     const finalWordCount = await dict.registerDefaultDict((wordCount, progress) => {
       const message = res.get("progressRegister", wordCount, progress);
-      this.setState({ dictDataUsage: message });
+      this.setState({ progress: message });
     });
 
     this.updateDictDataUsage();
