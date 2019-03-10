@@ -1,7 +1,7 @@
 {
   "name": "Mouse Dictionary",
   "description": "__MSG_appDesc__",
-  "default_locale": "ja",
+  "default_locale": "en",
   "author": "wtetsu",
   "version": "1.2.0",
   "options_ui": {
