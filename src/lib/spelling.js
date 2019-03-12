@@ -571,6 +571,7 @@ const SPELLING = {
   ingraft: "engraft",
   inkbottle: "inkpot",
   inkpad: "pad",
+  initialisation: "initialization",
   inmost: "innermost",
   insistency: "insistence",
   instalment: "installment",
