@@ -158,15 +158,26 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
     for (let i = 0; i < arrayArray.length; i++) {
       wordList.merge(arrayArray[i]);
     }
+
     if (arr.length >= 2) {
+      // Add a prefix
+      const first = arr[0];
+      if (isHyphenLikeCharacter(sourceStr, first.length)) {
+        wordList.push(first + "-");
+      }
+      // Add a postfix
       const last = arr[arr.length - 1];
-      const code = sourceStr.charCodeAt(sourceStr.length - last.length - 1);
-      if (code === 45 || code === 8209) {
+      if (isHyphenLikeCharacter(sourceStr, sourceStr.length - last.length - 1)) {
         wordList.push("-" + last);
       }
     }
   }
   return wordList.toArray();
+};
+
+const isHyphenLikeCharacter = (sourceStr, position) => {
+  const code = sourceStr.charCodeAt(position);
+  return code === 45 || code === 8209;
 };
 
 export default createLookupWordsEn;

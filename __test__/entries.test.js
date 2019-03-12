@@ -70,12 +70,28 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("blue-gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "-gray", "bluegray"]);
-  expect(generateEntries("third-party")).toEqual(["third-party", "third party", "third", "party", "-party", "thirdparty"]);
+  expect(generateEntries("blue-gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"]);
+  expect(generateEntries("third-party")).toEqual([
+    "third-party",
+    "third party",
+    "third",
+    "party",
+    "third-",
+    "-party",
+    "thirdparty"
+  ]);
 
   // non-breaking hyphen(U+2011)
-  expect(generateEntries("blue‑gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "-gray", "bluegray"]);
-  expect(generateEntries("third‑party")).toEqual(["third-party", "third party", "third", "party", "-party", "thirdparty"]);
+  expect(generateEntries("blue‑gray")).toEqual(["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"]);
+  expect(generateEntries("third‑party")).toEqual([
+    "third-party",
+    "third party",
+    "third",
+    "party",
+    "third-",
+    "-party",
+    "thirdparty"
+  ]);
 });
 
 test("", () => {
