@@ -43,7 +43,7 @@ module.exports = {
   ],
   devtool: isProd ? false : "cheap-module-source-map",
   performance: {
-    maxEntrypointSize: 500000,
+    maxEntrypointSize: 1000000,
     maxAssetSize: 3000000
   },
   optimization: {
