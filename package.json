@@ -13,8 +13,10 @@
     "test-watch": "jest --watch",
     "test-cov": "npm test -- --coverage",
     "build-chrome": "webpack --config webpack.config.chrome.js",
+    "build-chrome-beta": "webpack --config webpack.config.chrome.beta.js",
     "watch-chrome": "webpack -w --config webpack.config.chrome.js",
     "release-chrome": "NODE_ENV=production npm run build-chrome",
+    "release-chrome-beta": "NODE_ENV=production npm run build-chrome-beta",
     "build-firefox": "webpack --config webpack.config.firefox.js",
     "watch-firefox": "webpack -w --config webpack.config.firefox.js",
     "release-firefox": "NODE_ENV=production npm run build-firefox"

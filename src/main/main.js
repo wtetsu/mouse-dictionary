@@ -13,7 +13,6 @@ import events from "./events";
 import Draggable from "./draggable";
 import storage from "../lib/storage";
 
-const DIALOG_ID = "____MOUSE_DICTIONARY_GtUfqBap4c8u";
 const KEY_LOADED = "**** loaded ****";
 
 const main = async () => {
