@@ -10,7 +10,7 @@ export default {
   parseWordsLimit: 8,
   lookupWithCapitalized: false,
   initialPosition: "right",
-  scroll: "hidden",
+  scroll: "scroll",
 
   backgroundColor: "#ffffff",
   headFontColor: "#000088",
