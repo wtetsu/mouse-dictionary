@@ -10,17 +10,10 @@ import dom from "../lib/dom";
 export default {
   create(settings) {
     const dialog = createDialogElement(settings);
-
-    let header;
-    if (settings.showTitlebar) {
-      header = createHeaderElement(settings);
-      dialog.appendChild(header);
-    }
-
     const content = createContentWrapperElement(settings);
     dialog.appendChild(content);
 
-    return { dialog, header, content };
+    return { dialog, content };
   }
 };
 
@@ -37,7 +30,6 @@ const createDialogElement = settings => {
   const html = compiledTemplate.render({
     systemStyles,
     backgroundColor: settings.backgroundColor,
-    titlebarBackgroundColor: settings.titlebarBackgroundColor,
     width: settings.width,
     height: settings.height,
     scroll: settings.scroll
@@ -45,15 +37,6 @@ const createDialogElement = settings => {
   const dialog = dom.create(html);
   dom.applyStyles(dialog, settings.normalDialogStyles);
   return dialog;
-};
-
-const createHeaderElement = settings => {
-  const compiledTemplate = Hogan.compile(settings.titlebarTemplate);
-  const html = compiledTemplate.render({
-    backgroundColor: settings.backgroundColor,
-    titlebarBackgroundColor: settings.titlebarBackgroundColor
-  });
-  return dom.create(html);
 };
 
 const createContentWrapperElement = settings => {
