@@ -97,7 +97,18 @@ const AdvancedSettings = props => {
           />
         </label>
 
-        <h3>{res.get("htmlTemplate")}</h3>
+        <h3>
+          {res.get("htmlTemplate")}
+
+          <a
+            href="https://github.com/wtetsu/mouse-dictionary/wiki/HTML-templates"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "underline", fontSize: "medium" }}
+          >
+            ?
+          </a>
+        </h3>
         <label>{res.get("htmlTemplateWindow")}</label>
         <textarea
           value={dialogTemplate}
