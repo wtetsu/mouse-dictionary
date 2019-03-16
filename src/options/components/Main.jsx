@@ -514,9 +514,6 @@ export default class Main extends React.Component {
 
   async doSaveSettings() {
     const settings = Object.assign({}, this.state.settings);
-    if (settings.replaceRules) {
-      settings.replaceRules = settings.replaceRules.filter(r => r.search && r.replace);
-    }
     const newData = {};
     newData[KEY_USER_CONFIG] = JSON.stringify(settings);
     await storage.sync.set(newData);
