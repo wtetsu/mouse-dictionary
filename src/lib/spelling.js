@@ -139,6 +139,7 @@ const SPELLING = {
   bedchamber: "bedroom",
   begrudge: "grudge",
   behove: "behoove",
+  behaviour: "behavior",
   bellhop: "bellboy",
   belligerency: "belligerence",
   betwixt: "between",
