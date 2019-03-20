@@ -60,12 +60,12 @@ export default {
     {
       key: "7",
       search: "(\\[.+?\\])",
-      replace: '<strong><font color="#008000">$1</font></strong>'
+      replace: '<strong><span style="color:#008000;">$1</span></strong>'
     },
     {
       key: "8",
       search: "(\\(.+?\\))",
-      replace: '<font color="#008000">$1</font>'
+      replace: '<span style="color:#008000;">$1</span>'
     },
     {
       key: "9",
