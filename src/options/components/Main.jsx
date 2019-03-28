@@ -201,14 +201,17 @@ export default class Main extends React.Component {
   }
 
   async loadInitialDict() {
-    this.setState({ busy: true, basicSettingsOpened: false, advancedSettingsOpened: false });
-    const finalWordCount = await dict.registerDefaultDict((wordCount, progress) => {
-      const message = res.get("progressRegister", wordCount, progress);
-      this.setState({ progress: message });
-    });
-
-    this.updateDictDataUsage();
-    this.setState({ busy: false, progress: "" });
+    let finalWordCount;
+    try {
+      this.setState({ busy: true, basicSettingsOpened: false, advancedSettingsOpened: false });
+      finalWordCount = await dict.registerDefaultDict((wordCount, progress) => {
+        const message = res.get("progressRegister", wordCount, progress);
+        this.setState({ progress: message });
+      });
+      this.updateDictDataUsage();
+    } finally {
+      this.setState({ busy: false, progress: "" });
+    }
 
     const loaded = {};
     loaded[KEY_LOADED] = true;
@@ -290,7 +293,6 @@ export default class Main extends React.Component {
       });
       return;
     }
-
     let willContinue = true;
     if (encoding === "Shift-JIS") {
       const fileMayBeSjis = await utils.fileMayBeSjis(file);
@@ -325,8 +327,8 @@ export default class Main extends React.Component {
         }
       }
     };
-    this.setState({ busy: true });
     try {
+      this.setState({ busy: true, basicSettingsOpened: false, advancedSettingsOpened: false });
       const { wordCount } = await dict.load({ file, encoding, format, event });
       swal({
         text: res.get("finishRegister", wordCount),
