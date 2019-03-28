@@ -69,7 +69,7 @@ export default {
     },
     {
       key: "9",
-      search: "\\n",
+      search: "\\n|\\\\n",
       replace: "<br/>"
     }
   ],
