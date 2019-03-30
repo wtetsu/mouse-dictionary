@@ -65,12 +65,12 @@ const fetchSiblingsText = endNode => {
   }
   let selfIndex;
   for (selfIndex = 0; selfIndex < children.length; selfIndex++) {
-    const child = children[selfIndex];
-    if (node === child) {
+    if (node === children[selfIndex]) {
       break;
     }
   }
-  let text = "";
+  let text = fetchStringFromSiblingsTextNodes(endNode);
+
   for (let i = selfIndex + 1; i < children.length; i++) {
     if (text.length >= 30) {
       break;
@@ -81,7 +81,30 @@ const fetchSiblingsText = endNode => {
       text += " " + t;
     }
   }
-  return text;
+  return text.trim();
+};
+
+const fetchStringFromSiblingsTextNodes = endNode => {
+  const childNodes = endNode.parentNode && endNode.parentNode.childNodes;
+  if (!childNodes) {
+    return "";
+  }
+  const words = [];
+  let afterTheNode = false;
+  for (let i = 0; i < childNodes.length; i++) {
+    const childNode = childNodes[i];
+    if (!afterTheNode) {
+      if (childNode === endNode) {
+        afterTheNode = true;
+      }
+    } else {
+      const t = childNode.textContent && childNode.textContent.trim();
+      if (t) {
+        words.push(t);
+      }
+    }
+  }
+  return words.join(" ");
 };
 
 const removeQuotes = text => {
