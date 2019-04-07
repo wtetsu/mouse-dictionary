@@ -86,7 +86,7 @@ const fetchSiblingsText = endNode => {
 
 const fetchStringFromSiblingsTextNodes = endNode => {
   const childNodes = endNode.parentNode && endNode.parentNode.childNodes;
-  if (!childNodes) {
+  if (!childNodes || childNodes.length <= 1) {
     return "";
   }
   const words = [];
