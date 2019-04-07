@@ -196,6 +196,7 @@ const verbs = {
   leant: "lean",
   leapt: "leap",
   learnt: "learn",
+  led: "lead",
   left: "leave",
   lent: "lend",
   lit: "light",
