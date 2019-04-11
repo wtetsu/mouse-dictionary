@@ -21,4 +21,27 @@ dom.applyStyles = (element, styles) => {
   }
 };
 
+dom.fetchStringFromSiblingsTextNodes = endNode => {
+  const childNodes = endNode.parentNode && endNode.parentNode.childNodes;
+  if (!childNodes || childNodes.length <= 1) {
+    return "";
+  }
+  const words = [];
+  let afterTheNode = false;
+  for (let i = 0; i < childNodes.length; i++) {
+    const childNode = childNodes[i];
+    if (!afterTheNode) {
+      if (childNode === endNode) {
+        afterTheNode = true;
+      }
+    } else {
+      const t = childNode.textContent && childNode.textContent.trim();
+      if (t) {
+        words.push(t);
+      }
+    }
+  }
+  return words.join(" ");
+};
+
 export default dom;

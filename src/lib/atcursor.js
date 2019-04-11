@@ -5,6 +5,7 @@
  */
 
 import consts from "./consts";
+import dom from "./dom";
 
 const JA_MAX_LENGTH = 40;
 
@@ -69,7 +70,7 @@ const fetchSiblingsText = endNode => {
       break;
     }
   }
-  let text = fetchStringFromSiblingsTextNodes(endNode);
+  let text = dom.fetchStringFromSiblingsTextNodes(endNode);
 
   for (let i = selfIndex + 1; i < children.length; i++) {
     if (text.length >= 30) {
@@ -82,29 +83,6 @@ const fetchSiblingsText = endNode => {
     }
   }
   return text.trim();
-};
-
-const fetchStringFromSiblingsTextNodes = endNode => {
-  const childNodes = endNode.parentNode && endNode.parentNode.childNodes;
-  if (!childNodes || childNodes.length <= 1) {
-    return "";
-  }
-  const words = [];
-  let afterTheNode = false;
-  for (let i = 0; i < childNodes.length; i++) {
-    const childNode = childNodes[i];
-    if (!afterTheNode) {
-      if (childNode === endNode) {
-        afterTheNode = true;
-      }
-    } else {
-      const t = childNode.textContent && childNode.textContent.trim();
-      if (t) {
-        words.push(t);
-      }
-    }
-  }
-  return words.join(" ");
 };
 
 const removeQuotes = text => {

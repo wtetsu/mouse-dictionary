@@ -19,6 +19,13 @@ test("", () => {
   e.appendChild(createSpanWithTextNodes("a", "b", "c"));
   e.appendChild(createSpanWithTextNodes("d", "e", "f"));
   e.appendChild(createSpanWithTextNodes("g", "h", "i"));
+  e.appendChild(createSpanWithTextNodes("j", "k", "l"));
 
-  expect(e.children.length).toEqual(3);
+  expect(dom.fetchStringFromSiblingsTextNodes(e.childNodes[1])).toEqual("ghi jkl");
+});
+
+test("", () => {
+  const e = dom.create("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
+
+  expect(dom.fetchStringFromSiblingsTextNodes(e.childNodes[1])).toEqual("- edged sword");
 });
