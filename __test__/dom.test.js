@@ -29,3 +29,35 @@ test("", () => {
 
   expect(dom.fetchStringFromSiblingsTextNodes(e.childNodes[1])).toEqual("- edged sword");
 });
+
+test("", () => {
+  const e = dom.create("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
+
+  expect(dom.fetchStringFromSiblingsTextNodes(e.childNodes[1])).toEqual("- edged sword");
+});
+
+test("", () => {
+  const lines = [];
+  lines.push("<div>");
+  lines.push("  <span>");
+  lines.push("    aaa");
+  lines.push('    <em id="start">bbb</em>');
+  lines.push("    -");
+  lines.push("    <em>ccc</em>");
+  lines.push("    <span>");
+  lines.push("      <span>");
+  lines.push("        ddd");
+  lines.push("        <span>");
+  lines.push("          <span>eee</span>");
+  lines.push("          <span>fff</span>");
+  lines.push("        </span>");
+  lines.push("        <span>ggg</span>");
+  lines.push("      </span>");
+  lines.push("    </span>");
+  lines.push("    hhh");
+  lines.push("  </span>");
+  lines.push("</div>");
+
+  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  expect(dom.traverse(start)).toEqual("- ccc ddd eee fff ggg hhh");
+});
