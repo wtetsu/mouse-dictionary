@@ -78,7 +78,8 @@ export default {
     });
 
     let _lastText = null;
-    const _shortCache = new ShortCache(100);
+    const cacheSize = process.env.NODE_ENV === "production" ? 100 : 0;
+    const _shortCache = new ShortCache(cacheSize);
 
     const parseTextAndLookup = async (rawText, includeOrgText, enableShortWord, withCapitalized) => {
       const textToLookup = rawText.substring(0, TEXT_LENGTH_LIMIT);
