@@ -41,7 +41,7 @@ module.exports = {
       { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }
     ])
   ],
-  devtool: isProd ? false : "cheap-module-source-map",
+  devtool: isProd ? false : "cheap-module-inline-source-map",
   performance: {
     maxEntrypointSize: 1000000,
     maxAssetSize: 3000000
