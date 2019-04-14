@@ -21,46 +21,73 @@ dom.applyStyles = (element, styles) => {
   }
 };
 
-dom.fetchStringFromSiblingsTextNodes = endNode => {
-  const childNodes = endNode.parentNode && endNode.parentNode.childNodes;
-  if (!childNodes || childNodes.length <= 1) {
-    return "";
-  }
-  const words = [];
-  let afterTheNode = false;
-  for (let i = 0; i < childNodes.length; i++) {
-    const childNode = childNodes[i];
-    if (!afterTheNode) {
-      if (childNode === endNode) {
-        afterTheNode = true;
-      }
-    } else {
-      const t = childNode.textContent && childNode.textContent.trim();
-      if (t) {
-        words.push(t);
-      }
-    }
-  }
-  return words.join(" ");
-};
+const MAX_TRAVERSE_LEVEL = 5;
+const MAX_TRAVERSE_WORDS = 10;
 
 dom.traverse = elem => {
-  const words = [];
-  const siblings = getYoungerSiblings(elem);
-  for (let i = 0; i < siblings.length; i++) {
-    const descendantsWords = getDescendantsWords(siblings[i]);
-    words.push(...descendantsWords);
+  const resultWords = [];
+
+  let current = elem;
+  let skip = current;
+
+  for (let i = 0; i < MAX_TRAVERSE_LEVEL; i++) {
+    if (!current || current.tagName === "BODY") {
+      break;
+    }
+
+    const words = getDescendantsWords(current, skip);
+    resultWords.push(...words);
+
+    if (resultWords.length >= MAX_TRAVERSE_WORDS) {
+      break;
+    }
+
+    skip = current;
+    current = current.parentNode;
   }
-  return words.join(" ");
+
+  return joinWords(resultWords.slice(0, MAX_TRAVERSE_WORDS));
 };
 
-const getDescendantsWords = elem => {
-  const words = [];
-  const children = elem.childNodes;
+const joinWords = words => {
+  const newWords = [];
+  let i = 0;
+  for (;;) {
+    if (i >= words.length) {
+      break;
+    }
+    const w = words[i];
 
-  if (!children || children.length === 0) {
-    return [elem.textContent];
+    if (w === "-") {
+      if (newWords.length === 0) {
+        const nextWord = words[i + 1];
+        newWords.push("-" + nextWord);
+      } else {
+        const prevWord = newWords[newWords.length - 1];
+        const nextWord = words[i + 1];
+        newWords[newWords.length - 1] = prevWord + "-" + nextWord;
+      }
+      i += 2;
+    } else {
+      newWords.push(w);
+      i += 1;
+    }
   }
+  return newWords.join(" ");
+};
+
+const getDescendantsWords = (elem, skip) => {
+  const words = [];
+
+  if (!elem.childNodes || elem.childNodes.length === 0) {
+    if (elem === skip) {
+      return [];
+    }
+    const t = elem.textContent.trim();
+    return t ? [t] : [];
+  }
+
+  const children = getChildren(elem, skip);
   for (let i = 0; i < children.length; i++) {
     const descendantsWords = getDescendantsWords(children[i]);
     words.push(...descendantsWords);
@@ -68,24 +95,20 @@ const getDescendantsWords = elem => {
   return words;
 };
 
-const getYoungerSiblings = elem => {
-  const children = elem.parentNode && elem.parentNode.childNodes;
-  if (!children || children.length <= 1) {
-    return [];
+const getChildren = (elem, skip) => {
+  if (!skip) {
+    return elem.childNodes;
   }
-  const siblings = [];
-  let afterTheNode = false;
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    if (!afterTheNode) {
-      if (child === elem) {
-        afterTheNode = true;
-      }
-    } else {
-      siblings.push(child);
+
+  const result = [];
+  for (let i = elem.childNodes.length - 1; i >= 0; i--) {
+    const child = elem.childNodes[i];
+    if (child === skip) {
+      break;
     }
+    result.push(child);
   }
-  return siblings;
+  return result.reverse();
 };
 
 export default dom;

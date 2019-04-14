@@ -10,30 +10,25 @@ const createSpanWithTextNodes = (...textList) => {
 };
 
 test("", () => {
-  const e = dom.create("<div><span>aaa</span><span>bbb</span><span>ccc</span></div>");
-  expect(e.children.length).toEqual(3);
-});
-
-test("", () => {
   const e = dom.create("<span></span>");
   e.appendChild(createSpanWithTextNodes("a", "b", "c"));
   e.appendChild(createSpanWithTextNodes("d", "e", "f"));
   e.appendChild(createSpanWithTextNodes("g", "h", "i"));
   e.appendChild(createSpanWithTextNodes("j", "k", "l"));
 
-  expect(dom.fetchStringFromSiblingsTextNodes(e.childNodes[1])).toEqual("ghi jkl");
+  expect(dom.traverse(e.childNodes[1])).toEqual("d e f g h i j k l");
 });
 
 test("", () => {
   const e = dom.create("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
 
-  expect(dom.fetchStringFromSiblingsTextNodes(e.childNodes[1])).toEqual("- edged sword");
+  expect(dom.traverse(e.childNodes[1])).toEqual("double-edged sword");
 });
 
 test("", () => {
   const e = dom.create("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
 
-  expect(dom.fetchStringFromSiblingsTextNodes(e.childNodes[1])).toEqual("- edged sword");
+  expect(dom.traverse(e.childNodes[1])).toEqual("double-edged sword");
 });
 
 test("", () => {
@@ -59,5 +54,5 @@ test("", () => {
   lines.push("</div>");
 
   const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
-  expect(dom.traverse(start)).toEqual("- ccc ddd eee fff ggg hhh");
+  expect(dom.traverse(start)).toEqual("bbb-ccc ddd eee fff ggg hhh");
 });

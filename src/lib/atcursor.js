@@ -40,14 +40,18 @@ const fetchTextFromTextNode = (textNode, offset, maxWords) => {
       textOnCursor = text;
     }
   } else {
-    const siblingsText = fetchSiblingsText(textNode);
-    if (siblingsText) {
+    const fetchedText = dom.traverse(textNode);
+    if (fetchedText) {
       let concatenatedText, endIndex;
       if (isEnglish) {
-        concatenatedText = text + " " + siblingsText;
+        if (fetchedText.startsWith("-")) {
+          concatenatedText = text + fetchedText;
+        } else {
+          concatenatedText = text + " " + fetchedText;
+        }
         endIndex = searchEndIndex(concatenatedText, 0, maxWords);
       } else {
-        concatenatedText = text + siblingsText;
+        concatenatedText = text + fetchedText;
         endIndex = JA_MAX_LENGTH;
       }
       textOnCursor = concatenatedText.substring(0, endIndex);
@@ -56,33 +60,6 @@ const fetchTextFromTextNode = (textNode, offset, maxWords) => {
     }
   }
   return textOnCursor;
-};
-
-const fetchSiblingsText = endNode => {
-  const node = endNode.parentNode;
-  const children = node.parentElement && node.parentElement.children;
-  if (!children || children.length === 0) {
-    return "";
-  }
-  let selfIndex;
-  for (selfIndex = 0; selfIndex < children.length; selfIndex++) {
-    if (node === children[selfIndex]) {
-      break;
-    }
-  }
-  let text = dom.fetchStringFromSiblingsTextNodes(endNode);
-
-  for (let i = selfIndex + 1; i < children.length; i++) {
-    if (text.length >= 30) {
-      break;
-    }
-    const child = children[i];
-    const t = child.textContent && child.textContent.trim();
-    if (t) {
-      text += " " + t;
-    }
-  }
-  return text.trim();
 };
 
 const removeQuotes = text => {
