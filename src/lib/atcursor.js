@@ -40,26 +40,29 @@ const fetchTextFromTextNode = (textNode, offset, maxWords) => {
       textOnCursor = text;
     }
   } else {
-    const fetchedText = dom.traverse(textNode);
-    if (fetchedText) {
-      let concatenatedText, endIndex;
-      if (isEnglish) {
-        if (fetchedText.startsWith("-")) {
-          concatenatedText = text + fetchedText;
-        } else {
-          concatenatedText = text + " " + fetchedText;
-        }
-        endIndex = searchEndIndex(concatenatedText, 0, maxWords);
-      } else {
-        concatenatedText = text + fetchedText;
-        endIndex = JA_MAX_LENGTH;
-      }
-      textOnCursor = concatenatedText.substring(0, endIndex);
-    } else {
-      textOnCursor = text;
-    }
+    const followingText = dom.traverse(textNode);
+    const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
+    const endIndex = isEnglish ? searchEndIndex(concatenatedText, 0, maxWords) : JA_MAX_LENGTH;
+    textOnCursor = concatenatedText.substring(0, endIndex);
   }
   return textOnCursor;
+};
+
+const concatenateFollowingText = (text, followingText, isEnglish) => {
+  if (!followingText) {
+    return text;
+  }
+  let concatenatedText;
+  if (isEnglish) {
+    if (followingText.startsWith("-")) {
+      concatenatedText = text + followingText;
+    } else {
+      concatenatedText = text + " " + followingText;
+    }
+  } else {
+    concatenatedText = text + followingText;
+  }
+  return concatenatedText;
 };
 
 const removeQuotes = text => {
