@@ -17,7 +17,7 @@ export default (element, clientX, clientY, maxWords = 5) => {
     console.error(err);
     textOnCursor = null;
   }
-  return removeQuotes(textOnCursor);
+  return textOnCursor;
 };
 
 const fetchTextOnCursor = (element, clientX, clientY, maxWords) => {
@@ -61,36 +61,6 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
     concatenatedText = text + followingText;
   }
   return concatenatedText;
-};
-
-const removeQuotes = text => {
-  if (!text) {
-    return text;
-  }
-  let start = 0;
-  for (;;) {
-    if (start >= text.length) {
-      break;
-    }
-    const ch = text.charCodeAt(start);
-    if (!consts.quoteCharacters[ch]) {
-      break;
-    }
-    start += 1;
-  }
-
-  let end = text.length - 1;
-  for (;;) {
-    if (end <= 0) {
-      break;
-    }
-    const ch = text.charCodeAt(end);
-    if (!consts.quoteCharacters[ch]) {
-      break;
-    }
-    end -= 1;
-  }
-  return text.substring(start, end + 1);
 };
 
 const searchStartIndex = (text, index) => {

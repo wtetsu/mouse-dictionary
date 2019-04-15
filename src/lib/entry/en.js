@@ -13,8 +13,19 @@ import transform from "../transform";
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
   const sourceStr = text.dealWithHyphens(rawSourceStr);
   const lowerStr = sourceStr.toLowerCase();
+
+  const quotedStrings = fetchQuotedStrings(sourceStr);
+
   const isAllLower = lowerStr === sourceStr;
   const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
+  for (let i = 0; i < quotedStrings.length; i++) {
+    const quotedString = quotedStrings[i];
+    strList.push(quotedString);
+    const loweredQuotedString = quotedString.toLowerCase();
+    if (loweredQuotedString !== quotedString) {
+      strList.push(loweredQuotedString);
+    }
+  }
 
   const lookupWords = new UniqList();
 
@@ -178,6 +189,21 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
 const isHyphenLikeCharacter = (sourceStr, position) => {
   const code = sourceStr.charCodeAt(position);
   return code === 45 || code === 8209;
+};
+
+const QUOTE_CHARS = ['"', "'"];
+const fetchQuotedStrings = str => {
+  const result = [];
+  for (let i = 0; i < QUOTE_CHARS.length; i++) {
+    const q = QUOTE_CHARS[i];
+    const nextQuoteIndex = str.indexOf(q, 1);
+    if (nextQuoteIndex >= 3) {
+      const startIndex = str.startsWith(q) ? 1 : 0;
+      const quotedString = str.substring(startIndex, nextQuoteIndex);
+      result.push(quotedString);
+    }
+  }
+  return result;
 };
 
 export default createLookupWordsEn;

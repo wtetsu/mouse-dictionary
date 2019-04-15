@@ -104,9 +104,4 @@ const targetCharacters = {
   8209: true // ‑
 };
 
-const quoteCharacters = {
-  34: true, // "
-  39: true // '
-};
-
-export default { targetCharacters, quoteCharacters };
+export default { targetCharacters };
