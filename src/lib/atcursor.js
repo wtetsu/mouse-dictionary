@@ -35,15 +35,13 @@ const fetchTextOnCursor = (element, clientX, clientY, maxWords) => {
 const fetchTextFromTextNode = (textNode, offset, maxWords) => {
   let textOnCursor;
   const { text, end, isEnglish } = getTextFromRange(textNode.data, offset, maxWords);
-  if (!end) {
-    if (text) {
-      textOnCursor = text;
-    }
-  } else {
+  if (end) {
     const followingText = dom.traverse(textNode);
     const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
     const endIndex = isEnglish ? searchEndIndex(concatenatedText, 0, maxWords) : JA_MAX_LENGTH;
     textOnCursor = concatenatedText.substring(0, endIndex);
+  } else {
+    textOnCursor = text;
   }
   return textOnCursor;
 };
