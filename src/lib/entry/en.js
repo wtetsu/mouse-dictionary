@@ -14,18 +14,11 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   const sourceStr = text.dealWithHyphens(rawSourceStr);
   const lowerStr = sourceStr.toLowerCase();
 
-  const quotedStrings = fetchQuotedStrings(sourceStr);
-
   const isAllLower = lowerStr === sourceStr;
-  const strList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
-  for (let i = 0; i < quotedStrings.length; i++) {
-    const quotedString = quotedStrings[i];
-    strList.push(quotedString);
-    const loweredQuotedString = quotedString.toLowerCase();
-    if (loweredQuotedString !== quotedString) {
-      strList.push(loweredQuotedString);
-    }
-  }
+  const sourceStringList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
+
+  const quotedStrings = fetchQuotedStrings(sourceStr);
+  sourceStringList.push(...quotedStrings);
 
   const lookupWords = new UniqList();
 
@@ -33,7 +26,7 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.merge(sourceStr);
   }
 
-  const wordListList = createWordsList(strList);
+  const wordListList = createWordsList(sourceStringList);
   for (let i = 0; i < wordListList.length; i++) {
     lookupWords.merge(createLinkedWords(wordListList[i], isAllLower));
   }
@@ -192,6 +185,7 @@ const isHyphenLikeCharacter = (sourceStr, position) => {
 };
 
 const QUOTE_CHARS = ['"', "'"];
+
 const fetchQuotedStrings = str => {
   const result = [];
   for (let i = 0; i < QUOTE_CHARS.length; i++) {
@@ -201,6 +195,11 @@ const fetchQuotedStrings = str => {
       const startIndex = str.startsWith(q) ? 1 : 0;
       const quotedString = str.substring(startIndex, nextQuoteIndex);
       result.push(quotedString);
+
+      const loweredQuotedString = quotedString.toLowerCase();
+      if (loweredQuotedString !== quotedString) {
+        result.push(loweredQuotedString);
+      }
     }
   }
   return result;
