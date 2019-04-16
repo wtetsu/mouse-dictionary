@@ -21,7 +21,7 @@ dom.applyStyles = (element, styles) => {
   }
 };
 
-const MAX_TRAVERSE_LEVEL = 5;
+const MAX_TRAVERSE_LEVEL = 4;
 const MAX_TRAVERSE_WORDS = 10;
 
 dom.traverse = elem => {
