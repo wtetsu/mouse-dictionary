@@ -13,7 +13,7 @@ dom.create = html => {
 };
 
 dom.applyStyles = (element, styles) => {
-  if (!styles) {
+  if (typeof styles !== "object") {
     return;
   }
   for (let key of Object.keys(styles)) {
