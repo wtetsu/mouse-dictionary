@@ -50,7 +50,15 @@ const toggleDialog = (area, userSettings) => {
 };
 
 const initialize = async userSettings => {
-  const area = mdwindow.create(userSettings);
+  let area;
+  try {
+    area = mdwindow.create(userSettings);
+  } catch (e) {
+    alert(e.message);
+    console.error(e);
+    return;
+  }
+
   area.dialog.id = DIALOG_ID;
 
   dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
