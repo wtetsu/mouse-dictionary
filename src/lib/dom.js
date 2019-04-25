@@ -16,8 +16,12 @@ dom.applyStyles = (element, styles) => {
   if (typeof styles !== "object") {
     return;
   }
-  for (let key of Object.keys(styles)) {
-    element.style[key] = styles[key];
+  try {
+    for (let key of Object.keys(styles)) {
+      element.style[key] = styles[key];
+    }
+  } catch (e) {
+    console.error(e);
   }
 };
 
