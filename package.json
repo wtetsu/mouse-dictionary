@@ -41,7 +41,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.7.1",
     "babel-loader": "^8.0.5",
-    "copy-webpack-plugin": "^5.0.2",
+    "copy-webpack-plugin": "^5.0.3",
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.12.4",
     "jest": "^24.7.1",
