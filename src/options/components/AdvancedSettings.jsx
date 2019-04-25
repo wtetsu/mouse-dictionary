@@ -46,7 +46,7 @@ const AdvancedSettings = props => {
           type="text"
           name={`replaceRule.search.${i}`}
           key={`replaceRule.search.${i}`}
-          defaultValue={r.search}
+          value={r.search}
           style={{ width: 200 }}
           onChange={props.onChangeReplaceRule}
         />
@@ -55,7 +55,7 @@ const AdvancedSettings = props => {
           type="text"
           name={`replaceRule.replace.${i}`}
           key={`replaceRule.replace.${i}`}
-          defaultValue={r.replace}
+          value={r.replace}
           style={{ width: 300 }}
           onChange={props.onChangeReplaceRule}
         />

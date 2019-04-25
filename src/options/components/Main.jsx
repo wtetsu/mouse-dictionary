@@ -25,6 +25,10 @@ import generateEntries from "../../lib/entry/generate";
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";
 
+const getDefaultSettings = () => {
+  return lodash.cloneDeep(defaultSettings);
+};
+
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -173,7 +177,7 @@ export default class Main extends React.Component {
   async initializeUserSettings() {
     const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
     const userSettings = utils.tryToParseJson(userSettingsJson);
-    const settings = Object.assign({}, defaultSettings, userSettings);
+    const settings = Object.assign({}, getDefaultSettings(), userSettings);
     this.setState({ settings });
     this.contentGenerator = new ContentGenerator(settings);
   }
@@ -451,14 +455,20 @@ export default class Main extends React.Component {
       // NOP
     }
     if (!this.trialWindow) {
-      this.trialWindow = this.createTrialWindow(settings);
-      document.body.appendChild(this.trialWindow.dialog);
+      try {
+        this.trialWindow = this.createTrialWindow(settings);
+        document.body.appendChild(this.trialWindow.dialog);
+      } catch (e) {
+        console.error(e);
+      }
     }
-    this.updateTrialText(settings);
 
-    this.trialWindow.dialog.style.width = `${settings.width}px`;
-    this.trialWindow.dialog.style.height = `${settings.height}px`;
-    this.trialWindow.dialog.style.zIndex = 9999;
+    if (this.trialWindow) {
+      this.updateTrialText(settings);
+      this.trialWindow.dialog.style.width = `${settings.width}px`;
+      this.trialWindow.dialog.style.height = `${settings.height}px`;
+      this.trialWindow.dialog.style.zIndex = 9999;
+    }
   }
 
   createTrialWindow(settings) {
@@ -526,7 +536,7 @@ export default class Main extends React.Component {
   }
 
   doBackToDefaultSettings() {
-    const newSettings = Object.assign({}, defaultSettings);
+    const newSettings = getDefaultSettings();
     this.removeAndCreateTrialWindow(newSettings);
     this.setState({ settings: newSettings });
   }
