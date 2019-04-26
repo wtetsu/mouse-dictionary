@@ -7,6 +7,7 @@
 import React from "react";
 import swal from "sweetalert";
 import lodash from "lodash";
+import immer from "immer";
 import LoadDictionary from "./LoadDictionary";
 import BasicSettings from "./BasicSettings";
 import AdvancedSettings from "./AdvancedSettings";
@@ -531,9 +532,8 @@ export default class Main extends React.Component {
   }
 
   async doSaveSettings() {
-    const settings = Object.assign({}, this.state.settings);
     const newData = {};
-    newData[KEY_USER_CONFIG] = JSON.stringify(settings);
+    newData[KEY_USER_CONFIG] = JSON.stringify(this.state.settings);
     await storage.sync.set(newData);
     swal({
       text: res.get("finishSaving"),
