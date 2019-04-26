@@ -472,7 +472,13 @@ export default class Main extends React.Component {
   }
 
   createTrialWindow(settings) {
-    const trialWindow = mdwindow.create(settings);
+    const tmpSettings = {
+      ...settings,
+      normalDialogStyles: null,
+      hiddenDialogStyles: null,
+      movingDialogStyles: null
+    };
+    const trialWindow = mdwindow.create(tmpSettings);
     trialWindow.dialog.style.cursor = "zoom-out";
     trialWindow.dialog.style.top = "30px";
     trialWindow.dialog.addEventListener("click", () => {

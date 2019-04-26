@@ -13,7 +13,7 @@ dom.create = html => {
 };
 
 dom.applyStyles = (element, styles) => {
-  if (typeof styles !== "object") {
+  if (!styles || typeof styles !== "object") {
     return;
   }
   try {
