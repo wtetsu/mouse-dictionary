@@ -7,6 +7,7 @@
 import React from "react";
 import swal from "sweetalert";
 import lodash from "lodash";
+import immer from "immer";
 import LoadDictionary from "./LoadDictionary";
 import BasicSettings from "./BasicSettings";
 import AdvancedSettings from "./AdvancedSettings";
@@ -242,27 +243,13 @@ export default class Main extends React.Component {
     if (!name) {
       return;
     }
-    const newSettings = Object.assign({}, this.state.settings);
-    let newValue;
-    switch (e.target.type) {
-      case "number":
-        newValue = parseInt(e.target.value, 10);
-        break;
-      case "checkbox":
-        newValue = e.target.checked;
-        break;
-      default:
-        newValue = e.target.value;
-    }
-    newSettings[name] = newValue;
-
+    const newSettings = immer(this.state.settings, d => {
+      d[name] = getTargetValue(e.target);
+    });
     if (this.shouldRecreateTrialWindow(name)) {
       this.removeAndCreateTrialWindow(newSettings);
     }
-
-    this.setState({
-      settings: newSettings
-    });
+    this.setState({ settings: newSettings });
   }
 
   doChangeColorSettings(name, e) {
@@ -577,3 +564,17 @@ export default class Main extends React.Component {
     });
   }
 }
+const getTargetValue = target => {
+  let newValue;
+  switch (target.type) {
+    case "number":
+      newValue = parseInt(target.value, 10);
+      break;
+    case "checkbox":
+      newValue = target.checked;
+      break;
+    default:
+      newValue = target.value;
+  }
+  return newValue;
+};
