@@ -7,7 +7,6 @@
 import React from "react";
 import swal from "sweetalert";
 import lodash from "lodash";
-import immer from "immer";
 import LoadDictionary from "./LoadDictionary";
 import BasicSettings from "./BasicSettings";
 import AdvancedSettings from "./AdvancedSettings";
@@ -218,9 +217,9 @@ export default class Main extends React.Component {
       this.setState({ busy: false, progress: "" });
     }
 
-    const loaded = {};
-    loaded[KEY_LOADED] = true;
-    await storage.local.set(loaded);
+    await storage.local.set({
+      [KEY_LOADED]: true
+    });
 
     await swal({
       text: res.get("finishRegister", finalWordCount),
@@ -230,10 +229,9 @@ export default class Main extends React.Component {
 
   doChangeState(name, e) {
     if (name) {
-      const newState = {};
-      newState[name] = e.target.value;
-      this.setState(newState);
-
+      this.setState({
+        [name]: e.target.value
+      });
       if (name === "trialText") {
         this.updateTrialText(this.state.settings, e.target.value);
       }
@@ -339,9 +337,9 @@ export default class Main extends React.Component {
         text: res.get("finishRegister", wordCount),
         icon: "success"
       });
-      const loaded = {};
-      loaded[KEY_LOADED] = true;
-      storage.local.set(loaded);
+      storage.local.set({
+        [KEY_LOADED]: true
+      });
 
       this.updateDictDataUsage();
     } catch (e) {
@@ -532,9 +530,9 @@ export default class Main extends React.Component {
   }
 
   async doSaveSettings() {
-    const newData = {};
-    newData[KEY_USER_CONFIG] = JSON.stringify(this.state.settings);
-    await storage.sync.set(newData);
+    await storage.sync.set({
+      [KEY_USER_CONFIG]: JSON.stringify(this.state.settings)
+    });
     swal({
       text: res.get("finishSaving"),
       icon: "info"
