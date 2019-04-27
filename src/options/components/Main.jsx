@@ -26,10 +26,6 @@ import generateEntries from "../../lib/entry/generate";
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";
 
-const getDefaultSettings = () => {
-  return lodash.cloneDeep(defaultSettings);
-};
-
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -178,7 +174,7 @@ export default class Main extends React.Component {
   async initializeUserSettings() {
     const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
     const userSettings = utils.tryToParseJson(userSettingsJson);
-    const settings = Object.assign({}, getDefaultSettings(), userSettings);
+    const settings = Object.assign(getDefaultSettings(), userSettings);
     this.setState({ settings });
     this.contentGenerator = new ContentGenerator(settings);
   }
@@ -229,48 +225,35 @@ export default class Main extends React.Component {
   }
 
   doChangeState(name, e) {
-    if (name) {
-      this.setState({
-        [name]: e.target.value
-      });
-      if (name === "trialText") {
-        this.updateTrialText(this.state.settings, e.target.value);
-      }
+    if (!name) {
+      return;
+    }
+    this.setState({ [name]: e.target.value });
+    if (name === "trialText") {
+      this.updateTrialText(this.state.settings, e.target.value);
     }
   }
 
   doChangeSettings(name, e) {
+    const newValue = getTargetValue(e.target);
+    this.changeSettingsValue(name, newValue);
+  }
+
+  doChangeColorSettings(name, e) {
+    this.changeSettingsValue(name, e.hex);
+  }
+
+  changeSettingsValue(name, newValue) {
     if (!name) {
       return;
     }
     const newSettings = immer(this.state.settings, d => {
-      d[name] = getTargetValue(e.target);
+      d[name] = newValue;
     });
-    if (this.shouldRecreateTrialWindow(name)) {
+    if (shouldRecreateTrialWindow(name)) {
       this.removeAndCreateTrialWindow(newSettings);
     }
     this.setState({ settings: newSettings });
-  }
-
-  doChangeColorSettings(name, e) {
-    if (!name) {
-      return;
-    }
-    const newSettings = Object.assign({}, this.state.settings);
-    newSettings[name] = e.hex;
-
-    if (this.shouldRecreateTrialWindow(name)) {
-      this.removeAndCreateTrialWindow(newSettings);
-    }
-
-    this.setState({
-      settings: newSettings
-    });
-  }
-
-  shouldRecreateTrialWindow(propName) {
-    const props = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
-    return props.has(propName);
   }
 
   async doLoad() {
@@ -365,66 +348,46 @@ export default class Main extends React.Component {
   }
 
   doAddReplaceRule() {
-    const newReplaceRules = [].concat(this.state.settings.replaceRules);
-    newReplaceRules.push({ key: new Date().toString(), search: "", replace: "" });
-
-    const newSettings = Object.assign({}, this.state.settings);
-    newSettings.replaceRules = newReplaceRules;
-    this.setState({
-      settings: newSettings
+    const newSettings = immer(this.state.settings, d => {
+      const newKey = new Date().toString();
+      d.replaceRules.push({ key: newKey, search: "", replace: "" });
     });
+    this.setState({ settings: newSettings });
   }
 
   doChangeReplaceRule(e) {
     // name: replaceRule.search.0
-    const name = e.target.name;
-    if (!name) {
+    const [, type, indexStr] = e.target.name.split(".");
+    if (!["search", "replace"].includes(type)) {
       return;
     }
-    const arr = name.split(".");
-    if (arr.length !== 3 || arr[0] !== "replaceRule") {
+    const index = parseInt(indexStr, 10);
+    if (index < 0 || index >= this.state.settings.replaceRules.length) {
       return;
     }
-    const type = arr[1];
-    const index = parseInt(arr[2], 10);
-    const newReplaceRules = [].concat(this.state.settings.replaceRules);
-    if (index < newReplaceRules.length) {
-      switch (type) {
-        case "search":
-          newReplaceRules[index].search = e.target.value;
-          break;
-        case "replace":
-          newReplaceRules[index].replace = e.target.value;
-          break;
-      }
-      this.updateReplaceRules(newReplaceRules);
-    }
+    const newSettings = immer(this.state.settings, d => {
+      d.replaceRules[index][type] = e.target.value;
+    });
+    this.setState({ settings: newSettings });
   }
 
   doMoveReplaceRule(index, offset) {
-    const newReplaceRules = [].concat(this.state.settings.replaceRules);
-    const a = newReplaceRules[index];
-    const b = newReplaceRules[index + offset];
-    if (a && b) {
-      newReplaceRules[index] = b;
-      newReplaceRules[index + offset] = a;
-      this.updateReplaceRules(newReplaceRules);
+    const len = this.state.settings.replaceRules.length;
+    if (index < 0 || index >= len || (index + offset < 0 || index + offset >= len)) {
+      return;
     }
+    const newSettings = immer(this.state.settings, d => {
+      const l = d.replaceRules;
+      [l[index], l[index + offset]] = [l[index + offset], l[index]];
+    });
+    this.setState({ settings: newSettings });
   }
 
   doRemoveReplaceRule(index) {
-    const newReplaceRules = [].concat(this.state.settings.replaceRules);
-    newReplaceRules.splice(index, 1);
-    this.setState(newReplaceRules);
-    this.updateReplaceRules(newReplaceRules);
-  }
-
-  updateReplaceRules(newReplaceRules) {
-    const newSettings = Object.assign({}, this.state.settings);
-    newSettings.replaceRules = newReplaceRules;
-    this.setState({
-      settings: newSettings
+    const newSettings = immer(this.state.settings, d => {
+      d.replaceRules.splice(index, 1);
     });
+    this.setState({ settings: newSettings });
   }
 
   updateTrialWindow(settings) {
@@ -577,4 +540,14 @@ const getTargetValue = target => {
       newValue = target.value;
   }
   return newValue;
+};
+
+const getDefaultSettings = () => {
+  return lodash.cloneDeep(defaultSettings);
+};
+
+const shouldRecreateTrialWindowProps = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
+
+const shouldRecreateTrialWindow = propName => {
+  return shouldRecreateTrialWindowProps.has(propName);
 };
