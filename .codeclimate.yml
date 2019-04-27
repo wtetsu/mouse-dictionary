@@ -27,3 +27,4 @@ plugins:
 exclude_paths:
   - "__test__/"
   - "static/data/"
+  - "webpack.*.js"
