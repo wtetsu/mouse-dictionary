@@ -277,7 +277,6 @@ export default class Main extends React.Component {
         });
       }
     }
-
     if (willContinue) {
       this.loadDictionaryFile(file);
     }
@@ -372,8 +371,7 @@ export default class Main extends React.Component {
   }
 
   doMoveReplaceRule(index, offset) {
-    const len = this.state.settings.replaceRules.length;
-    if (index < 0 || index >= len || (index + offset < 0 || index + offset >= len)) {
+    if (Math.min(index, index + offset) < 0 || Math.max(index, index + offset) >= this.state.settings.replaceRules.length) {
       return;
     }
     const newSettings = immer(this.state.settings, d => {
@@ -411,7 +409,6 @@ export default class Main extends React.Component {
         console.error(e);
       }
     }
-
     if (this.trialWindow) {
       this.updateTrialText(settings);
       this.trialWindow.dialog.style.width = `${settings.width}px`;
@@ -421,12 +418,11 @@ export default class Main extends React.Component {
   }
 
   createTrialWindow(settings) {
-    const tmpSettings = {
-      ...settings,
-      normalDialogStyles: null,
-      hiddenDialogStyles: null,
-      movingDialogStyles: null
-    };
+    const tmpSettings = immer(settings, d => {
+      d.normalDialogStyles = null;
+      d.hiddenDialogStyles = null;
+      d.movingDialogStyles = null;
+    });
     const trialWindow = mdwindow.create(tmpSettings);
     trialWindow.dialog.style.cursor = "zoom-out";
     trialWindow.dialog.style.top = "30px";
@@ -498,19 +494,15 @@ export default class Main extends React.Component {
   doToggleBasicSettings() {
     if (!this.state.basicSettingsOpened) {
       // Open
-      this.setState({
-        basicSettingsOpened: true,
-        advancedSettingsOpened: false
-      });
       this.removeAndCreateTrialWindow(this.state.settings);
     } else {
       // Close
-      this.setState({
-        basicSettingsOpened: false,
-        advancedSettingsOpened: false
-      });
       this.removeTrialWindow();
     }
+    this.setState({
+      basicSettingsOpened: !this.state.basicSettingsOpened,
+      advancedSettingsOpened: false
+    });
   }
 
   doToggleAdvancedSettings() {
