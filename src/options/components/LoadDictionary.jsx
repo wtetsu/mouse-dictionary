@@ -22,12 +22,16 @@ const LoadDictionary = props => {
     { id: "JSON", name: res.get("formatJson") }
   ];
 
+  const changeState = (name, e) => {
+    props.changeState(name, e.target.value);
+  };
+
   return (
     <div>
       <label>{res.get("dictDataEncoding")}</label>
-      <SimpleSelect name="encoding" value={props.encoding} options={ENCODINGS} onChange={props.onChangeState} />
+      <SimpleSelect name="encoding" value={props.encoding} options={ENCODINGS} onChange={changeState} />
       <label>{res.get("dictDataFormat")}</label>
-      <SimpleSelect name="format" value={props.format} options={FORMATS} onChange={props.onChangeState} />
+      <SimpleSelect name="format" value={props.format} options={FORMATS} onChange={changeState} />
       <label>{res.get("readDictData")}</label>
       <input type="file" id="dictdata" />
       <br />

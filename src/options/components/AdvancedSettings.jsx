@@ -22,6 +22,14 @@ const AdvancedSettings = props => {
   const movingDialogStyles = (settings && settings.movingDialogStyles) || "";
   const hiddenDialogStyles = (settings && settings.hiddenDialogStyles) || "";
 
+  const changeSettings = e => {
+    const value = e.target.type === "number" ? parseInt(e.target.value, 10) : e.target.value;
+    props.changeSettings(e.target.name, value);
+  };
+  const changeBoolSettings = e => {
+    props.changeSettings(e.target.name, e.target.checked);
+  };
+
   const replaceRules = (settings && settings.replaceRules) || [];
   const replaceRulesList = replaceRules.map((r, i) => {
     return (
@@ -29,7 +37,7 @@ const AdvancedSettings = props => {
         <button
           type="button"
           className="button button-outline button-arrow"
-          onClick={() => props.onClickMoveReplaceRule(i, -1)}
+          onClick={() => props.changeReplaceRule("move", { index: i, offset: -1 })}
           disabled={i === 0}
         >
           ↑
@@ -37,7 +45,7 @@ const AdvancedSettings = props => {
         <button
           type="button"
           className="button button-outline button-arrow"
-          onClick={() => props.onClickMoveReplaceRule(i, +1)}
+          onClick={() => props.changeReplaceRule("move", { index: i, offset: +1 })}
           disabled={i === replaceRules.length - 1}
         >
           ↓
@@ -48,7 +56,7 @@ const AdvancedSettings = props => {
           key={`replaceRule.search.${i}`}
           value={r.search}
           style={{ width: 200 }}
-          onChange={props.onChangeReplaceRule}
+          onChange={e => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
         />
         <span>{res.get("replaceRule1")}</span>
         <input
@@ -57,14 +65,14 @@ const AdvancedSettings = props => {
           key={`replaceRule.replace.${i}`}
           value={r.replace}
           style={{ width: 300 }}
-          onChange={props.onChangeReplaceRule}
+          onChange={e => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
         />
         <span>{res.get("replaceRule2")}</span>
 
         <button
           type="button"
           className="button button-arrow"
-          onClick={() => props.onClickRemoveReplaceRule(i)}
+          onClick={() => props.changeReplaceRule("delete", { index: i })}
           style={{ marginLeft: 3 }}
         >
           ×
@@ -79,11 +87,7 @@ const AdvancedSettings = props => {
         <h2>{res.get("advancedSettings")}</h2>
         <label>
           {res.get("lookupWithCapitalized")}
-          <input
-            type="checkbox"
-            checked={lookupWithCapitalized}
-            onChange={e => props.onChange("lookupWithCapitalized", e)}
-          />
+          <input type="checkbox" name="lookupWithCapitalized" value={lookupWithCapitalized} onChange={changeBoolSettings} />
         </label>
 
         <label>
@@ -91,8 +95,9 @@ const AdvancedSettings = props => {
           &nbsp;
           <input
             type="number"
+            name="parseWordsLimit"
             value={settings.parseWordsLimit}
-            onChange={props.onChange.bind(this, "parseWordsLimit")}
+            onChange={changeSettings}
             style={{ width: 60 }}
           />
         </label>
@@ -111,47 +116,53 @@ const AdvancedSettings = props => {
         </h3>
         <label>{res.get("htmlTemplateWindow")}</label>
         <textarea
+          name="dialogTemplate"
           value={dialogTemplate}
           style={{ width: 800, height: 200 }}
-          onChange={e => props.onChange("dialogTemplate", e)}
+          onChange={changeSettings}
         />
         <label>{res.get("htmlTemplateDesc")}</label>
         <textarea
+          name="contentWrapperTemplate"
           value={contentWrapperTemplate}
           style={{ width: 800, height: 30 }}
-          onChange={e => props.onChange("contentWrapperTemplate", e)}
+          onChange={changeSettings}
         />
         <label>{res.get("htmlTemplateDescText")}</label>
         <textarea
+          name="contentTemplate"
           value={contentTemplate}
           style={{ width: 800, height: 350 }}
-          onChange={e => props.onChange("contentTemplate", e)}
+          onChange={changeSettings}
         />
 
         <h3>{res.get("styles")}</h3>
         <label>{res.get("stylesActive")}</label>
         <textarea
+          name="normalDialogStyles"
           value={normalDialogStyles}
           style={{ width: 800, height: 80 }}
-          onChange={e => props.onChange("normalDialogStyles", e)}
+          onChange={changeSettings}
         />
         <label>{res.get("stylesMoving")}</label>
         <textarea
+          name="movingDialogStyles"
           value={movingDialogStyles}
           style={{ width: 800, height: 80 }}
-          onChange={e => props.onChange("movingDialogStyles", e)}
+          onChange={changeSettings}
         />
         <label>{res.get("stylesInactive")}</label>
         <textarea
+          name="hiddenDialogStyles"
           value={hiddenDialogStyles}
           style={{ width: 800, height: 80 }}
-          onChange={e => props.onChange("hiddenDialogStyles", e)}
+          onChange={changeSettings}
         />
         <hr />
 
         <h3>{res.get("replaceRules")}</h3>
         {replaceRulesList}
-        <button type="button" onClick={props.onClickAddReplaceRule}>
+        <button type="button" onClick={() => props.changeReplaceRule("add")}>
           {res.get("add")}
         </button>
       </fieldset>

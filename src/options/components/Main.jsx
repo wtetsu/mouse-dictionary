@@ -45,22 +45,15 @@ export default class Main extends React.Component {
       initialized: false
     };
 
-    this.changeSettings = (name, value) => {
-      this.changeSettingsValue(name, value);
-    };
-    this.changeState = this.changeState.bind(this);
-
     this.doChangeState = this.doChangeState.bind(this);
     this.doChangeSettings = this.doChangeSettings.bind(this);
     this.doChangeReplaceRule = this.doChangeReplaceRule.bind(this);
-    this.doMoveReplaceRule = this.doMoveReplaceRule.bind(this);
-    this.doRemoveReplaceRule = this.doRemoveReplaceRule.bind(this);
+
     this.doLoad = this.doLoad.bind(this);
     this.doClear = this.doClear.bind(this);
     this.doLoadInitialDict = this.doLoadInitialDict.bind(this);
     this.doSaveSettings = this.doSaveSettings.bind(this);
     this.doBackToDefaultSettings = this.doBackToDefaultSettings.bind(this);
-    this.doAddReplaceRule = this.doAddReplaceRule.bind(this);
     this.doToggleBasicSettings = this.doToggleBasicSettings.bind(this);
     this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
     this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
@@ -85,7 +78,7 @@ export default class Main extends React.Component {
         <LoadDictionary
           encoding={state.encoding}
           format={state.format}
-          onChangeState={this.doChangeState}
+          changeState={this.doChangeState}
           doLoad={this.doLoad}
           doClear={this.doClear}
           dictDataUsage={state.dictDataUsage}
@@ -122,8 +115,8 @@ export default class Main extends React.Component {
 
         {this.state.basicSettingsOpened && (
           <BasicSettings
-            changeState={this.changeState}
-            changeSettings={this.changeSettings}
+            changeState={this.doChangeState}
+            changeSettings={this.doChangeSettings}
             doLoadInitialDict={this.doLoadInitialDict}
             busy={state.busy}
             settings={state.settings}
@@ -145,13 +138,8 @@ export default class Main extends React.Component {
 
         {this.state.advancedSettingsOpened && (
           <AdvancedSettings
-            onChange={this.doChangeSettings}
-            onChangeState={this.doChangeState}
-            onChangeSettings={this.doChangeSettings}
-            onChangeReplaceRule={this.doChangeReplaceRule}
-            onClickAddReplaceRule={this.doAddReplaceRule}
-            onClickMoveReplaceRule={this.doMoveReplaceRule}
-            onClickRemoveReplaceRule={this.doRemoveReplaceRule}
+            changeSettings={this.doChangeSettings}
+            changeReplaceRule={this.doChangeReplaceRule}
             settings={state.settings}
           />
         )}
@@ -226,23 +214,14 @@ export default class Main extends React.Component {
     });
   }
 
-  doChangeState(name, e) {
-    this.changeState(name, e.target.value);
-  }
-
-  doChangeSettings(name, e) {
-    const newValue = getTargetValue(e.target);
-    this.changeSettingsValue(name, newValue);
-  }
-
-  changeState(name, value) {
+  doChangeState(name, value) {
     this.setState({ [name]: value });
     if (name === "trialText") {
       this.updateTrialText(this.state.settings, value);
     }
   }
 
-  changeSettingsValue(name, newValue) {
+  doChangeSettings(name, newValue) {
     const newSettings = immer(this.state.settings, d => {
       d[name] = newValue;
     });
@@ -342,7 +321,24 @@ export default class Main extends React.Component {
     this.confirmAndLoadInitialDict("confirmReloadInitialDict");
   }
 
-  doAddReplaceRule() {
+  doChangeReplaceRule(type, data) {
+    switch (type) {
+      case "add":
+        this.addReplaceRule();
+        break;
+      case "change":
+        this.changeReplaceRule(data.name, data.value);
+        break;
+      case "move":
+        this.moveReplaceRule(data.index, data.offset);
+        break;
+      case "delete":
+        this.deleteReplaceRule(data.index);
+        break;
+    }
+  }
+
+  addReplaceRule() {
     const newSettings = immer(this.state.settings, d => {
       const newKey = new Date().toString();
       d.replaceRules.push({ key: newKey, search: "", replace: "" });
@@ -350,9 +346,9 @@ export default class Main extends React.Component {
     this.setState({ settings: newSettings });
   }
 
-  doChangeReplaceRule(e) {
+  changeReplaceRule(name, value) {
     // name: replaceRule.search.0
-    const [, type, indexStr] = e.target.name.split(".");
+    const [, type, indexStr] = name.split(".");
     if (!["search", "replace"].includes(type)) {
       return;
     }
@@ -361,23 +357,24 @@ export default class Main extends React.Component {
       return;
     }
     const newSettings = immer(this.state.settings, d => {
-      d.replaceRules[index][type] = e.target.value;
+      d.replaceRules[index][type] = value;
     });
     this.setState({ settings: newSettings });
   }
 
-  doMoveReplaceRule(index, offset) {
-    if (Math.min(index, index + offset) < 0 || Math.max(index, index + offset) >= this.state.settings.replaceRules.length) {
+  moveReplaceRule(index, offset) {
+    const index2 = index + offset;
+    if (Math.min(index, index2) < 0 || Math.max(index, index2) >= this.state.settings.replaceRules.length) {
       return;
     }
     const newSettings = immer(this.state.settings, d => {
       const l = d.replaceRules;
-      [l[index], l[index + offset]] = [l[index + offset], l[index]];
+      [l[index], l[index2]] = [l[index2], l[index]];
     });
     this.setState({ settings: newSettings });
   }
 
-  doRemoveReplaceRule(index) {
+  deleteReplaceRule(index) {
     const newSettings = immer(this.state.settings, d => {
       d.replaceRules.splice(index, 1);
     });
@@ -515,20 +512,6 @@ export default class Main extends React.Component {
     });
   }
 }
-const getTargetValue = target => {
-  let newValue;
-  switch (target.type) {
-    case "number":
-      newValue = parseInt(target.value, 10);
-      break;
-    case "checkbox":
-      newValue = target.checked;
-      break;
-    default:
-      newValue = target.value;
-  }
-  return newValue;
-};
 
 const getDefaultSettings = () => {
   return lodash.cloneDeep(defaultSettings);

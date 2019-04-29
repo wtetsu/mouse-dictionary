@@ -71,7 +71,8 @@ const BasicSettings = props => {
   };
 
   const changeSettings = e => {
-    props.changeSettings(e.target.name, e.target.value);
+    const value = e.target.type === "number" ? parseInt(e.target.value, 10) : e.target.value;
+    props.changeSettings(e.target.name, value);
   };
 
   const changeColor = (name, e) => {
