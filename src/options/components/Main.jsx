@@ -45,9 +45,13 @@ export default class Main extends React.Component {
       initialized: false
     };
 
+    this.changeSettings = (name, value) => {
+      this.changeSettingsValue(name, value);
+    };
+    this.changeState = this.changeState.bind(this);
+
     this.doChangeState = this.doChangeState.bind(this);
     this.doChangeSettings = this.doChangeSettings.bind(this);
-    this.doChangeColorSettings = this.doChangeColorSettings.bind(this);
     this.doChangeReplaceRule = this.doChangeReplaceRule.bind(this);
     this.doMoveReplaceRule = this.doMoveReplaceRule.bind(this);
     this.doRemoveReplaceRule = this.doRemoveReplaceRule.bind(this);
@@ -118,10 +122,8 @@ export default class Main extends React.Component {
 
         {this.state.basicSettingsOpened && (
           <BasicSettings
-            onChange={this.doChangeSettings}
-            onChangeState={this.doChangeState}
-            onChangeSettings={this.doChangeSettings}
-            onChangeColorSettings={this.doChangeColorSettings}
+            changeState={this.changeState}
+            changeSettings={this.changeSettings}
             doLoadInitialDict={this.doLoadInitialDict}
             busy={state.busy}
             settings={state.settings}
@@ -225,13 +227,7 @@ export default class Main extends React.Component {
   }
 
   doChangeState(name, e) {
-    if (!name) {
-      return;
-    }
-    this.setState({ [name]: e.target.value });
-    if (name === "trialText") {
-      this.updateTrialText(this.state.settings, e.target.value);
-    }
+    this.changeState(name, e.target.value);
   }
 
   doChangeSettings(name, e) {
@@ -239,14 +235,14 @@ export default class Main extends React.Component {
     this.changeSettingsValue(name, newValue);
   }
 
-  doChangeColorSettings(name, e) {
-    this.changeSettingsValue(name, e.hex);
+  changeState(name, value) {
+    this.setState({ [name]: value });
+    if (name === "trialText") {
+      this.updateTrialText(this.state.settings, value);
+    }
   }
 
   changeSettingsValue(name, newValue) {
-    if (!name) {
-      return;
-    }
     const newSettings = immer(this.state.settings, d => {
       d[name] = newValue;
     });

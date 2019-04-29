@@ -66,48 +66,53 @@ const BasicSettings = props => {
     );
   });
 
+  const changeState = e => {
+    props.changeState(e.target.name, e.target.value);
+  };
+
+  const changeSettings = e => {
+    props.changeSettings(e.target.name, e.target.value);
+  };
+
+  const changeColor = (name, e) => {
+    props.changeSettings(name, e.hex);
+  };
+
   const settings1 = (
     <fieldset>
       <h2>{res.get("basicSettings")}</h2>
       <label>{res.get("trialText")}</label>
-      <input
-        type="text"
-        value={props.trialText}
-        onChange={props.onChangeState.bind(this, "trialText")}
-        style={{ width: 560 }}
-      />
+      <input type="text" name="trialText" value={props.trialText} onChange={changeState} style={{ width: 560 }} />
       <label>{res.get("abbreviateShortWordDesc")}</label>
       <span> {res.get("abbreviateShortWordDesc0")} </span>
       <input
         type="number"
+        name="shortWordLength"
         value={settings.shortWordLength}
-        onChange={props.onChange.bind(this, "shortWordLength")}
+        onChange={changeSettings}
         style={{ width: 60 }}
       />
       <span> {res.get("abbreviateShortWordDesc1")} </span>
       <input
         type="number"
+        name="cutShortWordDescription"
         value={settings.cutShortWordDescription}
-        onChange={props.onChange.bind(this, "cutShortWordDescription")}
+        onChange={changeSettings}
         style={{ width: 60 }}
       />
       <span> {res.get("abbreviateShortWordDesc2")}</span>
       <label>{res.get("initialSize")}</label>
       <span>{res.get("width")}</span>
-      <input type="number" value={settings.width} onChange={props.onChange.bind(this, "width")} style={{ width: 90 }} />
+      <input type="number" name="width" value={settings.width} onChange={changeSettings} style={{ width: 90 }} />
       <span> {res.get("height")}</span>
-      <input type="number" value={settings.height} onChange={props.onChange.bind(this, "height")} style={{ width: 90 }} />
+      <input type="number" name="height" value={settings.height} onChange={changeSettings} style={{ width: 90 }} />
       <label>{res.get("initialPosition")}</label>
-      <select
-        value={settings.initialPosition}
-        onChange={props.onChange.bind(this, "initialPosition")}
-        style={{ width: 250 }}
-      >
+      <select name="initialPosition" value={settings.initialPosition} onChange={changeSettings} style={{ width: 250 }}>
         {positionOptions}
       </select>
 
       <label>{res.get("scrollBar")}</label>
-      <select value={settings.scroll} onChange={props.onChange.bind(this, "scroll")} style={{ width: 250 }}>
+      <select name="scroll" value={settings.scroll} onChange={changeSettings} style={{ width: 250 }}>
         {scrollOptions}
       </select>
 
@@ -138,20 +143,20 @@ const BasicSettings = props => {
       <label>{res.get("backgroundColor")}</label>
       <ChromePicker
         color={settings.backgroundColor}
-        onChangeComplete={props.onChangeColorSettings.bind(this, "backgroundColor")}
+        onChangeComplete={changeColor.bind(this, "backgroundColor")}
         disableAlpha={true}
       />
       <br />
       <br />
 
       <label>{res.get("headFontSize")}</label>
-      <select value={settings.headFontSize} onChange={props.onChange.bind(this, "headFontSize")} style={{ width: 250 }}>
+      <select name="headFontSize" value={settings.headFontSize} onChange={changeSettings} style={{ width: 250 }}>
         {fontSizeOptions}
       </select>
       <label>{res.get("headFontColor")}</label>
       <ChromePicker
         color={settings.headFontColor}
-        onChangeComplete={props.onChangeColorSettings.bind(this, "headFontColor")}
+        onChangeComplete={changeColor.bind(this, "headFontColor")}
         disableAlpha={true}
       />
 
@@ -159,13 +164,13 @@ const BasicSettings = props => {
       <br />
 
       <label>{res.get("descFontSize")}</label>
-      <select value={settings.descFontSize} onChange={props.onChange.bind(this, "descFontSize")} style={{ width: 250 }}>
+      <select name="descFontSize" value={settings.descFontSize} onChange={changeSettings} style={{ width: 250 }}>
         {fontSizeOptions}
       </select>
       <label>{res.get("descFontcolor")}</label>
       <ChromePicker
         color={settings.descFontColor}
-        onChangeComplete={props.onChangeColorSettings.bind(this, "descFontColor")}
+        onChangeComplete={changeColor.bind(this, "descFontColor")}
         disableAlpha={true}
       />
     </fieldset>
