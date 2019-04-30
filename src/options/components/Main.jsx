@@ -368,8 +368,8 @@ export default class Main extends React.Component {
       return;
     }
     const newSettings = immer(this.state.settings, d => {
-      const l = d.replaceRules;
-      [l[index], l[index2]] = [l[index2], l[index]];
+      const rules = d.replaceRules;
+      [rules[index], rules[index2]] = [rules[index2], rules[index]];
     });
     this.setState({ settings: newSettings });
   }
