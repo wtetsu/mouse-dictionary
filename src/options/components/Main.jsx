@@ -404,9 +404,11 @@ export default class Main extends React.Component {
     }
     if (this.trialWindow) {
       this.updateTrialText(settings);
-      this.trialWindow.dialog.style.width = `${settings.width}px`;
-      this.trialWindow.dialog.style.height = `${settings.height}px`;
-      this.trialWindow.dialog.style.zIndex = 9999;
+      dom.applyStyles(this.trialWindow.dialog, {
+        width: `${settings.width}px`,
+        height: `${settings.height}px`,
+        zIndex: 9999
+      });
     }
   }
 
@@ -417,11 +419,16 @@ export default class Main extends React.Component {
       d.movingDialogStyles = null;
     });
     const trialWindow = mdwindow.create(tmpSettings);
-    trialWindow.dialog.style.cursor = "zoom-out";
-    trialWindow.dialog.style.top = "30px";
+    dom.applyStyles(trialWindow.dialog, {
+      cursor: "zoom-out",
+      top: "30px"
+    });
+
     trialWindow.dialog.addEventListener("click", () => {
-      trialWindow.dialog.style.width = "100px";
-      trialWindow.dialog.style.height = "100px";
+      dom.applyStyles(trialWindow.dialog, {
+        width: "100px",
+        height: "100px"
+      });
     });
     return trialWindow;
   }
