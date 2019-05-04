@@ -26,7 +26,12 @@ const processSettings = settings => {
   for (let i = 0; i < jsonItems.length; i++) {
     const item = jsonItems[i];
     if (settings[item]) {
-      settings[item] = JSON.parse(settings[item]);
+      try {
+        settings[item] = JSON.parse(settings[item]);
+      } catch (e) {
+        settings[item] = null;
+        console.error(e);
+      }
     }
   }
   if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
@@ -42,8 +47,12 @@ const loadInitialSettings = async () => {
   processSettings(userSettings);
 
   for (const item of Object.keys(userSettings)) {
-    settings[item] = userSettings[item];
+    const v = userSettings[item];
+    if (v !== null && v !== undefined) {
+      settings[item] = v;
+    }
   }
+
   return settings;
 };
 
