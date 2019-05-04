@@ -222,12 +222,12 @@ export default class Main extends React.Component {
   }
 
   doChangeSettings(name, newValue) {
+    if (shouldRecreateTrialWindow(name)) {
+      this.removeTrialWindow();
+    }
     const newSettings = immer(this.state.settings, d => {
       d[name] = newValue;
     });
-    if (shouldRecreateTrialWindow(name)) {
-      this.removeAndCreateTrialWindow(newSettings);
-    }
     this.setState({ settings: newSettings });
   }
 
@@ -433,13 +433,6 @@ export default class Main extends React.Component {
     return trialWindow;
   }
 
-  removeAndCreateTrialWindow(settings) {
-    if (!settings) {
-      return;
-    }
-    this.removeTrialWindow();
-  }
-
   removeTrialWindow() {
     if (this.trialWindow && this.trialWindow.dialog) {
       document.body.removeChild(this.trialWindow.dialog);
@@ -486,19 +479,13 @@ export default class Main extends React.Component {
   }
 
   doBackToDefaultSettings() {
+    this.removeTrialWindow();
     const newSettings = getDefaultSettings();
-    this.removeAndCreateTrialWindow(newSettings);
     this.setState({ settings: newSettings });
   }
 
   doToggleBasicSettings() {
-    if (!this.state.basicSettingsOpened) {
-      // Open
-      this.removeAndCreateTrialWindow(this.state.settings);
-    } else {
-      // Close
-      this.removeTrialWindow();
-    }
+    this.removeTrialWindow();
     this.setState({
       basicSettingsOpened: !this.state.basicSettingsOpened,
       advancedSettingsOpened: false
