@@ -27,12 +27,13 @@ export default class ContentGenerator {
     const compiledReplaceRule = [];
     for (let i = 0; i < replaceRules.length; i++) {
       const rule = replaceRules[i];
-      if (rule.search) {
-        compiledReplaceRule.push({
-          search: new RegExp(rule.search, "g"),
-          replace: rule.replace
-        });
+      if (!rule.search) {
+        continue;
       }
+      compiledReplaceRule.push({
+        search: new RegExp(rule.search, "g"),
+        replace: rule.replace
+      });
     }
     return compiledReplaceRule;
   }
@@ -65,18 +66,19 @@ export default class ContentGenerator {
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
       const desc = descriptions[word];
-      if (desc) {
-        data.push({
-          head: escapeHtml(word),
-          desc: this.createDescriptionHtml(desc),
-          isShort: word.length <= shortWordLength,
-          shortDesc: desc.substring(0, this.cutShortWordDescription),
-          headFontColor: this.headFontColor,
-          descFontColor: this.descFontColor,
-          headFontSize: this.headFontSize,
-          descFontSize: this.descFontSize
-        });
+      if (!desc) {
+        continue;
       }
+      data.push({
+        head: escapeHtml(word),
+        desc: this.createDescriptionHtml(desc),
+        isShort: word.length <= shortWordLength,
+        shortDesc: desc.substring(0, this.cutShortWordDescription),
+        headFontColor: this.headFontColor,
+        descFontColor: this.descFontColor,
+        headFontSize: this.headFontSize,
+        descFontSize: this.descFontSize
+      });
     }
     for (let i = 0; i < data.length; i++) {
       const d = data[i];
