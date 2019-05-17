@@ -24,51 +24,21 @@ export default {
   replaceRules: [
     {
       key: "0",
-      search: "(■.+)",
-      replace: '<span style="color:#008000;">$1</span>'
+      search: "(■.+|◆.+)",
+      replace: '<span style="color:#008000;font-size:100%;">$1</span>'
     },
     {
       key: "1",
-      search: "(◆.+)",
-      replace: '<span style="color:#008000;">$1</span>'
+      search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
+      replace: '<span style="color:#008000;font-size:100%;">$1</span>'
     },
     {
       key: "2",
-      search: "(【.+?】)",
-      replace: '<span style="color:#008000;">$1</span>'
+      search: "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
+      replace: '<span style="color:#008000;font-size:100%;">$1</span>'
     },
     {
       key: "3",
-      search: "({.+?})",
-      replace: '<span style="color:#008000;">$1</span>'
-    },
-    {
-      key: "4",
-      search: "(《.+?》)",
-      replace: '<span style="color:#008000;">$1</span>'
-    },
-    {
-      key: "5",
-      search: "(〈.+?〉)",
-      replace: '<span style="color:#008000;">$1</span>'
-    },
-    {
-      key: "6",
-      search: "(〔.+?〕)",
-      replace: '<span style="color:#008000;">$1</span>'
-    },
-    {
-      key: "7",
-      search: "(\\[.+?\\])",
-      replace: '<strong><span style="color:#008000;">$1</span></strong>'
-    },
-    {
-      key: "8",
-      search: "(\\(.+?\\))",
-      replace: '<span style="color:#008000;">$1</span>'
-    },
-    {
-      key: "9",
       search: "\\n|\\\\n",
       replace: "<br/>"
     }
