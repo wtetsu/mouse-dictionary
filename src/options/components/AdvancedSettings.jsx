@@ -55,7 +55,7 @@ const AdvancedSettings = props => {
           name={`replaceRule.search.${i}`}
           key={`replaceRule.search.${i}`}
           value={r.search}
-          style={{ width: 200 }}
+          style={{ width: 230 }}
           onChange={e => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
         />
         <span>{res.get("replaceRule1")}</span>
@@ -64,7 +64,7 @@ const AdvancedSettings = props => {
           name={`replaceRule.replace.${i}`}
           key={`replaceRule.replace.${i}`}
           value={r.replace}
-          style={{ width: 300 }}
+          style={{ width: 370 }}
           onChange={e => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
         />
         <span>{res.get("replaceRule2")}</span>
