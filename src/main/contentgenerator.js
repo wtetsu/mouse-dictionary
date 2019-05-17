@@ -19,7 +19,7 @@ export default class ContentGenerator {
     this.compiledReplaceRules = this.compileReplaceRules(settings.replaceRules);
 
     // Since contentTemplate is executed fairly frequently,
-    // it's compiled first and the produced result should be used repeatedly.
+    // ContentGenerator uses this compiled result repeatedly.
     this.compiledContentTemplate = Hogan.compile(settings.contentTemplate);
   }
 
