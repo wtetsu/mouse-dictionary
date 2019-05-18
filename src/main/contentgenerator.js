@@ -16,26 +16,11 @@ export default class ContentGenerator {
     this.descFontSize = settings.descFontSize;
     this.scroll = settings.scroll;
 
-    this.compiledReplaceRules = this.compileReplaceRules(settings.replaceRules);
+    this.compiledReplaceRules = compileReplaceRules(settings.replaceRules);
 
     // Since contentTemplate is executed fairly frequently,
     // ContentGenerator uses this compiled result repeatedly.
     this.compiledContentTemplate = Hogan.compile(settings.contentTemplate);
-  }
-
-  compileReplaceRules(replaceRules) {
-    const compiledReplaceRule = [];
-    for (let i = 0; i < replaceRules.length; i++) {
-      const rule = replaceRules[i];
-      if (!rule.search) {
-        continue;
-      }
-      compiledReplaceRule.push({
-        search: new RegExp(rule.search, "g"),
-        replace: rule.replace
-      });
-    }
-    return compiledReplaceRule;
   }
 
   generate(words, descriptions, enableShortWordLength = true) {
@@ -85,10 +70,39 @@ export default class ContentGenerator {
       d.isFirst = i === 0;
       d.isLast = i === data.length - 1;
     }
-
     return data;
   }
 }
+
+const compileReplaceRules = replaceRules => {
+  const compiledReplaceRule = [];
+  for (let i = 0; i < replaceRules.length; i++) {
+    const compiledRule = compileReplaceRule(replaceRules[i]);
+    if (compiledRule) {
+      compiledReplaceRule.push(compiledRule);
+    }
+  }
+  return compiledReplaceRule;
+};
+
+const compileReplaceRule = rule => {
+  if (!rule.search) {
+    return null;
+  }
+  let re = null;
+  try {
+    re = new RegExp(rule.search, "g");
+  } catch (error) {
+    console.error(error);
+  }
+  if (!re) {
+    return null;
+  }
+  return {
+    search: re,
+    replace: rule.replace
+  };
+};
 
 const mapForEscapeHtml = {
   "&": "&amp;",
