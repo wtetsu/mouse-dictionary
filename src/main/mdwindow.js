@@ -10,22 +10,18 @@ import dom from "../lib/dom";
 export default {
   create(settings) {
     const dialog = createDialogElement(settings);
-    const content = createContentWrapperElement(settings);
+    const content = dom.create(settings.contentWrapperTemplate);
     dialog.appendChild(content);
-
     return { dialog, content };
   }
 };
 
+const STYLES_SCROLL = "border-radius: 5px 0px 0px 5px;";
+const STYLES_NORMAL = "border-radius: 5px 5px 5px 5px;";
+
 const createDialogElement = settings => {
   const compiledTemplate = Hogan.compile(settings.dialogTemplate);
-
-  let systemStyles;
-  if (settings.scroll === "scroll") {
-    systemStyles = "border-radius: 5px 0px 0px 5px;";
-  } else {
-    systemStyles = "border-radius: 5px 5px 5px 5px;";
-  }
+  const systemStyles = settings.scroll === "scroll" ? STYLES_SCROLL : STYLES_NORMAL;
 
   const html = compiledTemplate.render({
     systemStyles,
@@ -36,10 +32,5 @@ const createDialogElement = settings => {
   });
   const dialog = dom.create(html);
   dom.applyStyles(dialog, settings.normalDialogStyles);
-  return dialog;
-};
-
-const createContentWrapperElement = settings => {
-  const dialog = dom.create(settings.contentWrapperTemplate);
   return dialog;
 };
