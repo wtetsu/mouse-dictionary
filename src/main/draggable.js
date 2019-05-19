@@ -158,16 +158,16 @@ export default class Draggable {
   }
 
   move(e) {
-    const x = convertToInt(e.pageX);
-    const y = convertToInt(e.pageY);
-    const newLeft = this.elementX + x - this.startingX;
-    const newTop = this.elementY + y - this.startingY;
-    if (newLeft !== this.currentLeft || newTop !== this.currentTop) {
-      this.currentLeft = newLeft;
-      this.currentTop = newTop;
-      this.moveElement(this.currentLeft, this.currentTop);
-      dom.applyStyles(this.mainElement, this.movingStyles);
+    const newLeft = this.elementX + convertToInt(e.pageX) - this.startingX;
+    const newTop = this.elementY + convertToInt(e.pageY) - this.startingY;
+    const moved = newLeft !== this.currentLeft || newTop !== this.currentTop;
+    if (!moved) {
+      return;
     }
+    this.currentLeft = newLeft;
+    this.currentTop = newTop;
+    this.moveElement(this.currentLeft, this.currentTop);
+    dom.applyStyles(this.mainElement, this.movingStyles);
   }
 
   moveElement(left, top) {
@@ -245,25 +245,26 @@ export default class Draggable {
     if (!this.onchange) {
       return;
     }
-    if (
+    const changed =
       this.currentLeft !== this.lastLeft ||
       this.currentTop !== this.lastTop ||
       this.currentWidth !== this.lastWidth ||
-      this.currentHeight !== this.lastHeight
-    ) {
-      const e = {
-        left: this.currentLeft,
-        top: this.currentTop,
-        width: this.currentWidth,
-        height: this.currentHeight
-      };
-      this.onchange(e);
+      this.currentHeight !== this.lastHeight;
 
-      this.lastLeft = this.currentLeft;
-      this.lastTop = this.currentTop;
-      this.lastWidth = this.currentWidth;
-      this.lastHeight = this.currentHeight;
+    if (!changed) {
+      return;
     }
+    this.onchange({
+      left: this.currentLeft,
+      top: this.currentTop,
+      width: this.currentWidth,
+      height: this.currentHeight
+    });
+
+    this.lastLeft = this.currentLeft;
+    this.lastTop = this.currentTop;
+    this.lastWidth = this.currentWidth;
+    this.lastHeight = this.currentHeight;
   }
 
   add(mainElement) {
