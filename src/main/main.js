@@ -16,21 +16,27 @@ import storage from "../lib/storage";
 const KEY_LOADED = "**** loaded ****";
 
 const main = async () => {
-  // Pages which have frames are not supported.
+  const existingElement = document.getElementById(DIALOG_ID);
+  if (!existingElement) {
+    await processFirstLaunch();
+  } else {
+    await processSecondOrLaterLaunch(existingElement);
+  }
+};
+
+const processFirstLaunch = async () => {
   if (isFramePage()) {
+    // Pages which have frames are not supported.
     alert(res("doesntSupportFrame"));
     return;
   }
-
   const userSettings = await loader.loadInitialSettings();
-
-  let existingElement = document.getElementById(DIALOG_ID);
-  if (existingElement) {
-    toggleDialog(existingElement, userSettings);
-    return;
-  }
-
   await initialize(userSettings);
+};
+
+const processSecondOrLaterLaunch = async existingElement => {
+  const userSettings = await loader.loadInitialSettings();
+  toggleDialog(existingElement, userSettings);
 };
 
 const isFramePage = () => {
