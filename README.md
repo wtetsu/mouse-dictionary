@@ -74,11 +74,10 @@ chrome.runtime.sendMessage(MD_EXTENSION_ID, {
 
 Parameters:
 
-| name | value                    |
-| ---- | ------------------------ |
-| type | must be "text"           |
-| text | text you want to look up |
-
+| name | type   | value                    |
+| ---- | ------ | ------------------------ |
+| type | string | must be "text"           |
+| text | string | text you want to look up |
 
 ## License
 
