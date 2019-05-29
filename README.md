@@ -92,7 +92,7 @@ This project includes some third-party data:
 
 ejdic-hand
 
-- https://kujirahand.com/web-tools/
+- https://github.com/kujirahand/EJDict
 - License: Public domain
 
 ### Images
