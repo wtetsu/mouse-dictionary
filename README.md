@@ -68,7 +68,7 @@ const MD_EXTENSION_ID = "dnclbikcihnpjohihfcmmldgkjnebgnj";
 
 chrome.runtime.sendMessage(MD_EXTENSION_ID, {
   type: "text",
-  text: text,
+  text: "rained cats and dogs"
 });
 ```
 
