@@ -59,7 +59,7 @@ npm run build-firefox
 
 ## Cross-extension messaging
 
-Mouse Dictionary supports receiving [cross-extension messages](https://developer.chrome.com/extensions/messaging). One message sender example is [Mouse Dictionary iframe support](https://github.com/wtetsu/mouse-dictionary-iframe). 
+Mouse Dictionary supports receiving [cross-extension messages](https://developer.chrome.com/extensions/messaging). One example of an extension that implements sending message to this extension is [Mouse Dictionary iframe support](https://github.com/wtetsu/mouse-dictionary-iframe).
 
 Here is a code example for sending a message to Mouse Dictionary. You can make Mouse Dictionary look up words/expressions from other extensions.
 
