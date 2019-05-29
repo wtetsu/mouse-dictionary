@@ -18,7 +18,6 @@ Download it.
 
 - [For Chrome](https://chrome.google.com/webstore/detail/mouse-dictionary/dnclbikcihnpjohihfcmmldgkjnebgnj)
 - [For Firefox](https://addons.mozilla.org/ja/firefox/addon/mousedictionary/)
-- [For Chrome(Beta) ... **Japanese-English is available!**](https://chrome.google.com/webstore/detail/mouse-dictionarybeta/ehebancbhejilcmjkoaiphmponbmgbeb)
 
 Use it:
 
