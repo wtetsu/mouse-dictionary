@@ -7,7 +7,8 @@
 class ShortCache {
   constructor(size) {
     this.size = size;
-
+    // Not the best for performance
+    // https://v8.dev/blog/elements-kinds
     this.list = new Array(size);
     this.dict = {};
     this.index = 0;
