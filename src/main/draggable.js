@@ -24,7 +24,7 @@ export default class Draggable {
     this.lastTop = null;
     this.lastWidth = null;
     this.lastHeight = null;
-    this.cursorEdgePosition = null;
+    this.cursorEdge = { top: false, right: false, bottom: false, left: false };
     this.defaultCursor = null;
     this.selectable = false;
     this.scrollable = scrollable;
@@ -37,6 +37,7 @@ export default class Draggable {
     if (this.currentHeight === null) {
       this.currentHeight = convertToInt(this.mainElement.style.height);
     }
+
     switch (this.mode) {
       case "moving":
         this.move(e);
@@ -72,10 +73,10 @@ export default class Draggable {
   }
 
   updateEdgeState(e) {
-    const { onE, onW, onN, onS, onWindow } = this.getEdgeState(e.x, e.y);
     if (this.selectable) {
-      if (onWindow) {
-        this.cursorEdgePosition = null;
+      const insideWindow = this.isInsideWindow(e);
+      if (insideWindow) {
+        this.cursorEdge = { top: false, right: false, bottom: false, left: false };
         this.mainElement.style.cursor = "text";
       } else {
         this.selectable = false;
@@ -83,73 +84,45 @@ export default class Draggable {
       }
       return;
     }
-
-    let cursor;
-    if (onW && onN) {
-      this.cursorEdgePosition = "nw";
-      cursor = "nwse-resize";
-    } else if (onE && onS) {
-      this.cursorEdgePosition = "se";
-      cursor = "nwse-resize";
-    } else if (onE && onN) {
-      this.cursorEdgePosition = "ne";
-      cursor = "nesw-resize";
-    } else if (onW && onS) {
-      this.cursorEdgePosition = "sw";
-      cursor = "nesw-resize";
-    } else if (onW) {
-      this.cursorEdgePosition = "w";
-      cursor = "ew-resize";
-    } else if (onE) {
-      this.cursorEdgePosition = "e";
-      cursor = "ew-resize";
-    } else if (onN) {
-      this.cursorEdgePosition = "n";
-      cursor = "ns-resize";
-    } else if (onS) {
-      this.cursorEdgePosition = "s";
-      cursor = "ns-resize";
-    } else {
-      this.cursorEdgePosition = null;
-      cursor = this.defaultCursor;
-    }
-    if (cursor) {
-      this.mainElement.style.cursor = cursor;
+    this.cursorEdge = this.getEdgeState(e.x, e.y);
+    const cursorStyle = getCursorStyle(this.cursorEdge) || this.defaultCursor;
+    if (cursorStyle) {
+      this.mainElement.style.cursor = cursorStyle;
     }
   }
 
   getEdgeState(x, y) {
-    let onE = false;
-    let onW = false;
-    let onN = false;
-    let onS = false;
-    const offset = 8;
+    const SPACE = 8;
+    const edge = { top: false, right: false, bottom: false, left: false };
     if (this.onEdge(x - this.currentLeft)) {
-      onW = true;
+      edge.left = true;
     } else {
       if (this.scrollable) {
-        if (this.onEdgeWithScrollBar(this.currentLeft + (this.currentWidth + offset) - x)) {
-          onE = true;
+        if (this.onEdgeWithScrollBar(this.currentLeft + (this.currentWidth + SPACE) - x)) {
+          edge.right = true;
         }
       } else {
-        if (this.onEdge(this.currentLeft + (this.currentWidth + offset) - x)) {
-          onE = true;
+        if (this.onEdge(this.currentLeft + (this.currentWidth + SPACE) - x)) {
+          edge.right = true;
         }
       }
     }
     if (this.onEdge(y - this.currentTop)) {
-      onN = true;
-    } else if (this.onEdge(this.currentTop + (this.currentHeight + offset) - y)) {
-      onS = true;
+      edge.top = true;
+    } else if (this.onEdge(this.currentTop + (this.currentHeight + SPACE) - y)) {
+      edge.bottom = true;
     }
-    const onWindow =
-      x >= this.currentLeft &&
-      x <= this.currentLeft + this.currentWidth &&
-      y >= this.currentTop &&
-      y <= this.currentTop + this.currentHeight;
-    return { onE, onW, onN, onS, onWindow };
+    return edge;
   }
 
+  isInsideWindow(e) {
+    return (
+      e.x >= this.currentLeft &&
+      e.x <= this.currentLeft + this.currentWidth &&
+      e.y >= this.currentTop &&
+      e.y <= this.currentTop + this.currentHeight
+    );
+  }
   onEdge(num) {
     return num <= 20;
   }
@@ -171,73 +144,47 @@ export default class Draggable {
   }
 
   moveElement(left, top) {
-    this.mainElement.style.left = left.toString() + "px";
-    this.mainElement.style.top = top.toString() + "px";
+    this.mainElement.style.left = `${left}px`;
+    this.mainElement.style.top = `${top}px`;
   }
 
   resize(e) {
     const x = convertToInt(e.pageX);
     const y = convertToInt(e.pageY);
 
-    let newWidth = null;
     let newHeight = null;
-    let newLeft = null;
     let newTop = null;
-    switch (this.cursorEdgePosition) {
-      case "s":
-        newHeight = Math.max(this.startingHeight + y - this.startingY, 50);
-        break;
-      case "e":
-        newWidth = Math.max(this.startingWidth + x - this.startingX, 50);
-        break;
-      case "w":
-        newWidth = Math.max(this.startingWidth - x + this.startingX, 50);
-        newLeft = this.elementX + x - this.startingX;
-        break;
-      case "n":
-        newHeight = Math.max(this.startingHeight - y + this.startingY, 50);
-        newTop = this.elementY + y - this.startingY;
-        break;
-      case "nw":
-        newHeight = Math.max(this.startingHeight - y + this.startingY, 50);
-        newTop = this.elementY + y - this.startingY;
-        newWidth = Math.max(this.startingWidth - x + this.startingX, 50);
-        newLeft = this.elementX + x - this.startingX;
-        break;
-      case "ne":
-        newHeight = Math.max(this.startingHeight - y + this.startingY, 50);
-        newTop = this.elementY + y - this.startingY;
-        newWidth = this.startingWidth + x - this.startingX;
-        break;
-      case "se":
-        newHeight = Math.max(this.startingHeight + y - this.startingY, 50);
-        newWidth = Math.max(this.startingWidth + x - this.startingX, 50);
-        break;
-      case "sw":
-        newHeight = Math.max(this.startingHeight + y - this.startingY, 50);
-        newWidth = Math.max(this.startingWidth - x + this.startingX, 50);
-        newLeft = this.elementX + x - this.startingX;
-        break;
-      default:
-        newWidth = null;
-        newHeight = null;
+    if (this.cursorEdge.bottom) {
+      newHeight = Math.max(this.startingHeight + y - this.startingY, 50);
+    } else if (this.cursorEdge.top) {
+      newHeight = Math.max(this.startingHeight - y + this.startingY, 50);
+      newTop = this.elementY + y - this.startingY;
+    }
+
+    let newWidth = null;
+    let newLeft = null;
+    if (this.cursorEdge.right) {
+      newWidth = Math.max(this.startingWidth + x - this.startingX, 50);
+    } else if (this.cursorEdge.left) {
+      newWidth = Math.max(this.startingWidth - x + this.startingX, 50);
+      newLeft = this.elementX + x - this.startingX;
     }
 
     if (newWidth !== null && newWidth !== this.currentWidth) {
       this.currentWidth = newWidth;
-      this.mainElement.style.width = this.currentWidth.toString() + "px";
+      this.mainElement.style.width = `${this.currentWidth}px`;
     }
     if (newHeight !== null && newHeight !== this.currentHeight) {
       this.currentHeight = newHeight;
-      this.mainElement.style.height = this.currentHeight.toString() + "px";
+      this.mainElement.style.height = `${this.currentHeight}px`;
     }
     if (newLeft !== null && newLeft !== this.currentLeft) {
       this.currentLeft = newLeft;
-      this.mainElement.style.left = this.currentLeft.toString() + "px";
+      this.mainElement.style.left = `${this.currentLeft}px`;
     }
     if (newTop !== null && newTop !== this.currentTop) {
       this.currentTop = newTop;
-      this.mainElement.style.top = this.currentTop.toString() + "px";
+      this.mainElement.style.top = `${this.currentTop}px`;
     }
   }
 
@@ -283,22 +230,23 @@ export default class Draggable {
       if (this.selectable) {
         return;
       }
-      const { onE, onW, onN, onS, onWindow } = this.getEdgeState(e.x, e.y);
-      if (onWindow && !onE && !onW && !onN && !onS) {
+      const edge = this.getEdgeState(e.x, e.y);
+      const insideWindow = this.isInsideWindow(e);
+      if (insideWindow && !edge.right && !edge.left && !edge.top && !edge.bottom) {
         this.selectable = true;
         this.mainElement.style.cursor = "text";
         return;
       }
-      if (onW) {
+      if (edge.left) {
         this.currentLeft = 5;
       }
-      if (onN) {
+      if (edge.top) {
         this.currentTop = 5;
       }
-      if (onE) {
+      if (edge.right) {
         this.currentLeft = document.documentElement.clientWidth - this.mainElement.clientWidth - 5;
       }
-      if (onS) {
+      if (edge.bottom) {
         this.currentTop = window.innerHeight - this.mainElement.clientHeight - 5;
       }
       this.moveElement(this.currentLeft, this.currentTop);
@@ -309,7 +257,8 @@ export default class Draggable {
       if (this.selectable) {
         return;
       }
-      this.mode = this.cursorEdgePosition ? "resizing" : "moving";
+      const edge = this.cursorEdge;
+      this.mode = edge.top || edge.right || edge.bottom || edge.left ? "resizing" : "moving";
       this.startChanging(e, mainElement);
       e.preventDefault();
     });
@@ -338,4 +287,26 @@ const convertToInt = str => {
     }
   }
   return r;
+};
+
+const getCursorStyle = edge => {
+  let cursorStyle = null;
+  if (edge.left && edge.top) {
+    cursorStyle = "nwse-resize";
+  } else if (edge.right && edge.bottom) {
+    cursorStyle = "nwse-resize";
+  } else if (edge.right && edge.top) {
+    cursorStyle = "nesw-resize";
+  } else if (edge.left && edge.bottom) {
+    cursorStyle = "nesw-resize";
+  } else if (edge.left) {
+    cursorStyle = "ew-resize";
+  } else if (edge.right) {
+    cursorStyle = "ew-resize";
+  } else if (edge.top) {
+    cursorStyle = "ns-resize";
+  } else if (edge.bottom) {
+    cursorStyle = "ns-resize";
+  }
+  return cursorStyle;
 };
