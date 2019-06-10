@@ -7,9 +7,7 @@
 class ShortCache {
   constructor(size) {
     this.size = size;
-    // Not the best for performance
-    // https://v8.dev/blog/elements-kinds
-    this.list = new Array(size);
+    this.list = createArray(size, "");
     this.dict = {};
     this.index = 0;
   }
@@ -48,5 +46,17 @@ class ShortCache {
     return this.list[index].value;
   }
 }
+
+/**
+ * Create a "packed" array.
+ * See also: https://v8.dev/blog/elements-kinds
+ */
+const createArray = (length, initialValue) => {
+  const newArray = [];
+  for (let i = 0; i < length; i++) {
+    newArray.push(initialValue);
+  }
+  return newArray;
+};
 
 export default ShortCache;
