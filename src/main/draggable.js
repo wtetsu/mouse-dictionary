@@ -5,12 +5,18 @@
  */
 
 import dom from "../lib/dom";
+
+const MODE = {
+  NONE: 0,
+  MOVING: 1,
+  RESIZING: 2
+};
 export default class Draggable {
   constructor(normalStyles, movingStyles, scrollable) {
     this.normalStyles = normalStyles;
     this.movingStyles = movingStyles;
     this.mainElement = null;
-    this.mode = null;
+    this.mode = MODE.NONE;
     this.startingX = null;
     this.startingY = null;
     this.elementX = null;
@@ -39,10 +45,10 @@ export default class Draggable {
     }
 
     switch (this.mode) {
-      case "moving":
+      case MODE.MOVING:
         this.move(e);
         break;
-      case "resizing":
+      case MODE.RESIZING:
         this.resize(e);
         break;
       default:
@@ -52,10 +58,10 @@ export default class Draggable {
 
   onMouseUp() {
     switch (this.mode) {
-      case "moving":
+      case MODE.MOVING:
         dom.applyStyles(this.mainElement, this.normalStyles);
         break;
-      case "resizing":
+      case MODE.RESIZING:
         break;
     }
     this.finishChanging();
@@ -258,7 +264,7 @@ export default class Draggable {
         return;
       }
       const edge = this.cursorEdge;
-      this.mode = edge.top || edge.right || edge.bottom || edge.left ? "resizing" : "moving";
+      this.mode = edge.top || edge.right || edge.bottom || edge.left ? MODE.RESIZING : MODE.MOVING;
       this.startChanging(e, mainElement);
       e.preventDefault();
     });
