@@ -11,6 +11,8 @@ import env from "../settings/env";
 const KEY_LAST_POSITION = "**** last_position ****";
 const KEY_USER_CONFIG = "**** config ****";
 
+const JSON_FIELDS = new Set(["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"]);
+
 const loadUserSettings = async () => {
   if (env.disableUserSettings) {
     return {};
@@ -21,87 +23,83 @@ const loadUserSettings = async () => {
   return userSettings;
 };
 
-const processSettings = settings => {
-  const jsonItems = ["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"];
-  for (let i = 0; i < jsonItems.length; i++) {
-    const item = jsonItems[i];
-    if (settings[item]) {
-      try {
-        settings[item] = JSON.parse(settings[item]);
-      } catch (e) {
-        settings[item] = null;
-        console.error(e);
-      }
-    }
-  }
-  if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
-    settings.initialPosition = "right";
-  }
-};
-
 const loadInitialSettings = async () => {
-  const settings = Object.assign({}, defaultSettings);
-  processSettings(settings);
-
-  const userSettings = await loadUserSettings();
-  processSettings(userSettings);
+  const settings = parseSettings(defaultSettings);
+  const userSettings = parseSettings(await loadUserSettings());
 
   for (const item of Object.keys(userSettings)) {
-    const v = userSettings[item];
-    if (v !== null && v !== undefined) {
-      settings[item] = v;
+    const value = userSettings[item];
+    if (value !== null && value !== undefined) {
+      settings[item] = value;
     }
   }
-
   return settings;
 };
 
-const loadInitialPosition = async options => {
-  const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
-  const documentWidth = document.documentElement.clientWidth;
-
-  let result;
-  switch (options.type) {
-    case "right":
-      {
-        const left = documentWidth - options.dialogWidth - 5;
-        result = { left: `${left}px` };
-      }
-      break;
-    case "left":
-      {
-        const left = 5;
-        result = { left: `${left}px` };
-      }
-      break;
-    case "keep":
-      {
-        const data = await storage.sync.get(KEY_LAST_POSITION);
-        const lastPositionJson = data[KEY_LAST_POSITION];
-        const lastPosition = lastPositionJson ? JSON.parse(lastPositionJson) : {};
-        const pos = optimizeInitialPosition(lastPosition, { windowWidth, windowHeight });
-
-        const styles = {};
-        if (Number.isFinite(pos.left)) {
-          styles.left = `${pos.left}px`;
-        }
-        if (Number.isFinite(pos.top)) {
-          styles.top = `${pos.top}px`;
-        }
-        if (Number.isFinite(pos.width)) {
-          styles.width = `${pos.width}px`;
-        }
-        if (Number.isFinite(pos.height)) {
-          styles.height = `${pos.height}px`;
-        }
-        result = styles;
-      }
-      break;
-    default:
-      result = {};
+const parseSettings = settings => {
+  const result = {};
+  for (let field of Object.keys(settings)) {
+    const value = settings[field];
+    if (JSON_FIELDS.has(field)) {
+      result[field] = parseJson(value);
+    } else {
+      result[field] = value;
+    }
+  }
+  if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
+    result.initialPosition = "right";
   }
   return result;
+};
+
+const parseJson = json => {
+  if (!json) {
+    return null;
+  }
+  let result;
+  try {
+    result = JSON.parse(json);
+  } catch (e) {
+    result = null;
+    console.error("Failed to parse json:" + json);
+    console.error(e);
+  }
+  return result;
+};
+
+const loadInitialPosition = async options => {
+  const position = {};
+  switch (options.type) {
+    case "right":
+      position.left = document.documentElement.clientWidth - options.dialogWidth - 5;
+      break;
+    case "left":
+      position.left = 5;
+      break;
+    case "keep":
+      Object.assign(position, await restoreInitialPosition());
+      break;
+  }
+
+  const result = {};
+  for (let key of Object.keys(position)) {
+    const n = position[key];
+    if (Number.isFinite(n)) {
+      result[key] = `${n}px`;
+    }
+  }
+  return result;
+};
+
+const restoreInitialPosition = async () => {
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+
+  const lastPositionJson = await storage.sync.pickOut(KEY_LAST_POSITION);
+  const lastPosition = lastPositionJson ? JSON.parse(lastPositionJson) : {};
+  const optimizedPosition = optimizeInitialPosition(lastPosition, { windowWidth, windowHeight });
+
+  return optimizedPosition;
 };
 
 const optimizeInitialPosition = (position, options) => {
@@ -156,9 +154,9 @@ const min = (a, b) => {
 };
 
 const savePosition = async e => {
-  const positionData = {};
-  positionData[KEY_LAST_POSITION] = JSON.stringify(e);
-  return storage.sync.set(positionData);
+  return storage.sync.set({
+    [KEY_LAST_POSITION]: JSON.stringify(e)
+  });
 };
 
 export default { loadInitialPosition, loadInitialSettings, savePosition };
