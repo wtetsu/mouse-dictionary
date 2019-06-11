@@ -6,17 +6,16 @@
 
 import dom from "../lib/dom";
 
-const MODE = {
-  NONE: 0,
-  MOVING: 1,
-  RESIZING: 2
-};
+const MODE_NONE = 0;
+const MODE_MOVING = 1;
+const MODE_RESIZING = 2;
+
 export default class Draggable {
   constructor(normalStyles, movingStyles, scrollable) {
     this.normalStyles = normalStyles;
     this.movingStyles = movingStyles;
     this.mainElement = null;
-    this.mode = MODE.NONE;
+    this.mode = MODE_NONE;
     this.startingX = null;
     this.startingY = null;
     this.elementX = null;
@@ -45,10 +44,10 @@ export default class Draggable {
     }
 
     switch (this.mode) {
-      case MODE.MOVING:
+      case MODE_MOVING:
         this.move(e);
         break;
-      case MODE.RESIZING:
+      case MODE_RESIZING:
         this.resize(e);
         break;
       default:
@@ -58,17 +57,17 @@ export default class Draggable {
 
   onMouseUp() {
     switch (this.mode) {
-      case MODE.MOVING:
+      case MODE_MOVING:
         dom.applyStyles(this.mainElement, this.normalStyles);
         break;
-      case MODE.RESIZING:
+      case MODE_RESIZING:
         break;
     }
     this.finishChanging();
   }
 
   finishChanging() {
-    this.mode = null;
+    this.mode = MODE_NONE;
     this.startingX = null;
     this.startingY = null;
     this.startingWidth = null;
@@ -264,7 +263,7 @@ export default class Draggable {
         return;
       }
       const edge = this.cursorEdge;
-      this.mode = edge.top || edge.right || edge.bottom || edge.left ? MODE.RESIZING : MODE.MOVING;
+      this.mode = edge.top || edge.right || edge.bottom || edge.left ? MODE_RESIZING : MODE_MOVING;
       this.startChanging(e, mainElement);
       e.preventDefault();
     });
