@@ -13,6 +13,9 @@ const KEY_USER_CONFIG = "**** config ****";
 
 const JSON_FIELDS = new Set(["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"]);
 
+const MIN_WINDOW_SIZE = 50;
+const EDGE_SPACE = 5;
+
 const loadUserSettings = async () => {
   if (env.disableUserSettings) {
     return {};
@@ -71,10 +74,10 @@ const loadInitialPosition = async options => {
   const position = {};
   switch (options.type) {
     case "right":
-      position.left = document.documentElement.clientWidth - options.dialogWidth - 5;
+      position.left = document.documentElement.clientWidth - options.dialogWidth - EDGE_SPACE;
       break;
     case "left":
-      position.left = 5;
+      position.left = EDGE_SPACE;
       break;
     case "keep":
       Object.assign(position, await restoreInitialPosition());
@@ -105,9 +108,9 @@ const restoreInitialPosition = async () => {
 const optimizeInitialPosition = (position, options) => {
   let newLeft;
   if (position.left < 0) {
-    newLeft = 5;
+    newLeft = EDGE_SPACE;
   } else if (position.left + position.width > options.windowWidth) {
-    newLeft = options.windowWidth - position.width - 5;
+    newLeft = options.windowWidth - position.width - EDGE_SPACE;
   } else {
     newLeft = position.left;
   }
@@ -116,16 +119,16 @@ const optimizeInitialPosition = (position, options) => {
   if (position.top < 0) {
     newTop = 5;
   } else if (position.top + position.height > options.windowHeight) {
-    newTop = options.windowHeight - position.height - 5;
+    newTop = options.windowHeight - position.height - EDGE_SPACE;
   } else {
     newTop = position.top;
   }
 
   const newPosition = {
-    left: max(newLeft, 5),
-    top: max(newTop, 5),
-    width: range(50, position.width, options.windowWidth - 10),
-    height: range(50, position.height, options.windowHeight - 10)
+    left: max(newLeft, EDGE_SPACE),
+    top: max(newTop, EDGE_SPACE),
+    width: range(MIN_WINDOW_SIZE, position.width, options.windowWidth - EDGE_SPACE * 2),
+    height: range(MIN_WINDOW_SIZE, position.height, options.windowHeight - EDGE_SPACE * 2)
   };
   return newPosition;
 };
