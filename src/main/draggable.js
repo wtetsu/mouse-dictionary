@@ -15,11 +15,6 @@ export default class Draggable {
     this.normalStyles = normalStyles;
     this.movingStyles = movingStyles;
     this.mainElement = null;
-    this.mode = MODE_NONE;
-    this.startingX = null;
-    this.startingY = null;
-    this.elementX = null;
-    this.elementY = null;
     this.onchange = null;
     this.currentLeft = null;
     this.currentTop = null;
@@ -33,6 +28,17 @@ export default class Draggable {
     this.defaultCursor = null;
     this.selectable = false;
     this.scrollable = scrollable;
+    this.initialize();
+  }
+
+  initialize() {
+    this.mode = MODE_NONE;
+    this.startingX = null;
+    this.startingY = null;
+    this.startingWidth = null;
+    this.startingHeight = null;
+    this.elementX = null;
+    this.elementY = null;
   }
 
   onMouseMove(e) {
@@ -67,13 +73,7 @@ export default class Draggable {
   }
 
   finishChanging() {
-    this.mode = MODE_NONE;
-    this.startingX = null;
-    this.startingY = null;
-    this.startingWidth = null;
-    this.startingHeight = null;
-    this.elementX = null;
-    this.elementY = null;
+    this.initialize();
     this.callOnChange();
   }
 
