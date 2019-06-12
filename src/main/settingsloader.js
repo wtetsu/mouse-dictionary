@@ -20,8 +20,7 @@ const loadUserSettings = async () => {
   if (env.disableUserSettings) {
     return {};
   }
-  const data = await storage.sync.get(KEY_USER_CONFIG);
-  const userSettingsJson = data[KEY_USER_CONFIG];
+  const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
   const userSettings = userSettingsJson ? JSON.parse(userSettingsJson) : {};
   return userSettings;
 };
@@ -101,7 +100,6 @@ const restoreInitialPosition = async () => {
   const lastPositionJson = await storage.sync.pickOut(KEY_LAST_POSITION);
   const lastPosition = lastPositionJson ? JSON.parse(lastPositionJson) : {};
   const optimizedPosition = optimizeInitialPosition(lastPosition, { windowWidth, windowHeight });
-
   return optimizedPosition;
 };
 
