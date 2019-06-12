@@ -16,15 +16,6 @@ const JSON_FIELDS = new Set(["normalDialogStyles", "movingDialogStyles", "hidden
 const MIN_WINDOW_SIZE = 50;
 const EDGE_SPACE = 5;
 
-const loadUserSettings = async () => {
-  if (env.disableUserSettings) {
-    return {};
-  }
-  const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
-  const userSettings = userSettingsJson ? JSON.parse(userSettingsJson) : {};
-  return userSettings;
-};
-
 const loadInitialSettings = async () => {
   const settings = parseSettings(defaultSettings);
   const userSettings = parseSettings(await loadUserSettings());
@@ -52,6 +43,15 @@ const parseSettings = settings => {
     result.initialPosition = "right";
   }
   return result;
+};
+
+const loadUserSettings = async () => {
+  if (env.disableUserSettings) {
+    return {};
+  }
+  const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
+  const userSettings = userSettingsJson ? JSON.parse(userSettingsJson) : {};
+  return userSettings;
 };
 
 const parseJson = json => {
