@@ -15,8 +15,10 @@ export default class ContentGenerator {
     this.headFontSize = settings.headFontSize;
     this.descFontSize = settings.descFontSize;
     this.scroll = settings.scroll;
+    this.cssReset = "all:initial;margin:0;padding:0;border:0;vertical-align:baseline;";
 
-    this.compiledReplaceRules = compileReplaceRules(settings.replaceRules);
+    const ruleRenderParameters = { cssReset: this.cssReset };
+    this.compiledReplaceRules = compileReplaceRules(settings.replaceRules, ruleRenderParameters);
 
     // Since contentTemplate is executed fairly frequently,
     // ContentGenerator uses this compiled result repeatedly.
@@ -31,7 +33,7 @@ export default class ContentGenerator {
 
   createContentHtml(words, descriptions, compiledContentTemplate, enableShortWordLength) {
     const data = this.createContentTemplateData(words, descriptions, enableShortWordLength);
-    const html = compiledContentTemplate.render({ words: data });
+    const html = compiledContentTemplate.render({ words: data, cssReset: this.cssReset });
     return html;
   }
 
@@ -74,10 +76,10 @@ export default class ContentGenerator {
   }
 }
 
-const compileReplaceRules = replaceRules => {
+const compileReplaceRules = (replaceRules, renderParameters) => {
   const compiledReplaceRule = [];
   for (let i = 0; i < replaceRules.length; i++) {
-    const compiledRule = compileReplaceRule(replaceRules[i]);
+    const compiledRule = compileReplaceRule(replaceRules[i], renderParameters);
     if (compiledRule) {
       compiledReplaceRule.push(compiledRule);
     }
@@ -85,7 +87,7 @@ const compileReplaceRules = replaceRules => {
   return compiledReplaceRule;
 };
 
-const compileReplaceRule = rule => {
+const compileReplaceRule = (rule, renderParameters) => {
   if (!rule.search) {
     return null;
   }
@@ -98,9 +100,13 @@ const compileReplaceRule = rule => {
   if (!re) {
     return null;
   }
+
+  const template = Hogan.compile(rule.replace);
+  const replace = template.render(renderParameters);
+
   return {
     search: re,
-    replace: rule.replace
+    replace
   };
 };
 
