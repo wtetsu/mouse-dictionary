@@ -25,17 +25,17 @@ export default {
     {
       key: "0",
       search: "(■.+|◆.+)",
-      replace: '<span style="color:#008000;font-size:100%;">$1</span>'
+      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
     },
     {
       key: "1",
       search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
-      replace: '<span style="color:#008000;font-size:100%;">$1</span>'
+      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
     },
     {
       key: "2",
       search: "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
-      replace: '<span style="color:#008000;font-size:100%;">$1</span>'
+      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
     },
     {
       key: "3",
@@ -58,7 +58,7 @@ export default {
   "zIndex": -1
 }`,
 
-  contentWrapperTemplate: `<div style="text-align:left;"></div>`,
+  contentWrapperTemplate: `<div style="all:initial;margin:0;padding:0;border:0;vertical-align:baseline;text-align:left;"></div>`,
 
   dialogTemplate: `<div style="all:initial;
             {{systemStyles}}
@@ -73,18 +73,18 @@ export default {
             padding: 2px 4px 2px 4px;
             border: 1px solid #A0A0A0;"></div>`,
 
-  contentTemplate: `<div style="all:initial;cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
+  contentTemplate: `<div style="{{cssReset}};font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
   {{#words}}
     {{^isShort}}
-      <span style="font-size:{{headFontSize}};font-weight:bold;color:{{headFontColor}}">{{head}}</span>
+      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;">{{head}}</span>
       <br/>
-      <span style="font-size:{{descFontSize}};color:{{descFontColor}};">
+      <span style="{{cssReset}};font-size:{{descFontSize}};color:{{descFontColor}};">
         {{{desc}}}
       </span>
     {{/isShort}}
     {{#isShort}}
-      <span style="font-size:{{headFontSize}};font-weight:bold;color:{{headFontColor}}">{{head}}</span>
-      <span style="color:#505050;font-size:x-small;">{{shortDesc}}</span>
+      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;">{{head}}</span>
+      <span style="{{cssReset}};color:#505050;font-size:x-small;">{{shortDesc}}</span>
     {{/isShort}}
     {{^isLast}}
       <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:0;height:1px;" />
