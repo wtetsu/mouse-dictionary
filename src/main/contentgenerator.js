@@ -15,7 +15,7 @@ export default class ContentGenerator {
     this.headFontSize = settings.headFontSize;
     this.descFontSize = settings.descFontSize;
     this.scroll = settings.scroll;
-    this.cssReset = "all:initial;margin:0;padding:0;border:0;vertical-align:baseline;";
+    this.cssReset = "margin:0;padding:0;border:0;vertical-align:baseline;";
 
     const ruleRenderParameters = { cssReset: this.cssReset };
     this.compiledReplaceRules = compileReplaceRules(settings.replaceRules, ruleRenderParameters);
