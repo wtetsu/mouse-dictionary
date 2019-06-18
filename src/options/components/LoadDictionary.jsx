@@ -7,6 +7,7 @@
 import React from "react";
 import res from "../lib/resources";
 import SimpleSelect from "./SimpleSelect.jsx";
+import env from "../../settings/env";
 
 const LoadDictionary = props => {
   const ENCODINGS = [
@@ -42,14 +43,15 @@ const LoadDictionary = props => {
         onClick={props.doLoad}
         disabled={props.busy ? "disabled" : null}
       />
-      <input
-        type="button"
-        value={res.get("clearLoadedData")}
-        style={{ marginRight: 5 }}
-        onClick={props.doClear}
-        disabled={props.busy ? "disabled" : null}
-      />
-
+      {!env.disableClearDataButton && (
+        <input
+          type="button"
+          value={res.get("clearLoadedData")}
+          style={{ marginRight: 5 }}
+          onClick={props.doClear}
+          disabled={props.busy ? "disabled" : null}
+        />
+      )}
       <img
         src="loading.gif"
         width="32"
