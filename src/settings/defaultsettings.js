@@ -58,7 +58,7 @@ export default {
   "zIndex": -1
 }`,
 
-  contentWrapperTemplate: `<div style="all:initial;margin:0;padding:0;border:0;vertical-align:baseline;text-align:left;"></div>`,
+  contentWrapperTemplate: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;text-align:left;"></div>`,
 
   dialogTemplate: `<div style="all:initial;
             {{systemStyles}}
