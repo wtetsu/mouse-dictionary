@@ -87,7 +87,7 @@ export default {
       <span style="{{cssReset}};color:#505050;font-size:x-small;">{{shortDesc}}</span>
     {{/isShort}}
     {{^isLast}}
-      <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:0;height:1px;" />
+      <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:0;height:1px;width:100%;" />
     {{/isLast}}
   {{/words}}
 </div>`
