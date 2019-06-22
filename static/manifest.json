@@ -17,6 +17,11 @@
     "default_icon": "icon48.png",
     "default_title": "Mouse Dictionary"
   },
+  "commands": {
+    "_execute_browser_action": {
+      "description": "Activate the extension"
+    }
+  },
   "manifest_version": 2,
   "icons": {
     "16": "icon16.png",
