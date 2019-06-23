@@ -34,7 +34,7 @@ export default class Main extends React.Component {
     this.state = {
       encoding: "Shift-JIS",
       format: "EIJIRO",
-      dictDataUsage: 0,
+      dictDataUsage: null,
       busy: false,
       progress: "",
       settings: null,
@@ -162,14 +162,22 @@ export default class Main extends React.Component {
   }
 
   async initializeUserSettings() {
-    const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
-    const userSettings = utils.tryToParseJson(userSettingsJson);
+    let userSettings;
+    if (env.disableUserSettings) {
+      userSettings = {};
+    } else {
+      const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
+      userSettings = utils.tryToParseJson(userSettingsJson);
+    }
     const settings = Object.assign(getDefaultSettings(), userSettings);
     this.setState({ settings });
     this.contentGenerator = new ContentGenerator(settings);
   }
 
   async updateDictDataUsage() {
+    if (env.disableUserSettings) {
+      return;
+    }
     const byteSize = await storage.local.getBytesInUse();
     const kb = isFinite(byteSize) ? Math.floor(byteSize / 1024).toLocaleString() : "";
     this.setState({

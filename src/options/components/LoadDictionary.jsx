@@ -59,7 +59,7 @@ const LoadDictionary = props => {
         style={{ verticalAlign: "middle", display: props.busy ? "inline" : "none" }}
       />
       <div style={{ fontSize: "75%" }}>
-        <div>{res.get("dictDataUsage", props.dictDataUsage)}</div>
+        {props.dictDataUsage && <div>{res.get("dictDataUsage", props.dictDataUsage)}</div>}
         <div>
           <span>{props.progress}</span>
         </div>
