@@ -35,16 +35,15 @@ const load = async ({ file, encoding, format, event }) => {
 
   return new Promise((resolve, reject) => {
     let wordCount = 0;
-    var reader = new FileReader();
+    const reader = new FileReader();
     reader.onprogress = e => {
       ev({ name: "reading", loaded: e.loaded, total: e.total });
     };
     reader.onload = e => {
-      let data = e.target.result;
+      const data = e.target.result;
 
-      var dictData = {};
-
-      let reader = new LineReader(data);
+      let dictData = {};
+      const reader = new LineReader(data);
       reader.eachLine(
         line => {
           const hd = parser.addLine(line);

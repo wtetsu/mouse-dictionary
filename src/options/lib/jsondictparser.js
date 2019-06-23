@@ -16,8 +16,7 @@ export default class JsonDictParser {
 
   flush() {
     const json = this.lines.join("");
-    let dictdata = null;
-    dictdata = JSON.parse(json);
+    const dictdata = JSON.parse(json);
     this.lines = [];
     return dictdata;
   }

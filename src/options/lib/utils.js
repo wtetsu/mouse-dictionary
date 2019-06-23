@@ -11,7 +11,7 @@ const fileMayBeSjis = async file => {
       try {
         const buffer = e.target.result;
         const length = Math.min(512, buffer.byteLength);
-        var bytes = new Uint8Array(buffer, 0, length);
+        const bytes = new Uint8Array(buffer, 0, length);
         const mayBeSjis = byteArrayMayBeSjis(bytes);
         done(mayBeSjis);
       } catch {

@@ -13,7 +13,7 @@ export default class LineReader {
 
   detectLineFeedCode(data) {
     let code = null;
-    let index = data.indexOf("\n");
+    const index = data.indexOf("\n");
     if (index >= 0) {
       if (data[index - 1] === "\r") {
         code = "\r\n";
@@ -29,7 +29,7 @@ export default class LineReader {
   }
 
   processNextLine(fnEachLine, fnFinished, linenum) {
-    let line = this.getNextLine();
+    const line = this.getNextLine();
     if (line !== null) {
       return Promise.all([fnEachLine(line, linenum)]).then(() => {
         return this.processNextLine(fnEachLine, fnFinished, linenum + 1);
@@ -46,7 +46,7 @@ export default class LineReader {
       return null;
     }
     let line = null;
-    let nextLfIndex = this.data.indexOf(this.lineFeedCode, this.currentIndex);
+    const nextLfIndex = this.data.indexOf(this.lineFeedCode, this.currentIndex);
     if (nextLfIndex >= 0) {
       line = this.data.substring(this.currentIndex, nextLfIndex);
       this.currentIndex = nextLfIndex + this.lineFeedCode.length;
