@@ -4,6 +4,9 @@
  * Licensed under MIT
  */
 
+const DELIMITER1 = " : ";
+const DELIMITER2 = "  {";
+
 export default class EijiroParser {
   constructor() {
     this.lines = [];
@@ -21,11 +24,11 @@ export default class EijiroParser {
       this.lines.push(hd.desc);
     } else {
       if (this.currentHead && this.lines.length >= 1) {
-        result = {};
-        result.head = this.currentHead;
-        result.desc = this.lines.join("\n");
+        result = {
+          head: this.currentHead,
+          desc: this.lines.join("\n")
+        };
       }
-
       this.currentHead = hd.head;
       this.lines = [];
       this.lines.push(hd.desc);
@@ -38,21 +41,22 @@ export default class EijiroParser {
       return null;
     }
 
-    const delimiter = " : ";
-    const didx = line.indexOf(delimiter);
-
-    let head, desc;
-    if (didx >= 1) {
-      head = line.substring(1, didx);
-      desc = line.substring(didx + delimiter.length);
-      let didx2 = head.indexOf("  {");
-      if (didx2 >= 1) {
-        head = line.substring(1, didx2 + 1);
-        desc = line.substring(didx2 + 3);
-      }
+    const dindex1 = line.indexOf(DELIMITER1);
+    if (dindex1 <= 0) {
+      return null;
     }
-    let hd = head && desc ? { head, desc } : null;
-    return hd;
+
+    const firstHalf = line.substring(1, dindex1);
+    const dindex2 = firstHalf.indexOf(DELIMITER2);
+    let head, desc;
+    if (dindex2 >= 1) {
+      head = line.substring(1, dindex2 + 1);
+      desc = line.substring(dindex2 + 3);
+    } else {
+      head = firstHalf;
+      desc = line.substring(dindex1 + DELIMITER1.length);
+    }
+    return { head, desc };
   }
 
   flush() {
