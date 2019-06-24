@@ -10,11 +10,11 @@ import text from "./text";
 export default word => {
   const list = new UniqList();
   const v = verbs[word];
-  if (v) {
+  if (typeof v === "string") {
     list.push(v);
   }
   const n = nouns[word];
-  if (n) {
+  if (typeof n === "string") {
     list.push(n);
   }
   const otherForms = text.tryToReplaceTrailingStrings(word, replaceTrailingRules);

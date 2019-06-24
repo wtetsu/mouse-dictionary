@@ -32,7 +32,7 @@ const normalize = words => {
 const doConvert = (word, conversionRule) => {
   let result = null;
   const w = conversionRule[word];
-  if (w) {
+  if (typeof w === "string") {
     result = w;
   } else {
     const firstCode = word.charCodeAt(0);

@@ -53,7 +53,7 @@ export default class ContentGenerator {
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
       const desc = descriptions[word];
-      if (!desc) {
+      if (typeof desc !== "string") {
         continue;
       }
       data.push({

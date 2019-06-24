@@ -39,7 +39,7 @@ class ShortCache {
     }
 
     const index = this.dict[key];
-    if (index === undefined) {
+    if (!isFinite(index)) {
       return null;
     }
 

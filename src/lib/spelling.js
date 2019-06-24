@@ -25,7 +25,7 @@ const convert = words => {
 
 const convertWord = word => {
   const w = SPELLING[word];
-  if (w) {
+  if (typeof w === "string") {
     return w;
   }
   return null;
