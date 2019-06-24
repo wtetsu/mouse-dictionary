@@ -33,6 +33,13 @@ Use it:
 
 ![ss03.gif](https://github.com/wtetsu/mouse-dictionary/blob/images/ss03.png)
 
+### German
+
+Want to use for the German language? Take a look these great articles!
+
+- [MOUSE DICTIONARY MIT WADOKU-WÖRTERBUCH](https://informationjapanforschung.blogspot.com/2019/06/mouse-dictionary-mit-wadoku-worterbuch.html)
+- [MOUSE DICTIONARY 2](https://informationjapanforschung.blogspot.com/2019/06/mouse-dictionary-2.html)
+
 ## How to develop
 
 Use npm 6+.
