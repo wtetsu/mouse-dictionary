@@ -21,7 +21,8 @@
     "DIALOG_ID": true,
     "process": true,
     "Set": true,
-    "Uint8Array": true
+    "Uint8Array": true,
+    "Map": true
   },
   "rules": {
     "no-console": 0,
