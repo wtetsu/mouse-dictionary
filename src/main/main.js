@@ -16,6 +16,20 @@ import storage from "../lib/storage";
 const KEY_LOADED = "**** loaded ****";
 
 const main = async () => {
+  let startTime;
+  if (process.env.NODE_ENV !== "production") {
+    startTime = new Date().getTime();
+  }
+
+  await invoke();
+
+  if (process.env.NODE_ENV !== "production") {
+    const time = new Date().getTime() - startTime;
+    console.info(`Launch:${time}ms`);
+  }
+};
+
+const invoke = async () => {
   const existingElement = document.getElementById(DIALOG_ID);
   if (!existingElement) {
     await processFirstLaunch();
@@ -23,7 +37,6 @@ const main = async () => {
     await processSecondOrLaterLaunch(existingElement);
   }
 };
-
 const processFirstLaunch = async () => {
   if (isFramePage()) {
     // Pages which have frames are not supported.
