@@ -18,8 +18,8 @@ export default class Draggable {
     this.movingStyles = movingStyles;
     this.mainElement = null;
     this.onchange = null;
-    this.current = omap([], POSITION_FIELDS);
-    this.last = omap([], POSITION_FIELDS);
+    this.current = omap({}, null, POSITION_FIELDS);
+    this.last = omap({}, null, POSITION_FIELDS);
     this.cursorEdge = this.getEdgeState();
     this.defaultCursor = null;
     this.selectable = false;
@@ -248,15 +248,15 @@ export default class Draggable {
   startChanging(e, elem) {
     this.starting.x = convertToInt(e.pageX);
     this.starting.y = convertToInt(e.pageY);
-    Object.assign(this.starting, omap(elem.style, POSITION_FIELDS, convertToInt));
+    Object.assign(this.starting, omap(elem.style, convertToInt, POSITION_FIELDS));
   }
 }
 
-const omap = (o, props, fn) => {
+const omap = (o, funcOrValue, props) => {
   const result = {};
   for (let i = 0; i < props.length; i++) {
     const prop = props[i];
-    result[prop] = fn ? fn(o[prop]) : null;
+    result[prop] = funcOrValue ? funcOrValue(o[prop]) : funcOrValue;
   }
   return result;
 };
