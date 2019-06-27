@@ -75,6 +75,7 @@ const verbs = new Map([
   ["arose", "arise"],
   ["ate", "eat"],
   ["awoke", "awake"],
+  ["awoken", "awake"],
   ["bade", "bid"],
   ["beaten", "beat"],
   ["became", "become"],
