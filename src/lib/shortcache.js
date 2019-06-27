@@ -8,7 +8,7 @@ class ShortCache {
   constructor(size) {
     this.size = size;
     this.list = createArray(size, "");
-    this.dict = {};
+    this.dict = new Map();
     this.index = 0;
   }
 
@@ -20,7 +20,7 @@ class ShortCache {
     let currentData = this.list[this.index];
     if (currentData) {
       const oldKey = currentData.key;
-      delete this.dict[oldKey];
+      this.dict.delete(oldKey);
     } else {
       currentData = {};
       this.list[this.index] = currentData;
@@ -28,7 +28,7 @@ class ShortCache {
     currentData.key = key;
     currentData.value = value;
 
-    this.dict[key] = this.index;
+    this.dict.set(key, this.index);
 
     this.index = (this.index + 1) % this.size;
   }
@@ -37,12 +37,10 @@ class ShortCache {
     if (!key) {
       return null;
     }
-
-    const index = this.dict[key];
+    const index = this.dict.get(key);
     if (!isFinite(index)) {
       return null;
     }
-
     return this.list[index].value;
   }
 }
