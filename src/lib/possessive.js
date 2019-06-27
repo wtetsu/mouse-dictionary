@@ -36,7 +36,7 @@ const doConvert = (word, pronouns) => {
   } else {
     const firstCode = word.charCodeAt(0);
     if (firstCode >= 65 && firstCode <= 90 && (word.endsWith("'s") || word.endsWith("s'"))) {
-      result = pronouns["'s"];
+      result = pronouns.get("'s");
     }
   }
   return result;
