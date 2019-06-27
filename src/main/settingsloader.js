@@ -99,36 +99,17 @@ const restoreInitialPosition = async () => {
 
   const lastPositionJson = await storage.sync.pickOut(KEY_LAST_POSITION);
   const lastPosition = lastPositionJson ? JSON.parse(lastPositionJson) : {};
-  const optimizedPosition = optimizeInitialPosition(lastPosition, { windowWidth, windowHeight });
+  const optimizedPosition = optimizeInitialPosition(lastPosition, windowWidth, windowHeight);
   return optimizedPosition;
 };
 
-const optimizeInitialPosition = (position, options) => {
-  let newLeft;
-  if (position.left < 0) {
-    newLeft = EDGE_SPACE;
-  } else if (position.left + position.width > options.windowWidth) {
-    newLeft = options.windowWidth - position.width - EDGE_SPACE;
-  } else {
-    newLeft = position.left;
-  }
-
-  let newTop;
-  if (position.top < 0) {
-    newTop = 5;
-  } else if (position.top + position.height > options.windowHeight) {
-    newTop = options.windowHeight - position.height - EDGE_SPACE;
-  } else {
-    newTop = position.top;
-  }
-
-  const newPosition = {
-    left: max(newLeft, EDGE_SPACE),
-    top: max(newTop, EDGE_SPACE),
-    width: range(MIN_WINDOW_SIZE, position.width, options.windowWidth - EDGE_SPACE * 2),
-    height: range(MIN_WINDOW_SIZE, position.height, options.windowHeight - EDGE_SPACE * 2)
+const optimizeInitialPosition = (position, windowWidth, windowHeight) => {
+  return {
+    left: range(EDGE_SPACE, position.left, windowWidth - position.width - EDGE_SPACE),
+    top: range(EDGE_SPACE, position.top, windowHeight - position.height - EDGE_SPACE),
+    width: range(MIN_WINDOW_SIZE, position.width, windowWidth - EDGE_SPACE * 2),
+    height: range(MIN_WINDOW_SIZE, position.height, windowHeight - EDGE_SPACE * 2)
   };
-  return newPosition;
 };
 
 const range = (minValue, value, maxValue) => {
