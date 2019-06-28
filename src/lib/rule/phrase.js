@@ -4,10 +4,7 @@
  * Licensed under MIT
  */
 
-import data from "./data";
-
-const normalize = words => {
-  const allRules = data.phrase;
+export default (allRules, words) => {
   const rules = allRules[words.length];
   if (!rules) {
     return [];
@@ -55,5 +52,3 @@ const normalizeByRule = (words, rule) => {
   }
   return result;
 };
-
-export default { normalize };

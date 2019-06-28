@@ -9,7 +9,7 @@ import swal from "sweetalert";
 import React from "react";
 import { render } from "react-dom";
 import Main from "./components/Main";
-import data from "../lib/data";
+import rule from "../lib/rule";
 
 window.onerror = msg => {
   swal({
@@ -21,4 +21,4 @@ window.onerror = msg => {
 render(<Main />, document.getElementById("app"));
 
 // Lazy load
-data.load();
+rule.load();

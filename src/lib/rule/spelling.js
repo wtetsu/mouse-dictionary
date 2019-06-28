@@ -4,14 +4,12 @@
  * Licensed under MIT
  */
 
-import data from "./data";
-
-const convert = words => {
+export default (spellingRule, words) => {
   let converted = false;
   const convertedWords = [];
   for (let j = 0; j < words.length; j++) {
     const word = words[j];
-    const convertedWord = convertWord(word);
+    const convertedWord = spellingRule.get(word);
     if (convertedWord) {
       converted = true;
       convertedWords.push(convertedWord);
@@ -24,13 +22,3 @@ const convert = words => {
   }
   return convertedWords;
 };
-
-const convertWord = word => {
-  const w = data.spellings.get(word);
-  if (w) {
-    return w;
-  }
-  return null;
-};
-
-export default { convert };

@@ -6,9 +6,7 @@
 
 import UniqList from "uniqlist";
 import text from "../text";
-import possessive from "../possessive";
-import spelling from "../spelling";
-import transform from "../transform";
+import rule from "../rule";
 
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
   const sourceStr = text.dealWithHyphens(rawSourceStr);
@@ -58,7 +56,7 @@ const dealWithFirstWordHyphen = theFirstWord => {
   result.push(phraseWithoutHyphen);
   result.push(phraseWithoutHyphen.toLowerCase());
 
-  const transformedList = transform(splittedFirstWord);
+  const transformedList = rule.doBase(splittedFirstWord);
 
   for (let i = 0; i < transformedList.length; i++) {
     wordList[0] = transformedList[i];
@@ -79,7 +77,7 @@ const createWordsList = stringList => {
     const str = stringList[i];
     const words = text.splitIntoWords(str);
     wordListList.push(words);
-    const unifiedSpellingWords = spelling.convert(words);
+    const unifiedSpellingWords = rule.doSpelling(words);
     if (unifiedSpellingWords) {
       wordListList.push(unifiedSpellingWords);
     }
@@ -94,7 +92,8 @@ const createLinkedWords = (words, isAllLower) => {
   lookupWords.push(...linkedWords);
 
   // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
-  const convertedWordsList = words.length >= 2 ? possessive.normalize(words) : [];
+  const convertedWordsList = words.length >= 2 ? rule.doPronoun(words) : [];
+
   for (let j = 0; j < convertedWordsList.length; j++) {
     const convertedWords = convertedWordsList[j];
     if (convertedWords) {
@@ -158,7 +157,7 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
       wordList.push(arr.join(" "));
     }
     wordList.merge(arr);
-    const arrayArray = arr.map(transform);
+    const arrayArray = arr.map(rule.doBase);
     for (let i = 0; i < arrayArray.length; i++) {
       wordList.merge(arrayArray[i]);
     }

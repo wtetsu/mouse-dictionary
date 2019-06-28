@@ -1,5 +1,5 @@
 import testdata from "./testdata";
-import phrase from "../src/lib/phrase";
+import rule from "../src/lib/rule";
 
 beforeAll(() => {
   testdata.load();
@@ -37,7 +37,7 @@ test("5", () => {
 });
 
 const testNormalize = (words, expectList) => {
-  const r = phrase.normalize(words);
+  const r = rule.doPhrase(words);
   for (let i = 0; i < expectList.length; i++) {
     const e = expectList[i];
     expect(include(r, e)).toBeTruthy();

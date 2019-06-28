@@ -4,21 +4,16 @@
  * Licensed under MIT
  */
 
-import data from "./data";
-
 /**
  * ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
  */
-const normalize = words => {
+export default (pronounRule, words) => {
   let result = [];
-
   let changed = false;
-
-  const pronounsList = data.pronounsList;
-  for (let i = 0; i < pronounsList.length; i++) {
+  for (let i = 0; i < pronounRule.length; i++) {
     const convertedWords = [...words];
     for (let j = 0; j < convertedWords.length; j++) {
-      const w = doConvert(convertedWords[j], pronounsList[i]);
+      const w = doConvert(convertedWords[j], pronounRule[i]);
       if (w) {
         convertedWords[j] = w;
         changed = true;
@@ -44,5 +39,3 @@ const doConvert = (word, pronouns) => {
   }
   return result;
 };
-
-export default { normalize };

@@ -1,19 +1,19 @@
 import testdata from "./testdata";
-import transform from "../src/lib/transform";
+import rule from "../src/lib/rule";
 
 beforeAll(() => {
   testdata.load();
 });
 
 test("", () => {
-  expect(transform("word")).toEqual([]);
-  expect(transform("deal")).toEqual([]);
-  expect(transform("deals")).toEqual(["deal"]);
-  expect(transform("dealt")).toEqual(["deal"]);
-  expect(transform("dealing")).toEqual(["deal", "deale"]);
+  expect(rule.doBase("word")).toEqual([]);
+  expect(rule.doBase("deal")).toEqual([]);
+  expect(rule.doBase("deals")).toEqual(["deal"]);
+  expect(rule.doBase("dealt")).toEqual(["deal"]);
+  expect(rule.doBase("dealing")).toEqual(["deal", "deale"]);
 
-  expect(transform("run")).toEqual([]);
-  expect(transform("runs")).toEqual(["run"]);
-  expect(transform("ran")).toEqual(["run"]);
-  expect(transform("running")).toEqual(["run", "runne"]);
+  expect(rule.doBase("run")).toEqual([]);
+  expect(rule.doBase("runs")).toEqual(["run"]);
+  expect(rule.doBase("ran")).toEqual(["run"]);
+  expect(rule.doBase("running")).toEqual(["run", "runne"]);
 });

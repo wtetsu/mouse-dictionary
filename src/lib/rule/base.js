@@ -5,20 +5,19 @@
  */
 
 import UniqList from "uniqlist";
-import text from "./text";
-import data from "./data";
+import text from "../text";
 
-export default word => {
+export default (rule, word) => {
   const list = new UniqList();
-  const v = data.verbs.get(word);
+  const v = rule.verb.get(word);
   if (v) {
     list.push(v);
   }
-  const n = data.nouns.get(word);
+  const n = rule.noun.get(word);
   if (n) {
     list.push(n);
   }
-  const otherForms = text.tryToReplaceTrailingStrings(word, data.replaceTrailingRules);
+  const otherForms = text.tryToReplaceTrailingStrings(word, rule.trailing);
   list.merge(otherForms);
   return list.toArray();
 };

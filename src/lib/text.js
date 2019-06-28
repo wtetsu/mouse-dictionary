@@ -5,8 +5,7 @@
  */
 
 import consts from "./consts";
-import transform from "./transform";
-import phrase from "./phrase";
+import rule from "./rule";
 
 const text = {};
 
@@ -177,7 +176,7 @@ text.linkWords = (words, minWordNum = 1) => {
   }
 
   const firstWord = words[0];
-  const firstWordList = [firstWord].concat(transform(firstWord));
+  const firstWordList = [firstWord].concat(rule.doBase(firstWord));
 
   const appendedList = [];
   for (let i = 0; i < firstWordList.length; i++) {
@@ -199,7 +198,7 @@ text.linkWords = (words, minWordNum = 1) => {
 
   // Add string like ""word0 ~ word2
   for (let i = 0; i < appendedList.length; i++) {
-    const normalizedPhrases = phrase.normalize(appendedList[i]).map(a => a.join(" "));
+    const normalizedPhrases = rule.doPhrase(appendedList[i]).map(a => a.join(" "));
     linkedWords.push(...normalizedPhrases);
   }
 

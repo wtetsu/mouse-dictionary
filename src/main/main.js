@@ -6,7 +6,7 @@
 
 import res from "./resources";
 import dom from "../lib/dom";
-import data from "../lib/data";
+import rule from "../lib/rule";
 import env from "../settings/env";
 import mdwindow from "./mdwindow";
 import loader from "./settingsloader";
@@ -48,7 +48,7 @@ const processFirstLaunch = async () => {
   await initialize(userSettings);
 
   // Lazy load
-  data.load();
+  rule.load();
 };
 
 const processSecondOrLaterLaunch = async existingElement => {

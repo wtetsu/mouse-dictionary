@@ -1,13 +1,13 @@
 import fs from "fs";
-import data from "../src/lib/data";
+import rule from "../src/lib/rule";
 
 const load = () => {
-  data.registerSpelling(readJson("spelling.json"));
-  data.registerPossessives(readJson("possessive.json"));
-  data.registerVerbs(readJson("verb.json"));
-  data.registerNouns(readJson("noun.json"));
-  data.registerTrailing(readJson("trailing.json"));
-  data.registerPhrase(readJson("phrase.json"));
+  rule.registerNouns(readJson("noun.json"));
+  rule.registerPhrase(readJson("phrase.json"));
+  rule.registerPronoun(readJson("pronoun.json"));
+  rule.registerSpelling(readJson("spelling.json"));
+  rule.registerTrailing(readJson("trailing.json"));
+  rule.registerVerbs(readJson("verb.json"));
 };
 
 const readJson = fileName => {
