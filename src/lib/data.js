@@ -17,12 +17,12 @@ const phrase = [];
 // Note: Parsing JSON is faster than long Object literals.
 // https://v8.dev/blog/cost-of-javascript-2019
 const load = () => {
-  utils.loadJson("data/spelling.json").then(registerSpelling);
-  utils.loadJson("data/possessives.json").then(registerPossessives);
-  utils.loadJson("data/verbs.json").then(registerVerbs);
-  utils.loadJson("data/nouns.json").then(registerNouns);
-  utils.loadJson("data/trailing.json").then(registerTrailing);
-  utils.loadJson("data/phrase.json").then(registerPhrase);
+  utils.loadJson("data/rule/spelling.json").then(registerSpelling);
+  utils.loadJson("data/rule/possessive.json").then(registerPossessives);
+  utils.loadJson("data/rule/verb.json").then(registerVerbs);
+  utils.loadJson("data/rule/noun.json").then(registerNouns);
+  utils.loadJson("data/rule/trailing.json").then(registerTrailing);
+  utils.loadJson("data/rule/phrase.json").then(registerPhrase);
 };
 
 const registerSpelling = data => utils.updateMap(spellings, data);
