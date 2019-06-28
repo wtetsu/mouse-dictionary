@@ -23,8 +23,13 @@ export default class Draggable {
     this.cursorEdge = this.getEdgeState();
     this.defaultCursor = null;
     this.selectable = false;
-    this.scrollable = scrollable;
     this.initialize();
+
+    if (scrollable) {
+      this.onRightEdge = this.onEdgeWithScrollBar;
+    } else {
+      this.onRightEdge = this.onEdge;
+    }
   }
 
   initialize() {
@@ -96,17 +101,10 @@ export default class Draggable {
     const SPACE = 8;
     if (this.onEdge(x - this.current.left)) {
       edge.left = true;
-    } else {
-      if (this.scrollable) {
-        if (this.onEdgeWithScrollBar(this.current.left + (this.current.width + SPACE) - x)) {
-          edge.right = true;
-        }
-      } else {
-        if (this.onEdge(this.current.left + (this.current.width + SPACE) - x)) {
-          edge.right = true;
-        }
-      }
+    } else if (this.onRightEdge(this.current.left + (this.current.width + SPACE) - x)) {
+      edge.right = true;
     }
+
     if (this.onEdge(y - this.current.top)) {
       edge.top = true;
     } else if (this.onEdge(this.current.top + (this.current.height + SPACE) - y)) {
