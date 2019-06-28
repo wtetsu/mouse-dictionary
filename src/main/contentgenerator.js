@@ -32,8 +32,15 @@ export default class ContentGenerator {
   }
 
   createContentHtml(words, descriptions, compiledContentTemplate, enableShortWordLength) {
-    const data = this.createContentTemplateData(words, descriptions, enableShortWordLength);
-    const html = compiledContentTemplate.render({ words: data, cssReset: this.cssReset });
+    const parameters = {
+      headFontColor: this.headFontColor,
+      descFontColor: this.descFontColor,
+      headFontSize: this.headFontSize,
+      descFontSize: this.descFontSize,
+      cssReset: this.cssReset,
+      words: this.createWordsParameter(words, descriptions, enableShortWordLength)
+    };
+    const html = compiledContentTemplate.render(parameters);
     return html;
   }
 
@@ -46,9 +53,8 @@ export default class ContentGenerator {
     return result;
   }
 
-  createContentTemplateData(words, descriptions, enableShortWordLength) {
+  createWordsParameter(words, descriptions, enableShortWordLength) {
     const data = [];
-
     const shortWordLength = enableShortWordLength ? this.shortWordLength : 0;
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
@@ -61,16 +67,13 @@ export default class ContentGenerator {
         desc: this.createDescriptionHtml(desc),
         isShort: word.length <= shortWordLength,
         shortDesc: desc.substring(0, this.cutShortWordDescription),
-        headFontColor: this.headFontColor,
-        descFontColor: this.descFontColor,
-        headFontSize: this.headFontSize,
-        descFontSize: this.descFontSize
+        isFirst: false,
+        isLast: false
       });
     }
-    for (let i = 0; i < data.length; i++) {
-      const d = data[i];
-      d.isFirst = i === 0;
-      d.isLast = i === data.length - 1;
+    if (data.length >= 1) {
+      data[0].isFirst = true;
+      data[data.length - 1].isLast = true;
     }
     return data;
   }
