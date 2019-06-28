@@ -8,6 +8,7 @@ beforeAll(() => {
   data.registerVerbs(readJson("verbs.json"));
   data.registerNouns(readJson("nouns.json"));
   data.registerTrailing(readJson("trailing.json"));
+  data.registerPhrase(readJson("phrase.json"));
 });
 
 const readJson = fileName => {

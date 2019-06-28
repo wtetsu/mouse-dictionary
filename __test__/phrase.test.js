@@ -1,4 +1,20 @@
+import fs from "fs";
 import phrase from "../src/lib/phrase";
+import data from "../src/lib/data";
+
+beforeAll(() => {
+  data.registerSpelling(readJson("spelling.json"));
+  data.registerPossessives(readJson("possessives.json"));
+  data.registerVerbs(readJson("verbs.json"));
+  data.registerNouns(readJson("nouns.json"));
+  data.registerTrailing(readJson("trailing.json"));
+  data.registerPhrase(readJson("phrase.json"));
+});
+
+const readJson = fileName => {
+  const json = fs.readFileSync(`static/data/${fileName}`, "utf8");
+  return JSON.parse(json);
+};
 
 test("3", () => {
   testNormalize(["a", "b", "c"], [["a", "~", "c"], ["a", "c"]]);
