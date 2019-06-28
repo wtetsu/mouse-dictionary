@@ -1,20 +1,9 @@
-import fs from "fs";
+import testdata from "./testdata";
 import transform from "../src/lib/transform";
-import data from "../src/lib/data";
 
 beforeAll(() => {
-  data.registerSpelling(readJson("spelling.json"));
-  data.registerPossessives(readJson("possessives.json"));
-  data.registerVerbs(readJson("verbs.json"));
-  data.registerNouns(readJson("nouns.json"));
-  data.registerTrailing(readJson("trailing.json"));
-  data.registerPhrase(readJson("phrase.json"));
+  testdata.load();
 });
-
-const readJson = fileName => {
-  const json = fs.readFileSync(`static/data/${fileName}`, "utf8");
-  return JSON.parse(json);
-};
 
 test("", () => {
   expect(transform("word")).toEqual([]);
