@@ -75,8 +75,7 @@ export default class Draggable {
 
   updateEdgeState(e) {
     if (this.selectable) {
-      const insideWindow = this.isInsideWindow(e);
-      if (insideWindow) {
+      if (isInsideRange(this.current, e)) {
         this.cursorEdge = this.getEdgeState();
         this.mainElement.style.cursor = "text";
       } else {
@@ -112,15 +111,6 @@ export default class Draggable {
     }
     edge.any = edge.left || edge.right || edge.top || edge.bottom;
     return edge;
-  }
-
-  isInsideWindow(e) {
-    return (
-      e.x >= this.current.left &&
-      e.x <= this.current.left + this.current.width &&
-      e.y >= this.current.top &&
-      e.y <= this.current.top + this.current.height
-    );
   }
 
   onEdge(num) {
@@ -195,7 +185,6 @@ export default class Draggable {
 
   add(mainElement) {
     this.defaultCursor = "move";
-
     this.mainElement = mainElement;
     this.makeElementDraggable(mainElement);
 
@@ -204,49 +193,49 @@ export default class Draggable {
       this.current.height = convertToInt(this.mainElement.style.height);
     });
   }
-  makeElementDraggable(mainElement) {
-    mainElement.addEventListener("dblclick", e => {
-      if (this.selectable) {
-        return;
-      }
-      const edge = this.getEdgeState(e.x, e.y);
-      const insideWindow = this.isInsideWindow(e);
-      if (insideWindow && !edge.any) {
-        this.selectable = true;
-        this.mainElement.style.cursor = "text";
-        return;
-      }
-      const SPACE = 5;
-      if (edge.left) {
-        this.current.left = SPACE;
-      } else if (edge.right) {
-        this.current.left = document.documentElement.clientWidth - this.mainElement.clientWidth - SPACE;
-      }
-      if (edge.top) {
-        this.current.top = SPACE;
-      } else if (edge.bottom) {
-        this.current.top = window.innerHeight - this.mainElement.clientHeight - SPACE;
-      }
-      this.moveElement(this.current.left, this.current.top);
-      this.finishChanging();
-    });
-    mainElement.style.cursor = this.defaultCursor;
-    mainElement.addEventListener("mousedown", e => {
-      if (this.selectable) {
-        return;
-      }
-      this.mode = this.cursorEdge.any ? MODE_RESIZING : MODE_MOVING;
-      this.startChanging(e, mainElement);
-      e.preventDefault();
-    });
 
+  makeElementDraggable(mainElement) {
+    mainElement.addEventListener("dblclick", e => this.handleDoubleClick(e));
+    mainElement.addEventListener("mousedown", e => this.handleMouseDown(e));
+    mainElement.style.cursor = this.defaultCursor;
     this.current.left = convertToInt(mainElement.style.left);
     this.current.top = convertToInt(mainElement.style.top);
   }
-  startChanging(e, elem) {
+
+  handleDoubleClick(e) {
+    if (this.selectable) {
+      return;
+    }
+    const edge = this.getEdgeState(e.x, e.y);
+    if (!edge.any && isInsideRange(this.current, e)) {
+      this.selectable = true;
+      this.mainElement.style.cursor = "text";
+      return;
+    }
+    const SPACE = 5;
+    if (edge.left) {
+      this.current.left = SPACE;
+    } else if (edge.right) {
+      this.current.left = document.documentElement.clientWidth - this.mainElement.clientWidth - SPACE;
+    }
+    if (edge.top) {
+      this.current.top = SPACE;
+    } else if (edge.bottom) {
+      this.current.top = window.innerHeight - this.mainElement.clientHeight - SPACE;
+    }
+    this.moveElement(this.current.left, this.current.top);
+    this.finishChanging();
+  }
+
+  handleMouseDown(e) {
+    if (this.selectable) {
+      return;
+    }
+    this.mode = this.cursorEdge.any ? MODE_RESIZING : MODE_MOVING;
     this.starting.x = convertToInt(e.pageX);
     this.starting.y = convertToInt(e.pageY);
-    Object.assign(this.starting, omap(elem.style, convertToInt, POSITION_FIELDS));
+    Object.assign(this.starting, omap(e.target.style, convertToInt, POSITION_FIELDS));
+    e.preventDefault();
   }
 }
 
@@ -306,4 +295,13 @@ const getCursorStyle = edge => {
     cursorStyle = "ns-resize";
   }
   return cursorStyle;
+};
+
+const isInsideRange = (range, position) => {
+  return (
+    position.x >= range.left &&
+    position.x <= range.left + range.width &&
+    position.y >= range.top &&
+    position.y <= range.top + range.height
+  );
 };
