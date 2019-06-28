@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import utils from "./utils";
+import data from "./data";
 
 const convert = words => {
   let converted = false;
@@ -25,15 +25,8 @@ const convert = words => {
   return convertedWords;
 };
 
-// Lazy load
-const spellings = new Map();
-
-// Note: Parsing JSON is faster than long Object literals.
-// https://v8.dev/blog/cost-of-javascript-2019
-utils.loadJson("data/spelling.json").then(data => utils.updateMap(spellings, data));
-
 const convertWord = word => {
-  const w = spellings.get(word);
+  const w = data.spellings.get(word);
   if (w) {
     return w;
   }

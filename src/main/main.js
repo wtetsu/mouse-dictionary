@@ -6,6 +6,7 @@
 
 import res from "./resources";
 import dom from "../lib/dom";
+import data from "../lib/data";
 import env from "../settings/env";
 import mdwindow from "./mdwindow";
 import loader from "./settingsloader";
@@ -33,6 +34,7 @@ const invoke = async () => {
   const existingElement = document.getElementById(DIALOG_ID);
   if (!existingElement) {
     await processFirstLaunch();
+    data.load();
   } else {
     await processSecondOrLaterLaunch(existingElement);
   }

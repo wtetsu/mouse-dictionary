@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import utils from "./utils";
+import data from "./data";
 
 /**
  * ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
@@ -14,6 +14,7 @@ const normalize = words => {
 
   let changed = false;
 
+  const pronounsList = data.pronounsList;
   for (let i = 0; i < pronounsList.length; i++) {
     const convertedWords = [...words];
     for (let j = 0; j < convertedWords.length; j++) {
@@ -43,16 +44,5 @@ const doConvert = (word, pronouns) => {
   }
   return result;
 };
-
-// Lazy load
-const pronounsList = [];
-
-// Note: Parsing JSON is faster than long Object literals.
-// https://v8.dev/blog/cost-of-javascript-2019
-utils.loadJson("data/possessives.json").then(data => {
-  for (let i = 0; i < data.length; i++) {
-    pronounsList.push(new Map(data[i]));
-  }
-});
 
 export default { normalize };
