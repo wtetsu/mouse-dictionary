@@ -5,6 +5,7 @@
  */
 
 import dom from "../lib/dom";
+import utils from "../lib/utils";
 
 const MODE_NONE = 0;
 const MODE_MOVING = 1;
@@ -18,8 +19,8 @@ export default class Draggable {
     this.movingStyles = movingStyles;
     this.mainElement = null;
     this.onchange = null;
-    this.current = omap({}, null, POSITION_FIELDS);
-    this.last = omap({}, null, POSITION_FIELDS);
+    this.current = utils.omap({}, null, POSITION_FIELDS);
+    this.last = utils.omap({}, null, POSITION_FIELDS);
     this.cursorEdge = this.getEdgeState();
     this.defaultCursor = null;
     this.selectable = false;
@@ -39,10 +40,10 @@ export default class Draggable {
 
   onMouseMove(e) {
     if (this.current.width === null) {
-      this.current.width = convertToInt(this.mainElement.style.width);
+      this.current.width = utils.convertToInt(this.mainElement.style.width);
     }
     if (this.current.height === null) {
-      this.current.height = convertToInt(this.mainElement.style.height);
+      this.current.height = utils.convertToInt(this.mainElement.style.height);
     }
 
     switch (this.mode) {
@@ -75,7 +76,7 @@ export default class Draggable {
 
   updateEdgeState(e) {
     if (this.selectable) {
-      if (isInsideRange(this.current, e)) {
+      if (utils.isInsideRange(this.current, e)) {
         this.cursorEdge = this.getEdgeState();
         this.mainElement.style.cursor = "text";
       } else {
@@ -123,10 +124,10 @@ export default class Draggable {
 
   move(e) {
     const latest = {
-      left: this.starting.left + convertToInt(e.pageX) - this.starting.x,
-      top: this.starting.top + convertToInt(e.pageY) - this.starting.y
+      left: this.starting.left + utils.convertToInt(e.pageX) - this.starting.x,
+      top: this.starting.top + utils.convertToInt(e.pageY) - this.starting.y
     };
-    if (areSame(this.current, latest)) {
+    if (utils.areSame(this.current, latest)) {
       return;
     }
     Object.assign(this.current, latest);
@@ -141,8 +142,8 @@ export default class Draggable {
 
   resize(e) {
     const MIN_SIZE = 50;
-    const x = convertToInt(e.pageX);
-    const y = convertToInt(e.pageY);
+    const x = utils.convertToInt(e.pageX);
+    const y = utils.convertToInt(e.pageY);
 
     const latest = { height: null, width: null, top: null, left: null };
     if (this.cursorEdge.bottom) {
@@ -176,7 +177,7 @@ export default class Draggable {
     if (!this.onchange) {
       return;
     }
-    if (areSame(this.current, this.last)) {
+    if (utils.areSame(this.current, this.last)) {
       return;
     }
     this.onchange(Object.assign({}, this.current));
@@ -189,8 +190,8 @@ export default class Draggable {
     this.makeElementDraggable(mainElement);
 
     this.mainElement.addEventListener("click", () => {
-      this.current.width = convertToInt(this.mainElement.style.width);
-      this.current.height = convertToInt(this.mainElement.style.height);
+      this.current.width = utils.convertToInt(this.mainElement.style.width);
+      this.current.height = utils.convertToInt(this.mainElement.style.height);
     });
   }
 
@@ -198,8 +199,8 @@ export default class Draggable {
     mainElement.addEventListener("dblclick", e => this.handleDoubleClick(e));
     mainElement.addEventListener("mousedown", e => this.handleMouseDown(e));
     mainElement.style.cursor = this.defaultCursor;
-    this.current.left = convertToInt(mainElement.style.left);
-    this.current.top = convertToInt(mainElement.style.top);
+    this.current.left = utils.convertToInt(mainElement.style.left);
+    this.current.top = utils.convertToInt(mainElement.style.top);
   }
 
   handleDoubleClick(e) {
@@ -207,7 +208,7 @@ export default class Draggable {
       return;
     }
     const edge = this.getEdgeState(e.x, e.y);
-    if (!edge.any && isInsideRange(this.current, e)) {
+    if (!edge.any && utils.isInsideRange(this.current, e)) {
       this.selectable = true;
       this.mainElement.style.cursor = "text";
       return;
@@ -232,48 +233,12 @@ export default class Draggable {
       return;
     }
     this.mode = this.cursorEdge.any ? MODE_RESIZING : MODE_MOVING;
-    this.starting.x = convertToInt(e.pageX);
-    this.starting.y = convertToInt(e.pageY);
-    Object.assign(this.starting, omap(e.target.style, convertToInt, POSITION_FIELDS));
+    this.starting.x = utils.convertToInt(e.pageX);
+    this.starting.y = utils.convertToInt(e.pageY);
+    Object.assign(this.starting, utils.omap(e.target.style, utils.convertToInt, POSITION_FIELDS));
     e.preventDefault();
   }
 }
-
-const omap = (o, funcOrValue, props) => {
-  const result = {};
-  for (let i = 0; i < props.length; i++) {
-    const prop = props[i];
-    result[prop] = funcOrValue ? funcOrValue(o[prop]) : funcOrValue;
-  }
-  return result;
-};
-
-const areSame = (a, b) => {
-  // On the assumption that both have the same properties
-  const props = Object.keys(b);
-  let same = true;
-  for (let i = 0; i < props.length; i++) {
-    const prop = props[i];
-    if (a[prop] !== b[prop]) {
-      same = false;
-      break;
-    }
-  }
-  return same;
-};
-
-const convertToInt = str => {
-  let r;
-  if (str === null || str === undefined || str === "") {
-    r = 0;
-  } else {
-    r = parseInt(str, 10);
-    if (isNaN(r)) {
-      r = 0;
-    }
-  }
-  return r;
-};
 
 const getCursorStyle = edge => {
   let cursorStyle = null;
@@ -295,13 +260,4 @@ const getCursorStyle = edge => {
     cursorStyle = "ns-resize";
   }
   return cursorStyle;
-};
-
-const isInsideRange = (range, position) => {
-  return (
-    position.x >= range.left &&
-    position.x <= range.left + range.width &&
-    position.y >= range.top &&
-    position.y <= range.top + range.height
-  );
 };

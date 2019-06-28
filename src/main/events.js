@@ -6,6 +6,7 @@
 
 import atcursor from "../lib/atcursor";
 import dom from "../lib/dom";
+import utils from "../lib/utils";
 import ShortCache from "../lib/shortcache";
 import storage from "../lib/storage";
 import ContentGenerator from "./contentgenerator";
@@ -40,7 +41,8 @@ export default {
       if (_selection) {
         parseTextAndLookup(_selection, true, false, settings.lookupWithCapitalized);
       }
-      _isLastMouseUpOnTheWindow = isOnTheWindow(dialog.style, e);
+      const range = utils.omap(dialog.style, utils.convertToInt, ["top", "left", "width", "height"]);
+      _isLastMouseUpOnTheWindow = utils.isInsideRange(range, { x: e.clientX, y: e.clientY });
     });
 
     document.body.addEventListener("mousemove", e => {
@@ -129,12 +131,4 @@ const getSelection = () => {
   const selection = window.getSelection();
   const str = selection.toString().trim();
   return str.substring(0, TEXT_LENGTH_LIMIT);
-};
-
-const isOnTheWindow = (style, e) => {
-  const top = parseInt(style.top, 10);
-  const left = parseInt(style.left, 10);
-  const width = parseInt(style.width, 10);
-  const height = parseInt(style.height, 10);
-  return e.clientX >= left && e.clientX <= left + width && (e.clientY >= top && e.clientY <= top + height);
 };
