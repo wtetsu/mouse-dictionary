@@ -48,21 +48,6 @@ const isInsideRange = (range, position) => {
   );
 };
 
-/*
-const position = omap(dialog.style, convertToInt, ["top", "left","width","height"])
-isInsideRange(position, {x:e.clientX, y.clientY})
-
-isOnTheWindow(dialog.style, e);
-
-const isOnTheWindow = (style, e) => {
-  const top = parseInt(style.top, 10);
-  const left = parseInt(style.left, 10);
-  const width = parseInt(style.width, 10);
-  const height = parseInt(style.height, 10);
-  return e.clientX >= left && e.clientX <= left + width && (e.clientY >= top && e.clientY <= top + height);
-};
-*/
-
 const convertToInt = str => {
   let r;
   if (str === null || str === undefined || str === "") {
