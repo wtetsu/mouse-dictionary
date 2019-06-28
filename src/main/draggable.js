@@ -233,9 +233,12 @@ export default class Draggable {
       return;
     }
     this.mode = this.cursorEdge.any ? MODE_RESIZING : MODE_MOVING;
-    this.starting.x = utils.convertToInt(e.pageX);
-    this.starting.y = utils.convertToInt(e.pageY);
-    Object.assign(this.starting, utils.omap(e.target.style, utils.convertToInt, POSITION_FIELDS));
+    const newStarting = {
+      x: utils.convertToInt(e.pageX),
+      y: utils.convertToInt(e.pageY),
+      ...utils.omap(this.mainElement.style, utils.convertToInt, POSITION_FIELDS)
+    };
+    Object.assign(this.starting, newStarting);
     e.preventDefault();
   }
 }
