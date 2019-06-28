@@ -4,6 +4,8 @@
  * Licensed under MIT
  */
 
+import utils from "./utils";
+
 /**
  * ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
  */
@@ -42,74 +44,15 @@ const doConvert = (word, pronouns) => {
   return result;
 };
 
-const ONES = "one's";
-const SOMEONE = "someone";
-const SOMEONES = "someone's";
-const ONESELF = "oneself";
-const pronounsList = [
-  new Map([
-    ["my", ONES],
-    ["your", ONES],
-    ["his", ONES],
-    ["her", ONES],
-    ["its", ONES],
-    ["our", ONES],
-    ["their", ONES],
-    ["'s", ONES],
-    ["one's", ONES],
-    ["someone's", SOMEONES],
-    ["myself", ONESELF],
-    ["yourself", ONESELF],
-    ["himself", ONESELF],
-    ["herself", ONESELF],
-    ["ourselves", ONESELF],
-    ["themselves", ONESELF],
-    ["him", SOMEONE],
-    ["them", SOMEONE],
-    ["us", SOMEONE]
-  ]),
-  new Map([
-    ["my", SOMEONES],
-    ["your", SOMEONES],
-    ["his", SOMEONES],
-    ["her", SOMEONES],
-    ["its", SOMEONES],
-    ["our", SOMEONES],
-    ["their", SOMEONES],
-    ["'s", SOMEONES],
-    ["one's", ONES],
-    ["someone's", SOMEONES],
-    ["myself", ONESELF],
-    ["yourself", ONESELF],
-    ["himself", ONESELF],
-    ["herself", ONESELF],
-    ["ourselves", ONESELF],
-    ["themselves", ONESELF],
-    ["him", SOMEONE],
-    ["them", SOMEONE],
-    ["us", SOMEONE]
-  ]),
-  new Map([
-    ["my", SOMEONES],
-    ["your", SOMEONES],
-    ["his", SOMEONES],
-    ["her", SOMEONE],
-    ["its", SOMEONES],
-    ["our", SOMEONES],
-    ["their", SOMEONES],
-    ["'s", SOMEONES],
-    ["one's", ONES],
-    ["someone's", SOMEONES],
-    ["myself", ONESELF],
-    ["yourself", ONESELF],
-    ["himself", ONESELF],
-    ["herself", ONESELF],
-    ["ourselves", ONESELF],
-    ["themselves", ONESELF],
-    ["him", SOMEONE],
-    ["them", SOMEONE],
-    ["us", SOMEONE]
-  ])
-];
+// Lazy load
+const pronounsList = [];
+
+// Note: Parsing JSON is faster than long Object literals.
+// https://v8.dev/blog/cost-of-javascript-2019
+utils.loadJson("data/possessives.json").then(data => {
+  for (let i = 0; i < data.length; i++) {
+    pronounsList.push(new Map(data[i]));
+  }
+});
 
 export default { normalize };
