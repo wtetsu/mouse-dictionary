@@ -34,7 +34,6 @@ const invoke = async () => {
   const existingElement = document.getElementById(DIALOG_ID);
   if (!existingElement) {
     await processFirstLaunch();
-    data.load();
   } else {
     await processSecondOrLaterLaunch(existingElement);
   }
@@ -47,6 +46,9 @@ const processFirstLaunch = async () => {
   }
   const userSettings = await loader.loadInitialSettings();
   await initialize(userSettings);
+
+  // Lazy load
+  data.load();
 };
 
 const processSecondOrLaterLaunch = async existingElement => {
