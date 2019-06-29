@@ -7,7 +7,7 @@ const load = () => {
   rule.registerPronoun(readJson("pronoun.json"));
   rule.registerSpelling(readJson("spelling.json"));
   rule.registerTrailing(readJson("trailing.json"));
-  rule.registerVerbs(readJson("verb.json"));
+  rule.registerVerb(readJson("verb.json"));
 };
 
 const readJson = fileName => {

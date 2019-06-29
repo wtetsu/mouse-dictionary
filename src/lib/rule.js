@@ -27,7 +27,7 @@ const load = () => {
   utils.loadJson("data/rule/pronoun.json").then(registerPronoun);
   utils.loadJson("data/rule/spelling.json").then(registerSpelling);
   utils.loadJson("data/rule/trailing.json").then(registerTrailing);
-  utils.loadJson("data/rule/verb.json").then(registerVerbs);
+  utils.loadJson("data/rule/verb.json").then(registerVerb);
 };
 
 const registerNouns = data => utils.updateMap(nounRule, data);
@@ -35,16 +35,16 @@ const registerPhrase = data => Object.assign(phraseRule, data);
 const registerPronoun = data => Object.assign(pronounRule, data.map(datum => new Map(datum)));
 const registerSpelling = data => utils.updateMap(spellingRule, data);
 const registerTrailing = data => Object.assign(trailingRule, data);
-const registerVerbs = data => utils.updateMap(verbRule, data);
+const registerVerb = data => utils.updateMap(verbRule, data);
 
 export default {
   load,
   registerNouns,
-  registerSpelling,
-  registerTrailing,
   registerPhrase,
   registerPronoun,
-  registerVerbs,
+  registerSpelling,
+  registerTrailing,
+  registerVerb,
   doBase: word => base({ noun: nounRule, trailing: trailingRule, verb: verbRule }, word),
   doPhrase: words => phrase(phraseRule, words),
   doPronoun: words => pronoun(pronounRule, words),
