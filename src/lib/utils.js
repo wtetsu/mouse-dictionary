@@ -16,11 +16,22 @@ const updateMap = (map, data) => {
   }
 };
 
-const omap = (o, funcOrValue, props) => {
+/**
+ * omap({ a: 1,
+ *  b: 2,
+ *  c: 3 },
+ *  v => v * 2,
+ *  ["b",
+ *  "c"]);
+ *   -> { a: 1,
+ *  b: 4,
+ *  c: 6 }
+ */
+const omap = (o, func, props) => {
   const result = {};
   for (let i = 0; i < props.length; i++) {
     const prop = props[i];
-    result[prop] = funcOrValue ? funcOrValue(o[prop]) : funcOrValue;
+    result[prop] = func ? func(o[prop]) : func;
   }
   return result;
 };
@@ -61,4 +72,64 @@ const convertToInt = str => {
   return r;
 };
 
-export default { loadJson, updateMap, omap, areSame, isInsideRange, convertToInt };
+const convertToStyles = position => {
+  const styles = {};
+  const keys = Object.keys(position);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const n = position[key];
+    if (Number.isFinite(n)) {
+      styles[key] = `${n}px`;
+    }
+  }
+  return styles;
+};
+
+const MIN_WINDOW_SIZE = 50;
+const EDGE_SPACE = 5;
+
+const optimizeInitialPosition = position => {
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+
+  return {
+    left: range(EDGE_SPACE, position.left, windowWidth - position.width - EDGE_SPACE),
+    top: range(EDGE_SPACE, position.top, windowHeight - position.height - EDGE_SPACE),
+    width: range(MIN_WINDOW_SIZE, position.width, windowWidth - EDGE_SPACE * 2),
+    height: range(MIN_WINDOW_SIZE, position.height, windowHeight - EDGE_SPACE * 2)
+  };
+};
+
+const range = (minValue, value, maxValue) => {
+  let r = value;
+  r = min(r, maxValue);
+  r = max(r, minValue);
+  return r;
+};
+
+const max = (a, b) => {
+  if (Number.isFinite(a)) {
+    return Math.max(a, b);
+  } else {
+    return null;
+  }
+};
+
+const min = (a, b) => {
+  if (Number.isFinite(a)) {
+    return Math.min(a, b);
+  } else {
+    return null;
+  }
+};
+
+export default {
+  loadJson,
+  updateMap,
+  omap,
+  areSame,
+  isInsideRange,
+  convertToInt,
+  convertToStyles,
+  optimizeInitialPosition
+};

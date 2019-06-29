@@ -13,6 +13,7 @@ import loader from "./settingsloader";
 import events from "./events";
 import Draggable from "./draggable";
 import storage from "../lib/storage";
+import utils from "../lib/utils";
 
 const KEY_LOADED = "**** loaded ****";
 
@@ -38,14 +39,15 @@ const invoke = async () => {
     await processSecondOrLaterLaunch(existingElement);
   }
 };
+
 const processFirstLaunch = async () => {
   if (isFramePage()) {
     // Pages which have frames are not supported.
     alert(res("doesntSupportFrame"));
     return;
   }
-  const userSettings = await loader.loadInitialSettings();
-  await initialize(userSettings);
+  const { settings, position } = await loader.load();
+  initialize(settings, position);
 
   // Lazy load
   rule.load();
@@ -72,7 +74,7 @@ const toggleDialog = (area, userSettings) => {
   }
 };
 
-const initialize = async userSettings => {
+const initialize = (userSettings, storedPosition) => {
   let area;
   try {
     area = mdwindow.create(userSettings);
@@ -87,13 +89,15 @@ const initialize = async userSettings => {
   dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
   document.body.appendChild(area.dialog);
 
-  const positions = await loader.loadInitialPosition({
-    type: userSettings.initialPosition,
-    dialogWidth: area.dialog.clientWidth,
-    dialogHeight: area.dialog.clientHeight
-  });
-  dom.applyStyles(area.dialog, positions);
-  dom.applyStyles(area.dialog, userSettings.normalDialogStyles);
+  let newPosition;
+  if (userSettings.initialPosition === "keep") {
+    newPosition = utils.optimizeInitialPosition(storedPosition);
+  } else {
+    newPosition = getInitialPosition(userSettings.initialPosition, area.dialog.clientWidth);
+  }
+  const positionStyles = utils.convertToStyles(newPosition);
+  const newStyles = Object.assign(positionStyles, userSettings.normalDialogStyles);
+  dom.applyStyles(area.dialog, newStyles);
 
   const scrollable = userSettings.scroll === "scroll";
   const draggable = new Draggable(userSettings.normalDialogStyles, userSettings.movingDialogStyles, scrollable);
@@ -102,12 +106,12 @@ const initialize = async userSettings => {
   }
   draggable.add(area.dialog);
 
-  let canRefreshView = true;
+  let _canRefreshView = true;
   events.attach(area.dialog, draggable, userSettings, (newDom, count) => {
-    if (!canRefreshView) {
+    if (!_canRefreshView) {
       storage.local.pickOut(KEY_LOADED).then(isLoaded => {
         if (isLoaded) {
-          canRefreshView = true;
+          _canRefreshView = true;
         }
       });
       return;
@@ -120,11 +124,28 @@ const initialize = async userSettings => {
     area.content.appendChild(newDom);
   });
 
-  const isLoaded = await storage.local.pickOut(KEY_LOADED);
-  if (!isLoaded) {
-    area.content.innerHTML = res("needToPrepareDict");
-    canRefreshView = false;
+  // Async
+  storage.local.pickOut(KEY_LOADED).then(isLoaded => {
+    if (!isLoaded) {
+      area.content.innerHTML = res("needToPrepareDict");
+      _canRefreshView = false;
+    }
+  });
+};
+
+const EDGE_SPACE = 5;
+
+const getInitialPosition = (type, dialogWidth) => {
+  const position = {};
+  switch (type) {
+    case "right":
+      position.left = document.documentElement.clientWidth - dialogWidth - EDGE_SPACE;
+      break;
+    case "left":
+      position.left = EDGE_SPACE;
+      break;
   }
+  return position;
 };
 
 main();
