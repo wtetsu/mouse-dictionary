@@ -304,25 +304,27 @@ export default class Main extends React.Component {
     }
   }
 
+  /**
+   * Not supported for the moment due to instability of chrome.storage.local.clear()
+   */
   async doClear() {
-    const willDelete = await swal({
-      text: res.get("clearAllDictData"),
-      icon: "warning",
-      buttons: true,
-      dangerMode: true
-    });
-    if (!willDelete) {
-      return;
-    }
-
-    this.setState({ busy: true });
-    await storage.local.clear();
-    swal({
-      text: res.get("finishedClear"),
-      icon: "success"
-    });
-    this.setState({ busy: false });
-    this.updateDictDataUsage();
+    // const willDelete = await swal({
+    //   text: res.get("clearAllDictData"),
+    //   icon: "warning",
+    //   buttons: true,
+    //   dangerMode: true
+    // });
+    // if (!willDelete) {
+    //   return;
+    // }
+    // this.setState({ busy: true });
+    // await storage.local.clear();
+    // swal({
+    //   text: res.get("finishedClear"),
+    //   icon: "success"
+    // });
+    // this.setState({ busy: false });
+    // this.updateDictDataUsage();
   }
 
   doLoadInitialDict() {
