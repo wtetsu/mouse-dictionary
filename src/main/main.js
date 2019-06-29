@@ -9,7 +9,7 @@ import dom from "../lib/dom";
 import rule from "../lib/rule";
 import env from "../settings/env";
 import view from "./view";
-import loader from "./settingsloader";
+import config from "./config";
 import events from "./events";
 import Draggable from "./draggable";
 import storage from "../lib/storage";
@@ -46,7 +46,7 @@ const processFirstLaunch = async () => {
     alert(res("doesntSupportFrame"));
     return;
   }
-  const { settings, position } = await loader.load();
+  const { settings, position } = await config.loadAll();
   try {
     initialize(settings, position);
   } catch (e) {
@@ -60,7 +60,7 @@ const processFirstLaunch = async () => {
 };
 
 const processSecondOrLaterLaunch = async existingElement => {
-  const userSettings = await loader.loadInitialSettings();
+  const userSettings = await config.loadSettings();
   toggleDialog(existingElement, userSettings);
 };
 
@@ -107,7 +107,7 @@ const setEvents = (area, userSettings) => {
   const scrollable = userSettings.scroll === "scroll";
   const draggable = new Draggable(userSettings.normalDialogStyles, userSettings.movingDialogStyles, scrollable);
   if (!env.disableKeepingWindowStatus) {
-    draggable.onchange = e => loader.savePosition(e);
+    draggable.onchange = e => config.savePosition(e);
   }
   draggable.add(area.dialog);
 

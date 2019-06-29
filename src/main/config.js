@@ -13,20 +13,23 @@ const KEY_LAST_POSITION = "**** last_position ****";
 
 const JSON_FIELDS = new Set(["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"]);
 
-const load = async () => {
+const loadAll = async () => {
   if (env.disableUserSettings) {
     return {};
   }
-  const storedData = await storage.sync.get([KEY_USER_CONFIG, KEY_LAST_POSITION]);
-
-  const settingJson = parseJson(storedData[KEY_USER_CONFIG] || "{}");
-  const settings = parseSettings(settingJson);
-  const position = parseJson(storedData[KEY_LAST_POSITION] || "{}");
+  const data = await getStoredData([KEY_USER_CONFIG, KEY_LAST_POSITION]);
+  const settings = parseSettings(data[KEY_USER_CONFIG]);
+  const position = data[KEY_LAST_POSITION];
   return { settings, position };
 };
 
-const loadInitialSettings = async () => {
-  const userSettings = await loadUserSettings();
+const loadSettings = async () => {
+  if (env.disableUserSettings) {
+    return Object.assign({}, defaultSettings);
+  }
+
+  const data = await getStoredData([KEY_USER_CONFIG]);
+  const userSettings = data[KEY_USER_CONFIG];
   const settings = Object.assign({}, defaultSettings, userSettings);
   return parseSettings(settings);
 };
@@ -40,24 +43,12 @@ const parseSettings = settings => {
     if (value === null || value === undefined) {
       continue;
     }
-    if (JSON_FIELDS.has(field)) {
-      result[field] = parseJson(value);
-    } else {
-      result[field] = value;
-    }
+    result[field] = JSON_FIELDS.has(field) ? parseJson(value) : value;
   }
   if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
     result.initialPosition = "right";
   }
   return result;
-};
-
-const loadUserSettings = async () => {
-  if (env.disableUserSettings) {
-    return {};
-  }
-  const userSettingsJson = (await storage.sync.pickOut(KEY_USER_CONFIG)) || "{}";
-  return parseJson(userSettingsJson);
 };
 
 const parseJson = json => {
@@ -81,4 +72,17 @@ const savePosition = async e => {
   });
 };
 
-export default { load, loadInitialSettings, savePosition };
+const getStoredData = async keys => {
+  const result = {};
+  const storedData = await storage.sync.get(keys);
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const json = storedData[key] || "{}";
+    result[key] = parseJson(json) || {};
+  }
+
+  return result;
+};
+
+export default { loadAll, loadSettings, savePosition };
