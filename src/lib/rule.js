@@ -12,17 +12,17 @@ import pronoun from "./rule/pronoun";
 import spelling from "./rule/spelling";
 
 // Lazy load
-const spellingRule = new Map();
-const pronounRule = [];
-const verbRule = new Map();
 const nounRule = new Map();
-const trailingRule = [];
 const phraseRule = [];
+const pronounRule = [];
+const spellingRule = new Map();
+const trailingRule = [];
+const verbRule = new Map();
 
 // Note: Parsing JSON is faster than long Object literals.
 // https://v8.dev/blog/cost-of-javascript-2019
 const load = () => {
-  utils.loadJson("data/rule/noun.json").then(registerNouns);
+  utils.loadJson("data/rule/noun.json").then(registerNoun);
   utils.loadJson("data/rule/phrase.json").then(registerPhrase);
   utils.loadJson("data/rule/pronoun.json").then(registerPronoun);
   utils.loadJson("data/rule/spelling.json").then(registerSpelling);
@@ -30,7 +30,7 @@ const load = () => {
   utils.loadJson("data/rule/verb.json").then(registerVerb);
 };
 
-const registerNouns = data => utils.updateMap(nounRule, data);
+const registerNoun = data => utils.updateMap(nounRule, data);
 const registerPhrase = data => Object.assign(phraseRule, data);
 const registerPronoun = data => Object.assign(pronounRule, data.map(datum => new Map(datum)));
 const registerSpelling = data => utils.updateMap(spellingRule, data);
@@ -39,7 +39,7 @@ const registerVerb = data => utils.updateMap(verbRule, data);
 
 export default {
   load,
-  registerNouns,
+  registerNoun,
   registerPhrase,
   registerPronoun,
   registerSpelling,

@@ -2,7 +2,7 @@ import fs from "fs";
 import rule from "../src/lib/rule";
 
 const load = () => {
-  rule.registerNouns(readJson("noun.json"));
+  rule.registerNoun(readJson("noun.json"));
   rule.registerPhrase(readJson("phrase.json"));
   rule.registerPronoun(readJson("pronoun.json"));
   rule.registerSpelling(readJson("spelling.json"));
