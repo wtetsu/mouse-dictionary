@@ -8,7 +8,7 @@ import res from "./resources";
 import dom from "../lib/dom";
 import rule from "../lib/rule";
 import env from "../settings/env";
-import mdwindow from "./mdwindow";
+import view from "./view";
 import loader from "./settingsloader";
 import events from "./events";
 import Draggable from "./draggable";
@@ -47,7 +47,13 @@ const processFirstLaunch = async () => {
     return;
   }
   const { settings, position } = await loader.load();
-  initialize(settings, position);
+  try {
+    initialize(settings, position);
+  } catch (e) {
+    alert(e.message);
+    console.error(e);
+    return;
+  }
 
   // Lazy load
   rule.load();
@@ -75,30 +81,29 @@ const toggleDialog = (area, userSettings) => {
 };
 
 const initialize = (userSettings, storedPosition) => {
-  let area;
-  try {
-    area = mdwindow.create(userSettings);
-  } catch (e) {
-    alert(e.message);
-    console.error(e);
-    return;
-  }
-
+  const area = view.create(userSettings);
   area.dialog.id = DIALOG_ID;
-
   dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
   document.body.appendChild(area.dialog);
 
+  const newStyles = decideInitialStyles(userSettings, storedPosition, area.dialog.clientWidth);
+  dom.applyStyles(area.dialog, newStyles);
+  setEvents(area, userSettings);
+};
+
+const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
   let newPosition;
   if (userSettings.initialPosition === "keep") {
     newPosition = utils.optimizeInitialPosition(storedPosition);
   } else {
-    newPosition = getInitialPosition(userSettings.initialPosition, area.dialog.clientWidth);
+    newPosition = getInitialPosition(userSettings.initialPosition, dialogWidth);
   }
   const positionStyles = utils.convertToStyles(newPosition);
   const newStyles = Object.assign(positionStyles, userSettings.normalDialogStyles);
-  dom.applyStyles(area.dialog, newStyles);
+  return newStyles;
+};
 
+const setEvents = (area, userSettings) => {
   const scrollable = userSettings.scroll === "scroll";
   const draggable = new Draggable(userSettings.normalDialogStyles, userSettings.movingDialogStyles, scrollable);
   if (!env.disableKeepingWindowStatus) {

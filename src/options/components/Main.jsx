@@ -18,7 +18,7 @@ import defaultSettings from "../../settings/defaultsettings";
 import dom from "../../lib/dom";
 import env from "../../settings/env";
 import ContentGenerator from "../../main/contentgenerator";
-import mdwindow from "../../main/mdwindow";
+import view from "../../main/view";
 import storage from "../../lib/storage";
 import utils from "../lib/utils";
 import generateEntries from "../../lib/entry/generate";
@@ -428,7 +428,7 @@ export default class Main extends React.Component {
       d.hiddenDialogStyles = null;
       d.movingDialogStyles = null;
     });
-    const trialWindow = mdwindow.create(tmpSettings);
+    const trialWindow = view.create(tmpSettings);
     dom.applyStyles(trialWindow.dialog, {
       cursor: "zoom-out",
       top: "30px"

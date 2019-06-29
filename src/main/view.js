@@ -7,15 +7,6 @@
 import Hogan from "hogan.js";
 import dom from "../lib/dom";
 
-export default {
-  create(settings) {
-    const dialog = createDialogElement(settings);
-    const content = dom.create(settings.contentWrapperTemplate);
-    dialog.appendChild(content);
-    return { dialog, content };
-  }
-};
-
 const STYLES_SCROLL = "border-radius: 5px 0px 0px 5px;";
 const STYLES_NORMAL = "border-radius: 5px 5px 5px 5px;";
 
@@ -34,3 +25,12 @@ const createDialogElement = settings => {
   dom.applyStyles(dialog, settings.normalDialogStyles);
   return dialog;
 };
+
+const create = settings => {
+  const dialog = createDialogElement(settings);
+  const content = dom.create(settings.contentWrapperTemplate);
+  dialog.appendChild(content);
+  return { dialog, content };
+};
+
+export default { create };
