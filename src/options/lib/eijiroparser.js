@@ -48,15 +48,15 @@ export default class EijiroParser {
 
     const firstHalf = line.substring(1, dindex1);
     const dindex2 = firstHalf.indexOf(DELIMITER2);
-    let head, desc;
+    const result = {};
     if (dindex2 >= 1) {
-      head = line.substring(1, dindex2 + 1);
-      desc = line.substring(dindex2 + 3);
+      result.head = line.substring(1, dindex2 + 1);
+      result.desc = line.substring(dindex2 + 3);
     } else {
-      head = firstHalf;
-      desc = line.substring(dindex1 + DELIMITER1.length);
+      result.head = firstHalf;
+      result.desc = line.substring(dindex1 + DELIMITER1.length);
     }
-    return { head, desc };
+    return result;
   }
 
   flush() {

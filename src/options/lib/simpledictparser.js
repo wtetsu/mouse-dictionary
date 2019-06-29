@@ -13,8 +13,8 @@ export default class SimpleDictParser {
     let hd = null;
     const didx = line.indexOf(this.delimiter);
     if (didx >= 0) {
-      let head = line.substring(0, didx);
-      let desc = line.substring(didx + this.delimiter.length);
+      const head = line.substring(0, didx);
+      const desc = line.substring(didx + this.delimiter.length);
       if (head && desc) {
         hd = { head, desc };
       }
