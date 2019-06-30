@@ -18,7 +18,9 @@ const loadAll = async () => {
     return {};
   }
   const data = await getStoredData([KEY_USER_CONFIG, KEY_LAST_POSITION]);
-  const settings = parseSettings(data[KEY_USER_CONFIG]);
+  const mergedSettings = Object.assign({}, defaultSettings, data[KEY_USER_CONFIG]);
+  const settings = parseSettings(mergedSettings);
+
   const position = data[KEY_LAST_POSITION];
   return { settings, position };
 };
@@ -30,8 +32,8 @@ const loadSettings = async () => {
 
   const data = await getStoredData([KEY_USER_CONFIG]);
   const userSettings = data[KEY_USER_CONFIG];
-  const settings = Object.assign({}, defaultSettings, userSettings);
-  return parseSettings(settings);
+  const mergedSettings = Object.assign({}, defaultSettings, userSettings);
+  return parseSettings(mergedSettings);
 };
 
 const parseSettings = settings => {
