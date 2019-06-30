@@ -7,11 +7,9 @@
 import res from "./resources";
 import dom from "../lib/dom";
 import rule from "../lib/rule";
-import env from "../settings/env";
 import view from "./view";
 import config from "./config";
 import events from "./events";
-import Draggable from "./draggable";
 import storage from "../lib/storage";
 import utils from "../lib/utils";
 
@@ -104,25 +102,14 @@ const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
 };
 
 const setEvents = (area, userSettings) => {
-  const scrollable = userSettings.scroll === "scroll";
-  const draggable = new Draggable(userSettings.normalDialogStyles, userSettings.movingDialogStyles, scrollable);
-  if (!env.disableKeepingWindowStatus) {
-    draggable.onchange = e => config.savePosition(e);
-  }
-  draggable.add(area.dialog);
-
   let _canRefreshView = true;
-  events.attach(area.dialog, draggable, userSettings, (newDom, count) => {
+  events.attach(userSettings, area.dialog, newDom => {
     if (!_canRefreshView) {
       storage.local.pickOut(KEY_LOADED).then(isLoaded => {
         if (isLoaded) {
           _canRefreshView = true;
         }
       });
-      return;
-    }
-    // update contents
-    if (draggable.selectable && count === 0) {
       return;
     }
     area.content.innerHTML = "";

@@ -67,6 +67,9 @@ const parseJson = json => {
 };
 
 const savePosition = async e => {
+  if (env.disableUserSettings || env.disableKeepingWindowStatus) {
+    return;
+  }
   return storage.sync.set({
     [KEY_LAST_POSITION]: JSON.stringify(e)
   });
