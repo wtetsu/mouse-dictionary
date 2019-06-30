@@ -17,7 +17,7 @@ import dict from "../lib/dict";
 import defaultSettings from "../../settings/defaultsettings";
 import dom from "../../lib/dom";
 import env from "../../settings/env";
-import ContentGenerator from "../../main/contentgenerator";
+import Generator from "../../main/generator";
 import view from "../../main/view";
 import storage from "../../lib/storage";
 import utils from "../lib/utils";
@@ -171,7 +171,7 @@ export default class Main extends React.Component {
     }
     const settings = Object.assign(getDefaultSettings(), userSettings);
     this.setState({ settings });
-    this.contentGenerator = new ContentGenerator(settings);
+    this.generator = new Generator(settings);
   }
 
   async updateDictDataUsage() {
@@ -396,10 +396,10 @@ export default class Main extends React.Component {
       return;
     }
     try {
-      // Creating a ContentGenerator instance fails when settings is wrong
-      const newContentGenerator = new ContentGenerator(settings);
-      if (newContentGenerator) {
-        this.contentGenerator = newContentGenerator;
+      // Creating a Generator instance fails when settings is wrong
+      const newGenerator = new Generator(settings);
+      if (newGenerator) {
+        this.generator = newGenerator;
       }
     } catch {
       // NOP
@@ -464,7 +464,7 @@ export default class Main extends React.Component {
     }
 
     const descriptions = await storage.local.get(entries);
-    const { html } = await this.contentGenerator.generate(entries, descriptions, lang === "en");
+    const { html } = await this.generator.generate(entries, descriptions, lang === "en");
 
     if (this.trialWindow) {
       const newDom = dom.create(html);

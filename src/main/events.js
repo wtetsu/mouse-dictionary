@@ -11,7 +11,7 @@ import utils from "../lib/utils";
 import storage from "../lib/storage";
 import ShortCache from "../lib/shortcache";
 import generateEntries from "../lib/entry/generate";
-import ContentGenerator from "./contentgenerator";
+import Generator from "./generator";
 import Draggable from "./draggable";
 
 const TEXT_LENGTH_LIMIT = 128;
@@ -78,7 +78,7 @@ class LookupController {
     this.textLengthLimit = TEXT_LENGTH_LIMIT;
 
     // Compile templates, regular expressions so that it works fast
-    this.contentGenerator = new ContentGenerator(settings);
+    this.generator = new Generator(settings);
     const cacheSize = process.env.NODE_ENV === "production" ? 100 : 0;
     this.shortCache = new ShortCache(cacheSize);
   }
@@ -127,7 +127,7 @@ class LookupController {
 
     const { entries, lang } = generateEntries(textToLookup, this.lookupWithCapitalized, includeOrgText);
     const descriptions = await storage.local.get(entries);
-    const { html, hitCount } = this.contentGenerator.generate(entries, descriptions, enableShortWord && lang === "en");
+    const { html, hitCount } = this.generator.generate(entries, descriptions, enableShortWord && lang === "en");
     const newDom = dom.create(html);
 
     this.updateContent(newDom, hitCount);

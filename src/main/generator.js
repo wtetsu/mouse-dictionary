@@ -6,7 +6,7 @@
 
 import Hogan from "hogan.js";
 
-export default class ContentGenerator {
+export default class Generator {
   constructor(settings) {
     this.shortWordLength = settings.shortWordLength;
     this.cutShortWordDescription = settings.cutShortWordDescription;
@@ -21,7 +21,7 @@ export default class ContentGenerator {
     this.compiledReplaceRules = compileReplaceRules(settings.replaceRules, ruleRenderParameters);
 
     // Since contentTemplate is executed fairly frequently,
-    // ContentGenerator uses this compiled result repeatedly.
+    // Generator uses this compiled result repeatedly.
     this.compiledContentTemplate = Hogan.compile(settings.contentTemplate);
   }
 
