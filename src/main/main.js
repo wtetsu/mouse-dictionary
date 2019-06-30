@@ -86,6 +86,8 @@ const initialize = (userSettings, storedPosition) => {
 
   const newStyles = decideInitialStyles(userSettings, storedPosition, area.dialog.clientWidth);
   dom.applyStyles(area.dialog, newStyles);
+
+  // Async
   setEvents(area, userSettings);
 };
 
@@ -101,28 +103,24 @@ const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
   return newStyles;
 };
 
-const setEvents = (area, userSettings) => {
-  let _canRefreshView = true;
-  events.attach(userSettings, area.dialog, newDom => {
-    if (!_canRefreshView) {
-      storage.local.pickOut(KEY_LOADED).then(isLoaded => {
-        if (isLoaded) {
-          _canRefreshView = true;
-        }
-      });
+const setEvents = async (area, userSettings) => {
+  let doUpdate = newDom => dom.replace(area.content, newDom);
+
+  events.attach(userSettings, area.dialog, newDom => doUpdate(newDom));
+
+  const isLoaded = await storage.local.pickOut(KEY_LOADED);
+  if (isLoaded) {
+    return;
+  }
+  // Notice for the first launch
+  area.content.innerHTML = res("needToPrepareDict");
+  doUpdate = async () => {
+    const isLoaded = await storage.local.pickOut(KEY_LOADED);
+    if (!isLoaded) {
       return;
     }
-    area.content.innerHTML = "";
-    area.content.appendChild(newDom);
-  });
-
-  // Async
-  storage.local.pickOut(KEY_LOADED).then(isLoaded => {
-    if (!isLoaded) {
-      area.content.innerHTML = res("needToPrepareDict");
-      _canRefreshView = false;
-    }
-  });
+    doUpdate = newDom => dom.replace(area.content, newDom);
+  };
 };
 
 const EDGE_SPACE = 5;

@@ -78,12 +78,7 @@ class LookupController {
     this.textLengthLimit = TEXT_LENGTH_LIMIT;
 
     // Compile templates, regular expressions so that it works fast
-    try {
-      this.contentGenerator = new ContentGenerator(settings);
-    } catch (e) {
-      this.contentGenerator = null;
-      console.error(e);
-    }
+    this.contentGenerator = new ContentGenerator(settings);
     const cacheSize = process.env.NODE_ENV === "production" ? 100 : 0;
     this.shortCache = new ShortCache(cacheSize);
   }

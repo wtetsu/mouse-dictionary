@@ -4,15 +4,13 @@
  * Licensed under MIT
  */
 
-const dom = {};
-
-dom.create = html => {
+const create = html => {
   const template = document.createElement("template");
   template.innerHTML = html.trim();
   return template.content.firstChild;
 };
 
-dom.applyStyles = (element, styles) => {
+const applyStyles = (element, styles) => {
   if (!styles || typeof styles !== "object") {
     return;
   }
@@ -25,10 +23,15 @@ dom.applyStyles = (element, styles) => {
   }
 };
 
+const replace = (element, newDom) => {
+  element.innerHTML = "";
+  element.appendChild(newDom);
+};
+
 const MAX_TRAVERSE_LEVEL = 4;
 const MAX_TRAVERSE_WORDS = 10;
 
-dom.traverse = elem => {
+const traverse = elem => {
   const resultWords = [];
 
   let current = elem;
@@ -115,4 +118,4 @@ const getChildren = (elem, skip) => {
   return result.reverse();
 };
 
-export default dom;
+export default { create, applyStyles, replace, traverse };
