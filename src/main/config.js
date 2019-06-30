@@ -10,6 +10,7 @@ import env from "../settings/env";
 
 const KEY_USER_CONFIG = "**** config ****";
 const KEY_LAST_POSITION = "**** last_position ****";
+const KEY_LOADED = "**** loaded ****";
 
 const JSON_FIELDS = new Set(["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"]);
 
@@ -90,4 +91,6 @@ const getStoredData = async keys => {
   return result;
 };
 
-export default { loadAll, loadSettings, savePosition };
+const isDataReady = () => storage.local.pickOut(KEY_LOADED);
+
+export default { loadAll, loadSettings, savePosition, isDataReady };

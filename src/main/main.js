@@ -10,13 +10,11 @@ import rule from "../lib/rule";
 import view from "./view";
 import config from "./config";
 import events from "./events";
-import storage from "../lib/storage";
 import utils from "../lib/utils";
-
-const KEY_LOADED = "**** loaded ****";
 
 const main = async () => {
   let startTime;
+
   if (process.env.NODE_ENV !== "production") {
     startTime = new Date().getTime();
   }
@@ -108,15 +106,14 @@ const setEvents = async (area, userSettings) => {
 
   events.attach(userSettings, area.dialog, newDom => doUpdate(newDom));
 
-  const isLoaded = await storage.local.pickOut(KEY_LOADED);
-  if (isLoaded) {
+  const isDataReady = await config.isDataReady();
+  if (isDataReady) {
     return;
   }
   // Notice for the first launch
   area.content.innerHTML = res("needToPrepareDict");
   doUpdate = async () => {
-    const isLoaded = await storage.local.pickOut(KEY_LOADED);
-    if (!isLoaded) {
+    if (!(await config.isDataReady())) {
       return;
     }
     doUpdate = newDom => dom.replace(area.content, newDom);
