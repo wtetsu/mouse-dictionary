@@ -13,11 +13,12 @@ import ShortCache from "../lib/shortcache";
 import generateEntries from "../lib/entry/generate";
 import Generator from "./generator";
 import Draggable from "./draggable";
+import rule from "../lib/rule";
 
 const TEXT_LENGTH_LIMIT = 128;
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
-const attach = (settings, dialog, doUpdateContent) => {
+const attach = async (settings, dialog, doUpdateContent) => {
   const controller = new LookupController(settings, doUpdateContent);
 
   const scrollable = settings.scroll === "scroll";
@@ -63,8 +64,13 @@ const attach = (settings, dialog, doUpdateContent) => {
     }
   });
 
-  // First invoke
-  controller.setSelectedText(getSelection());
+  const selectedText = getSelection();
+  if (selectedText) {
+    // Wait until loading rules finish
+    await rule.load();
+    // First invoke
+    controller.setSelectedText(selectedText);
+  }
 };
 
 class LookupController {
