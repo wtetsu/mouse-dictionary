@@ -10,15 +10,20 @@ export default class Generator {
   constructor(settings) {
     this.shortWordLength = settings.shortWordLength;
     this.cutShortWordDescription = settings.cutShortWordDescription;
-    this.headFontColor = settings.headFontColor;
-    this.descFontColor = settings.descFontColor;
-    this.headFontSize = settings.headFontSize;
-    this.descFontSize = settings.descFontSize;
-    this.scroll = settings.scroll;
-    this.cssReset = "margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;";
 
-    const ruleRenderParameters = { cssReset: this.cssReset };
-    this.compiledReplaceRules = compileReplaceRules(settings.replaceRules, ruleRenderParameters);
+    const cssReset = "margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;";
+
+    this.baseParameters = {
+      headFontColor: settings.headFontColor,
+      descFontColor: settings.descFontColor,
+      headFontSize: settings.headFontSize,
+      descFontSize: settings.descFontSize,
+      cssReset
+    };
+
+    this.scroll = settings.scroll;
+
+    this.compiledReplaceRules = compileReplaceRules(settings.replaceRules, { cssReset });
 
     // Since contentTemplate is executed fairly frequently,
     // Generator uses this compiled result repeatedly.
@@ -33,11 +38,7 @@ export default class Generator {
 
   createContentHtml(words, descriptions, compiledContentTemplate, enableShortWordLength) {
     const parameters = {
-      headFontColor: this.headFontColor,
-      descFontColor: this.descFontColor,
-      headFontSize: this.headFontSize,
-      descFontSize: this.descFontSize,
-      cssReset: this.cssReset,
+      ...this.baseParameters,
       words: this.createWordsParameter(words, descriptions, enableShortWordLength)
     };
     const html = compiledContentTemplate.render(parameters);
