@@ -110,7 +110,8 @@ const setEvents = async (area, userSettings) => {
     return;
   }
   // Notice for the very first launch.
-  area.content.innerHTML = res("needToPrepareDict");
+  const notice = dom.create(`<span>${res("needToPrepareDict")}</span>`);
+  dom.replace(area.content, notice);
   doUpdate = async () => {
     if (!(await config.isDataReady())) {
       return;
