@@ -14,7 +14,6 @@ import utils from "../lib/utils";
 
 const main = async () => {
   let startTime;
-
   if (process.env.NODE_ENV !== "production") {
     startTime = new Date().getTime();
   }
@@ -110,7 +109,7 @@ const setEvents = async (area, userSettings) => {
   if (isDataReady) {
     return;
   }
-  // Notice for the first launch
+  // Notice for the very first launch.
   area.content.innerHTML = res("needToPrepareDict");
   doUpdate = async () => {
     if (!(await config.isDataReady())) {
