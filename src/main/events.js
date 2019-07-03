@@ -28,7 +28,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
   document.body.addEventListener("mouseup", e => {
     draggable.onMouseUp();
     lookuper.suspended = false;
-    lookuper.setSelectedText(utils.getSelection());
+    lookuper.aimedLookup(utils.getSelection());
 
     const range = utils.omap(dialog.style, utils.convertToInt, POSITION_FIELDS);
     const didMouseUpOnTheWindow = utils.isInsideRange(range, { x: e.clientX, y: e.clientY });
@@ -64,7 +64,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
     // Wait until loading rules finish
     await rule.load();
     // First invoke
-    lookuper.setSelectedText(selectedText);
+    lookuper.aimedLookup(selectedText);
   }
 };
 

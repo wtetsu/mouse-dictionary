@@ -42,30 +42,41 @@ export default class Lookuper {
     return true;
   }
 
-  async update(rawText, includeOriginalText, enableShortWord) {
-    if (!rawText) {
+  async lookup(text) {
+    await this.update(text, false, true, 0);
+  }
+
+  async aimedLookup(text) {
+    this.selectedText = text;
+    if (!this.selectedText) {
       return;
     }
-    const textToLookup = rawText.substring(0, this.textLengthLimit);
+    await this.update(text, true, false, 1);
+  }
+
+  async update(text, includeOriginalText, enableShortWord, threshold) {
+    if (!text) {
+      return;
+    }
+    const textToLookup = text.substring(0, this.textLengthLimit);
     if (!textToLookup) {
       return;
     }
-
     if (!includeOriginalText) {
       if (this.lastText === textToLookup) {
         return;
       }
       const cacheData = this.shortCache.get(textToLookup);
       if (cacheData) {
-        this.updateContent(cacheData.dom, cacheData.hitCount);
+        this.updateContent(cacheData.dom, cacheData.hitCount, 1);
         this.lastText = textToLookup;
         return;
       }
     }
-    await this.lookupAndUpdate(textToLookup, includeOriginalText, enableShortWord);
+    await this.run(textToLookup, includeOriginalText, enableShortWord, threshold);
   }
 
-  async lookupAndUpdate(textToLookup, includeOrgText, enableShortWord) {
+  async run(textToLookup, includeOrgText, enableShortWord, threshold) {
     let startTime;
     if (process.env.NODE_ENV !== "production") {
       startTime = new Date().getTime();
@@ -76,7 +87,10 @@ export default class Lookuper {
     const { html, hitCount } = this.generator.generate(entries, descriptions, enableShortWord && lang === "en");
     const newDom = dom.create(html);
 
-    this.updateContent(newDom, hitCount);
+    if (hitCount < threshold) {
+      return;
+    }
+    this.doUpdateContent(newDom, hitCount);
 
     this.shortCache.put(textToLookup, { dom: newDom, hitCount });
     this.lastText = textToLookup;
@@ -85,20 +99,6 @@ export default class Lookuper {
       const time = new Date().getTime() - startTime;
       console.info(`${time}ms:${textToLookup}`);
       console.info(entries);
-    }
-  }
-
-  updateContent(newDom, hitCount) {
-    if (hitCount === 0) {
-      return;
-    }
-    this.doUpdateContent(newDom, hitCount);
-  }
-
-  setSelectedText(selectedText) {
-    this.selectedText = selectedText;
-    if (selectedText) {
-      this.update(selectedText, true, false);
     }
   }
 }
