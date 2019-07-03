@@ -17,15 +17,8 @@ const updateMap = (map, data) => {
 };
 
 /**
- * omap({ a: 1,
- *  b: 2,
- *  c: 3 },
- *  v => v * 2,
- *  ["b",
- *  "c"]);
- *   -> { a: 1,
- *  b: 4,
- *  c: 6 }
+ * omap({ a: 1, b: 2, c: 3 }, v => v * 2, ["b", "c"]);
+ *   -> { a: 1, b: 4, c: 6 }
  */
 const omap = (o, func, props) => {
   const result = {};
@@ -123,6 +116,11 @@ const min = (a, b) => {
   }
 };
 
+const getSelection = () => {
+  const selection = window.getSelection();
+  return selection.toString().trim();
+};
+
 export default {
   loadJson,
   updateMap,
@@ -131,5 +129,6 @@ export default {
   isInsideRange,
   convertToInt,
   convertToStyles,
-  optimizeInitialPosition
+  optimizeInitialPosition,
+  getSelection
 };
