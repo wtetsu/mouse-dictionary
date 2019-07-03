@@ -68,7 +68,7 @@ export default class Lookuper {
       }
       const cacheData = this.shortCache.get(textToLookup);
       if (cacheData) {
-        this.updateContent(cacheData.dom, cacheData.hitCount, 1);
+        this.doUpdateContent(cacheData.dom, cacheData.hitCount);
         this.lastText = textToLookup;
         return;
       }
