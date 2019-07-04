@@ -37,11 +37,8 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   document.body.addEventListener("mousemove", e => {
     draggable.onMouseMove(e);
-    if (!lookuper.canUpdate()) {
-      return;
-    }
     const textAtCursor = atcursor(e.target, e.clientX, e.clientY, settings.parseWordsLimit);
-    lookuper.update(textAtCursor, false, true);
+    lookuper.lookup(textAtCursor);
   });
 
   chrome.runtime.onMessage.addListener(request => {

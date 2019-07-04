@@ -19,6 +19,7 @@ export default class Lookuper {
     this.doUpdateContent = doUpdateContent;
 
     this.lastText = null;
+    this.aimed = false;
     this.suspended = false;
     this.halfLocked = false;
     this.textLengthLimit = TEXT_LENGTH_LIMIT;
@@ -33,7 +34,7 @@ export default class Lookuper {
     if (this.suspended) {
       return false;
     }
-    if (this.halfLocked && this.selectedText) {
+    if (this.halfLocked && this.aimed) {
       return false;
     }
     if (!this.halfLocked && utils.getSelection()) {
@@ -43,14 +44,18 @@ export default class Lookuper {
   }
 
   async lookup(text) {
+    if (!this.canUpdate()) {
+      return;
+    }
     await this.update(text, false, true, 0);
   }
 
   async aimedLookup(text) {
-    this.selectedText = text;
-    if (!this.selectedText) {
+    if (!text) {
+      this.aimed = false;
       return;
     }
+    this.aimed = true;
     await this.update(text, true, false, 1);
   }
 
