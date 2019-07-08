@@ -14,57 +14,10 @@ const BasicSettings = props => {
   if (!settings) {
     return "<div></div>";
   }
-  const fontSizes = ["xx-small", "x-small", "smaller", "small", "medium", "large", "larger", "x-large", "xx-large"];
-  const positions = [
-    {
-      name: res.get("positionLeft"),
-      value: "left"
-    },
-    {
-      name: res.get("positionRight"),
-      value: "right"
-    }
-  ];
-  if (!env.disableKeepingWindowStatus) {
-    positions.push({
-      name: res.get("positionKeep"),
-      value: "keep"
-    });
-  }
 
-  const positionOptions = positions.map(p => {
-    return (
-      <option key={p.value} value={p.value}>
-        {p.name}
-      </option>
-    );
-  });
-
-  const scrolls = [
-    {
-      name: res.get("scrollOn"),
-      value: "scroll"
-    },
-    {
-      name: res.get("scrollOff"),
-      value: "hidden"
-    }
-  ];
-  const scrollOptions = scrolls.map(p => {
-    return (
-      <option key={p.value} value={p.value}>
-        {p.name}
-      </option>
-    );
-  });
-
-  const fontSizeOptions = fontSizes.map(f => {
-    return (
-      <option key={f} value={f}>
-        {f}
-      </option>
-    );
-  });
+  const positionOptions = createPositionOptions();
+  const scrollOptions = createScrollOptions();
+  const fontSizeOptions = createFontSizeOptions();
 
   const changeState = e => {
     props.changeState(e.target.name, e.target.value);
@@ -178,6 +131,88 @@ const BasicSettings = props => {
   );
 
   return <form className="settingsForm">{settings1}</form>;
+};
+
+const createPositionOptions = () => {
+  const positions = [
+    {
+      name: res.get("positionLeft"),
+      value: "left"
+    },
+    {
+      name: res.get("positionRight"),
+      value: "right"
+    }
+  ];
+  if (!env.disableKeepingWindowStatus) {
+    positions.push({
+      name: res.get("positionKeep"),
+      value: "keep"
+    });
+  }
+  return createOptions(positions);
+};
+
+const createScrollOptions = () => {
+  const scrolls = [
+    {
+      name: res.get("scrollOn"),
+      value: "scroll"
+    },
+    {
+      name: res.get("scrollOff"),
+      value: "hidden"
+    }
+  ];
+  return createOptions(scrolls);
+};
+
+const FONT_SIZES = [
+  {
+    name: "xx-small",
+    value: "xx-small"
+  },
+  {
+    name: "x-small",
+    value: "x-small"
+  },
+  {
+    name: "smaller",
+    value: "smaller"
+  },
+  {
+    name: "small",
+    value: "small"
+  },
+  {
+    name: "medium",
+    value: "medium"
+  },
+  {
+    name: "large",
+    value: "large"
+  },
+  {
+    name: "larger",
+    value: "larger"
+  },
+  {
+    name: "x-large",
+    value: "x-large"
+  },
+  {
+    name: "xx-large",
+    value: "xx-large"
+  }
+];
+const createFontSizeOptions = () => createOptions(FONT_SIZES);
+
+const createOptions = list => {
+  return list.map(it => (
+    <option key={it.value} value={it.value}>
+      {it.name}
+    </option>
+  ));
 };
 
 export default BasicSettings;
