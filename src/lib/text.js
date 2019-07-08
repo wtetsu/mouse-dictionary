@@ -5,7 +5,7 @@
  */
 
 import consts from "./consts";
-import rule from "./rule";
+import rule from "../main/rule";
 
 const text = {};
 

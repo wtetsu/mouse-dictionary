@@ -5,7 +5,7 @@
  */
 
 import UniqList from "uniqlist";
-import text from "../text";
+import text from "../../lib/text";
 import rule from "../rule";
 
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {

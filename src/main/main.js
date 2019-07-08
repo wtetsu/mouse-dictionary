@@ -6,7 +6,7 @@
 
 import res from "./resources";
 import dom from "../lib/dom";
-import rule from "../lib/rule";
+import rule from "../main/rule";
 import view from "./view";
 import config from "./config";
 import events from "./events";

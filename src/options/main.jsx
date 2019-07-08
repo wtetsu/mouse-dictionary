@@ -9,7 +9,7 @@ import swal from "sweetalert";
 import React from "react";
 import { render } from "react-dom";
 import Main from "./components/Main";
-import rule from "../lib/rule";
+import rule from "../main/rule";
 
 window.onerror = msg => {
   swal({

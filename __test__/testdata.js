@@ -1,5 +1,5 @@
 import fs from "fs";
-import rule from "../src/lib/rule";
+import rule from "../src/main/rule";
 
 const load = () => {
   rule.registerNoun(readJson("noun.json"));

@@ -7,8 +7,8 @@
 import config from "./config";
 import atcursor from "../lib/atcursor";
 import utils from "../lib/utils";
-import Draggable from "./draggable";
-import rule from "../lib/rule";
+import Draggable from "../lib/draggable";
+import rule from "../main/rule";
 import Lookuper from "./lookuper";
 
 const POSITION_FIELDS = ["left", "top", "width", "height"];

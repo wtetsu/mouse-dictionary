@@ -21,7 +21,7 @@ import Generator from "../../main/generator";
 import view from "../../main/view";
 import storage from "../../lib/storage";
 import utils from "../lib/utils";
-import generateEntries from "../../lib/entry/generate";
+import entry from "../../main/entry";
 
 const KEY_LOADED = "**** loaded ****";
 const KEY_USER_CONFIG = "**** config ****";
@@ -456,7 +456,7 @@ export default class Main extends React.Component {
     }
     const actualTrialText = trialText || this.state.trialText;
 
-    const { entries, lang } = generateEntries(actualTrialText, settings.lookupWithCapitalized, false);
+    const { entries, lang } = entry.build(actualTrialText, settings.lookupWithCapitalized, false);
 
     let startTime;
     if (process.env.NODE_ENV !== "production") {

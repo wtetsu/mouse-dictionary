@@ -7,7 +7,7 @@
 import dom from "../lib/dom";
 import storage from "../lib/storage";
 import ShortCache from "../lib/shortcache";
-import generateEntries from "../lib/entry/generate";
+import entry from "../main/entry";
 import utils from "../lib/utils";
 import Generator from "./generator";
 
@@ -87,7 +87,7 @@ export default class Lookuper {
       startTime = new Date().getTime();
     }
 
-    const { entries, lang } = generateEntries(textToLookup, this.lookupWithCapitalized, includeOrgText);
+    const { entries, lang } = entry.build(textToLookup, this.lookupWithCapitalized, includeOrgText);
     const descriptions = await storage.local.get(entries);
     const { html, hitCount } = this.generator.generate(entries, descriptions, enableShortWord && lang === "en");
     const newDom = dom.create(html);

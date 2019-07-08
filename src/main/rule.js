@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import utils from "./utils";
+import utils from "../lib/utils";
 
 import base from "./rule/base";
 import phrase from "./rule/phrase";

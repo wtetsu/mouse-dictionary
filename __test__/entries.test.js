@@ -1,5 +1,5 @@
 import testdata from "./testdata";
-import generateEntries from "../src/lib/entry/en";
+import generateEntries from "../src/main/entry/en";
 
 beforeAll(() => {
   testdata.load();

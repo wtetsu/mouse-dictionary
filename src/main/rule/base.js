@@ -5,7 +5,7 @@
  */
 
 import UniqList from "uniqlist";
-import text from "../text";
+import text from "../../lib/text";
 
 export default (rule, word) => {
   const list = new UniqList();
