@@ -27,14 +27,18 @@ const loadAll = async () => {
 };
 
 const loadSettings = async () => {
+  const rawSettings = await loadRawSettings();
+  return parseSettings(rawSettings);
+};
+
+const loadRawSettings = async () => {
   if (env.disableUserSettings) {
     return Object.assign({}, defaultSettings);
   }
 
   const data = await getStoredData([KEY_USER_CONFIG]);
   const userSettings = data[KEY_USER_CONFIG];
-  const mergedSettings = Object.assign({}, defaultSettings, userSettings);
-  return parseSettings(mergedSettings);
+  return Object.assign({}, defaultSettings, userSettings);
 };
 
 const parseSettings = settings => {
@@ -69,6 +73,8 @@ const parseJson = json => {
   return result;
 };
 
+const saveSettings = settings => storage.sync.set({ [KEY_USER_CONFIG]: JSON.stringify(settings) });
+
 const savePosition = async e => {
   if (env.disableUserSettings || env.disableKeepingWindowStatus) {
     return;
@@ -93,4 +99,14 @@ const getStoredData = async keys => {
 
 const isDataReady = () => storage.local.pickOut(KEY_LOADED);
 
-export default { loadAll, loadSettings, savePosition, isDataReady };
+const setDataReady = ready => storage.local.set({ [KEY_LOADED]: ready });
+
+export default {
+  loadAll,
+  loadSettings,
+  loadRawSettings,
+  saveSettings,
+  savePosition,
+  isDataReady,
+  setDataReady
+};

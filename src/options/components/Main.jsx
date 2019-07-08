@@ -19,12 +19,10 @@ import dom from "../../lib/dom";
 import env from "../../settings/env";
 import Generator from "../../main/generator";
 import view from "../../main/view";
+import config from "../../main/config";
 import storage from "../../lib/storage";
 import utils from "../lib/utils";
 import entry from "../../main/entry";
-
-const KEY_LOADED = "**** loaded ****";
-const KEY_USER_CONFIG = "**** config ****";
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -148,7 +146,7 @@ export default class Main extends React.Component {
   }
 
   async componentDidMount() {
-    const isLoaded = await storage.local.pickOut(KEY_LOADED);
+    const isLoaded = await config.isDataReady();
     if (!isLoaded) {
       this.confirmAndLoadInitialDict("confirmLoadInitialDict");
     }
@@ -162,14 +160,7 @@ export default class Main extends React.Component {
   }
 
   async initializeUserSettings() {
-    let userSettings;
-    if (env.disableUserSettings) {
-      userSettings = {};
-    } else {
-      const userSettingsJson = await storage.sync.pickOut(KEY_USER_CONFIG);
-      userSettings = utils.tryToParseJson(userSettingsJson);
-    }
-    const settings = Object.assign(getDefaultSettings(), userSettings);
+    const settings = await config.loadRawSettings();
     this.setState({ settings });
     this.generator = new Generator(settings);
   }
@@ -212,9 +203,7 @@ export default class Main extends React.Component {
       this.setState({ busy: false, progress: "" });
     }
 
-    await storage.local.set({
-      [KEY_LOADED]: true
-    });
+    await config.setDataReady(true);
 
     await swal({
       text: res.get("finishRegister", finalWordCount),
@@ -289,10 +278,7 @@ export default class Main extends React.Component {
         text: res.get("finishRegister", wordCount),
         icon: "success"
       });
-      storage.local.set({
-        [KEY_LOADED]: true
-      });
-
+      config.setDataReady(true);
       this.updateDictDataUsage();
     } catch (e) {
       swal({
@@ -479,9 +465,7 @@ export default class Main extends React.Component {
   }
 
   async doSaveSettings() {
-    await storage.sync.set({
-      [KEY_USER_CONFIG]: JSON.stringify(this.state.settings)
-    });
+    await config.saveSettings(this.state.settings);
     swal({
       text: res.get("finishSaving"),
       icon: "info"
