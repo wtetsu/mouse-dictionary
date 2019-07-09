@@ -169,7 +169,7 @@ export default class Draggable {
     const lval = latest[prop];
     if (lval !== null && lval !== cval) {
       this.current[prop] = lval;
-      this.mainElement.style[prop] = `${cval}px`;
+      this.mainElement.style[prop] = `${lval}px`;
     }
   }
 
