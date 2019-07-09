@@ -4,12 +4,12 @@
  * Licensed under MIT
  */
 
+import entry from "./entry";
+import Generator from "./generator";
 import dom from "../lib/dom";
 import storage from "../lib/storage";
 import ShortCache from "../lib/shortcache";
-import entry from "../main/entry";
 import utils from "../lib/utils";
-import Generator from "./generator";
 
 const TEXT_LENGTH_LIMIT = 128;
 

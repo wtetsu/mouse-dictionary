@@ -5,8 +5,8 @@
  */
 
 import React from "react";
-import res from "../lib/resources";
 import SimpleSelect from "./SimpleSelect.jsx";
+import res from "../lib/resources";
 import env from "../../settings/env";
 
 const LoadDictionary = props => {

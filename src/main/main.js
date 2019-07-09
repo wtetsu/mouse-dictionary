@@ -5,11 +5,11 @@
  */
 
 import res from "./resources";
-import dom from "../lib/dom";
-import rule from "../main/rule";
+import rule from "./rule";
 import view from "./view";
 import config from "./config";
 import events from "./events";
+import dom from "../lib/dom";
 import utils from "../lib/utils";
 
 const main = async () => {

@@ -5,11 +5,11 @@
  */
 
 import config from "./config";
+import rule from "./rule";
+import Lookuper from "./lookuper";
 import atcursor from "../lib/atcursor";
 import utils from "../lib/utils";
 import Draggable from "../lib/draggable";
-import rule from "../main/rule";
-import Lookuper from "./lookuper";
 
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 

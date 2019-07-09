@@ -5,8 +5,8 @@
  */
 
 import UniqList from "uniqlist";
-import text from "../../lib/text";
 import rule from "../rule";
+import text from "../../lib/text";
 
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
   const sourceStr = text.dealWithHyphens(rawSourceStr);
