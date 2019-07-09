@@ -35,11 +35,19 @@ const attach = async (settings, dialog, doUpdateContent) => {
     lookuper.halfLocked = didMouseUpOnTheWindow;
   });
 
-  document.body.addEventListener("mousemove", e => {
+  const onMouseMoveFirst = async e => {
+    // Wait until rule loading finish
+    await rule.load();
+    onMouseMove = onMouseMoveSecondOrLater;
+    onMouseMove(e);
+  };
+  const onMouseMoveSecondOrLater = e => {
     draggable.onMouseMove(e);
     const textAtCursor = atcursor(e.target, e.clientX, e.clientY, settings.parseWordsLimit);
     lookuper.lookup(textAtCursor);
-  });
+  };
+  let onMouseMove = onMouseMoveFirst;
+  document.body.addEventListener("mousemove", e => onMouseMove(e));
 
   chrome.runtime.onMessage.addListener(request => {
     const m = request.message;
@@ -58,7 +66,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   const selectedText = utils.getSelection();
   if (selectedText) {
-    // Wait until loading rules finish
+    // Wait until rule loading finish
     await rule.load();
     // First invoke
     lookuper.aimedLookup(selectedText);
