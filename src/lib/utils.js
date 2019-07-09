@@ -24,7 +24,7 @@ const omap = (o, func, props) => {
   const result = {};
   for (let i = 0; i < props.length; i++) {
     const prop = props[i];
-    result[prop] = func ? func(o[prop]) : func;
+    result[prop] = func ? func(o[prop]) : null;
   }
   return result;
 };
