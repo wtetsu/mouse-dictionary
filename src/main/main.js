@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import res from "./resources";
+import res from "./resource";
 import rule from "./rule";
 import view from "./view";
 import config from "./config";

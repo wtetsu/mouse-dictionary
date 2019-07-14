@@ -12,17 +12,17 @@ import LoadDictionary from "./LoadDictionary";
 import BasicSettings from "./BasicSettings";
 import AdvancedSettings from "./AdvancedSettings";
 import PersistenceSettings from "./PersistenceSettings";
-import res from "../lib/resources";
-import dict from "../lib/dict";
-import defaultSettings from "../../settings/defaultsettings";
+import res from "../logic/resource";
+import dict from "../logic/dict";
+import utils from "../logic/utils";
 import dom from "../../lib/dom";
-import env from "../../settings/env";
+import storage from "../../lib/storage";
 import Generator from "../../main/generator";
 import view from "../../main/view";
 import config from "../../main/config";
-import storage from "../../lib/storage";
-import utils from "../lib/utils";
 import entry from "../../main/entry";
+import env from "../../settings/env";
+import defaultSettings from "../../settings/defaultsettings";
 
 export default class Main extends React.Component {
   constructor(props) {

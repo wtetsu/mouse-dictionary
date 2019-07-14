@@ -8,7 +8,7 @@ import "@babel/polyfill";
 import swal from "sweetalert";
 import React from "react";
 import { render } from "react-dom";
-import Main from "./components/Main";
+import Main from "./component/Main";
 import rule from "../main/rule";
 
 window.onerror = msg => {

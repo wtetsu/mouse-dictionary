@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import res from "../lib/resources";
+import res from "../logic/resource";
 
 const AdvancedSettings = props => {
   const settings = props.settings;
