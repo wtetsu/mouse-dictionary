@@ -1,4 +1,4 @@
-import LineReader from "../src/options/lib/linereader";
+import LineReader from "../src/options/logic/linereader";
 
 test("", () => {
   let reader = new LineReader("aaa\nbbb\nccc");

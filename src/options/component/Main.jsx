@@ -14,7 +14,7 @@ import AdvancedSettings from "./AdvancedSettings";
 import PersistenceSettings from "./PersistenceSettings";
 import res from "../logic/resource";
 import dict from "../logic/dict";
-import utils from "../logic/utils";
+import data from "../logic/data";
 import dom from "../../lib/dom";
 import storage from "../../lib/storage";
 import Generator from "../../main/generator";
@@ -27,7 +27,7 @@ import defaultSettings from "../../settings/defaultsettings";
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
-    const initialLang = utils.decideInitialLanguage(navigator.languages);
+    const initialLang = decideInitialLanguage(navigator.languages);
     res.setLang(initialLang);
     this.state = {
       encoding: "Shift-JIS",
@@ -240,7 +240,7 @@ export default class Main extends React.Component {
     }
     let willContinue = true;
     if (encoding === "Shift-JIS") {
-      const fileMayBeSjis = await utils.fileMayBeSjis(file);
+      const fileMayBeSjis = await data.fileMayBeSjis(file);
       if (!fileMayBeSjis) {
         willContinue = await swal({
           title: res.get("fileMayNotBeShiftJis"),
@@ -509,4 +509,20 @@ const shouldRecreateTrialWindowProps = new Set(["scroll", "backgroundColor", "di
 
 const shouldRecreateTrialWindow = propName => {
   return shouldRecreateTrialWindowProps.has(propName);
+};
+
+const decideInitialLanguage = languages => {
+  if (!languages) {
+    return "en";
+  }
+  const validLanguages = ["en", "ja"];
+  let result = "en";
+  for (let i = 0; i < languages.length; i++) {
+    const lang = languages[i].toLowerCase().split("-")[0];
+    if (validLanguages.includes(lang)) {
+      result = lang;
+      break;
+    }
+  }
+  return result;
 };

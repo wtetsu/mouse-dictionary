@@ -1,4 +1,4 @@
-import EijiroParser from "../src/options/lib/eijiroparser";
+import EijiroParser from "../src/options/logic/eijiroparser";
 
 test("", () => {
   const parser = new EijiroParser();
