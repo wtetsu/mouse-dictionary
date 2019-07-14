@@ -115,6 +115,11 @@ export default class Main extends React.Component {
               html={this.state.trialText}
               disabled={false}
               onChange={e => this.doChangeState("trialText", e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                }
+              }}
               tagName="span"
             />
             <br />
