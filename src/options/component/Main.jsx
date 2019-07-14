@@ -124,8 +124,8 @@ export default class Main extends React.Component {
 
         <br />
         {this.state.basicSettingsOpened && (
-          <div style={{ fontSize: "10px" }}>
-            <img src="settings2.png" style={{ verticalAlign: "bottom" }} />
+          <div>
+            <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
             <a onClick={this.doToggleAdvancedSettings} style={{ cursor: "pointer" }}>
               {this.state.advancedSettingsOpened ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
             </a>

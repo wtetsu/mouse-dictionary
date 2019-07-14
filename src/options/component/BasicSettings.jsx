@@ -92,41 +92,46 @@ const BasicSettings = props => {
         </a>
       </p>
 
-      <hr />
       <h3>{res.get("colorAndFont")}</h3>
-      <label>{res.get("backgroundColor")}</label>
-      <ChromePicker
-        color={settings.backgroundColor}
-        onChangeComplete={changeColor.bind(this, "backgroundColor")}
-        disableAlpha={true}
-      />
-      <br />
-      <br />
-
-      <label>{res.get("headFontSize")}</label>
-      <select name="headFontSize" value={settings.headFontSize} onChange={changeSettings} style={{ width: 250 }}>
-        {fontSizeOptions}
-      </select>
-      <label>{res.get("headFontColor")}</label>
-      <ChromePicker
-        color={settings.headFontColor}
-        onChangeComplete={changeColor.bind(this, "headFontColor")}
-        disableAlpha={true}
-      />
-
-      <br />
-      <br />
-
-      <label>{res.get("descFontSize")}</label>
-      <select name="descFontSize" value={settings.descFontSize} onChange={changeSettings} style={{ width: 250 }}>
-        {fontSizeOptions}
-      </select>
-      <label>{res.get("descFontcolor")}</label>
-      <ChromePicker
-        color={settings.descFontColor}
-        onChangeComplete={changeColor.bind(this, "descFontColor")}
-        disableAlpha={true}
-      />
+      <div className="container">
+        <div className="row" style={{ width: 690 }}>
+          <div className="column">
+            <h4>{res.get("headFont")}</h4>
+            <ChromePicker
+              width={200}
+              color={settings.headFontColor}
+              onChangeComplete={changeColor.bind(this, "headFontColor")}
+              disableAlpha={true}
+            />
+            <br />
+            <select name="headFontSize" value={settings.headFontSize} onChange={changeSettings} style={{ width: 200 }}>
+              {fontSizeOptions}
+            </select>
+          </div>
+          <div className="column">
+            <h4>{res.get("descFont")}</h4>
+            <ChromePicker
+              width={200}
+              color={settings.descFontColor}
+              onChangeComplete={changeColor.bind(this, "descFontColor")}
+              disableAlpha={true}
+            />
+            <br />
+            <select name="descFontSize" value={settings.descFontSize} onChange={changeSettings} style={{ width: 200 }}>
+              {fontSizeOptions}
+            </select>
+          </div>
+          <div className="column">
+            <h4>{res.get("background")}</h4>
+            <ChromePicker
+              width={200}
+              color={settings.backgroundColor}
+              onChangeComplete={changeColor.bind(this, "backgroundColor")}
+              disableAlpha={true}
+            />
+          </div>
+        </div>
+      </div>
     </fieldset>
   );
 
