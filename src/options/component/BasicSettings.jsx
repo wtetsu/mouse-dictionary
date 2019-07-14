@@ -19,10 +19,6 @@ const BasicSettings = props => {
   const scrollOptions = createScrollOptions();
   const fontSizeOptions = createFontSizeOptions();
 
-  const changeState = e => {
-    props.changeState(e.target.name, e.target.value);
-  };
-
   const changeSettings = e => {
     const value = e.target.type === "number" ? parseInt(e.target.value, 10) : e.target.value;
     props.changeSettings(e.target.name, value);
@@ -35,8 +31,6 @@ const BasicSettings = props => {
   const settings1 = (
     <fieldset>
       <h2>{res.get("basicSettings")}</h2>
-      <label>{res.get("trialText")}</label>
-      <input type="text" name="trialText" value={props.trialText} onChange={changeState} style={{ width: 560 }} />
       <label>{res.get("abbreviateShortWordDesc")}</label>
       <span> {res.get("abbreviateShortWordDesc0")} </span>
       <input

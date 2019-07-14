@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+import ContentEditable from "react-contenteditable";
 import swal from "sweetalert";
 import lodash from "lodash";
 import immer from "immer";
@@ -27,6 +28,8 @@ import defaultSettings from "../../settings/defaultsettings";
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
+    this.contentEditable = React.createRef();
+
     const initialLang = decideInitialLanguage(navigator.languages);
     res.setLang(initialLang);
     this.state = {
@@ -105,6 +108,21 @@ export default class Main extends React.Component {
         <br />
 
         {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
+          <>
+            <span>{res.get("trialText")}: </span>
+            <ContentEditable
+              innerRef={this.contentEditable}
+              html={this.state.trialText}
+              disabled={false}
+              onChange={e => this.doChangeState("trialText", e.target.value)}
+              tagName="span"
+            />
+            <br />
+            <br />
+          </>
+        )}
+
+        {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
           <PersistenceSettings
             onClickSaveSettings={this.doSaveSettings}
             onClickBackToDefaultSettings={this.doBackToDefaultSettings}
@@ -113,7 +131,6 @@ export default class Main extends React.Component {
 
         {this.state.basicSettingsOpened && (
           <BasicSettings
-            changeState={this.doChangeState}
             changeSettings={this.doChangeSettings}
             doLoadInitialDict={this.doLoadInitialDict}
             busy={state.busy}
