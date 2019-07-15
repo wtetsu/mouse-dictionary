@@ -4,8 +4,6 @@
  * Licensed under MIT
  */
 
-const TEXT_TAGS = ["SPAN"];
-
 const runFrom = (elem, maxTraverseWords = 10, maxTraverseLevel = 4) => {
   return run(elem, true, maxTraverseWords, maxTraverseLevel);
 };
@@ -23,14 +21,14 @@ const run = (elem, includeStartingPoint, maxTraverseWords = 10, maxTraverseLevel
   current = current.parentNode;
 
   for (let i = 0; i < maxTraverseLevel; i++) {
+    if (resultWords.length >= maxTraverseWords) {
+      break;
+    }
     if (!current || current.tagName === "BODY") {
       break;
     }
     const words = getDescendantsWords(current, startingPoint, false);
     resultWords.push(...words);
-    if (resultWords.length >= maxTraverseWords) {
-      break;
-    }
     startingPoint = current;
     current = current.parentNode;
   }
@@ -49,20 +47,27 @@ const getDescendantsWords = (elem, startingPoint, includeStartingPoint) => {
     return t ? [t] : [];
   }
 
+  //const children = getChildren(elem, startingPoint, includeStartingPoint);
   const children = getChildren(elem, startingPoint, includeStartingPoint);
+
   for (let i = 0; i < children.length; i++) {
-    const descendantsWords = getDescendantsWords(children[i], null);
+    const descendantsWords = getDescendantsWords(children[i], null, false);
     words.push(...descendantsWords);
   }
   return words;
 };
 
 const getChildren = (elem, startingPoint, includeStartingPoint) => {
-  if (!startingPoint) {
-    return elem.childNodes;
+  let resultChildren;
+  if (startingPoint) {
+    const { children, areAllTextNodes } = selectTargetChildren(elem, startingPoint, includeStartingPoint);
+    resultChildren = areAllTextNodes ? processSiblings(children) : children;
+  } else {
+    const children = Array.from(elem.childNodes);
+    const areAllTextNodes = children.every(isVirtualTextNode);
+    resultChildren = areAllTextNodes ? processSiblings(children) : children;
   }
-  const { children, areAllTextNodes } = selectTargetChildren(elem, startingPoint, includeStartingPoint);
-  return areAllTextNodes ? processSiblings(children) : children;
+  return resultChildren;
 };
 
 const selectTargetChildren = (elem, startingPoint, includeStartingPoint) => {
@@ -111,14 +116,6 @@ const processSiblings = siblings => {
   ];
 };
 
-const isVirtualTextNode = element => {
-  if (element.nodeType === 3) {
-    return true;
-  }
-  const len = element.children && element.children.length;
-  return len === 0 && TEXT_TAGS.includes(element.tagName);
-};
-
 const joinWords = words => {
   let joinNext = false;
   let currentWord = "";
@@ -145,6 +142,13 @@ const joinWords = words => {
     newWords.push(currentWord);
   }
   return newWords.join(" ");
+};
+
+const TEXT_TAGS = ["SPAN"];
+
+const isVirtualTextNode = element => {
+  const len = element.children && element.children.length;
+  return len === 0 && TEXT_TAGS.includes(element.tagName);
 };
 
 export default { runFrom, runAfter };

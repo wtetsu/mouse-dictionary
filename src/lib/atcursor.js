@@ -8,12 +8,17 @@ import consts from "./consts";
 import traverse from "./traverse";
 
 const JA_MAX_LENGTH = 40;
-const TEXT_TAGS = ["SPAN"];
 
 export default (element, clientX, clientY, maxWords = 5) => {
   let text;
   try {
-    text = fetchText(element, clientX, clientY, maxWords);
+    const slidStartingPoint = slideStartingPoint(element);
+    if (slidStartingPoint) {
+      const rawText = traverse.runFrom(slidStartingPoint, maxWords);
+      text = getTextFromRange(rawText, 0, maxWords).text;
+    } else {
+      text = fetchTextFromPoint(element, clientX, clientY, maxWords);
+    }
   } catch (err) {
     console.error(err);
     text = null;
@@ -31,22 +36,31 @@ const slideStartingPoint = elem => {
     if (selfIndex === null) {
       if (child === elem) {
         selfIndex = i;
+        if (selfIndex === 0 && siblings.length >= 2) {
+          slidStartingPoint = elem;
+        }
       }
     } else {
-      if (!isVirtualTextNode(child)) {
+      if (!isValidTextNode(child)) {
         if (selfIndex !== i + 1) {
           slidStartingPoint = siblings[i + 1];
-        } else if (isVirtualTextNode(siblings[selfIndex]) && isVirtualTextNode(siblings[selfIndex + 1])) {
+        } else if (isValidTextNode(siblings[selfIndex]) && isValidTextNode(siblings[selfIndex + 1])) {
           slidStartingPoint = elem;
         }
         break;
+      } else {
+        if (i === 0) {
+          slidStartingPoint = elem;
+        }
       }
     }
   }
   return slidStartingPoint;
 };
 
-const isVirtualTextNode = element => {
+const TEXT_TAGS = ["SPAN"];
+
+const isValidTextNode = element => {
   if (!element) {
     false;
   }
@@ -63,16 +77,7 @@ const isVirtualTextNode = element => {
   return true;
 };
 
-const fetchText = (element, clientX, clientY, maxWords) => {
-  const slidStartingPoint = slideStartingPoint(element);
-  if (slidStartingPoint) {
-    return traverse.runFrom(slidStartingPoint, maxWords);
-  } else {
-    return x(element, clientX, clientY, maxWords);
-  }
-};
-
-const x = (element, clientX, clientY, maxWords) => {
+const fetchTextFromPoint = (element, clientX, clientY, maxWords) => {
   const range = getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
   if (!range) {
     return null;

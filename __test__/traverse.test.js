@@ -45,6 +45,7 @@ test("", () => {
   lines.push("        ddd");
   lines.push("        <span>");
   lines.push("          <span>eee</span>");
+  lines.push("          <span> </span>");
   lines.push("          <span>fff</span>");
   lines.push("        </span>");
   lines.push("        <span>ggg</span>");
