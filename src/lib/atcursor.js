@@ -5,22 +5,74 @@
  */
 
 import consts from "./consts";
-import dom from "./dom";
+import traverse from "./traverse";
 
 const JA_MAX_LENGTH = 40;
+const TEXT_TAGS = ["SPAN"];
 
 export default (element, clientX, clientY, maxWords = 5) => {
-  let textOnCursor = null;
+  let text;
   try {
-    textOnCursor = fetchTextOnCursor(element, clientX, clientY, maxWords);
+    text = fetchText(element, clientX, clientY, maxWords);
   } catch (err) {
     console.error(err);
-    textOnCursor = null;
+    text = null;
   }
-  return textOnCursor;
+  return text;
 };
 
-const fetchTextOnCursor = (element, clientX, clientY, maxWords) => {
+const slideStartingPoint = elem => {
+  let slidStartingPoint = null;
+
+  const siblings = elem.parentNode && elem.parentNode.childNodes;
+  let selfIndex = null;
+  for (let i = siblings.length - 1; i >= 0; i--) {
+    const child = siblings[i];
+    if (selfIndex === null) {
+      if (child === elem) {
+        selfIndex = i;
+      }
+    } else {
+      if (!isVirtualTextNode(child)) {
+        if (selfIndex !== i + 1) {
+          slidStartingPoint = siblings[i + 1];
+        } else if (isVirtualTextNode(siblings[selfIndex]) && isVirtualTextNode(siblings[selfIndex + 1])) {
+          slidStartingPoint = elem;
+        }
+        break;
+      }
+    }
+  }
+  return slidStartingPoint;
+};
+
+const isVirtualTextNode = element => {
+  if (!element) {
+    false;
+  }
+  if (!TEXT_TAGS.includes(element.tagName)) {
+    return false;
+  }
+  const childrenNumber = (element.children && element.children.length) || 0;
+  if (childrenNumber >= 1) {
+    return false;
+  }
+  if (element.textContent.includes(" ")) {
+    return false;
+  }
+  return true;
+};
+
+const fetchText = (element, clientX, clientY, maxWords) => {
+  const slidStartingPoint = slideStartingPoint(element);
+  if (slidStartingPoint) {
+    return traverse.runFrom(slidStartingPoint, maxWords);
+  } else {
+    return x(element, clientX, clientY, maxWords);
+  }
+};
+
+const x = (element, clientX, clientY, maxWords) => {
   const range = getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
   if (!range) {
     return null;
@@ -35,8 +87,9 @@ const fetchTextOnCursor = (element, clientX, clientY, maxWords) => {
 const fetchTextFromTextNode = (textNode, offset, maxWords) => {
   let textOnCursor;
   const { text, end, isEnglish } = getTextFromRange(textNode.data, offset, maxWords);
+
   if (end) {
-    const followingText = dom.traverse(textNode);
+    const followingText = traverse.runAfter(textNode);
     const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
     const endIndex = isEnglish ? searchEndIndex(concatenatedText, 0, maxWords) : JA_MAX_LENGTH;
     textOnCursor = concatenatedText.substring(0, endIndex);
@@ -108,7 +161,6 @@ const searchEndIndex = (text, index, maxWords) => {
       endIndex = i;
       break;
     }
-
     i += 1;
   }
   return endIndex;
