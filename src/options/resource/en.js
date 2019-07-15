@@ -60,7 +60,7 @@ export default {
   colorAndFont: "Font size and color",
   headFont: "Header font",
   descFont: "Description font",
-  backgroundColor: "Background",
+  background: "Background",
   replaceRules: "Rules to replace text",
   replaceRule1: " ",
   replaceRule2: " ",
