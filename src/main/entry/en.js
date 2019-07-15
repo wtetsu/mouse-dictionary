@@ -180,6 +180,7 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
 
 const isHyphenLikeCharacter = (sourceStr, position) => {
   const code = sourceStr.charCodeAt(position);
+  // Note: This kind of naive comparison is fast enough(Much faster than using Set)
   return code === 45 || code === 8209;
 };
 
