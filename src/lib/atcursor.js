@@ -37,14 +37,16 @@ const slideStartingPoint = elem => {
       if (child === elem) {
         selfIndex = i;
         if (selfIndex === 0 && siblings.length >= 2) {
-          slidStartingPoint = elem;
+          if (isValidTextNodes(siblings[0], siblings[1])) {
+            slidStartingPoint = elem;
+          }
         }
       }
     } else {
       if (!isValidTextNode(child)) {
         if (selfIndex !== i + 1) {
           slidStartingPoint = siblings[i + 1];
-        } else if (isValidTextNode(siblings[selfIndex]) && isValidTextNode(siblings[selfIndex + 1])) {
+        } else if (isValidTextNodes(siblings[selfIndex], siblings[selfIndex + 1])) {
           slidStartingPoint = elem;
         }
         break;
@@ -60,6 +62,9 @@ const slideStartingPoint = elem => {
 
 const TEXT_TAGS = ["SPAN"];
 
+const isValidTextNodes = (...elements) => {
+  return elements.every(isValidTextNode);
+};
 const isValidTextNode = element => {
   if (!element) {
     false;
