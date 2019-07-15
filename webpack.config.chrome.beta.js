@@ -4,7 +4,7 @@ const commonConfig = require("./webpack.config");
 const specificConfig = Object.assign({}, commonConfig);
 
 specificConfig.output = {
-  path: __dirname + "/dist-chrome"
+  path: __dirname + "/dist-chrome-beta"
 };
 
 specificConfig.plugins.push(
