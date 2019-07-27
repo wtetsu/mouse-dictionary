@@ -47,4 +47,6 @@ test("", () => {
   expect(cache.get("key04")).toEqual("val04b");
   expect(cache.get("key05")).toEqual("val05c");
   expect(cache.get("key06")).toEqual("val06c");
+
+  expect(cache.get()).toEqual(null);
 });

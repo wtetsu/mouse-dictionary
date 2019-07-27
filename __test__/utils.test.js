@@ -107,3 +107,14 @@ test("", () => {
     height: 90
   });
 });
+
+test("", () => {
+  window.getSelection = () => "";
+  expect(utils.getSelection()).toEqual("");
+
+  window.getSelection = () => "    a b c   ";
+  expect(utils.getSelection()).toEqual("a b c");
+
+  window.getSelection = () => "    aaa\nbbb\rccc   ";
+  expect(utils.getSelection()).toEqual("aaa bbb ccc");
+});
