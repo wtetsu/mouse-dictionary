@@ -20,11 +20,12 @@ const updateMap = (map, data) => {
  * omap({ a: 1, b: 2, c: 3 }, v => v * 2, ["b", "c"]);
  *   -> { a: 1, b: 4, c: 6 }
  */
-const omap = (o, func, props) => {
+const omap = (object, func, specifiedProps) => {
   const result = {};
+  const props = specifiedProps || Object.keys(object);
   for (let i = 0; i < props.length; i++) {
     const prop = props[i];
-    result[prop] = func ? func(o[prop]) : null;
+    result[prop] = func ? func(object[prop]) : null;
   }
   return result;
 };
@@ -78,18 +79,15 @@ const convertToStyles = position => {
   return styles;
 };
 
-const MIN_WINDOW_SIZE = 50;
-const EDGE_SPACE = 5;
-
-const optimizeInitialPosition = position => {
+const optimizeInitialPosition = (position, minWindowSize = 50, edgeSpace = 5) => {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
 
   return {
-    left: range(EDGE_SPACE, position.left, windowWidth - position.width - EDGE_SPACE),
-    top: range(EDGE_SPACE, position.top, windowHeight - position.height - EDGE_SPACE),
-    width: range(MIN_WINDOW_SIZE, position.width, windowWidth - EDGE_SPACE * 2),
-    height: range(MIN_WINDOW_SIZE, position.height, windowHeight - EDGE_SPACE * 2)
+    left: range(edgeSpace, position.left, windowWidth - position.width - edgeSpace),
+    top: range(edgeSpace, position.top, windowHeight - position.height - edgeSpace),
+    width: range(minWindowSize, position.width, windowWidth - edgeSpace * 2),
+    height: range(minWindowSize, position.height, windowHeight - edgeSpace * 2)
   };
 };
 
