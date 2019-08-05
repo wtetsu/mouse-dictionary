@@ -7,7 +7,6 @@ test("", () => {
   reader.eachLine(
     line => {
       lines.push(line);
-      console.log(line);
       return new Promise(resolve => {
         setTimeout(() => {
           resolve();
@@ -28,7 +27,6 @@ test("", () => {
   reader.eachLine(
     line => {
       lines.push(line);
-      console.log(line);
       return new Promise(resolve => {
         setTimeout(() => {
           resolve();
