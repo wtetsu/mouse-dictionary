@@ -4,29 +4,7 @@
  * Licensed under MIT
  */
 
-const fileMayBeSjis = async file => {
-  return new Promise((done, fail) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      try {
-        const buffer = e.target.result;
-        const length = Math.min(512, buffer.byteLength);
-        const bytes = new Uint8Array(buffer, 0, length);
-        const mayBeSjis = byteArrayMayBeSjis(bytes);
-        done(mayBeSjis);
-      } catch {
-        fail();
-      }
-    };
-    try {
-      reader.readAsArrayBuffer(file);
-    } catch {
-      fail();
-    }
-  });
-};
-
-const byteArrayMayBeSjis = array => {
+const byteArrayMayBeShiftJis = array => {
   let mayBeShiftJis = true;
   let nextShouldSecondByte = false;
   for (let index = 0; index < array.length; index++) {
@@ -55,6 +33,5 @@ const byteArrayMayBeSjis = array => {
 };
 
 export default {
-  fileMayBeSjis: fileMayBeSjis,
-  byteArrayMayBeSjis
+  byteArrayMayBeShiftJis
 };

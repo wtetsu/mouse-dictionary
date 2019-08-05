@@ -262,8 +262,7 @@ export default class Main extends React.Component {
     }
     let willContinue = true;
     if (encoding === "Shift-JIS") {
-      const fileMayBeSjis = await data.fileMayBeSjis(file);
-      if (!fileMayBeSjis) {
+      if (!(await fileMayBeShiftJis(file))) {
         willContinue = await swal({
           title: res.get("fileMayNotBeShiftJis"),
           icon: "warning",
@@ -547,4 +546,26 @@ const decideInitialLanguage = languages => {
     }
   }
   return result;
+};
+
+const fileMayBeShiftJis = async file => {
+  return new Promise((done, fail) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const buffer = e.target.result;
+        const length = Math.min(512, buffer.byteLength);
+        const bytes = new Uint8Array(buffer, 0, length);
+        const mayBeSjis = data.byteArrayMayBeShiftJis(bytes);
+        done(mayBeSjis);
+      } catch {
+        fail();
+      }
+    };
+    try {
+      reader.readAsArrayBuffer(file);
+    } catch {
+      fail();
+    }
+  });
 };
