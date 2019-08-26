@@ -1,3 +1,14 @@
 {
-  "presets": [["@babel/preset-env", { "targets": { "chrome": "68", "firefox": "62" } }]]
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "chrome": "68",
+          "firefox": "62"
+        }
+      }
+    ]
+  ],
+  "plugins": ["lodash"]
 }

@@ -1,5 +1,6 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const LodashWebpackPlugin = require("lodash-webpack-plugin");
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -18,7 +19,8 @@ module.exports = {
         test: /\.js$/,
         use: {
           loader: "babel-loader"
-        }
+        },
+        exclude: /node_modules/
       },
       {
         test: /\.jsx$/,
@@ -27,7 +29,8 @@ module.exports = {
             loader: "babel-loader",
             options: { presets: ["@babel/env", "@babel/react"] }
           }
-        ]
+        ],
+        exclude: /node_modules/
       }
     ]
   },
@@ -39,7 +42,8 @@ module.exports = {
       { from: "static", to: "." },
       { from: "static-overwrite", to: "." },
       { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }
-    ])
+    ]),
+    new LodashWebpackPlugin()
   ],
   devtool: isProd ? false : "cheap-module-inline-source-map",
   performance: {
