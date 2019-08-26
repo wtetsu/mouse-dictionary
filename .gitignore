@@ -58,6 +58,7 @@ typings/
 .env
 
 .*/
+dist/
 dist-*/
 *.zip
 *.sh
