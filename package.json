@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "deinja": "0.0.1",
+    "deinja": "0.0.2",
     "hogan.js": "^3.0.2",
     "immer": "^3.2.0",
     "lodash": "^4.17.15",
