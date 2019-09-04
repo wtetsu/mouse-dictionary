@@ -5,7 +5,7 @@
  */
 
 import UniqList from "uniqlist";
-import deinja from "deinja";
+import rule from "../rule";
 
 const createLookupWordsJa = sourceStr => {
   const str = sourceStr.substring(0, 40).replace(/[A-Za-z0-9]/g, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
@@ -17,7 +17,7 @@ const createLookupWordsJa = sourceStr => {
     result.push(part);
 
     if (i >= 2) {
-      const deinedWords = deinja.convert(part);
+      const deinedWords = rule.doJa(part);
       result.merge(deinedWords);
     }
   }

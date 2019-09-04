@@ -10,6 +10,7 @@ import base from "./rule/base";
 import phrase from "./rule/phrase";
 import pronoun from "./rule/pronoun";
 import spelling from "./rule/spelling";
+import buildDeinja from "deinja/build";
 
 // Lazy load
 const nounRule = new Map();
@@ -18,6 +19,7 @@ const pronounRule = [];
 const spellingRule = new Map();
 const trailingRule = [];
 const verbRule = new Map();
+let deinjaConvert = () => {};
 
 const registerNoun = data => utils.updateMap(nounRule, data);
 const registerPhrase = data => Object.assign(phraseRule, data);
@@ -25,6 +27,9 @@ const registerPronoun = data => Object.assign(pronounRule, data.map(datum => new
 const registerSpelling = data => utils.updateMap(spellingRule, data);
 const registerTrailing = data => Object.assign(trailingRule, data);
 const registerVerb = data => utils.updateMap(verbRule, data);
+const registerJa = data => {
+  deinjaConvert = buildDeinja(data);
+};
 
 const processes = [
   { file: "data/rule/noun.json", register: registerNoun },
@@ -32,7 +37,8 @@ const processes = [
   { file: "data/rule/pronoun.json", register: registerPronoun },
   { file: "data/rule/spelling.json", register: registerSpelling },
   { file: "data/rule/trailing.json", register: registerTrailing },
-  { file: "data/rule/verb.json", register: registerVerb }
+  { file: "data/rule/verb.json", register: registerVerb },
+  { file: "data/rule/ja.json", register: registerJa }
 ];
 
 let promiseForLoad = null;
@@ -71,8 +77,10 @@ export default {
   registerSpelling,
   registerTrailing,
   registerVerb,
+  registerJa,
   doBase: word => base({ noun: nounRule, trailing: trailingRule, verb: verbRule }, word),
   doPhrase: words => phrase(phraseRule, words),
   doPronoun: words => pronoun(pronounRule, words),
-  doSpelling: words => spelling(spellingRule, words)
+  doSpelling: words => spelling(spellingRule, words),
+  doJa: word => deinjaConvert(word)
 };
