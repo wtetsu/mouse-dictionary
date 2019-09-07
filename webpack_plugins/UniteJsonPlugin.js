@@ -38,9 +38,17 @@ const uniteJsonFiles = options => {
   const resultData = {};
   for (let i = 0; i < options.length; i++) {
     const option = options[i];
-    const json = fs.readFileSync(option.file, "utf-8");
-    const data = JSON.parse(json);
-    resultData[option.name] = data;
+
+    let data = null;
+    if (option.data) {
+      data = option.data;
+    } else if (option.file) {
+      const json = fs.readFileSync(option.file, "utf-8");
+      data = JSON.parse(json);
+    }
+    if (data) {
+      resultData[option.name] = data;
+    }
   }
   return resultData;
 };

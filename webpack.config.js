@@ -2,6 +2,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const LodashWebpackPlugin = require("lodash-webpack-plugin");
 const UniteJsonPlugin = require("./webpack_plugins/UniteJsonPlugin");
+const jaRule = require("deinja/src/data");
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -53,7 +54,7 @@ module.exports = {
           { name: "spelling", file: "rule/spelling.json" },
           { name: "trailing", file: "rule/trailing.json" },
           { name: "verb", file: "rule/verb.json" },
-          { name: "ja", file: "rule/ja.json" }
+          { name: "ja", data: jaRule }
         ],
         to: "data/rule.json"
       }
