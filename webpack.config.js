@@ -1,6 +1,7 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const LodashWebpackPlugin = require("lodash-webpack-plugin");
+const UniteJsonPlugin = require("./webpack_plugins/UniteJsonPlugin");
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -42,6 +43,20 @@ module.exports = {
       { from: "static", to: "." },
       { from: "static_overwrite", to: "." },
       { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }
+    ]),
+    new UniteJsonPlugin([
+      {
+        from: [
+          { name: "noun", file: "rule/noun.json" },
+          { name: "phrase", file: "rule/phrase.json" },
+          { name: "pronoun", file: "rule/pronoun.json" },
+          { name: "spelling", file: "rule/spelling.json" },
+          { name: "trailing", file: "rule/trailing.json" },
+          { name: "verb", file: "rule/verb.json" },
+          { name: "ja", file: "rule/ja.json" }
+        ],
+        to: "data/rule.json"
+      }
     ]),
     new LodashWebpackPlugin()
   ],
