@@ -32,13 +32,13 @@ const registerJa = data => {
 };
 
 const processes = [
-  { file: "data/rule/noun.json", register: registerNoun },
-  { file: "data/rule/phrase.json", register: registerPhrase },
-  { file: "data/rule/pronoun.json", register: registerPronoun },
-  { file: "data/rule/spelling.json", register: registerSpelling },
-  { file: "data/rule/trailing.json", register: registerTrailing },
-  { file: "data/rule/verb.json", register: registerVerb },
-  { file: "data/rule/ja.json", register: registerJa }
+  { field: "noun", register: registerNoun },
+  { field: "phrase", register: registerPhrase },
+  { field: "pronoun", register: registerPronoun },
+  { field: "spelling", register: registerSpelling },
+  { field: "trailing", register: registerTrailing },
+  { field: "verb", register: registerVerb },
+  { field: "ja", register: registerJa }
 ];
 
 let promiseForLoad = null;
@@ -55,12 +55,12 @@ const load = async () => {
     startTime = new Date().getTime();
   }
 
-  promiseForLoad = Promise.all(processes.map(it => utils.loadJson(it.file)));
+  const rule = await utils.loadJson("data/rule.json");
 
-  const data = await promiseForLoad;
-
-  for (let i = 0; i < data.length; i++) {
-    processes[i].register(data[i]);
+  for (let i = 0; i < processes.length; i++) {
+    const proc = processes[i];
+    const data = rule[proc.field];
+    proc.register(data);
   }
 
   if (process.env.NODE_ENV !== "production") {
