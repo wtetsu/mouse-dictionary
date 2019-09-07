@@ -63,4 +63,4 @@ dist-*/
 *.zip
 *.sh
 coverage/
-static-overwrite/
+static_overwrite/
