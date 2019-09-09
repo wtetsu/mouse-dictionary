@@ -19,8 +19,8 @@ const pronounRule = [];
 const spellingRule = new Map();
 const trailingRule = [];
 const verbRule = new Map();
-let deinjaConvert = () => {};
 
+let deinjaConvert = () => {};
 const registerNoun = data => utils.updateMap(nounRule, data);
 const registerPhrase = data => Object.assign(phraseRule, data);
 const registerPronoun = data => Object.assign(pronounRule, data.map(datum => new Map(datum)));
@@ -41,21 +41,19 @@ const processes = [
   { field: "ja", register: registerJa }
 ];
 
-let promiseForLoad = null;
-
 // Note: Parsing JSON is faster than long Object literals.
 // https://v8.dev/blog/cost-of-javascript-2019
-const load = async () => {
-  if (promiseForLoad) {
-    // Must not load twice
-    return promiseForLoad;
-  }
+const readAndLoadRuleFiles = async () => {
   let startTime;
   if (process.env.NODE_ENV !== "production") {
     startTime = new Date().getTime();
   }
+  const rulePromise = utils.loadJson("data/rule.json");
 
-  const rule = await utils.loadJson("data/rule.json");
+  // Redefine in order not to be executed twice
+  loadBody = () => rulePromise;
+
+  const rule = await rulePromise;
 
   for (let i = 0; i < processes.length; i++) {
     const proc = processes[i];
@@ -67,6 +65,12 @@ const load = async () => {
     const time = new Date().getTime() - startTime;
     console.info(`Finish loading rules:${time}ms`);
   }
+};
+
+let loadBody = readAndLoadRuleFiles;
+
+const load = async () => {
+  return loadBody();
 };
 
 export default {
