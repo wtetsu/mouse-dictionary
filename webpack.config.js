@@ -6,6 +6,15 @@ const jaRule = require("deinja/src/data");
 
 const isProd = process.env.NODE_ENV === "production";
 
+const copyWebpackPluginConfigs = [
+  { from: "static", to: "." },
+  { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }
+];
+
+if (!isProd) {
+  copyWebpackPluginConfigs.push({ from: "static_overwrite", to: "." });
+}
+
 module.exports = {
   mode: process.env.NODE_ENV || "development",
   entry: {
@@ -40,11 +49,7 @@ module.exports = {
     extensions: [".js", ".jsx"]
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: "static", to: "." },
-      { from: "static_overwrite", to: "." },
-      { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }
-    ]),
+    new CopyWebpackPlugin(copyWebpackPluginConfigs),
     new UniteJsonPlugin([
       {
         from: [
