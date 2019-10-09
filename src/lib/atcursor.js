@@ -33,34 +33,27 @@ const fetchTextOnCursor = (element, clientX, clientY, maxWords) => {
 };
 
 const fetchTextFromTextNode = (textNode, offset, maxWords) => {
-  let textOnCursor;
   const { text, end, isEnglish } = getTextFromRange(textNode.data, offset, maxWords);
-  if (end) {
-    const followingText = dom.traverse(textNode);
-    const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
-    const endIndex = isEnglish ? searchEndIndex(concatenatedText, 0, maxWords) : JA_MAX_LENGTH;
-    textOnCursor = concatenatedText.substring(0, endIndex);
-  } else {
-    textOnCursor = text;
+  if (!end) {
+    return text;
   }
-  return textOnCursor;
+  const followingText = dom.traverse(textNode);
+  const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
+  const endIndex = isEnglish ? searchEndIndex(concatenatedText, 0, maxWords) : JA_MAX_LENGTH;
+  return concatenatedText.substring(0, endIndex);
 };
 
 const concatenateFollowingText = (text, followingText, isEnglish) => {
   if (!followingText) {
     return text;
   }
-  let concatenatedText;
-  if (isEnglish) {
-    if (followingText.startsWith("-")) {
-      concatenatedText = text + followingText;
-    } else {
-      concatenatedText = text + " " + followingText;
-    }
-  } else {
-    concatenatedText = text + followingText;
+  if (!isEnglish) {
+    return text + followingText;
   }
-  return concatenatedText;
+  if (followingText.startsWith("-")) {
+    return text + followingText;
+  }
+  return text + " " + followingText;
 };
 
 const searchStartIndex = (text, index) => {
@@ -145,26 +138,26 @@ const createGetCaretNodeAndOffsetFromPointFunction = ownerDocument => {
   if (ownerDocument.caretPositionFromPoint) {
     // for Firefox (based on recent WD of CSSOM View Module)
     newFunction = (ownerDocument, pointX, pointY) => {
-      let result = null;
       const position = ownerDocument.caretPositionFromPoint(pointX, pointY);
-      if (position) {
-        let node = position.offsetNode;
-        let offset = position.offset;
-        result = { node, offset };
+      if (!position) {
+        return null;
       }
-      return result;
+      return {
+        node: position.offsetNode,
+        offset: position.offset
+      };
     };
   } else if (ownerDocument.caretRangeFromPoint) {
     // for Chrome
     newFunction = (ownerDocument, pointX, pointY) => {
-      let result = null;
       const range = ownerDocument.caretRangeFromPoint(pointX, pointY);
-      if (range) {
-        let node = range.startContainer;
-        let offset = range.startOffset;
-        result = { node, offset };
+      if (!range) {
+        return null;
       }
-      return result;
+      return {
+        node: range.startContainer,
+        offset: range.startOffset
+      };
     };
   }
   return newFunction;
