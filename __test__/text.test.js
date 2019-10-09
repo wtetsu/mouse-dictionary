@@ -63,32 +63,32 @@ test("", () => {
 // });
 
 test("", () => {
-  expect(text.linkWords([])).toEqual([]);
-  expect(text.linkWords(["word0"])).toEqual(["word0"]);
-  expect(text.linkWords(["word0", "word1"])).toEqual(["word0 word1", "word0"]);
-  expect(text.linkWords(["word0", "word1", "word2"])).toEqual([
+  testList(text.linkWords([]), []);
+  testList(text.linkWords(["word0"]), ["word0"]);
+  testList(text.linkWords(["word0", "word1"]), ["word0 word1", "word0"]);
+  testList(text.linkWords(["word0", "word1", "word2"]), [
     "word0 word1 word2",
     "word0 word1",
     "word0",
     "word0 ~ word2",
     "word0 word2"
   ]);
-  expect(text.linkWords(["announcement", "of", "hoge"])).toEqual([
+  testList(text.linkWords(["announcement", "of", "hoge"]), [
     "announcement of hoge",
     "announcement of",
     "announcement",
     "announcement ~ hoge",
     "announcement hoge"
   ]);
-  expect(text.linkWords(["Announcement", "of", "Hoge"])).toEqual([
+  testList(text.linkWords(["Announcement", "of", "Hoge"]), [
     "Announcement of Hoge",
     "Announcement of",
     "Announcement",
     "Announcement ~ Hoge",
     "Announcement Hoge"
   ]);
-  expect(text.linkWords(["American", "English"])).toEqual(["American English", "American"]);
-  expect(text.linkWords(["dealt", "with"])).toEqual(["dealt with", "dealt", "deal with", "deal"]);
+  testList(text.linkWords(["American", "English"]), ["American English", "American"]);
+  testList(text.linkWords(["dealt", "with"]), ["dealt with", "dealt", "deal with", "deal"]);
 });
 
 test("", () => {
@@ -125,3 +125,10 @@ test("", () => {
   expect(text.dealWithHyphens("emo‑ ↵tional")).toEqual("emotional");
   expect(text.dealWithHyphens("emo‑ @*tional")).toEqual("emotional");
 });
+
+const testList = (actualList, expectedList) => {
+  for (let i = 0; i < expectedList.length; i++) {
+    const expected = expectedList[i];
+    expect(actualList.includes(expected)).toBeTruthy();
+  }
+};

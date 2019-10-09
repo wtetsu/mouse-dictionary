@@ -36,6 +36,10 @@ test("5", () => {
   );
 });
 
+test("", () => {
+  testNormalize(["make", "some", "modification"], [["make", "a", "modification"]]);
+});
+
 const testNormalize = (words, expectList) => {
   const r = rule.doPhrase(words);
   for (let i = 0; i < expectList.length; i++) {

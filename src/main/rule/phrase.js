@@ -5,14 +5,14 @@
  */
 
 export default (allRules, words) => {
-  const rules = allRules[words.length];
-  if (!rules) {
+  const ruleDataList = allRules[words.length];
+  if (!ruleDataList) {
     return [];
   }
   const result = [];
-  for (let i = 0; i < rules.length; i++) {
-    const rule = rules[i];
-    const newWords = normalizeByRule(words, rule);
+  for (let i = 0; i < ruleDataList.length; i++) {
+    const ruleData = ruleDataList[i];
+    const newWords = normalizeByRule(words, ruleData);
     result.push(newWords);
   }
   return result;
@@ -23,31 +23,39 @@ export default (allRules, words) => {
 //
 // ["pick", "her", "up"], [0, -1, 0]
 //   -> ["pick", "up]
-const normalizeByRule = (words, rule) => {
+const normalizeByRule = (words, ruleData) => {
   const result = [];
   let wordIndex = 0;
   const replaceIndices = [];
-  for (let i = 0; i < rule.length; i++) {
-    const p = rule[i];
-    if (p === 0) {
+  for (let i = 0; i < ruleData.length; i++) {
+    const code = ruleData[i];
+    if (code === 0) {
       result.push(words[wordIndex]);
       wordIndex += 1;
-    } else if (p > 0) {
+    } else if (code === 102) {
+      result.push("a");
+      wordIndex += 1;
+    } else if (code === 103) {
+      result.push("a");
+    } else if (code > 0) {
       replaceIndices.push(result.length);
       result.push(null);
-      wordIndex += p;
+      wordIndex += code;
     } else {
-      wordIndex += -p;
+      wordIndex += -code;
     }
   }
+  if (replaceIndices.length === 0) {
+    return result;
+  }
+
   if (replaceIndices.length === 1) {
     result[replaceIndices[0]] = "~";
   } else {
-    let charCode = 65;
     for (let i = 0; i < replaceIndices.length; i++) {
       const index = replaceIndices[i];
+      const charCode = 65 + i;
       result[index] = String.fromCharCode(charCode);
-      charCode += 1;
     }
   }
   return result;
