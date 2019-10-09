@@ -12,16 +12,14 @@ export default class LineReader {
   }
 
   detectLineFeedCode(data) {
-    let code = null;
     const index = data.indexOf("\n");
-    if (index >= 0) {
-      if (data[index - 1] === "\r") {
-        code = "\r\n";
-      } else {
-        code = "\n";
-      }
+    if (index < 0) {
+      return null;
     }
-    return code;
+    if (data[index - 1] === "\r") {
+      return "\r\n";
+    }
+    return "\n";
   }
 
   eachLine(fnEachLine, fnFinished) {
