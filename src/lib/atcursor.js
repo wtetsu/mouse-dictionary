@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import consts from "./consts";
+import letters from "./letters";
 import dom from "./dom";
 
 const JA_MAX_LENGTH = 40;
@@ -61,7 +61,7 @@ const searchStartIndex = (text, index) => {
   let i = index;
   for (;;) {
     const code = text.charCodeAt(i);
-    if (!consts.targetCharacters[code]) {
+    if (!letters.has(code)) {
       startIndex = i + 1;
       break;
     }
@@ -91,7 +91,7 @@ const searchEndIndex = (text, index, maxWords) => {
         break;
       }
     } else {
-      if (!consts.targetCharacters[code]) {
+      if (!letters.has(code)) {
         endIndex = i;
         break;
       }

@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import consts from "./consts";
+import letters from "./letters";
 import rule from "../main/rule";
 
 const text = {};
@@ -34,7 +34,7 @@ text.dealWithHyphens = sourceStr => {
     result += str.substring(currentIndex, hyphenIndex);
     for (let i = hyphenIndex + 1; i < str.length; i++) {
       const code = str.charCodeAt(i);
-      if (consts.targetCharacters[code]) {
+      if (letters.has(code)) {
         if (i === hyphenIndex + 1) {
           // right after the hyphen
           result += "-";
@@ -64,7 +64,7 @@ text.splitIntoWords = str => {
   let i = 0;
   for (;;) {
     const code = str.charCodeAt(i);
-    const isEnglishCharacter = consts.targetCharacters[code];
+    const isEnglishCharacter = letters.has(code);
     if (isEnglishCharacter) {
       if (startIndex === null) {
         startIndex = i;
