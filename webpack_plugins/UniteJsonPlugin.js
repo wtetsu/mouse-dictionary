@@ -6,6 +6,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const json5 = require("json5");
 
 class UniteJsonPlugin {
   constructor(options = []) {
@@ -44,7 +45,7 @@ const uniteJsonFiles = options => {
       data = option.data;
     } else if (option.file) {
       const json = fs.readFileSync(option.file, "utf-8");
-      data = JSON.parse(json);
+      data = json5.parse(json);
     }
     if (data) {
       resultData[option.name] = data;
