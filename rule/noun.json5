@@ -1,3 +1,9 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu, suiheilibe
+ * Licensed under MIT
+ */
+// This data is based on ejdic-hand.
 [
   ["abaci", "abacus"],
   ["addenda", "addendum"],
