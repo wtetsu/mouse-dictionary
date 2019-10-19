@@ -81,14 +81,14 @@ export default class Generator {
 }
 
 const compileReplaceRules = (replaceRules, renderParameters) => {
-  const compiledReplaceRule = [];
+  const compiledReplaceRules = [];
   for (let i = 0; i < replaceRules.length; i++) {
     const compiledRule = compileReplaceRule(replaceRules[i], renderParameters);
     if (compiledRule) {
-      compiledReplaceRule.push(compiledRule);
+      compiledReplaceRules.push(compiledRule);
     }
   }
-  return compiledReplaceRule;
+  return compiledReplaceRules;
 };
 
 const compileReplaceRule = (rule, renderParameters) => {
