@@ -31,39 +31,38 @@ const registerJa = data => {
   deinjaConvert = buildDeinja(data);
 };
 
-const processes = [
-  { field: "noun", register: registerNoun },
-  { field: "phrase", register: registerPhrase },
-  { field: "pronoun", register: registerPronoun },
-  { field: "spelling", register: registerSpelling },
-  { field: "trailing", register: registerTrailing },
-  { field: "verb", register: registerVerb },
-  { field: "ja", register: registerJa }
-];
-
 // Note: Parsing JSON is faster than long Object literals.
 // https://v8.dev/blog/cost-of-javascript-2019
 const readAndLoadRuleFiles = async () => {
-  let startTime;
-  if (process.env.NODE_ENV !== "production") {
-    startTime = new Date().getTime();
-  }
+  const stopWatch = new utils.StopWatch("Loading rules");
+
   const rulePromise = utils.loadJson("data/rule.json");
 
   // Redefine in order not to be executed twice
   loadBody = () => rulePromise;
+  const ruleData = await rulePromise;
+  registerRuleData(ruleData);
 
-  const rule = await rulePromise;
+  stopWatch.stop();
+};
+
+const registerRuleData = ruleData => {
+  const processes = [
+    { field: "noun", register: registerNoun },
+    { field: "phrase", register: registerPhrase },
+    { field: "pronoun", register: registerPronoun },
+    { field: "spelling", register: registerSpelling },
+    { field: "trailing", register: registerTrailing },
+    { field: "verb", register: registerVerb },
+    { field: "ja", register: registerJa }
+  ];
 
   for (let i = 0; i < processes.length; i++) {
     const proc = processes[i];
-    const data = rule[proc.field];
-    proc.register(data);
-  }
-
-  if (process.env.NODE_ENV !== "production") {
-    const time = new Date().getTime() - startTime;
-    console.info(`Finish loading rules:${time}ms`);
+    const data = ruleData[proc.field];
+    if (data) {
+      proc.register(data);
+    }
   }
 };
 
@@ -75,13 +74,7 @@ const load = async () => {
 
 export default {
   load,
-  registerNoun,
-  registerPhrase,
-  registerPronoun,
-  registerSpelling,
-  registerTrailing,
-  registerVerb,
-  registerJa,
+  registerRuleData,
   doBase: word => base({ noun: nounRule, trailing: trailingRule, verb: verbRule }, word),
   doPhrase: words => phrase(phraseRule, words),
   doPronoun: words => pronoun(pronounRule, words),

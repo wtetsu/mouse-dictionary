@@ -3,12 +3,14 @@ import json5 from "json5";
 import rule from "../src/main/rule";
 
 const load = () => {
-  rule.registerNoun(readJson("noun.json5"));
-  rule.registerPhrase(readJson("phrase.json5"));
-  rule.registerPronoun(readJson("pronoun.json5"));
-  rule.registerSpelling(readJson("spelling.json5"));
-  rule.registerTrailing(readJson("trailing.json5"));
-  rule.registerVerb(readJson("verb.json5"));
+  rule.registerRuleData({
+    noun: readJson("noun.json5"),
+    phrase: readJson("phrase.json5"),
+    pronoun: readJson("pronoun.json5"),
+    spelling: readJson("spelling.json5"),
+    trailing: readJson("trailing.json5"),
+    verb: readJson("verb.json5")
+  });
 };
 
 const readJson = fileName => {
