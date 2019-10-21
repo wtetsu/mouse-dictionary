@@ -31,19 +31,24 @@ const registerJa = data => {
   deinjaConvert = buildDeinja(data);
 };
 
+const DEFAULT_RULE_FILE = "data/rule.json";
+
 // Note: Parsing JSON is faster than long Object literals.
 // https://v8.dev/blog/cost-of-javascript-2019
-const readAndLoadRuleFiles = async () => {
+const readAndLoadRuleFiles = async ruleFile => {
   const stopWatch = new utils.StopWatch("Loading rules");
 
-  const rulePromise = utils.loadJson("data/rule.json");
+  const rulePromise = utils.loadJson(ruleFile);
 
   // Redefine in order not to be executed twice
   loadBody = () => rulePromise;
-  const ruleData = await rulePromise;
-  registerRuleData(ruleData);
+
+  const loadedRuleData = await rulePromise;
+  registerRuleData(loadedRuleData);
 
   stopWatch.stop();
+
+  return loadedRuleData;
 };
 
 const registerRuleData = ruleData => {
@@ -68,8 +73,8 @@ const registerRuleData = ruleData => {
 
 let loadBody = readAndLoadRuleFiles;
 
-const load = async () => {
-  return loadBody();
+const load = async (ruleFile = DEFAULT_RULE_FILE) => {
+  return loadBody(ruleFile);
 };
 
 export default {
