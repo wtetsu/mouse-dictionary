@@ -12,7 +12,13 @@ test("3", () => {
 test("4", () => {
   testNormalize(
     ["a", "b", "c", "d"],
-    [["a", "~", "c", "d"], ["a", "b", "~", "d"], ["a", "~", "d"], ["a", "A", "c", "B"], ["a", "d"]]
+    [
+      ["a", "~", "c", "d"], //
+      ["a", "b", "~", "d"],
+      ["a", "~", "d"],
+      ["a", "A", "c", "B"],
+      ["a", "d"]
+    ]
   );
 });
 
@@ -37,13 +43,31 @@ test("5", () => {
 });
 
 test("", () => {
-  testNormalize(["make", "some", "modifications"], [["make", "a", "modifications"]]);
-  testNormalize(["make", "thousands", "of", "modifications"], [["make", "a", "modifications"]]);
-  testNormalize(["make", "a", "lot", "of", "modifications"], [["make", "a", "modifications"]]);
+  testNormalize(
+    ["make", "some", "modifications"], //
+    [["make", "a", "modifications"]]
+  );
+  testNormalize(
+    ["make", "thousands", "of", "modifications"], //
+    [["make", "a", "modifications"]]
+  );
+  testNormalize(
+    ["make", "a", "lot", "of", "modifications"], //
+    [["make", "a", "modifications"]]
+  );
 
-  testNormalize(["make", "some", "careful", "selections"], [["make", "a", "careful", "selections"]]);
-  testNormalize(["make", "thousands", "of", "careful", "selections"], [["make", "a", "careful", "selections"]]);
-  testNormalize(["make", "a", "lot", "of", "careful", "selections"], [["make", "a", "careful", "selections"]]);
+  testNormalize(
+    ["make", "some", "careful", "selections"], //
+    [["make", "a", "careful", "selections"]]
+  );
+  testNormalize(
+    ["make", "thousands", "of", "careful", "selections"], //
+    [["make", "a", "careful", "selections"]]
+  );
+  testNormalize(
+    ["make", "a", "lot", "of", "careful", "selections"], //
+    [["make", "a", "careful", "selections"]]
+  );
 });
 
 const testNormalize = (words, expectList) => {

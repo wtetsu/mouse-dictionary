@@ -30,8 +30,14 @@ test("", () => {
     "thousand mile"
   ]);
 
-  testList(generateEntries("american english"), ["american english", "american"]);
-  testList(generateEntries("American English"), ["American English", "American", "american english", "american"]);
+  testList(
+    generateEntries("american english"), //
+    ["american english", "american"]
+  );
+  testList(
+    generateEntries("American English"), //
+    ["American English", "American", "american english", "american"]
+  );
 
   testList(generateEntries("Announcement of Hoge"), [
     "Announcement of Hoge",
@@ -75,7 +81,10 @@ test("", () => {
 });
 
 test("", () => {
-  testList(generateEntries("blue-gray"), ["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"]);
+  testList(
+    generateEntries("blue-gray"), //
+    ["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"]
+  );
   testList(generateEntries("third-party"), [
     "third-party",
     "third party",
@@ -87,7 +96,15 @@ test("", () => {
   ]);
 
   // non-breaking hyphen(U+2011)
-  testList(generateEntries("blue‑gray"), ["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"]);
+  testList(generateEntries("blue‑gray"), [
+    "blue-gray", //
+    "blue gray",
+    "blue",
+    "gray",
+    "blue-",
+    "-gray",
+    "bluegray"
+  ]);
   testList(generateEntries("third‑party"), [
     "third-party",
     "third party",
@@ -100,17 +117,51 @@ test("", () => {
 });
 
 test("", () => {
-  testList(generateEntries("folk tales"), ["folk tales", "folk", "folk tale"]);
+  testList(generateEntries("folk tales"), [
+    "folk tales", //
+    "folk",
+    "folk tale"
+  ]);
 });
 
 test("", () => {
-  testList(generateEntries("deal with"), ["deal with", "deal"]);
-  testList(generateEntries("dealt with"), ["dealt with", "dealt", "deal with", "deal"]);
-  testList(generateEntries("dealing with"), ["dealing with", "dealing", "deal with", "deal", "deale with", "deale"]);
+  testList(generateEntries("deal with"), [
+    "deal with", //
+    "deal"
+  ]);
+  testList(generateEntries("dealt with"), [
+    "dealt with", //
+    "dealt",
+    "deal with",
+    "deal"
+  ]);
+  testList(generateEntries("dealing with"), [
+    "dealing with", //
+    "dealing",
+    "deal with",
+    "deal",
+    "deale with",
+    "deale"
+  ]);
 
-  testList(generateEntries("run with"), ["run with", "run"]);
-  testList(generateEntries("ran with"), ["ran with", "ran", "run with", "run"]);
-  testList(generateEntries("running with"), ["running with", "running", "run with", "run", "runne with", "runne"]);
+  testList(generateEntries("run with"), [
+    "run with", //
+    "run"
+  ]);
+  testList(generateEntries("ran with"), [
+    "ran with", //
+    "ran",
+    "run with",
+    "run"
+  ]);
+  testList(generateEntries("running with"), [
+    "running with", //
+    "running",
+    "run with",
+    "run",
+    "runne with",
+    "runne"
+  ]);
 
   testList(generateEntries("dealt dealt dealt"), [
     "dealt dealt dealt",
@@ -126,16 +177,44 @@ test("", () => {
 
 test("", () => {
   testList(generateEntries("cut back"), ["cut back", "cut"]);
-  testList(generateEntries("cutting back"), ["cutting back", "cutting", "cut back", "cut", "cutte back", "cutte"]);
+  testList(generateEntries("cutting back"), [
+    "cutting back", //
+    "cutting",
+    "cut back",
+    "cut",
+    "cutte back",
+    "cutte"
+  ]);
 
   testList(generateEntries("die out"), ["die out", "die"]);
-  testList(generateEntries("dying out"), ["dying out", "dying", "die out", "die"]);
+  testList(generateEntries("dying out"), [
+    "dying out", //
+    "dying",
+    "die out",
+    "die"
+  ]);
 
   testList(generateEntries("play with"), ["play with", "play"]);
-  testList(generateEntries("played with"), ["played with", "played", "play with", "play", "playe with", "playe"]);
+  testList(generateEntries("played with"), [
+    "played with", //
+    "played",
+    "play with",
+    "play",
+    "playe with",
+    "playe"
+  ]);
 
   testList(generateEntries("pop up"), ["pop up", "pop"]);
-  testList(generateEntries("popped up"), ["popped up", "popped", "pop up", "pop", "popp up", "popp", "poppe up", "poppe"]);
+  testList(generateEntries("popped up"), [
+    "popped up", //
+    "popped",
+    "pop up",
+    "pop",
+    "popp up",
+    "popp",
+    "poppe up",
+    "poppe"
+  ]);
 });
 
 test("", () => {
@@ -161,7 +240,14 @@ test("", () => {
 });
 
 test("", () => {
-  testList(generateEntries("on one's own"), ["on one's own", "on one's", "on", "on ~ own", "on own", "on one"]);
+  testList(generateEntries("on one's own"), [
+    "on one's own", //
+    "on one's",
+    "on",
+    "on ~ own",
+    "on own",
+    "on one"
+  ]);
 
   testList(generateEntries("on his own"), [
     "on his own",
@@ -201,10 +287,24 @@ test("", () => {
     "someone' son"
   ]);
 
-  testList(generateEntries("Senete's"), ["Senete's", "Senete'", "Senete", "senete's", "senete'", "senete"]);
+  testList(generateEntries("Senete's"), [
+    "Senete's", //
+    "Senete'",
+    "Senete",
+    "senete's",
+    "senete'",
+    "senete"
+  ]);
 
-  testList(generateEntries("by oneself"), ["by oneself", "by"]);
-  testList(generateEntries("by myself"), ["by myself", "by", "by oneself"]);
+  testList(generateEntries("by oneself"), [
+    "by oneself", //
+    "by"
+  ]);
+  testList(generateEntries("by myself"), [
+    "by myself", //
+    "by",
+    "by oneself"
+  ]);
 
   testList(generateEntries("brush one's dog"), [
     "brush one's dog",

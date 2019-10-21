@@ -87,15 +87,42 @@ test("", () => {
     "Announcement ~ Hoge",
     "Announcement Hoge"
   ]);
-  testList(text.linkWords(["American", "English"]), ["American English", "American"]);
-  testList(text.linkWords(["dealt", "with"]), ["dealt with", "dealt", "deal with", "deal"]);
+  testList(text.linkWords(["American", "English"]), [
+    "American English", //
+    "American"
+  ]);
+  testList(text.linkWords(["dealt", "with"]), [
+    "dealt with", //
+    "dealt",
+    "deal with",
+    "deal"
+  ]);
 });
 
 test("", () => {
-  expect(text.splitString("camelCase")).toEqual(["camel", "Case", "case"]);
-  expect(text.splitString("PascalCase")).toEqual(["Pascal", "pascal", "Case", "case"]);
-  expect(text.splitString("snake_case")).toEqual(["snake", "case"]);
-  expect(text.splitString("UPPER_SNAKE_CASE")).toEqual(["UPPER", "upper", "SNAKE", "snake", "CASE", "case"]);
+  expect(text.splitString("camelCase")).toEqual([
+    "camel", //
+    "Case",
+    "case"
+  ]);
+  expect(text.splitString("PascalCase")).toEqual([
+    "Pascal", //
+    "pascal",
+    "Case",
+    "case"
+  ]);
+  expect(text.splitString("snake_case")).toEqual([
+    "snake", //
+    "case"
+  ]);
+  expect(text.splitString("UPPER_SNAKE_CASE")).toEqual([
+    "UPPER", //
+    "upper",
+    "SNAKE",
+    "snake",
+    "CASE",
+    "case"
+  ]);
 });
 
 test("", () => {
