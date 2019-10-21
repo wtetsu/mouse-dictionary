@@ -18,6 +18,7 @@ import dict from "../logic/dict";
 import data from "../logic/data";
 import dom from "../../lib/dom";
 import storage from "../../lib/storage";
+import utils from "../../lib/utils";
 import Generator from "../../main/generator";
 import view from "../../main/view";
 import config from "../../main/config";
@@ -465,10 +466,7 @@ export default class Main extends React.Component {
 
     const { entries, lang } = entry.build(actualTrialText, settings.lookupWithCapitalized, false);
 
-    let startTime;
-    if (process.env.NODE_ENV !== "production") {
-      startTime = new Date().getTime();
-    }
+    const stopWatch = new utils.StopWatch();
 
     const descriptions = await storage.local.get(entries);
     const { html } = await this.generator.generate(entries, descriptions, lang === "en");
@@ -479,10 +477,7 @@ export default class Main extends React.Component {
       this.trialWindow.content.appendChild(newDom);
     }
 
-    if (process.env.NODE_ENV !== "production") {
-      const time = new Date().getTime() - startTime;
-      console.info(`${time}ms:${entries}`);
-    }
+    stopWatch.stop(entries);
   }
 
   async doSaveSettings() {

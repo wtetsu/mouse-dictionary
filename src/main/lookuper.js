@@ -82,10 +82,7 @@ export default class Lookuper {
   }
 
   async run(textToLookup, includeOrgText, enableShortWord, threshold) {
-    let startTime;
-    if (process.env.NODE_ENV !== "production") {
-      startTime = new Date().getTime();
-    }
+    const stopWatch = new utils.StopWatch(textToLookup);
 
     const { entries, lang } = entry.build(textToLookup, this.lookupWithCapitalized, includeOrgText);
     const descriptions = await storage.local.get(entries);
@@ -100,10 +97,6 @@ export default class Lookuper {
     this.shortCache.put(textToLookup, { dom: newDom, hitCount });
     this.lastText = textToLookup;
 
-    if (process.env.NODE_ENV !== "production") {
-      const time = new Date().getTime() - startTime;
-      console.info(`${time}ms:${textToLookup}`);
-      console.info(entries);
-    }
+    stopWatch.stop(entries);
   }
 }

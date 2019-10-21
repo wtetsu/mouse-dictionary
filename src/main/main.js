@@ -13,17 +13,9 @@ import dom from "../lib/dom";
 import utils from "../lib/utils";
 
 const main = async () => {
-  let startTime;
-  if (process.env.NODE_ENV !== "production") {
-    startTime = new Date().getTime();
-  }
-
+  const stopWatch = new utils.StopWatch("Launch");
   await invoke();
-
-  if (process.env.NODE_ENV !== "production") {
-    const time = new Date().getTime() - startTime;
-    console.info(`Launch:${time}ms`);
-  }
+  stopWatch.stop();
 };
 
 const invoke = async () => {
