@@ -37,7 +37,13 @@ test("5", () => {
 });
 
 test("", () => {
-  testNormalize(["make", "some", "modification"], [["make", "a", "modification"]]);
+  testNormalize(["make", "some", "modifications"], [["make", "a", "modifications"]]);
+  testNormalize(["make", "thousands", "of", "modifications"], [["make", "a", "modifications"]]);
+  testNormalize(["make", "a", "lot", "of", "modifications"], [["make", "a", "modifications"]]);
+
+  testNormalize(["make", "some", "careful", "selections"], [["make", "a", "careful", "selections"]]);
+  testNormalize(["make", "thousands", "of", "careful", "selections"], [["make", "a", "careful", "selections"]]);
+  testNormalize(["make", "a", "lot", "of", "careful", "selections"], [["make", "a", "careful", "selections"]]);
 });
 
 const testNormalize = (words, expectList) => {
