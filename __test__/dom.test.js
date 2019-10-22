@@ -15,10 +15,43 @@ test("", () => {
   dom.applyStyles(e, { opacity: 0.5 });
   expect(e.style.opacity).toEqual("0.5");
 
+  dom.applyStyles(e, { opacity: 0.6, "@invalidProperty": 99999 });
+  expect(e.style.opacity).toEqual("0.6");
+
+  dom.applyStyles(e, { "@invalidProperty": 99999, opacity: 0.7 });
+  expect(e.style.opacity).toEqual("0.7");
+
   dom.applyStyles(e, {});
   dom.applyStyles(e);
   dom.applyStyles(e, "xxx");
-  expect(e.style.opacity).toEqual("0.5");
+  expect(e.style.opacity).toEqual("0.7");
+});
+
+test("", () => {
+  const e = dom.create("<div><span>aaa</span></div>");
+  dom.replace(e, dom.create("<span>bbb</span>"));
+  expect("<span>bbb</span>").toEqual(e.innerHTML);
+});
+
+test("", () => {
+  const lines = [];
+  lines.push("<div>");
+  lines.push('  <span id="start">text01</span>');
+  lines.push("  <span>text02</span>");
+  lines.push("  <span>text03</span>");
+  lines.push("  <span>text04</span>");
+  lines.push("  <span>text05</span>");
+  lines.push("  <span>text06</span>");
+  lines.push("  <span>text07</span>");
+  lines.push("  <span>text08</span>");
+  lines.push("  <span>text09</span>");
+  lines.push("  <span>text10</span>");
+  lines.push("  <span>text11</span>"); // truncated
+  lines.push("  <span>text12</span>"); // truncated
+  lines.push("</div>");
+
+  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  expect(dom.traverse(start)).toEqual("text01 text02 text03 text04 text05 text06 text07 text08 text09 text10");
 });
 
 test("", () => {
@@ -67,4 +100,43 @@ test("", () => {
 
   const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("bbb-ccc ddd eee fff ggg hhh");
+});
+
+test("", () => {
+  const lines = [];
+  lines.push("<div>");
+  lines.push('<span id="start"></span>');
+  lines.push("</div>");
+
+  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  expect(dom.traverse(start)).toEqual("");
+});
+
+test("", () => {
+  const lines = [];
+  lines.push("<div>");
+  lines.push('<span id="start">text01</span>');
+  lines.push("<span>-</span>");
+  lines.push("<span>text02</span>");
+  lines.push("<span>text03</span>");
+  lines.push("<span>-</span>");
+  lines.push("<span>text04</span>");
+  lines.push("</div>");
+
+  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  expect(dom.traverse(start)).toEqual("text01-text02 text03-text04");
+});
+
+test("", () => {
+  const lines = [];
+  lines.push("<div>");
+  lines.push('<span id="start">-</span>');
+  lines.push("<span>text02</span>");
+  lines.push("<span>text03</span>");
+  lines.push("<span>-</span>");
+  lines.push("<span>text04</span>");
+  lines.push("</div>");
+
+  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  expect(dom.traverse(start)).toEqual("-text02 text03-text04");
 });
