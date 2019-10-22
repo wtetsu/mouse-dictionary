@@ -125,24 +125,21 @@ const getSelection = () => {
 
 class StopWatch {
   constructor(name) {
-    if (process.env.NODE_ENV === "production") {
-      return;
-    }
+    this.enable = process.env.NODE_ENV !== "production";
     this.name = name;
-    this.startTime = new Date().getTime();
-
     this.startTime = new Date().getTime();
   }
 
   stop(extraInformation = null) {
-    if (process.env.NODE_ENV === "production") {
-      return;
+    if (!this.enable) {
+      return -1;
     }
     const time = new Date().getTime() - this.startTime;
     console.info(`${this.name}: ${time}ms`);
     if (extraInformation) {
       console.info(extraInformation);
     }
+    return time;
   }
 }
 export default {
