@@ -1,5 +1,6 @@
 import fs from "fs";
 import json5 from "json5";
+const jaRule = require("deinja/src/data");
 import rule from "../src/main/rule";
 
 const load = () => {
@@ -10,7 +11,8 @@ const load = () => {
     pronoun: readJson("pronoun.json5"),
     spelling: readJson("spelling.json5"),
     trailing: readJson("trailing.json5"),
-    verb: readJson("verb.json5")
+    verb: readJson("verb.json5"),
+    ja: jaRule
   });
 };
 

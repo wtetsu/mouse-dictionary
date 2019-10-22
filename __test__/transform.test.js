@@ -17,3 +17,8 @@ test("", () => {
   expect(rule.doBase("ran")).toEqual(["run"]);
   expect(rule.doBase("running")).toEqual(["run", "runne"]);
 });
+
+test("", () => {
+  expect(rule.doJa("死んだ")).toEqual(expect.arrayContaining(["死ぬ"]));
+  expect(rule.doJa("殺った")).toEqual(expect.arrayContaining(["殺る"]));
+});
