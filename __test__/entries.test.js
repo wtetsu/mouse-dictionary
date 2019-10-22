@@ -335,6 +335,14 @@ test("", () => {
 
 test("", () => {
   expect(generateEntries("colour")).toEqual(["colour", "color"]);
+  expect(generateEntries("women")).toEqual(["women", "woman"]);
+});
+
+test("", () => {
+  testList(generateEntries("abc."), ["abc"]);
+  testList(generateEntries("abc.", true), ["abc", "ABC"]);
+  testList(generateEntries("abc.", false, true), ["abc"]);
+  testList(generateEntries("abc.", true, true), ["abc", "ABC"]);
 });
 
 const testList = (actualList, expectedList) => {
