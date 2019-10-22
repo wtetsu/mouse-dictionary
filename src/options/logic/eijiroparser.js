@@ -4,8 +4,10 @@
  * Licensed under MIT
  */
 
+const HEADWORD_FIRST = "■";
 const DELIMITER1 = " : ";
 const DELIMITER2 = "  {";
+const NEW_LINE = "\n";
 
 export default class EijiroParser {
   constructor() {
@@ -19,25 +21,21 @@ export default class EijiroParser {
       return null;
     }
 
-    let result = null;
     if (hd.head === this.currentHead) {
       this.lines.push(hd.desc);
-    } else {
-      if (this.currentHead && this.lines.length >= 1) {
-        result = {
-          head: this.currentHead,
-          desc: this.lines.join("\n")
-        };
-      }
-      this.currentHead = hd.head;
-      this.lines = [];
-      this.lines.push(hd.desc);
+      return null;
     }
-    return result;
+
+    const head = this.currentHead;
+    const desc = this.lines.join(NEW_LINE);
+
+    this.currentHead = hd.head;
+    this.lines = [hd.desc];
+    return head && desc ? { head, desc } : null;
   }
 
   parseLine(line) {
-    if (!line.startsWith("■")) {
+    if (!line.startsWith(HEADWORD_FIRST)) {
       return null;
     }
 
@@ -62,7 +60,7 @@ export default class EijiroParser {
   flush() {
     const data = {};
     if (this.currentHead && this.lines.length >= 1) {
-      data[this.currentHead] = this.lines.join("\n");
+      data[this.currentHead] = this.lines.join(NEW_LINE);
     }
     this.currentHead = null;
     this.lines = [];

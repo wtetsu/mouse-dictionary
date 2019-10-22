@@ -18,6 +18,12 @@ test("", () => {
   hd = parser.addLine("■tile  {他動-1} : ＊＊＊＊");
   expect(hd).toEqual(null);
 
+  hd = parser.addLine("# invalid line");
+  expect(hd).toEqual(null);
+
+  hd = parser.addLine("■ invalid line");
+  expect(hd).toEqual(null);
+
   hd = parser.flush();
   expect(hd).toEqual({ tile: "{自動} : 《コ》〔＊＊＊＊＊＊〕＊＊＊＊＊＊＊＊\n{他動-1} : ＊＊＊＊" });
 });
