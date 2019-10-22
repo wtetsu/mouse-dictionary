@@ -1,25 +1,30 @@
 import testdata from "./testdata";
 import text from "../src/lib/text";
+import rule from "../src/main/rule";
 
 beforeAll(() => {
   testdata.load();
 });
 
 test("", () => {
-  expect(text.splitIntoWords("removed from")).toEqual(["removed", "from"]);
-  expect(text.splitIntoWords("removed  from")).toEqual(["removed", "from"]);
-  expect(text.splitIntoWords("あああremoved  fromあいいいい")).toEqual(["removed", "from"]);
+  const splitIntoWords = str => {
+    return text.splitIntoWords(str, rule.doLetters);
+  };
 
-  expect(text.splitIntoWords("American English")).toEqual(["American", "English"]);
-  expect(text.splitIntoWords(".American English.")).toEqual(["American", "English"]);
+  expect(splitIntoWords("removed from")).toEqual(["removed", "from"]);
+  expect(splitIntoWords("removed  from")).toEqual(["removed", "from"]);
+  expect(splitIntoWords("あああremoved  fromあいいいい")).toEqual(["removed", "from"]);
 
-  expect(text.splitIntoWords("American\rEnglish")).toEqual(["American", "English"]);
-  expect(text.splitIntoWords("American\nEnglish")).toEqual(["American", "English"]);
-  expect(text.splitIntoWords("American\r\nEnglish")).toEqual(["American", "English"]);
-  expect(text.splitIntoWords("American.English")).toEqual(["American", "English"]);
-  expect(text.splitIntoWords("American,English")).toEqual(["American", "English"]);
-  expect(text.splitIntoWords("American-English")).toEqual(["American-English"]);
-  expect(text.splitIntoWords("American_English")).toEqual(["American_English"]);
+  expect(splitIntoWords("American English")).toEqual(["American", "English"]);
+  expect(splitIntoWords(".American English.")).toEqual(["American", "English"]);
+
+  expect(splitIntoWords("American\rEnglish")).toEqual(["American", "English"]);
+  expect(splitIntoWords("American\nEnglish")).toEqual(["American", "English"]);
+  expect(splitIntoWords("American\r\nEnglish")).toEqual(["American", "English"]);
+  expect(splitIntoWords("American.English")).toEqual(["American", "English"]);
+  expect(splitIntoWords("American,English")).toEqual(["American", "English"]);
+  expect(splitIntoWords("American-English")).toEqual(["American-English"]);
+  expect(splitIntoWords("American_English")).toEqual(["American_English"]);
 });
 
 // test("", () => {
@@ -126,31 +131,35 @@ test("", () => {
 });
 
 test("", () => {
+  const dealWithHyphens = str => {
+    return text.dealWithHyphens(str, rule.doLetters);
+  };
+
   // normal hyphen
-  expect(text.dealWithHyphens("abc")).toEqual("abc");
-  expect(text.dealWithHyphens("abc-efg")).toEqual("abc-efg");
-  expect(text.dealWithHyphens("abc-efg-hij")).toEqual("abc-efg-hij");
-  expect(text.dealWithHyphens("abc-\nefg")).toEqual("abcefg");
-  expect(text.dealWithHyphens("abc efg hij")).toEqual("abc efg hij");
-  expect(text.dealWithHyphens("abc-\nefg hij")).toEqual("abcefg hij");
-  expect(text.dealWithHyphens("abc-\nefg hij-\nklm")).toEqual("abcefg hijklm");
-  expect(text.dealWithHyphens("aaa-\nbbb ccc-@*+ddd")).toEqual("aaabbb cccddd");
-  expect(text.dealWithHyphens("aaa-")).toEqual("aaa-");
-  expect(text.dealWithHyphens("emo- ↵tional")).toEqual("emotional");
-  expect(text.dealWithHyphens("emo- @*tional")).toEqual("emotional");
+  expect(dealWithHyphens("abc")).toEqual("abc");
+  expect(dealWithHyphens("abc-efg")).toEqual("abc-efg");
+  expect(dealWithHyphens("abc-efg-hij")).toEqual("abc-efg-hij");
+  expect(dealWithHyphens("abc-\nefg")).toEqual("abcefg");
+  expect(dealWithHyphens("abc efg hij")).toEqual("abc efg hij");
+  expect(dealWithHyphens("abc-\nefg hij")).toEqual("abcefg hij");
+  expect(dealWithHyphens("abc-\nefg hij-\nklm")).toEqual("abcefg hijklm");
+  expect(dealWithHyphens("aaa-\nbbb ccc-@*+ddd")).toEqual("aaabbb cccddd");
+  expect(dealWithHyphens("aaa-")).toEqual("aaa-");
+  expect(dealWithHyphens("emo- ↵tional")).toEqual("emotional");
+  expect(dealWithHyphens("emo- @*tional")).toEqual("emotional");
 
   // non-breaking hyphen(U+2011)
-  expect(text.dealWithHyphens("abc")).toEqual("abc");
-  expect(text.dealWithHyphens("abc‑efg")).toEqual("abc-efg");
-  expect(text.dealWithHyphens("abc‑efg‑hij")).toEqual("abc-efg-hij");
-  expect(text.dealWithHyphens("abc‑\nefg")).toEqual("abcefg");
-  expect(text.dealWithHyphens("abc efg hij")).toEqual("abc efg hij");
-  expect(text.dealWithHyphens("abc‑\nefg hij")).toEqual("abcefg hij");
-  expect(text.dealWithHyphens("abc‑\nefg hij‑\nklm")).toEqual("abcefg hijklm");
-  expect(text.dealWithHyphens("aaa‑\nbbb ccc‑@*+ddd")).toEqual("aaabbb cccddd");
-  expect(text.dealWithHyphens("aaa‑")).toEqual("aaa-");
-  expect(text.dealWithHyphens("emo‑ ↵tional")).toEqual("emotional");
-  expect(text.dealWithHyphens("emo‑ @*tional")).toEqual("emotional");
+  expect(dealWithHyphens("abc")).toEqual("abc");
+  expect(dealWithHyphens("abc‑efg")).toEqual("abc-efg");
+  expect(dealWithHyphens("abc‑efg‑hij")).toEqual("abc-efg-hij");
+  expect(dealWithHyphens("abc‑\nefg")).toEqual("abcefg");
+  expect(dealWithHyphens("abc efg hij")).toEqual("abc efg hij");
+  expect(dealWithHyphens("abc‑\nefg hij")).toEqual("abcefg hij");
+  expect(dealWithHyphens("abc‑\nefg hij‑\nklm")).toEqual("abcefg hijklm");
+  expect(dealWithHyphens("aaa‑\nbbb ccc‑@*+ddd")).toEqual("aaabbb cccddd");
+  expect(dealWithHyphens("aaa‑")).toEqual("aaa-");
+  expect(dealWithHyphens("emo‑ ↵tional")).toEqual("emotional");
+  expect(dealWithHyphens("emo‑ @*tional")).toEqual("emotional");
 });
 
 const testList = (actualList, expectedList) => {

@@ -14,6 +14,7 @@ import Draggable from "../lib/draggable";
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
 const attach = async (settings, dialog, doUpdateContent) => {
+  const getText = atcursor(rule.doLetters);
   const lookuper = new Lookuper(settings, doUpdateContent);
 
   const scrollable = settings.scroll === "scroll";
@@ -43,8 +44,8 @@ const attach = async (settings, dialog, doUpdateContent) => {
   };
   const onMouseMoveSecondOrLater = e => {
     draggable.onMouseMove(e);
-    const textAtCursor = atcursor(e.target, e.clientX, e.clientY, settings.parseWordsLimit);
-    lookuper.lookup(textAtCursor);
+    const textUnderCursor = getText(e.target, e.clientX, e.clientY, settings.parseWordsLimit);
+    lookuper.lookup(textUnderCursor);
   };
   let onMouseMove = onMouseMoveFirst;
   document.body.addEventListener("mousemove", e => onMouseMove(e));

@@ -53,6 +53,7 @@ module.exports = {
     new UniteJsonPlugin([
       {
         from: [
+          { name: "letters", file: "rule/letters.json5" },
           { name: "noun", file: "rule/noun.json5" },
           { name: "phrase", file: "rule/phrase.json5" },
           { name: "pronoun", file: "rule/pronoun.json5" },

@@ -9,7 +9,7 @@ import rule from "../rule";
 import text from "../../lib/text";
 
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
-  const sourceStr = text.dealWithHyphens(rawSourceStr);
+  const sourceStr = text.dealWithHyphens(rawSourceStr, rule.doLetters);
   const lowerStr = sourceStr.toLowerCase();
 
   const isAllLower = lowerStr === sourceStr;
@@ -75,7 +75,7 @@ const createWordsList = stringList => {
   const wordListList = [];
   for (let i = 0; i < stringList.length; i++) {
     const str = stringList[i];
-    const words = text.splitIntoWords(str);
+    const words = text.splitIntoWords(str, rule.doLetters);
     wordListList.push(words);
     const unifiedSpellingWords = rule.doSpelling(words);
     if (unifiedSpellingWords) {

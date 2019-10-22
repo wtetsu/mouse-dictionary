@@ -4,6 +4,7 @@ import rule from "../src/main/rule";
 
 const load = () => {
   rule.registerRuleData({
+    letters: readJson("letters.json5"),
     noun: readJson("noun.json5"),
     phrase: readJson("phrase.json5"),
     pronoun: readJson("pronoun.json5"),

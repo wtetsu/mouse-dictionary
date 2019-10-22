@@ -4,43 +4,117 @@
  * Licensed under MIT
  */
 
-import letters from "./letters";
 import dom from "./dom";
 
 const JA_MAX_LENGTH = 40;
 
-export default (element, clientX, clientY, maxWords = 5) => {
-  let textOnCursor = null;
-  try {
-    textOnCursor = fetchTextOnCursor(element, clientX, clientY, maxWords);
-  } catch (err) {
-    console.error(err);
-    textOnCursor = null;
-  }
-  return textOnCursor;
-};
+const createTextRetriever = (doConfirmValidCharacter = isEnglishLikeCharacter) => {
+  const searchStartIndex = (text, index) => {
+    let startIndex;
+    let i = index;
+    for (;;) {
+      const code = text.charCodeAt(i);
+      if (!doConfirmValidCharacter(code)) {
+        startIndex = i + 1;
+        break;
+      }
+      if (i <= 0) {
+        startIndex = 0;
+        break;
+      }
+      i -= 1;
+    }
+    return startIndex;
+  };
 
-const fetchTextOnCursor = (element, clientX, clientY, maxWords) => {
-  const range = getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
-  if (!range) {
-    return null;
-  }
-  const { node, offset } = range;
-  if (node.nodeType !== Node.TEXT_NODE) {
-    return null;
-  }
-  return fetchTextFromTextNode(node, offset, maxWords);
-};
+  const searchEndIndex = (text, index, maxWords) => {
+    let endIndex;
+    let i = index + 1;
+    let spaceCount = 0;
+    let theLastIsSpace = false;
+    for (;;) {
+      const code = text.charCodeAt(i);
+      if (code === 0x20) {
+        if (!theLastIsSpace) {
+          spaceCount += 1;
+        }
+        theLastIsSpace = true;
+        if (spaceCount >= maxWords) {
+          endIndex = i;
+          break;
+        }
+      } else {
+        if (!doConfirmValidCharacter(code)) {
+          endIndex = i;
+          break;
+        }
+        theLastIsSpace = false;
+      }
+      if (i >= text.length) {
+        endIndex = i;
+        break;
+      }
 
-const fetchTextFromTextNode = (textNode, offset, maxWords) => {
-  const { text, end, isEnglish } = getTextFromRange(textNode.data, offset, maxWords);
-  if (!end) {
-    return text;
-  }
-  const followingText = dom.traverse(textNode);
-  const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
-  const endIndex = isEnglish ? searchEndIndex(concatenatedText, 0, maxWords) : JA_MAX_LENGTH;
-  return concatenatedText.substring(0, endIndex);
+      i += 1;
+    }
+    return endIndex;
+  };
+
+  const fetchTextFromTextNode = (textNode, offset, maxWords) => {
+    const { text, end, isEnglish } = getTextFromRange(textNode.data, offset, maxWords);
+    if (!end) {
+      return text;
+    }
+    const followingText = dom.traverse(textNode);
+    const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
+    const endIndex = isEnglish ? searchEndIndex(concatenatedText, 0, maxWords) : JA_MAX_LENGTH;
+    return concatenatedText.substring(0, endIndex);
+  };
+
+  const getTextFromRange = (sourceText, offset, maxWords) => {
+    if (!sourceText) {
+      return {};
+    }
+    const code = sourceText.charCodeAt(offset);
+    const isEnglish = isEnglishLikeCharacter(code);
+
+    let startIndex, endIndex;
+    if (isEnglish) {
+      startIndex = searchStartIndex(sourceText, offset);
+      endIndex = searchEndIndex(sourceText, offset, maxWords);
+    } else {
+      startIndex = offset;
+      endIndex = offset + JA_MAX_LENGTH;
+    }
+    const text = sourceText.substring(startIndex, endIndex);
+    const end = endIndex >= sourceText.length;
+    return { text, end, isEnglish };
+  };
+
+  const fetchTextOnCursor = (element, clientX, clientY, maxWords) => {
+    const range = getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
+    if (!range) {
+      return null;
+    }
+    const { node, offset } = range;
+    if (node.nodeType !== Node.TEXT_NODE) {
+      return null;
+    }
+    return fetchTextFromTextNode(node, offset, maxWords);
+  };
+
+  const getTextUnderCursor = (element, clientX, clientY, maxWords = 5) => {
+    let textOnCursor = null;
+    try {
+      textOnCursor = fetchTextOnCursor(element, clientX, clientY, maxWords);
+    } catch (err) {
+      console.error(err);
+      textOnCursor = null;
+    }
+    return textOnCursor;
+  };
+
+  return getTextUnderCursor;
 };
 
 const concatenateFollowingText = (text, followingText, isEnglish) => {
@@ -54,77 +128,6 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
     return text + followingText;
   }
   return text + " " + followingText;
-};
-
-const searchStartIndex = (text, index) => {
-  let startIndex;
-  let i = index;
-  for (;;) {
-    const code = text.charCodeAt(i);
-    if (!letters.has(code)) {
-      startIndex = i + 1;
-      break;
-    }
-    if (i <= 0) {
-      startIndex = 0;
-      break;
-    }
-    i -= 1;
-  }
-  return startIndex;
-};
-
-const searchEndIndex = (text, index, maxWords) => {
-  let endIndex;
-  let i = index + 1;
-  let spaceCount = 0;
-  let theLastIsSpace = false;
-  for (;;) {
-    const code = text.charCodeAt(i);
-    if (code === 0x20) {
-      if (!theLastIsSpace) {
-        spaceCount += 1;
-      }
-      theLastIsSpace = true;
-      if (spaceCount >= maxWords) {
-        endIndex = i;
-        break;
-      }
-    } else {
-      if (!letters.has(code)) {
-        endIndex = i;
-        break;
-      }
-      theLastIsSpace = false;
-    }
-    if (i >= text.length) {
-      endIndex = i;
-      break;
-    }
-
-    i += 1;
-  }
-  return endIndex;
-};
-
-const getTextFromRange = (text, offset, maxWords) => {
-  if (!text) {
-    return {};
-  }
-  const code = text.charCodeAt(offset);
-  const isEnglishLikeCharacter = 0x20 <= code && code <= 0x7e;
-
-  let startIndex, endIndex;
-  if (isEnglishLikeCharacter) {
-    startIndex = searchStartIndex(text, offset);
-    endIndex = searchEndIndex(text, offset, maxWords);
-  } else {
-    startIndex = offset;
-    endIndex = offset + JA_MAX_LENGTH;
-  }
-  const resultText = text.substring(startIndex, endIndex);
-  const result = { text: resultText, end: endIndex >= text.length, isEnglish: isEnglishLikeCharacter };
-  return result;
 };
 
 let getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
@@ -162,3 +165,7 @@ const createGetCaretNodeAndOffsetFromPointFunction = ownerDocument => {
   }
   return newFunction;
 };
+
+const isEnglishLikeCharacter = code => 0x20 <= code && code <= 0x7e;
+
+export default createTextRetriever;

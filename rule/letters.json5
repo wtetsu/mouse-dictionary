@@ -5,7 +5,7 @@
  */
 
 // Mouse Dictionary regards only these characters as target characters to look up dictionary data.
-const targetLetters = new Set([
+[
   // 32, //
   // 33, // !
   // 34, // "
@@ -102,6 +102,4 @@ const targetLetters = new Set([
   //125, // }
   //126 // ~,
   8209 // ‑
-]);
-
-export default targetLetters;
+]

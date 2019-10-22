@@ -19,8 +19,10 @@ const pronounRule = [];
 const spellingRule = new Map();
 const trailingRule = [];
 const verbRule = new Map();
+const lettersRule = new Set();
 
 let deinjaConvert = () => {};
+const registerLetters = data => utils.updateSet(lettersRule, data);
 const registerNoun = data => utils.updateMap(nounRule, data);
 const registerPhrase = data => Object.assign(phraseRule, data);
 const registerPronoun = data => Object.assign(pronounRule, data.map(datum => new Map(datum)));
@@ -53,6 +55,7 @@ const readAndLoadRuleFiles = async ruleFile => {
 
 const registerRuleData = ruleData => {
   const processes = [
+    { field: "letters", register: registerLetters },
     { field: "noun", register: registerNoun },
     { field: "phrase", register: registerPhrase },
     { field: "pronoun", register: registerPronoun },
@@ -81,6 +84,7 @@ export default {
   load,
   registerRuleData,
   doBase: word => base({ noun: nounRule, trailing: trailingRule, verb: verbRule }, word),
+  doLetters: ch => lettersRule.has(ch),
   doPhrase: words => phrase(phraseRule, words),
   doPronoun: words => pronoun(pronounRule, words),
   doSpelling: words => spelling(spellingRule, words),

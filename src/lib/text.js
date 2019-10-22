@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import letters from "./letters";
 import rule from "../main/rule";
 
 const text = {};
@@ -14,7 +13,7 @@ const RE_NON_BREAKING_HYPHEN = /‑/g;
 // aaa-bbb -> aaa-bbb
 // aaa-\nbbb -> aaabbb
 // aaa-%&*bbb -> aaabbb
-text.dealWithHyphens = sourceStr => {
+text.dealWithHyphens = (sourceStr, doIsValidCharacter = isValidCharacter) => {
   const str = sourceStr.replace(RE_NON_BREAKING_HYPHEN, "-");
   let result = "";
   let currentIndex = 0;
@@ -34,7 +33,7 @@ text.dealWithHyphens = sourceStr => {
     result += str.substring(currentIndex, hyphenIndex);
     for (let i = hyphenIndex + 1; i < str.length; i++) {
       const code = str.charCodeAt(i);
-      if (letters.has(code)) {
+      if (doIsValidCharacter(code)) {
         if (i === hyphenIndex + 1) {
           // right after the hyphen
           result += "-";
@@ -58,13 +57,13 @@ text.dealWithHyphens = sourceStr => {
  * "American-English" -> ["American-English"]
  * "American_English" -> ["American_English"]
  */
-text.splitIntoWords = str => {
+text.splitIntoWords = (str, doIsValidCharacter = isValidCharacter) => {
   const words = [];
   let startIndex = null;
   let i = 0;
   for (;;) {
     const code = str.charCodeAt(i);
-    const isEnglishCharacter = letters.has(code);
+    const isEnglishCharacter = doIsValidCharacter(code);
     if (isEnglishCharacter) {
       if (startIndex === null) {
         startIndex = i;
@@ -204,5 +203,7 @@ text.linkWords = (words, minWordNum = 1) => {
 
   return linkedWords;
 };
+
+const isValidCharacter = code => code >= 33 && code <= 126;
 
 export default text;
