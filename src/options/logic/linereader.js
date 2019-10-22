@@ -7,11 +7,11 @@
 export default class LineReader {
   constructor(data) {
     this.data = data;
-    this.lineFeedCode = this.detectLineFeedCode(data);
+    this.lineFeedString = this.detectLineFeedString(data);
     this.currentIndex = 0;
   }
 
-  detectLineFeedCode(data) {
+  detectLineFeedString(data) {
     const index = data.indexOf("\n");
     if (index < 0) {
       return null;
@@ -43,11 +43,15 @@ export default class LineReader {
     if (this.currentIndex === -1) {
       return null;
     }
+    if (this.lineFeedString === null) {
+      this.currentIndex = -1;
+      return this.data;
+    }
     let line = null;
-    const nextLfIndex = this.data.indexOf(this.lineFeedCode, this.currentIndex);
+    const nextLfIndex = this.data.indexOf(this.lineFeedString, this.currentIndex);
     if (nextLfIndex >= 0) {
       line = this.data.substring(this.currentIndex, nextLfIndex);
-      this.currentIndex = nextLfIndex + this.lineFeedCode.length;
+      this.currentIndex = nextLfIndex + this.lineFeedString.length;
     } else {
       line = this.data.substring(this.currentIndex);
       this.currentIndex = -1;

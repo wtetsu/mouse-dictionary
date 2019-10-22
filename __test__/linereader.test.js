@@ -1,6 +1,6 @@
 import LineReader from "../src/options/logic/linereader";
 
-test("", () => {
+test("", done => {
   let reader = new LineReader("aaa\nbbb\nccc");
 
   let lines = [];
@@ -14,13 +14,13 @@ test("", () => {
       });
     },
     () => {
-      test.deepEqual(["aaa", "bbb", "ccc"], lines);
-      test.done();
+      expect(["aaa", "bbb", "ccc"]).toEqual(lines);
+      done();
     }
   );
 });
 
-test("", () => {
+test("", done => {
   let reader = new LineReader("aaa\r\nbbb\r\nccc");
 
   let lines = [];
@@ -34,8 +34,29 @@ test("", () => {
       });
     },
     () => {
-      test.deepEqual(["aaa", "bbb", "ccc"], lines);
-      test.done();
+      expect(["aaa", "bbb", "ccc"]).toEqual(lines);
+      done();
+    }
+  );
+});
+
+test("", done => {
+  let reader = new LineReader("aaabbbccc");
+
+  let lines = [];
+  reader.eachLine(
+    line => {
+      lines.push(line);
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve();
+        }, 100);
+      });
+    },
+    () => {
+      expect(["aaabbbccc"]).toEqual(lines);
+      expect(null).toEqual(reader.getNextLine());
+      done();
     }
   );
 });
