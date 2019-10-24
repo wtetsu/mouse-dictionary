@@ -73,98 +73,111 @@ export default class Main extends React.Component {
     const state = this.state;
 
     return (
-      <div>
-        <div onClick={this.doSwitchLanguage} style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}>
-          {this.state.lang}
+      <>
+        <div style={{ textAlign: "center", marginBottom: "10px" }}>
+          <a
+            href={`https://mouse-dictionary.netlify.com/${this.state.lang}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "underline", fontSize: "small" }}
+          >
+            <img src="logo.png" width="250" />
+          </a>
         </div>
-        <LoadDictionary
-          encoding={state.encoding}
-          format={state.format}
-          changeState={this.doChangeState}
-          doLoad={this.doLoad}
-          doClear={this.doClear}
-          dictDataUsage={state.dictDataUsage}
-          busy={state.busy}
-          progress={state.progress}
-        />
 
-        <img
-          src="loading.gif"
-          width="32"
-          height="32"
-          style={{ verticalAlign: "middle", display: this.state.initialized ? "none" : "inline" }}
-        />
-
-        {!this.state.busy && !env.disableUserSettings && this.state.initialized && <hr />}
-
-        {!this.state.busy && !env.disableUserSettings && this.state.initialized && (
-          <div>
-            <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-            <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
-              {this.state.basicSettingsOpened ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
-            </a>
+        <div>
+          <div onClick={this.doSwitchLanguage} style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}>
+            {this.state.lang}
           </div>
-        )}
-
-        <br />
-
-        {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
-          <>
-            <span>{res.get("trialText")}: </span>
-            <ContentEditable
-              innerRef={this.contentEditable}
-              html={this.state.trialText}
-              disabled={false}
-              onChange={e => this.doChangeState("trialText", e.target.value)}
-              onKeyDown={e => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                }
-              }}
-              tagName="span"
-            />
-            <br />
-            <br />
-          </>
-        )}
-
-        {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
-          <PersistenceSettings
-            onClickSaveSettings={this.doSaveSettings}
-            onClickBackToDefaultSettings={this.doBackToDefaultSettings}
-          />
-        )}
-
-        {this.state.basicSettingsOpened && (
-          <BasicSettings
-            changeSettings={this.doChangeSettings}
-            doLoadInitialDict={this.doLoadInitialDict}
+          <LoadDictionary
+            encoding={state.encoding}
+            format={state.format}
+            changeState={this.doChangeState}
+            doLoad={this.doLoad}
+            doClear={this.doClear}
+            dictDataUsage={state.dictDataUsage}
             busy={state.busy}
-            settings={state.settings}
-            trialText={state.trialText}
+            progress={state.progress}
           />
-        )}
 
-        <br />
-        {this.state.basicSettingsOpened && (
-          <div>
-            <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-            <a onClick={this.doToggleAdvancedSettings} style={{ cursor: "pointer" }}>
-              {this.state.advancedSettingsOpened ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
-            </a>
-          </div>
-        )}
-
-        <br />
-
-        {this.state.advancedSettingsOpened && (
-          <AdvancedSettings
-            changeSettings={this.doChangeSettings}
-            changeReplaceRule={this.doChangeReplaceRule}
-            settings={state.settings}
+          <img
+            src="loading.gif"
+            width="32"
+            height="32"
+            style={{ verticalAlign: "middle", display: this.state.initialized ? "none" : "inline" }}
           />
-        )}
-      </div>
+
+          {!this.state.busy && !env.disableUserSettings && this.state.initialized && <hr />}
+
+          {!this.state.busy && !env.disableUserSettings && this.state.initialized && (
+            <div>
+              <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
+              <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
+                {this.state.basicSettingsOpened ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
+              </a>
+            </div>
+          )}
+
+          <br />
+
+          {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
+            <>
+              <span>{res.get("trialText")}: </span>
+              <ContentEditable
+                innerRef={this.contentEditable}
+                html={this.state.trialText}
+                disabled={false}
+                onChange={e => this.doChangeState("trialText", e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                }}
+                tagName="span"
+              />
+              <br />
+              <br />
+            </>
+          )}
+
+          {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
+            <PersistenceSettings
+              onClickSaveSettings={this.doSaveSettings}
+              onClickBackToDefaultSettings={this.doBackToDefaultSettings}
+            />
+          )}
+
+          {this.state.basicSettingsOpened && (
+            <BasicSettings
+              changeSettings={this.doChangeSettings}
+              doLoadInitialDict={this.doLoadInitialDict}
+              busy={state.busy}
+              settings={state.settings}
+              trialText={state.trialText}
+            />
+          )}
+
+          <br />
+          {this.state.basicSettingsOpened && (
+            <div>
+              <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
+              <a onClick={this.doToggleAdvancedSettings} style={{ cursor: "pointer" }}>
+                {this.state.advancedSettingsOpened ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
+              </a>
+            </div>
+          )}
+
+          <br />
+
+          {this.state.advancedSettingsOpened && (
+            <AdvancedSettings
+              changeSettings={this.doChangeSettings}
+              changeReplaceRule={this.doChangeReplaceRule}
+              settings={state.settings}
+            />
+          )}
+        </div>
+      </>
     );
   }
 
