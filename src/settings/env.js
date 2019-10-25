@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-let env = {};
+const env = {};
 
 if (BROWSER === "FIREFOX") {
   // When Mouse Dictionary loads dictionary data,
