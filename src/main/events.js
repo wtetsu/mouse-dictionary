@@ -7,14 +7,14 @@
 import config from "./config";
 import rule from "./rule";
 import Lookuper from "./lookuper";
-import atcursor from "../lib/atcursor";
+import traverser from "../lib/traverser";
 import utils from "../lib/utils";
 import Draggable from "../lib/draggable";
 
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
 const attach = async (settings, dialog, doUpdateContent) => {
-  const getText = atcursor(rule.doLetters);
+  const getText = traverser(rule.doLetters);
   const lookuper = new Lookuper(settings, doUpdateContent);
 
   const scrollable = settings.scroll === "scroll";
