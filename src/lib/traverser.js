@@ -24,9 +24,9 @@ const build = (doConfirmValidCharacter, maxWords) => {
 };
 
 class Traverser {
-  constructor(doIsTargetCharacter, maxWords) {
+  constructor(doGetTargetCharacterType, maxWords) {
     this.JA_MAX_LENGTH = 40;
-    this.isTargetCharacter = doIsTargetCharacter || isEnglishLikeCharacter;
+    this.getTargetCharacterType = doGetTargetCharacterType || (code => (isEnglishLikeCharacter(code) ? 3 : 0));
     this.maxWords = maxWords || 8;
   }
 
@@ -50,7 +50,7 @@ class Traverser {
     const followingText = dom.traverse(textNode);
     const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
     const endIndex = isEnglish
-      ? searchEndIndex(concatenatedText, 0, this.maxWords, this.isTargetCharacter)
+      ? searchEndIndex(concatenatedText, 0, this.maxWords, this.getTargetCharacterType)
       : this.JA_MAX_LENGTH;
     return concatenatedText.substring(0, endIndex);
   }
@@ -64,8 +64,8 @@ class Traverser {
 
     let startIndex, endIndex;
     if (isEnglish) {
-      startIndex = searchStartIndex(sourceText, offset, this.isTargetCharacter);
-      endIndex = searchEndIndex(sourceText, offset, this.maxWords, this.isTargetCharacter);
+      startIndex = searchStartIndex(sourceText, offset, this.getTargetCharacterType);
+      endIndex = searchEndIndex(sourceText, offset, this.maxWords, this.getTargetCharacterType);
     } else {
       startIndex = offset;
       endIndex = offset + this.JA_MAX_LENGTH;
@@ -76,12 +76,13 @@ class Traverser {
   }
 }
 
-const searchStartIndex = (text, index, doIsTargetCharacter) => {
+const searchStartIndex = (text, index, doGetCharacterType) => {
   let startIndex;
   let i = index;
   for (;;) {
     const code = text.charCodeAt(i);
-    if (!doIsTargetCharacter(code)) {
+    const toPursue = doGetCharacterType(code) & 1;
+    if (!toPursue) {
       startIndex = i + 1;
       break;
     }
@@ -94,7 +95,7 @@ const searchStartIndex = (text, index, doIsTargetCharacter) => {
   return startIndex;
 };
 
-const searchEndIndex = (text, index, maxWords, doIsTargetCharacter) => {
+const searchEndIndex = (text, index, maxWords, doGetCharacterType) => {
   let endIndex;
   let i = index + 1;
   let spaceCount = 0;
@@ -111,7 +112,8 @@ const searchEndIndex = (text, index, maxWords, doIsTargetCharacter) => {
         break;
       }
     } else {
-      if (!doIsTargetCharacter(code)) {
+      const toPursue = doGetCharacterType(code) & 2;
+      if (!toPursue) {
         endIndex = i;
         break;
       }
