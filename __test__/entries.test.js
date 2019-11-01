@@ -391,3 +391,7 @@ test("", () => {
     ])
   );
 });
+
+test("", () => {
+  expect(generateEntries("")).toEqual(expect.arrayContaining([]));
+});

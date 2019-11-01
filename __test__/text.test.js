@@ -135,6 +135,8 @@ test("", () => {
     return text.dealWithHyphens(str, rule.doLetters);
   };
 
+  expect(dealWithHyphens("")).toEqual("");
+
   // normal hyphen
   expect(dealWithHyphens("abc")).toEqual("abc");
   expect(dealWithHyphens("abc-efg")).toEqual("abc-efg");

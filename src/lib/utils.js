@@ -16,12 +16,6 @@ const updateMap = (map, data) => {
   }
 };
 
-const updateSet = (set, data) => {
-  for (let i = 0; i < data.length; i++) {
-    set.add(data[i]);
-  }
-};
-
 /**
  * omap({ a: 1, b: 2, c: 3 }, v => v * 2, ["b", "c"]);
  *   -> { a: 1, b: 4, c: 6 }
@@ -151,7 +145,6 @@ class StopWatch {
 export default {
   loadJson,
   updateMap,
-  updateSet,
   omap,
   areSame,
   isInsideRange,
