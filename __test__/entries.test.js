@@ -21,316 +21,344 @@ test("", () => {
 });
 
 test("", () => {
-  testList(generateEntries("thousand miles down"), [
-    "thousand miles down",
-    "thousand miles",
-    "thousand",
-    "thousand ~ down",
-    "thousand down",
-    "thousand mile"
-  ]);
-
-  testList(
-    generateEntries("american english"), //
-    ["american english", "american"]
-  );
-  testList(
-    generateEntries("American English"), //
-    ["American English", "American", "american english", "american"]
+  expect(generateEntries("thousand miles down")).toEqual(
+    expect.arrayContaining([
+      "thousand miles down",
+      "thousand miles",
+      "thousand",
+      "thousand ~ down",
+      "thousand down",
+      "thousand mile"
+    ])
   );
 
-  testList(generateEntries("Announcement of Hoge"), [
-    "Announcement of Hoge",
-    "Announcement of",
-    "Announcement",
-    "Announcement ~ Hoge",
-    "Announcement Hoge",
-    "announcement of hoge",
-    "announcement of",
-    "announcement",
-    "announcement ~ hoge",
-    "announcement hoge"
-  ]);
+  expect(generateEntries("american english")).toEqual(expect.arrayContaining(["american english", "american"]));
+  expect(generateEntries("American English")).toEqual(
+    expect.arrayContaining(["American English", "American", "american english", "american"])
+  );
 
-  testList(generateEntries("wonder if I shall"), [
-    "wonder if I shall",
-    "wonder if I",
-    "wonder if",
-    "wonder",
-    "wonder ~ I",
-    "wonder I",
-    "wonder if ~ shall",
-    "wonder ~ I shall",
-    "wonder A I B",
-    "wonder ~ shall",
-    "wonder I shall",
-    "wonder if shall",
-    "wonder shall",
-    "wond",
-    "wonder if i shall",
-    "wonder if i",
-    "wonder ~ i",
-    "wonder i",
-    "wonder ~ i shall",
-    "wonder A i B",
-    "wonder i shall"
-  ]);
+  expect(generateEntries("Announcement of Hoge")).toEqual(
+    expect.arrayContaining([
+      "Announcement of Hoge",
+      "Announcement of",
+      "Announcement",
+      "Announcement ~ Hoge",
+      "Announcement Hoge",
+      "announcement of hoge",
+      "announcement of",
+      "announcement",
+      "announcement ~ hoge",
+      "announcement hoge"
+    ])
+  );
 
-  testList(generateEntries("in my favor"), expect.arrayContaining(["in someone's favor"]));
-  testList(generateEntries("in my best favor"), expect.arrayContaining(["in someone's favor"]));
+  expect(generateEntries("wonder if I shall")).toEqual(
+    expect.arrayContaining([
+      "wonder if I shall",
+      "wonder if I",
+      "wonder if",
+      "wonder",
+      "wonder ~ I",
+      "wonder I",
+      "wonder if ~ shall",
+      "wonder ~ I shall",
+      "wonder A I B",
+      "wonder ~ shall",
+      "wonder I shall",
+      "wonder if shall",
+      "wonder shall",
+      "wond",
+      "wonder if i shall",
+      "wonder if i",
+      "wonder ~ i",
+      "wonder i",
+      "wonder ~ i shall",
+      "wonder A i B",
+      "wonder i shall"
+    ])
+  );
+
+  expect(generateEntries("in my favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
+
+  expect(generateEntries("in my best favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
 });
 
 test("", () => {
-  testList(
-    generateEntries("blue-gray"), //
-    ["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"]
+  expect(generateEntries("blue-gray")).toEqual(
+    expect.arrayContaining(["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"])
   );
-  testList(generateEntries("third-party"), [
-    "third-party",
-    "third party",
-    "third",
-    "party",
-    "third-",
-    "-party",
-    "thirdparty"
-  ]);
+
+  expect(generateEntries("third-party")).toEqual(
+    expect.arrayContaining(["third-party", "third party", "third", "party", "third-", "-party", "thirdparty"])
+  );
 
   // non-breaking hyphen(U+2011)
-  testList(generateEntries("blue‑gray"), [
-    "blue-gray", //
-    "blue gray",
-    "blue",
-    "gray",
-    "blue-",
-    "-gray",
-    "bluegray"
-  ]);
-  testList(generateEntries("third‑party"), [
-    "third-party",
-    "third party",
-    "third",
-    "party",
-    "third-",
-    "-party",
-    "thirdparty"
-  ]);
+  expect(generateEntries("blue‑gray")).toEqual(
+    expect.arrayContaining([
+      "blue-gray", //
+      "blue gray",
+      "blue",
+      "gray",
+      "blue-",
+      "-gray",
+      "bluegray"
+    ])
+  );
+
+  expect(generateEntries("third‑party")).toEqual(
+    expect.arrayContaining(["third-party", "third party", "third", "party", "third-", "-party", "thirdparty"])
+  );
 });
 
 test("", () => {
-  testList(generateEntries("folk tales"), [
-    "folk tales", //
-    "folk",
-    "folk tale"
-  ]);
+  expect(generateEntries("folk tales")).toEqual(
+    expect.arrayContaining([
+      "folk tales", //
+      "folk",
+      "folk tale"
+    ])
+  );
 });
 
 test("", () => {
-  testList(generateEntries("deal with"), [
-    "deal with", //
-    "deal"
-  ]);
-  testList(generateEntries("dealt with"), [
-    "dealt with", //
-    "dealt",
-    "deal with",
-    "deal"
-  ]);
-  testList(generateEntries("dealing with"), [
-    "dealing with", //
-    "dealing",
-    "deal with",
-    "deal",
-    "deale with",
-    "deale"
-  ]);
+  expect(generateEntries("deal with")).toEqual(
+    expect.arrayContaining([
+      "deal with", //
+      "deal"
+    ])
+  );
+  expect(generateEntries("dealt with")).toEqual(
+    expect.arrayContaining([
+      "dealt with", //
+      "dealt",
+      "deal with",
+      "deal"
+    ])
+  );
+  expect(generateEntries("dealing with")).toEqual(
+    expect.arrayContaining([
+      "dealing with", //
+      "dealing",
+      "deal with",
+      "deal"
+    ])
+  );
 
-  testList(generateEntries("run with"), [
-    "run with", //
-    "run"
-  ]);
-  testList(generateEntries("ran with"), [
-    "ran with", //
-    "ran",
-    "run with",
-    "run"
-  ]);
-  testList(generateEntries("running with"), [
-    "running with", //
-    "running",
-    "run with",
-    "run",
-    "runne with",
-    "runne"
-  ]);
+  expect(generateEntries("run with")).toEqual(
+    expect.arrayContaining([
+      "run with", //
+      "run"
+    ])
+  );
+  expect(generateEntries("ran with")).toEqual(
+    expect.arrayContaining([
+      "ran with", //
+      "ran",
+      "run with",
+      "run"
+    ])
+  );
+  expect(generateEntries("running with")).toEqual(
+    expect.arrayContaining([
+      "running with", //
+      "running",
+      "run with",
+      "run"
+    ])
+  );
 
-  testList(generateEntries("dealt dealt dealt"), [
-    "dealt dealt dealt",
-    "dealt dealt",
-    "dealt",
-    "deal dealt dealt",
-    "deal dealt",
-    "deal",
-    "dealt ~ dealt",
-    "deal ~ dealt"
-  ]);
+  expect(generateEntries("dealt dealt dealt")).toEqual(
+    expect.arrayContaining([
+      "dealt dealt dealt",
+      "dealt dealt",
+      "dealt",
+      "deal dealt dealt",
+      "deal dealt",
+      "deal",
+      "dealt ~ dealt",
+      "deal ~ dealt"
+    ])
+  );
 });
 
 test("", () => {
-  testList(generateEntries("cut back"), ["cut back", "cut"]);
-  testList(generateEntries("cutting back"), [
-    "cutting back", //
-    "cutting",
-    "cut back",
-    "cut",
-    "cutte back",
-    "cutte"
-  ]);
+  expect(generateEntries("cut back")).toEqual(
+    expect.arrayContaining([
+      "cut back", //
+      "cut"
+    ])
+  );
+  expect(generateEntries("cutting back")).toEqual(
+    expect.arrayContaining([
+      "cutting back", //
+      "cutting",
+      "cut back",
+      "cut"
+    ])
+  );
 
-  testList(generateEntries("die out"), ["die out", "die"]);
-  testList(generateEntries("dying out"), [
-    "dying out", //
-    "dying",
-    "die out",
-    "die"
-  ]);
+  expect(generateEntries("die out")).toEqual(
+    expect.arrayContaining([
+      "die out", //
+      "die"
+    ])
+  );
+  expect(generateEntries("dying out")).toEqual(
+    expect.arrayContaining([
+      "dying out", //
+      "dying",
+      "die out",
+      "die"
+    ])
+  );
 
-  testList(generateEntries("play with"), ["play with", "play"]);
-  testList(generateEntries("played with"), [
-    "played with", //
-    "played",
-    "play with",
-    "play",
-    "playe with",
-    "playe"
-  ]);
+  expect(generateEntries("play with")).toEqual(
+    expect.arrayContaining([
+      "play with", //
+      "play"
+    ])
+  );
+  expect(generateEntries("played with")).toEqual(
+    expect.arrayContaining([
+      "played with", //
+      "played",
+      "play with",
+      "play"
+    ])
+  );
 
-  testList(generateEntries("pop up"), ["pop up", "pop"]);
-  testList(generateEntries("popped up"), [
-    "popped up", //
-    "popped",
-    "pop up",
-    "pop",
-    "popp up",
-    "popp",
-    "poppe up",
-    "poppe"
-  ]);
+  expect(generateEntries("pop up")).toEqual(
+    expect.arrayContaining([
+      "pop up", //
+      "pop"
+    ])
+  );
+  expect(generateEntries("popped up")).toEqual(
+    expect.arrayContaining([
+      "popped up", //
+      "popped",
+      "pop up",
+      "pop"
+    ])
+  );
 });
 
 test("", () => {
-  expect(generateEntries("aaa_bbb")).toEqual(["aaa_bbb", "aaa bbb", "aaa", "bbb"]);
-  expect(generateEntries("worker_processes")).toEqual([
-    "worker_processes",
-    "worker_process",
-    "worker_processe",
-    "worker_processis",
-    "worker processes",
-    "worker",
-    "processes",
-    "process",
-    "processe",
-    "processis",
-    "worker_proces",
-    "worker_processi",
-    "worker processe",
-    "work",
-    "proces",
-    "processi"
-  ]);
+  expect(generateEntries("aaa_bbb")).toEqual(expect.arrayContaining(["aaa_bbb", "aaa bbb", "aaa", "bbb"]));
+  expect(generateEntries("worker_processes")).toEqual(
+    expect.arrayContaining([
+      "worker_processes",
+      "worker_process",
+      "worker processes",
+      "worker",
+      "processes",
+      "process",
+      "work"
+    ])
+  );
 });
 
 test("", () => {
-  testList(generateEntries("on one's own"), [
-    "on one's own", //
-    "on one's",
-    "on",
-    "on ~ own",
-    "on own",
-    "on one"
-  ]);
+  expect(generateEntries("on one's own")).toEqual(
+    expect.arrayContaining([
+      "on one's own", //
+      "on one's",
+      "on",
+      "on ~ own",
+      "on own",
+      "on one"
+    ])
+  );
 
-  testList(generateEntries("on his own"), [
-    "on his own",
-    "on his",
-    "on",
-    "on ~ own",
-    "on own",
-    "on one's own",
-    "on one's",
-    "on one",
-    "on someone's own",
-    "on someone's",
-    "on someone"
-  ]);
+  expect(generateEntries("on his own")).toEqual(
+    expect.arrayContaining([
+      "on his own",
+      "on his",
+      "on",
+      "on ~ own",
+      "on own",
+      "on one's own",
+      "on one's",
+      "on one",
+      "on someone's own",
+      "on someone's",
+      "on someone"
+    ])
+  );
 
-  testList(generateEntries("his only son"), [
-    "his only son",
-    "his only",
-    "his",
-    "his ~ son",
-    "his son",
-    "one's only son",
-    "one's only",
-    "one' only son",
-    "one' only",
-    "one's ~ son",
-    "one's son",
-    "one' ~ son",
-    "one' son",
-    "someone's only son",
-    "someone's only",
-    "someone' only son",
-    "someone' only",
-    "someone's ~ son",
-    "someone's son",
-    "someone' ~ son",
-    "someone' son"
-  ]);
+  expect(generateEntries("his only son")).toEqual(
+    expect.arrayContaining([
+      "his only son",
+      "his only",
+      "his",
+      "his ~ son",
+      "his son",
+      "one's only son",
+      "one's only",
+      "one' only son",
+      "one' only",
+      "one's ~ son",
+      "one's son",
+      "one' ~ son",
+      "one' son",
+      "someone's only son",
+      "someone's only",
+      "someone' only son",
+      "someone' only",
+      "someone's ~ son",
+      "someone's son",
+      "someone' ~ son",
+      "someone' son"
+    ])
+  );
 
-  testList(generateEntries("Senete's"), [
-    "Senete's", //
-    "Senete'",
-    "Senete",
-    "senete's",
-    "senete'",
-    "senete"
-  ]);
+  expect(generateEntries("Senete's")).toEqual(
+    expect.arrayContaining([
+      "Senete's", //
+      "Senete'",
+      "Senete",
+      "senete's",
+      "senete'",
+      "senete"
+    ])
+  );
 
-  testList(generateEntries("by oneself"), [
-    "by oneself", //
-    "by"
-  ]);
-  testList(generateEntries("by myself"), [
-    "by myself", //
-    "by",
-    "by oneself"
-  ]);
+  expect(generateEntries("by oneself")).toEqual(
+    expect.arrayContaining([
+      "by oneself", //
+      "by"
+    ])
+  );
+  expect(generateEntries("by myself")).toEqual(
+    expect.arrayContaining([
+      "by myself", //
+      "by",
+      "by oneself"
+    ])
+  );
 
-  testList(generateEntries("brush one's dog"), [
-    "brush one's dog",
-    "brush one's",
-    "brush",
-    "brush ~ dog",
-    "brush dog",
-    "brush one"
-  ]);
-  testList(generateEntries("brush Taro's dog"), [
-    "brush Taro's dog",
-    "brush Taro's",
-    "brush",
-    "brush ~ dog",
-    "brush dog",
-    "brush Taro",
-    "brush one's dog",
-    "brush one's",
-    "brush one",
-    "brush someone's dog",
-    "brush someone's",
-    "brush someone",
-    "brush taro's dog",
-    "brush taro's",
-    "brush taro"
-  ]);
+  expect(generateEntries("brush one's dog")).toEqual(
+    expect.arrayContaining(["brush one's dog", "brush one's", "brush", "brush ~ dog", "brush dog", "brush one"])
+  );
+  expect(generateEntries("brush Taro's dog")).toEqual(
+    expect.arrayContaining([
+      "brush Taro's dog",
+      "brush Taro's",
+      "brush",
+      "brush ~ dog",
+      "brush dog",
+      "brush Taro",
+      "brush one's dog",
+      "brush one's",
+      "brush one",
+      "brush someone's dog",
+      "brush someone's",
+      "brush someone",
+      "brush taro's dog",
+      "brush taro's",
+      "brush taro"
+    ])
+  );
 });
 
 test("", () => {
@@ -339,15 +367,27 @@ test("", () => {
 });
 
 test("", () => {
-  testList(generateEntries("abc."), ["abc"]);
-  testList(generateEntries("abc.", true), ["abc", "ABC"]);
-  testList(generateEntries("abc.", false, true), ["abc"]);
-  testList(generateEntries("abc.", true, true), ["abc", "ABC"]);
+  expect(generateEntries("abc.")).toEqual(expect.arrayContaining(["abc"]));
+  expect(generateEntries("abc.", true)).toEqual(expect.arrayContaining(["abc", "ABC"]));
+  expect(generateEntries("abc.", false, true)).toEqual(expect.arrayContaining(["abc"]));
+  expect(generateEntries("abc.", true, true)).toEqual(expect.arrayContaining(["abc", "ABC"]));
 });
 
-const testList = (actualList, expectedList) => {
-  for (let i = 0; i < expectedList.length; i++) {
-    const expected = expectedList[i];
-    expect(actualList.includes(expected)).toBeTruthy();
-  }
-};
+test("", () => {
+  expect(generateEntries("pros / cons")).toEqual(
+    expect.arrayContaining([
+      "pros / cons", //
+      "pros and cons",
+      "pros or cons"
+    ])
+  );
+
+  expect(generateEntries("pros/cons")).toEqual(
+    expect.arrayContaining([
+      "pros/cons", //
+      "pros / cons",
+      "pros and cons",
+      "pros or cons"
+    ])
+  );
+});

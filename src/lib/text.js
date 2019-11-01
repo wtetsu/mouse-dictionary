@@ -159,7 +159,7 @@ text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
 };
 
 /**
- * ["American", "English"
+ * ["American", "English"]
  * -> ["American English", "American", "american english", "american"]);
  *
  * ["dealt", "with"]
@@ -169,39 +169,71 @@ text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
  * -> ["running away", "running", "run away", "run"]
  */
 text.linkWords = (words, minWordNum = 1) => {
-  let linkedWords = [];
   if (words.length === 0) {
-    return linkedWords;
+    return [];
   }
+  const firstWordsList = makeFirstWordsList(words[0]);
+  const wordsWithoutFirstWord = words.slice(1);
 
-  const firstWord = words[0];
-  const firstWordList = [firstWord].concat(rule.doBase(firstWord));
+  const result1 = [];
+  const result2 = [];
+  for (let wordList of firstWordsList) {
+    wordList.push(...wordsWithoutFirstWord);
+    const { linkedWords, phraseProcessedWords } = makeLikedWords(wordList, minWordNum);
+    result1.push(...linkedWords.reverse());
+    result2.push(...phraseProcessedWords);
+  }
+  result1.push(...result2);
 
-  const appendedList = [];
-  for (let i = 0; i < firstWordList.length; i++) {
-    const wordList = [].concat(words);
-    wordList[0] = firstWordList[i];
+  return result1;
+};
 
-    const currentWords = [];
-    const newLinkedWord = [];
-    for (let j = 0; j < wordList.length; j++) {
-      let word = wordList[j];
-      currentWords.push(word);
-      if (j >= minWordNum - 1) {
-        newLinkedWord.push(currentWords.join(" "));
-        appendedList.push([].concat(currentWords));
-      }
+const makeLikedWords = (wordList, minWordNum) => {
+  const linkedWords = [];
+  const phraseProcessedWords = [];
+
+  const currentWords = [];
+  for (let i = 0; i < wordList.length; i++) {
+    const word = wordList[i];
+    currentWords.push(word);
+    if (i >= minWordNum - 1) {
+      linkedWords.push(currentWords.join(" "));
+      const phraseProcessed = rule.doPhrase(currentWords).map(a => a.join(" "));
+      phraseProcessedWords.push(...phraseProcessed);
     }
-    linkedWords.push(...newLinkedWord.reverse());
+  }
+  return { linkedWords, phraseProcessedWords };
+};
+
+const makeFirstWordsList = firstWord => {
+  const firstWordsList = [[firstWord]];
+  const base = rule.doBase(firstWord);
+  if (base.length >= 1) {
+    firstWordsList.push(base);
   }
 
-  // Add string like ""word0 ~ word2
-  for (let i = 0; i < appendedList.length; i++) {
-    const normalizedPhrases = rule.doPhrase(appendedList[i]).map(a => a.join(" "));
-    linkedWords.push(...normalizedPhrases);
+  if (firstWord.includes("/")) {
+    firstWordsList.push(split(firstWord, "/"));
   }
+  return firstWordsList;
+};
 
-  return linkedWords;
+/**
+ * split("aaa/bbb", "/") -> ["aaa", "/", "bbb"]
+ */
+const split = (str, separator) => {
+  const result = [];
+  for (let i = 0; ; ) {
+    const index = str.indexOf(separator, i);
+    if (index === -1) {
+      result.push(str.substring(i));
+      break;
+    }
+    result.push(str.substring(index, i));
+    result.push(separator);
+    i = index + 1;
+  }
+  return result;
 };
 
 const isValidCharacter = code => code >= 33 && code <= 126;
