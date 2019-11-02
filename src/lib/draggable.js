@@ -11,6 +11,18 @@ const MODE_NONE = 0;
 const MODE_MOVING = 1;
 const MODE_RESIZING = 2;
 
+const EDGE_TOP = 1;
+const EDGE_RIGHT = 2;
+const EDGE_BOTTOM = 4;
+const EDGE_LEFT = 8;
+
+const EDGE_LEFT_TOP = EDGE_LEFT + EDGE_TOP;
+const EDGE_LEFT_BOTTOM = EDGE_LEFT + EDGE_BOTTOM;
+const EDGE_RIGHT_TOP = EDGE_RIGHT + EDGE_TOP;
+const EDGE_RIGHT_BOTTOM = EDGE_RIGHT + EDGE_BOTTOM;
+
+const EDGE_WIDTH = 8;
+
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
 export default class Draggable {
@@ -21,7 +33,7 @@ export default class Draggable {
     this.onchange = null;
     this.current = utils.omap({}, null, POSITION_FIELDS);
     this.last = utils.omap({}, null, POSITION_FIELDS);
-    this.cursorEdge = this.getEdgeState();
+    this.cursorEdge = 0;
     this.defaultCursor = null;
     this.selectable = false;
     this.initialize();
@@ -77,7 +89,7 @@ export default class Draggable {
   updateEdgeState(e) {
     if (this.selectable) {
       if (utils.isInsideRange(this.current, e)) {
-        this.cursorEdge = this.getEdgeState();
+        this.cursorEdge = 0;
         this.mainElement.style.cursor = "text";
       } else {
         this.selectable = false;
@@ -92,25 +104,24 @@ export default class Draggable {
     }
   }
 
+  /**
+   * (binary)0001:top, 0010: right, 0100: bottom, 1000: left
+   */
   getEdgeState(x, y) {
-    const edge = { top: false, right: false, bottom: false, left: false, any: false };
     if (isNaN(x) || isNaN(y)) {
-      return edge;
+      return 0;
     }
-
-    const SPACE = 8;
+    let edge = 0;
     if (this.onEdge(x - this.current.left)) {
-      edge.left = true;
-    } else if (this.onRightEdge(this.current.left + (this.current.width + SPACE) - x)) {
-      edge.right = true;
+      edge = EDGE_LEFT;
+    } else if (this.onRightEdge(this.current.left + (this.current.width + EDGE_WIDTH) - x)) {
+      edge = EDGE_RIGHT;
     }
-
     if (this.onEdge(y - this.current.top)) {
-      edge.top = true;
-    } else if (this.onEdge(this.current.top + (this.current.height + SPACE) - y)) {
-      edge.bottom = true;
+      edge |= EDGE_TOP;
+    } else if (this.onEdge(this.current.top + (this.current.height + EDGE_WIDTH) - y)) {
+      edge |= EDGE_BOTTOM;
     }
-    edge.any = edge.left || edge.right || edge.top || edge.bottom;
     return edge;
   }
 
@@ -146,15 +157,15 @@ export default class Draggable {
     const y = utils.convertToInt(e.pageY);
 
     const latest = { height: null, width: null, top: null, left: null };
-    if (this.cursorEdge.bottom) {
+    if (this.cursorEdge & EDGE_BOTTOM) {
       latest.height = Math.max(this.starting.height + y - this.starting.y, MIN_SIZE);
-    } else if (this.cursorEdge.top) {
+    } else if (this.cursorEdge & EDGE_TOP) {
       latest.height = Math.max(this.starting.height - y + this.starting.y, MIN_SIZE);
       latest.top = this.starting.top + y - this.starting.y;
     }
-    if (this.cursorEdge.right) {
+    if (this.cursorEdge & EDGE_RIGHT) {
       latest.width = Math.max(this.starting.width + x - this.starting.x, MIN_SIZE);
-    } else if (this.cursorEdge.left) {
+    } else if (this.cursorEdge & EDGE_LEFT) {
       latest.width = Math.max(this.starting.width - x + this.starting.x, MIN_SIZE);
       latest.left = this.starting.left + x - this.starting.x;
     }
@@ -208,20 +219,20 @@ export default class Draggable {
       return;
     }
     const edge = this.getEdgeState(e.x, e.y);
-    if (!edge.any && utils.isInsideRange(this.current, e)) {
+    if (edge === 0 && utils.isInsideRange(this.current, e)) {
       this.selectable = true;
       this.mainElement.style.cursor = "text";
       return;
     }
     const SPACE = 5;
-    if (edge.left) {
+    if (edge & EDGE_LEFT) {
       this.current.left = SPACE;
-    } else if (edge.right) {
+    } else if (edge & EDGE_RIGHT) {
       this.current.left = document.documentElement.clientWidth - this.mainElement.clientWidth - SPACE;
     }
-    if (edge.top) {
+    if (edge & EDGE_TOP) {
       this.current.top = SPACE;
-    } else if (edge.bottom) {
+    } else if (edge & EDGE_BOTTOM) {
       this.current.top = window.innerHeight - this.mainElement.clientHeight - SPACE;
     }
     this.moveElement(this.current.left, this.current.top);
@@ -232,7 +243,7 @@ export default class Draggable {
     if (this.selectable) {
       return;
     }
-    this.mode = this.cursorEdge.any ? MODE_RESIZING : MODE_MOVING;
+    this.mode = this.cursorEdge >= 1 ? MODE_RESIZING : MODE_MOVING;
     const newStarting = {
       x: utils.convertToInt(e.pageX),
       y: utils.convertToInt(e.pageY),
@@ -243,24 +254,20 @@ export default class Draggable {
   }
 }
 
+const cursorStyles = new Map([
+  [EDGE_LEFT_TOP, "nwse-resize"],
+  [EDGE_RIGHT_BOTTOM, "nwse-resize"],
+  [EDGE_RIGHT_TOP, "nesw-resize"],
+  [EDGE_LEFT_BOTTOM, "nesw-resize"],
+  [EDGE_LEFT, "ew-resize"],
+  [EDGE_RIGHT, "ew-resize"],
+  [EDGE_TOP, "ns-resize"],
+  [EDGE_BOTTOM, "ns-resize"]
+]);
+
 const getCursorStyle = edge => {
-  let cursorStyle = null;
-  if (edge.left && edge.top) {
-    cursorStyle = "nwse-resize";
-  } else if (edge.right && edge.bottom) {
-    cursorStyle = "nwse-resize";
-  } else if (edge.right && edge.top) {
-    cursorStyle = "nesw-resize";
-  } else if (edge.left && edge.bottom) {
-    cursorStyle = "nesw-resize";
-  } else if (edge.left) {
-    cursorStyle = "ew-resize";
-  } else if (edge.right) {
-    cursorStyle = "ew-resize";
-  } else if (edge.top) {
-    cursorStyle = "ns-resize";
-  } else if (edge.bottom) {
-    cursorStyle = "ns-resize";
+  if (edge === 0) {
+    return null;
   }
-  return cursorStyle;
+  return cursorStyles.get(edge);
 };
