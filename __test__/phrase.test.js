@@ -5,27 +5,32 @@ beforeAll(() => {
   testdata.load();
 });
 
+// expect(generateEntries("abc.")).toEqual(expect.arrayContaining(["abc"]));
+
 test("3", () => {
-  testNormalize(["a", "b", "c"], [["a", "~", "c"], ["a", "c"]]);
+  expect(rule.doPhrase(["a", "b", "c"])).toEqual(
+    expect.arrayContaining([
+      ["a", "~", "c"], //
+      ["a", "c"]
+    ])
+  );
 });
 
 test("4", () => {
-  testNormalize(
-    ["a", "b", "c", "d"],
-    [
+  expect(rule.doPhrase(["a", "b", "c", "d"])).toEqual(
+    expect.arrayContaining([
       ["a", "~", "c", "d"], //
       ["a", "b", "~", "d"],
       ["a", "~", "d"],
       ["a", "A", "c", "B"],
       ["a", "d"]
-    ]
+    ])
   );
 });
 
 test("5", () => {
-  testNormalize(
-    ["a", "b", "c", "d", "e"],
-    [
+  expect(rule.doPhrase(["a", "b", "c", "d", "e"])).toEqual(
+    expect.arrayContaining([
       ["a", "~", "c", "d", "e"],
       ["a", "b", "~", "d", "e"],
       ["a", "b", "c", "~", "e"],
@@ -38,7 +43,7 @@ test("5", () => {
       ["a", "A", "c", "B", "e"],
       ["a", "A", "c", "d", "B"],
       ["a", "b", "A", "d", "B"]
-    ]
+    ])
   );
 });
 
@@ -49,52 +54,37 @@ test("20", () => {
 });
 
 test("", () => {
-  testNormalize(
-    ["make", "some", "modifications"], //
-    [["make", "a", "modifications"]]
+  expect(rule.doPhrase(["make", "some", "modifications"])).toEqual(
+    expect.arrayContaining([
+      ["make", "a", "modifications"] //
+    ])
   );
-  testNormalize(
-    ["make", "thousands", "of", "modifications"], //
-    [["make", "a", "modifications"]]
+  expect(rule.doPhrase(["make", "thousands", "of", "modifications"])).toEqual(
+    expect.arrayContaining([["make", "a", "modifications"]])
   );
-  testNormalize(
-    ["make", "a", "lot", "of", "modifications"], //
-    [["make", "a", "modifications"]]
+  expect(rule.doPhrase(["make", "a", "lot", "of", "modifications"])).toEqual(
+    expect.arrayContaining([["make", "a", "modifications"]])
   );
-
-  testNormalize(
-    ["make", "some", "careful", "selections"], //
-    [["make", "a", "careful", "selections"]]
+  expect(rule.doPhrase(["make", "some", "careful", "selections"])).toEqual(
+    expect.arrayContaining([["make", "a", "careful", "selections"]])
   );
-  testNormalize(
-    ["make", "thousands", "of", "careful", "selections"], //
-    [["make", "a", "careful", "selections"]]
+  expect(rule.doPhrase(["make", "thousands", "of", "careful", "selections"])).toEqual(
+    expect.arrayContaining([["make", "a", "careful", "selections"]])
   );
-  testNormalize(
-    ["make", "a", "lot", "of", "careful", "selections"], //
-    [["make", "a", "careful", "selections"]]
+  expect(rule.doPhrase(["make", "a", "lot", "of", "careful", "selections"])).toEqual(
+    expect.arrayContaining([["make", "a", "careful", "selections"]])
   );
 });
 
-const testNormalize = (words, expectList) => {
-  const r = rule.doPhrase(words);
-  for (let i = 0; i < expectList.length; i++) {
-    const e = expectList[i];
-    expect(include(r, e)).toBeTruthy();
-  }
-};
-
-const include = (list, b) => {
-  let found = false;
-  const json = JSON.stringify(b);
-  for (let i = 0; i < list.length; i++) {
-    if (JSON.stringify(list[i]) === json) {
-      found = true;
-    }
-  }
-  if (!found) {
-    console.error(list);
-    console.error(b);
-  }
-  return found;
-};
+test("", () => {
+  expect(rule.doPhrase(["two", "years", "ago"])).toEqual(
+    expect.arrayContaining([
+      ["__", "years", "ago"] //
+    ])
+  );
+  expect(rule.doPhrase(["after", "two", "weeks"])).toEqual(
+    expect.arrayContaining([
+      ["after", "__", "weeks"] //
+    ])
+  );
+});

@@ -43,6 +43,9 @@ const normalizeByRule = (words, ruleData) => {
     } else if (code === 105 && words[wordIndex] === "/") {
       result.push("or");
       wordIndex += 1;
+    } else if (code === 106) {
+      result.push("__");
+      wordIndex += 1;
     } else if (code > 0) {
       replaceIndices.push(result.length);
       result.push(null);
