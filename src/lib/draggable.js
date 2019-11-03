@@ -16,11 +16,6 @@ const EDGE_RIGHT = 2;
 const EDGE_BOTTOM = 4;
 const EDGE_LEFT = 8;
 
-const EDGE_LEFT_TOP = EDGE_LEFT + EDGE_TOP;
-const EDGE_LEFT_BOTTOM = EDGE_LEFT + EDGE_BOTTOM;
-const EDGE_RIGHT_TOP = EDGE_RIGHT + EDGE_TOP;
-const EDGE_RIGHT_BOTTOM = EDGE_RIGHT + EDGE_BOTTOM;
-
 const EDGE_WIDTH = 8;
 
 const POSITION_FIELDS = ["left", "top", "width", "height"];
@@ -254,20 +249,27 @@ export default class Draggable {
   }
 }
 
-const cursorStyles = new Map([
-  [EDGE_LEFT_TOP, "nwse-resize"],
-  [EDGE_RIGHT_BOTTOM, "nwse-resize"],
-  [EDGE_RIGHT_TOP, "nesw-resize"],
-  [EDGE_LEFT_BOTTOM, "nesw-resize"],
-  [EDGE_LEFT, "ew-resize"],
-  [EDGE_RIGHT, "ew-resize"],
-  [EDGE_TOP, "ns-resize"],
-  [EDGE_BOTTOM, "ns-resize"]
-]);
+// Create a "packed" array
+// https://v8.dev/blog/elements-kinds
+const cursorStyles = [
+  "",
+  "ns-resize", // EDGE_TOP
+  "ew-resize", // EDGE_RIGHT
+  "nesw-resize", // EDGE_TOP | EDGE_RIGHT
+  "ns-resize", // EDGE_BOTTOM
+  "",
+  "nwse-resize", // EDGE_BOTTOM | EDGE_RIGHT
+  "",
+  "ew-resize", // EDGE_LEFT
+  "nwse-resize", // EDGE_TOP | EDGE_LEFT
+  "",
+  "",
+  "nesw-resize" // EDGE_BOTTOM | EDGE_LEFT
+];
 
 const getCursorStyle = edge => {
   if (edge === 0) {
     return null;
   }
-  return cursorStyles.get(edge);
+  return cursorStyles[edge];
 };
