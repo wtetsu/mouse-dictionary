@@ -19,7 +19,7 @@ const loadAll = async () => {
     return {};
   }
   const data = await getStoredData([KEY_USER_CONFIG, KEY_LAST_POSITION]);
-  const mergedSettings = Object.assign({}, defaultSettings, data[KEY_USER_CONFIG]);
+  const mergedSettings = { ...defaultSettings, ...data[KEY_USER_CONFIG] };
   const settings = parseSettings(mergedSettings);
 
   const position = data[KEY_LAST_POSITION];
@@ -33,12 +33,12 @@ const loadSettings = async () => {
 
 const loadRawSettings = async () => {
   if (env.disableUserSettings) {
-    return Object.assign({}, defaultSettings);
+    return { ...defaultSettings };
   }
 
   const data = await getStoredData([KEY_USER_CONFIG]);
   const userSettings = data[KEY_USER_CONFIG];
-  return Object.assign({}, defaultSettings, userSettings);
+  return { ...defaultSettings, ...userSettings };
 };
 
 const parseSettings = settings => {

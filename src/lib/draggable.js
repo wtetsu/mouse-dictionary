@@ -186,7 +186,7 @@ export default class Draggable {
     if (utils.areSame(this.current, this.last)) {
       return;
     }
-    this.onchange(Object.assign({}, this.current));
+    this.onchange({ ...this.current });
     Object.assign(this.last, this.current);
   }
 
