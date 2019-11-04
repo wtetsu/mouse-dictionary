@@ -269,7 +269,7 @@ const cursorStyles = [
 
 const getCursorStyle = edge => {
   if (edge === 0) {
-    return null;
+    return "";
   }
   return cursorStyles[edge];
 };
