@@ -6,7 +6,7 @@ beforeAll(() => {
 });
 
 test("", () => {
-  expect(generateEntries("Test")).toEqual(["Test", "test"]);
+  expect(generateEntries("Test")).toEqual(expect.arrayContaining(["Test", "test"]));
 });
 
 test("", () => {
@@ -362,8 +362,8 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("colour")).toEqual(["colour", "color"]);
-  expect(generateEntries("women")).toEqual(["women", "woman"]);
+  expect(generateEntries("colour")).toEqual(expect.arrayContaining(["colour", "color"]));
+  expect(generateEntries("women")).toEqual(expect.arrayContaining(["women", "woman"]));
 });
 
 test("", () => {
