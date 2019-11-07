@@ -179,7 +179,7 @@ text.linkWords = (words, minWordNum = 1) => {
   const result2 = [];
   for (let wordList of firstWordsList) {
     wordList.push(...wordsWithoutFirstWord);
-    const { linkedWords, phraseProcessedWords } = makeLikedWords(wordList, minWordNum);
+    const { linkedWords, phraseProcessedWords } = makeLinkedWords(wordList, minWordNum);
     result1.push(...linkedWords.reverse());
     result2.push(...phraseProcessedWords);
   }
@@ -188,7 +188,7 @@ text.linkWords = (words, minWordNum = 1) => {
   return result1;
 };
 
-const makeLikedWords = (wordList, minWordNum) => {
+const makeLinkedWords = (wordList, minWordNum) => {
   const linkedWords = [];
   const phraseProcessedWords = [];
 
@@ -209,7 +209,7 @@ const makeFirstWordsList = firstWord => {
   const firstWordsList = [[firstWord]];
   const base = rule.doBase(firstWord);
   if (base.length >= 1) {
-    firstWordsList.push(base);
+    firstWordsList.push(...base.map(a => [a]));
   }
 
   if (firstWord.includes("/")) {
