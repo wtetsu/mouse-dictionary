@@ -146,8 +146,6 @@ class VirtualStyle {
     const updatedData = this.getUpdatedData(this.stagedStyles, this.appliedStyles);
     if (updatedData) {
       applyStyles(this.element, updatedData);
-
-      console.info(updatedData);
     }
 
     this.stagedStyles = {};
