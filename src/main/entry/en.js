@@ -29,16 +29,18 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.merge(createLinkedWords(wordListList[i], isAllLower));
   }
 
-  const theFirstWord = wordListList[0] && wordListList[0][0];
-  if (theFirstWord) {
-    lookupWords.merge(dealWithFirstWordHyphen(theFirstWord));
+  const firstWord = wordListList[0] && wordListList[0][0];
+  if (firstWord) {
+    lookupWords.merge(processFirstWord(firstWord));
   }
 
   if (withCapitalized) {
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
-  return lookupWords.toArray().filter(s => s.length >= 2 || s === theFirstWord);
+  return lookupWords.toArray().filter(s => s.length >= 2 || s === firstWord);
 };
+
+const processFirstWord = firstWord => [...dealWithFirstWordHyphen(firstWord), ...divideIntoTwoWords(firstWord)];
 
 const JOINER_LIST = ["-", "", " "];
 
@@ -69,6 +71,17 @@ const dealWithFirstWordHyphen = theFirstWord => {
     }
   }
   return result.toArray();
+};
+
+const divideIntoTwoWords = str => {
+  const result = [];
+  for (let i = 2; i <= str.length - 2; i++) {
+    const former = str.slice(0, i);
+    const latter = str.slice(i);
+    result.push(former + " " + latter);
+    result.push(former + "-" + latter);
+  }
+  return result;
 };
 
 const createWordsList = stringList => {
