@@ -118,4 +118,58 @@ const getChildren = (elem, skip) => {
   return result.reverse();
 };
 
-export default { create, applyStyles, replace, traverse };
+/**
+ * VirtualStyle can apply styles to the inner element.
+ * This has "shadow" styles internally which can prevent from unnecessary style updates.
+ */
+class VirtualStyle {
+  constructor(element) {
+    this.element = element;
+    this.stagedStyles = {};
+    this.appliedStyles = {};
+  }
+
+  set(prop, value) {
+    if (this.stagedStyles[prop] === value) {
+      return;
+    }
+    this.stagedStyles[prop] = value;
+    this.updateStyles();
+  }
+
+  apply(styles) {
+    Object.assign(this.stagedStyles, styles);
+    this.updateStyles();
+  }
+
+  updateStyles() {
+    const updatedData = this.getUpdatedData(this.stagedStyles, this.appliedStyles);
+    if (updatedData) {
+      applyStyles(this.element, updatedData);
+
+      console.info(updatedData);
+    }
+
+    this.stagedStyles = {};
+    Object.assign(this.appliedStyles, updatedData);
+
+    this.updated = false;
+  }
+
+  getUpdatedData(stagedStyles, appliedStyles) {
+    const d = {};
+    let count = 0;
+    for (const [prop, stagedValue] of Object.entries(stagedStyles)) {
+      if (stagedValue !== appliedStyles[prop]) {
+        d[prop] = stagedValue;
+        count += 1;
+      }
+    }
+    if (count === 0) {
+      return null;
+    }
+    return d;
+  }
+}
+
+export default { create, applyStyles, replace, traverse, VirtualStyle };

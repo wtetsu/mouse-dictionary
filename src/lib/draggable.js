@@ -20,7 +20,7 @@ const EDGE_LEFT = 8;
 
 // Create a "packed" array
 // https://v8.dev/blog/elements-kinds
-const cursorStyles = [
+const CURSOR_STYLES = [
   "move",
   "ns-resize", // EDGE_TOP
   "ew-resize", // EDGE_RIGHT
@@ -42,9 +42,10 @@ export default class Draggable {
     this.normalStyles = normalStyles;
     this.movingStyles = movingStyles;
     this.mainElement = null;
+    this.mainElementStyle = null;
     this.onchange = null;
-    this.current = utils.omap({}, null, POSITION_FIELDS);
-    this.last = utils.omap({}, null, POSITION_FIELDS);
+    this.current = { left: null, top: null, width: null, height: null };
+    this.last = { left: null, top: null, width: null, height: null };
     this.cursorEdge = 0;
     this.selectable = false;
     this.initialize();
@@ -64,7 +65,7 @@ export default class Draggable {
 
   onMouseUp() {
     if (this.mode === MODE_MOVING) {
-      dom.applyStyles(this.mainElement, this.normalStyles);
+      this.mainElementStyle.apply(this.normalStyles);
     }
     this.finishChanging();
   }
@@ -77,16 +78,16 @@ export default class Draggable {
   updateEdgeState(e) {
     if (!this.selectable) {
       this.cursorEdge = this.getEdgeState(e.x, e.y);
-      this.mainElement.style.cursor = cursorStyles[this.cursorEdge];
+      this.mainElementStyle.set("cursor", CURSOR_STYLES[this.cursorEdge]);
       return;
     }
 
     if (utils.isInsideRange(this.current, e)) {
       this.cursorEdge = 0;
-      this.mainElement.style.cursor = "text";
+      this.mainElementStyle.set("cursor", "text");
     } else {
       this.selectable = false;
-      this.mainElement.style.cursor = "move";
+      this.mainElementStyle.set("cursor", "move");
     }
   }
 
@@ -118,7 +119,7 @@ export default class Draggable {
     }
     Object.assign(this.current, latest);
     this.moveElement(this.current.left, this.current.top);
-    dom.applyStyles(this.mainElement, this.movingStyles);
+    this.mainElementStyle.apply(this.movingStyles);
   }
 
   moveElement(left, top) {
@@ -146,7 +147,7 @@ export default class Draggable {
       latest.left = this.starting.left + x - this.starting.x;
     }
 
-    for (let prop of Object.keys(latest)) {
+    for (let prop of POSITION_FIELDS) {
       this.applyNewStyle(latest, prop);
     }
   }
@@ -173,6 +174,7 @@ export default class Draggable {
 
   add(mainElement) {
     this.mainElement = mainElement;
+    this.mainElementStyle = new dom.VirtualStyle(mainElement);
     this.makeElementDraggable(mainElement);
 
     this.current.width = utils.convertToInt(mainElement.style.width);
@@ -187,7 +189,7 @@ export default class Draggable {
   makeElementDraggable(mainElement) {
     mainElement.addEventListener("dblclick", e => this.handleDoubleClick(e));
     mainElement.addEventListener("mousedown", e => this.handleMouseDown(e));
-    mainElement.style.cursor = "move";
+    this.mainElementStyle.set("cursor", "move");
     this.current.left = utils.convertToInt(mainElement.style.left);
     this.current.top = utils.convertToInt(mainElement.style.top);
   }
@@ -199,7 +201,7 @@ export default class Draggable {
     const edge = this.getEdgeState(e.x, e.y);
     if (edge === 0 && utils.isInsideRange(this.current, e)) {
       this.selectable = true;
-      this.mainElement.style.cursor = "text";
+      this.mainElementStyle.set("cursor", "text");
       return;
     }
     const SPACE = 5;
