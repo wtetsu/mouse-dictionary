@@ -77,8 +77,9 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
-          compress: true,
-          warnings: false
+          compress: {
+            drop_console: true
+          }
         }
       })
     ]

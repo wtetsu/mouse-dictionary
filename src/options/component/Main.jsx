@@ -479,7 +479,7 @@ export default class Main extends React.Component {
 
     const { entries, lang } = entry.build(actualTrialText, settings.lookupWithCapitalized, false);
 
-    const stopWatch = new utils.StopWatch();
+    console.time("update");
 
     const descriptions = await storage.local.get(entries);
     const { html } = await this.generator.generate(entries, descriptions, lang === "en");
@@ -490,7 +490,7 @@ export default class Main extends React.Component {
       this.trialWindow.content.appendChild(newDom);
     }
 
-    stopWatch.stop(entries);
+    console.timeEnd("update");
   }
 
   async doSaveSettings() {

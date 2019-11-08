@@ -38,7 +38,7 @@ const DEFAULT_RULE_FILE = "data/rule.json";
 // Note: Parsing JSON is faster than long Object literals.
 // https://v8.dev/blog/cost-of-javascript-2019
 const readAndLoadRuleFiles = async ruleFile => {
-  const stopWatch = new utils.StopWatch("Loading rules");
+  console.time("rule");
 
   const rulePromise = utils.loadJson(ruleFile);
 
@@ -48,7 +48,7 @@ const readAndLoadRuleFiles = async ruleFile => {
   const loadedRuleData = await rulePromise;
   registerRuleData(loadedRuleData);
 
-  stopWatch.stop();
+  console.timeEnd("rule");
 
   return loadedRuleData;
 };

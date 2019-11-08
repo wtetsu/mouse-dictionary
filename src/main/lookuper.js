@@ -78,12 +78,12 @@ export default class Lookuper {
         return;
       }
     }
+    console.time("lookup");
     await this.run(textToLookup, includeOriginalText, enableShortWord, threshold);
+    console.timeEnd("lookup");
   }
 
   async run(textToLookup, includeOrgText, enableShortWord, threshold) {
-    const stopWatch = new utils.StopWatch(textToLookup);
-
     const { entries, lang } = entry.build(textToLookup, this.lookupWithCapitalized, includeOrgText);
     const descriptions = await storage.local.get(entries);
     const { html, hitCount } = this.generator.generate(entries, descriptions, enableShortWord && lang === "en");
@@ -97,6 +97,6 @@ export default class Lookuper {
     this.shortCache.put(textToLookup, { dom: newDom, hitCount });
     this.lastText = textToLookup;
 
-    stopWatch.stop(entries);
+    console.info(`[${entries.length}]${entries.join(",")}`);
   }
 }

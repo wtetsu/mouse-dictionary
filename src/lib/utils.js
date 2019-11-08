@@ -123,25 +123,6 @@ const getSelection = () => {
     .trim();
 };
 
-class StopWatch {
-  constructor(name) {
-    this.enable = process.env.NODE_ENV !== "production";
-    this.name = name;
-    this.startTime = new Date().getTime();
-  }
-
-  stop(extraInformation = null) {
-    if (!this.enable) {
-      return -1;
-    }
-    const time = new Date().getTime() - this.startTime;
-    console.info(`${this.name}: ${time}ms`);
-    if (extraInformation) {
-      console.info(extraInformation);
-    }
-    return time;
-  }
-}
 export default {
   loadJson,
   updateMap,
@@ -151,6 +132,5 @@ export default {
   convertToInt,
   convertToStyles,
   optimizeInitialPosition,
-  getSelection,
-  StopWatch
+  getSelection
 };

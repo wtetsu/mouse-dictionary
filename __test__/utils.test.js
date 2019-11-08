@@ -132,14 +132,3 @@ test("", () => {
   window.getSelection = () => "    aaa\nbbb\rccc   ";
   expect(utils.getSelection()).toEqual("aaa bbb ccc");
 });
-
-test("", () => {
-  const stopWatch = new utils.StopWatch("test_watch");
-  expect(stopWatch.stop("hello")).toBeGreaterThanOrEqual(0);
-
-  stopWatch.enable = false;
-  expect(stopWatch.stop("hello")).toEqual(-1);
-
-  stopWatch.enable = true;
-  expect(stopWatch.stop("hello")).toBeGreaterThanOrEqual(0);
-});

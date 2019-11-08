@@ -13,9 +13,9 @@ import dom from "../lib/dom";
 import utils from "../lib/utils";
 
 const main = async () => {
-  const stopWatch = new utils.StopWatch("Launch");
+  console.time("launch");
   await invoke();
-  stopWatch.stop();
+  console.timeEnd("launch");
 };
 
 const invoke = async () => {
