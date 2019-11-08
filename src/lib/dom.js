@@ -121,52 +121,60 @@ const getChildren = (elem, skip) => {
 /**
  * VirtualStyle can apply styles to the inner element.
  * This has "shadow" styles internally which can prevent from unnecessary style updates.
+ *
+ * Repeated element style updates could cause some unnecessary loads,
+ * even if the assigned value is not different.
+ *
+ * element.style.cursor = "move";
  */
 class VirtualStyle {
   constructor(element) {
     this.element = element;
-    this.stagedStyles = {};
-    this.appliedStyles = {};
+    this.stagedStyles = new Map();
+    this.appliedStyles = new Map();
   }
 
   set(prop, value) {
-    if (this.stagedStyles[prop] === value) {
+    if (this.stagedStyles.get(prop) === value) {
       return;
     }
-    this.stagedStyles[prop] = value;
+    this.stagedStyles.set(prop, value);
     this.updateStyles();
   }
 
   apply(styles) {
-    Object.assign(this.stagedStyles, styles);
+    for (const [prop, value] of Object.entries(styles)) {
+      this.stagedStyles.set(prop, value);
+    }
     this.updateStyles();
   }
 
   updateStyles() {
-    const updatedData = this.getUpdatedData(this.stagedStyles, this.appliedStyles);
-    if (updatedData) {
-      applyStyles(this.element, updatedData);
+    const diff = this.getUpdatedData(this.stagedStyles, this.appliedStyles);
+    if (!diff) {
+      return;
     }
 
-    this.stagedStyles = {};
-    Object.assign(this.appliedStyles, updatedData);
-
-    this.updated = false;
+    applyStyles(this.element, diff);
+    this.stagedStyles = new Map();
+    for (const [prop, value] of Object.entries(diff)) {
+      this.appliedStyles.set(prop, value);
+    }
   }
 
   getUpdatedData(stagedStyles, appliedStyles) {
-    const d = {};
+    const diff = {};
     let count = 0;
-    for (const [prop, stagedValue] of Object.entries(stagedStyles)) {
-      if (stagedValue !== appliedStyles[prop]) {
-        d[prop] = stagedValue;
+    for (const [prop, stagedValue] of stagedStyles) {
+      if (stagedValue !== appliedStyles.get(prop)) {
+        diff[prop] = stagedValue;
         count += 1;
       }
     }
     if (count === 0) {
       return null;
     }
-    return d;
+    return diff;
   }
 }
 

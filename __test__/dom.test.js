@@ -140,3 +140,32 @@ test("", () => {
   const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("-text02 text03-text04");
 });
+
+test("", () => {
+  const element = {};
+  const vStyle = new dom.VirtualStyle(element);
+
+  element.style = {};
+  expect(element.style).toEqual({});
+
+  element.style = {};
+  vStyle.set("cursor", "move");
+  expect(element.style).toEqual({ cursor: "move" });
+
+  element.style = {};
+  vStyle.set("cursor", "move");
+  vStyle.set("cursor", "move");
+  expect(element.style).toEqual({});
+
+  element.style = {};
+  vStyle.set("cursor", "wait");
+  expect(element.style).toEqual({ cursor: "wait" });
+
+  element.style = {};
+  vStyle.apply({ cursor: "wait", color: "red" });
+  expect(element.style).toEqual({ color: "red" });
+
+  element.style = {};
+  vStyle.apply({ cursor: "move", color: "blue" });
+  expect(element.style).toEqual({ cursor: "move", color: "blue" });
+});
