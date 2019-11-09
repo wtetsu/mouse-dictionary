@@ -8,8 +8,10 @@ import UniqList from "uniqlist";
 import rule from "../rule";
 import text from "../../lib/text";
 
+const RE_UNNECESSARY_WORDS = new RegExp(String.fromCharCode(0x200c), "g");
+
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
-  const sourceStr = text.dealWithHyphens(rawSourceStr, rule.doLetters);
+  const sourceStr = text.dealWithHyphens(rawSourceStr.replace(RE_UNNECESSARY_WORDS, ""), rule.doLetters);
   const lowerStr = sourceStr.toLowerCase();
 
   const isAllLower = lowerStr === sourceStr;

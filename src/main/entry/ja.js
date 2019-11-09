@@ -7,8 +7,14 @@
 import UniqList from "uniqlist";
 import rule from "../rule";
 
+const RE_UNNECESSARY_WORDS = new RegExp(String.fromCharCode(0x200c), "g");
+const RE_ALPHABETS_NUMBERS = /[A-Za-z0-9]/g;
+
 const createLookupWordsJa = sourceStr => {
-  const str = sourceStr.substring(0, 40).replace(/[A-Za-z0-9]/g, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
+  const str = sourceStr
+    .substring(0, 40)
+    .replace(RE_UNNECESSARY_WORDS, "")
+    .replace(RE_ALPHABETS_NUMBERS, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
 
   const result = new UniqList();
 

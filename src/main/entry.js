@@ -25,7 +25,7 @@ const isEnglishText = str => {
   let result = true;
   for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);
-    const isEnglishLike = (0x20 <= code && code <= 0x7e) || code === 0x2011;
+    const isEnglishLike = (0x20 <= code && code <= 0x7e) || code === 0x2011 || code === 0x200c;
     if (!isEnglishLike) {
       result = false;
       break;
