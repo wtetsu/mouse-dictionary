@@ -14,9 +14,7 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
 
   const isAllLower = lowerStr === sourceStr;
   const sourceStringList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
-
-  const quotedStrings = fetchQuotedStrings(sourceStr);
-  sourceStringList.push(...quotedStrings);
+  sourceStringList.push(...fetchQuotedStrings(sourceStr));
 
   const lookupWords = new UniqList();
 
@@ -25,8 +23,8 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   }
 
   const wordListList = createWordsList(sourceStringList);
-  for (let i = 0; i < wordListList.length; i++) {
-    lookupWords.merge(createLinkedWords(wordListList[i], isAllLower));
+  for (const wordList of wordListList) {
+    lookupWords.merge(createLinkedWords(wordList, isAllLower));
   }
 
   const firstWord = wordListList[0] && wordListList[0][0];
@@ -58,13 +56,11 @@ const dealWithFirstWordHyphen = theFirstWord => {
   result.push(phraseWithoutHyphen);
   result.push(phraseWithoutHyphen.toLowerCase());
 
-  const transformedList = rule.doBase(splittedFirstWord);
+  const baseWords = rule.doBase(splittedFirstWord);
 
-  for (let i = 0; i < transformedList.length; i++) {
-    wordList[0] = transformedList[i];
-
-    for (let j = 0; j < JOINER_LIST.length; j++) {
-      const joiner = JOINER_LIST[j];
+  for (const baseWord of baseWords) {
+    wordList[0] = baseWord;
+    for (const joiner of JOINER_LIST) {
       const joinedWithHyphen = wordList.join(joiner);
       result.push(joinedWithHyphen);
       result.push(joinedWithHyphen.toLowerCase());
@@ -86,8 +82,7 @@ const divideIntoTwoWords = str => {
 
 const createWordsList = stringList => {
   const wordListList = [];
-  for (let i = 0; i < stringList.length; i++) {
-    const str = stringList[i];
+  for (const str of stringList) {
     const words = text.splitIntoWords(str, rule.doLetters);
     wordListList.push(words);
     const unifiedSpellingWords = rule.doSpelling(words);
@@ -106,9 +101,7 @@ const createLinkedWords = (words, isAllLower) => {
 
   // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
   const convertedWordsList = words.length >= 2 ? rule.doPronoun(words) : [];
-
-  for (let j = 0; j < convertedWordsList.length; j++) {
-    const convertedWords = convertedWordsList[j];
+  for (const convertedWords of convertedWordsList) {
     if (convertedWords) {
       const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower, 2);
       lookupWords.push(...linkedConvertedWords);
@@ -171,8 +164,8 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
     }
     wordList.merge(arr);
     const arrayArray = arr.map(rule.doBase);
-    for (let i = 0; i < arrayArray.length; i++) {
-      wordList.merge(arrayArray[i]);
+    for (let j = 0; j < arrayArray.length; j++) {
+      wordList.merge(arrayArray[j]);
     }
 
     if (arr.length >= 2) {
@@ -201,8 +194,7 @@ const QUOTE_CHARS = ['"', "'"];
 
 const fetchQuotedStrings = str => {
   const result = [];
-  for (let i = 0; i < QUOTE_CHARS.length; i++) {
-    const q = QUOTE_CHARS[i];
+  for (const q of QUOTE_CHARS) {
     const nextQuoteIndex = str.indexOf(q, 1);
     if (nextQuoteIndex >= 3) {
       const startIndex = str.startsWith(q) ? 1 : 0;
