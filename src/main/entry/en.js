@@ -9,9 +9,11 @@ import rule from "../rule";
 import text from "../../lib/text";
 
 const RE_UNNECESSARY_WORDS = new RegExp(String.fromCharCode(0x200c), "g");
+const RE_SLASH = new RegExp("/", "g");
 
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
-  const sourceStr = text.dealWithHyphens(rawSourceStr.replace(RE_UNNECESSARY_WORDS, ""), rule.doLetters);
+  const replacedSourceStr = rawSourceStr.replace(RE_UNNECESSARY_WORDS, "").replace(RE_SLASH, " / ");
+  const sourceStr = text.dealWithHyphens(replacedSourceStr, rule.doLetters);
   const lowerStr = sourceStr.toLowerCase();
 
   const isAllLower = lowerStr === sourceStr;
@@ -34,6 +36,10 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.merge(processFirstWord(firstWord));
   }
 
+  const slashWords = createSlashWord(wordListList[0]);
+  if (slashWords) {
+    lookupWords.merge(slashWords);
+  }
   if (withCapitalized) {
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
@@ -41,6 +47,14 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
 };
 
 const processFirstWord = firstWord => [...dealWithFirstWordHyphen(firstWord), ...divideIntoTwoWords(firstWord)];
+
+const createSlashWord = wordList => {
+  if (wordList[1] === "/" && wordList.length >= 3) {
+    const slashWord = wordList[0] + "/" + wordList[2];
+    return [slashWord, slashWord.toLowerCase()];
+  }
+  return null;
+};
 
 const JOINER_LIST = ["-", "", " "];
 

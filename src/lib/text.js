@@ -88,6 +88,15 @@ text.splitIntoWords = (str, doIsValidCharacter = isValidCharacter) => {
   return words;
 };
 
+const makeArrayIncludingLoweredString = str => {
+  const arr = [str];
+  const loweredStr = str.toLowerCase();
+  if (loweredStr !== str) {
+    arr.push(loweredStr);
+  }
+  return arr;
+};
+
 /**
  * "camelCase" -> ["camel", "case"]
  */
@@ -103,7 +112,7 @@ text.splitString = str => {
     const chCode = str.charCodeAt(i);
     const isCapital = chCode >= 65 && chCode <= 90;
     let wordToAdd = null;
-    // #, -, ., _
+    // # - . _
     if (chCode === 35 || chCode === 45 || chCode === 46 || chCode === 95) {
       wordToAdd = str.substring(startIndex, i);
       startIndex = i + 1;
@@ -114,20 +123,14 @@ text.splitString = str => {
       isLastCapital = isCapital;
     }
     if (wordToAdd) {
-      arr.push(wordToAdd);
-      const lWordToAdd = wordToAdd.toLowerCase();
-      if (lWordToAdd !== wordToAdd) {
-        arr.push(lWordToAdd);
-      }
+      arr.push(...makeArrayIncludingLoweredString(wordToAdd));
     }
     i += 1;
   }
   if (startIndex > 0) {
     const lastWord = str.substring(startIndex);
-    arr.push(lastWord);
-    const lLastWord = lastWord.toLowerCase();
-    if (lLastWord !== lastWord) {
-      arr.push(lLastWord);
+    if (lastWord) {
+      arr.push(...makeArrayIncludingLoweredString(lastWord));
     }
   }
   return arr;
@@ -212,28 +215,7 @@ const makeFirstWordsList = firstWord => {
     firstWordsList.push(...base.map(a => [a]));
   }
 
-  if (firstWord.includes("/")) {
-    firstWordsList.push(split(firstWord, "/"));
-  }
   return firstWordsList;
-};
-
-/**
- * split("aaa/bbb", "/") -> ["aaa", "/", "bbb"]
- */
-const split = (str, separator) => {
-  const result = [];
-  for (let i = 0; ; ) {
-    const index = str.indexOf(separator, i);
-    if (index === -1) {
-      result.push(str.substring(i));
-      break;
-    }
-    result.push(str.substring(index, i));
-    result.push(separator);
-    i = index + 1;
-  }
-  return result;
 };
 
 const isValidCharacter = code => code >= 33 && code <= 126;
