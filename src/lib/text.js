@@ -171,7 +171,7 @@ text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
  * ["running", "away"]
  * -> ["running away", "running", "run away", "run"]
  */
-text.linkWords = (words, minWordNum = 1) => {
+text.linkWords = (words, minWordNum = 1, enablePhrasing = true) => {
   if (words.length === 0) {
     return [];
   }
@@ -182,7 +182,7 @@ text.linkWords = (words, minWordNum = 1) => {
   const result2 = [];
   for (let wordList of firstWordsList) {
     wordList.push(...wordsWithoutFirstWord);
-    const { linkedWords, phraseProcessedWords } = makeLinkedWords(wordList, minWordNum);
+    const { linkedWords, phraseProcessedWords } = makeLinkedWords(wordList, minWordNum, enablePhrasing);
     result1.push(...linkedWords.reverse());
     result2.push(...phraseProcessedWords);
   }
@@ -191,7 +191,7 @@ text.linkWords = (words, minWordNum = 1) => {
   return result1;
 };
 
-const makeLinkedWords = (wordList, minWordNum) => {
+const makeLinkedWords = (wordList, minWordNum, enablePhrasing = true) => {
   const linkedWords = [];
   const phraseProcessedWords = [];
 
@@ -201,8 +201,10 @@ const makeLinkedWords = (wordList, minWordNum) => {
     currentWords.push(word);
     if (i >= minWordNum - 1) {
       linkedWords.push(currentWords.join(" "));
-      const phraseProcessed = rule.doPhrase(currentWords).map(a => a.join(" "));
-      phraseProcessedWords.push(...phraseProcessed);
+      if (enablePhrasing) {
+        const phraseProcessed = rule.doPhrase(currentWords).map(a => a.join(" "));
+        phraseProcessedWords.push(...phraseProcessed);
+      }
     }
   }
   return { linkedWords, phraseProcessedWords };

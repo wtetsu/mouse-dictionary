@@ -14,11 +14,9 @@ const RE_SLASH = new RegExp("/", "g");
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
   const replacedSourceStr = rawSourceStr.replace(RE_UNNECESSARY_WORDS, "").replace(RE_SLASH, " / ");
   const sourceStr = text.dealWithHyphens(replacedSourceStr, rule.doLetters);
-  const lowerStr = sourceStr.toLowerCase();
 
+  const lowerStr = sourceStr.toLowerCase();
   const isAllLower = lowerStr === sourceStr;
-  const sourceStringList = isAllLower ? [sourceStr] : [sourceStr, lowerStr];
-  sourceStringList.push(...fetchQuotedStrings(sourceStr));
 
   const lookupWords = new UniqList();
 
@@ -26,17 +24,38 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.merge(sourceStr);
   }
 
-  const wordListList = createWordsList(sourceStringList);
-  for (const wordList of wordListList) {
-    lookupWords.merge(createLinkedWords(wordList, isAllLower));
+  const words1 = createWordsList(sourceStr);
+  const firstWords = words1[0];
+
+  if (isAllLower) {
+    for (let i = 0; i < words1.length; i++) {
+      lookupWords.merge(createLinkedWords(words1[i], true));
+    }
+  } else {
+    const words2 = createWordsList(lowerStr);
+
+    for (let i = 0; i < words1.length; i++) {
+      lookupWords.merge(createLinkedWords(words1[i], false));
+    }
+    for (let i = 0; i < words2.length; i++) {
+      lookupWords.merge(createLinkedWords(words2[i], true));
+    }
   }
 
-  const firstWord = wordListList[0] && wordListList[0][0];
+  const quotedStrings = fetchQuotedStrings(sourceStr);
+  for (let i = 0; i < quotedStrings.length; i++) {
+    const word3 = createWordsList(quotedStrings[i]);
+    for (let j = 0; j < word3.length; j++) {
+      lookupWords.merge(createLinkedWords(word3[j], true));
+    }
+  }
+
+  const firstWord = firstWords && firstWords[0];
   if (firstWord) {
     lookupWords.merge(processFirstWord(firstWord));
   }
 
-  const slashWords = createSlashWord(wordListList[0]);
+  const slashWords = createSlashWord(firstWords);
   if (slashWords) {
     lookupWords.merge(slashWords);
   }
@@ -49,6 +68,9 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
 const processFirstWord = firstWord => [...dealWithFirstWordHyphen(firstWord), ...divideIntoTwoWords(firstWord)];
 
 const createSlashWord = wordList => {
+  if (!wordList) {
+    return null;
+  }
   if (wordList[1] === "/" && wordList.length >= 3) {
     const slashWord = wordList[0] + "/" + wordList[2];
     return [slashWord, slashWord.toLowerCase()];
@@ -96,30 +118,31 @@ const divideIntoTwoWords = str => {
   return result;
 };
 
-const createWordsList = stringList => {
-  const wordListList = [];
-  for (const str of stringList) {
-    const words = text.splitIntoWords(str, rule.doLetters);
-    wordListList.push(words);
-    const unifiedSpellingWords = rule.doSpelling(words);
-    if (unifiedSpellingWords) {
-      wordListList.push(unifiedSpellingWords);
-    }
+const createWordsList = str => {
+  if (!str) {
+    return [];
   }
-  return wordListList;
+  const wordsList = [];
+  const words = text.splitIntoWords(str, rule.doLetters);
+  wordsList.push(words);
+  const unifiedSpellingWords = rule.doSpelling(words);
+  if (unifiedSpellingWords) {
+    wordsList.push(unifiedSpellingWords);
+  }
+  return wordsList;
 };
 
 const createLinkedWords = (words, isAllLower) => {
   const lookupWords = [];
 
-  const linkedWords = createLinkedWordList(words, !isAllLower, 1);
+  const linkedWords = createLinkedWordList(words, isAllLower, 1);
   lookupWords.push(...linkedWords);
 
   // ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
   const convertedWordsList = words.length >= 2 ? rule.doPronoun(words) : [];
   for (const convertedWords of convertedWordsList) {
     if (convertedWords) {
-      const linkedConvertedWords = createLinkedWordList(convertedWords, !isAllLower, 2);
+      const linkedConvertedWords = createLinkedWordList(convertedWords, isAllLower, 2);
       lookupWords.push(...linkedConvertedWords);
     }
   }
@@ -137,8 +160,11 @@ const TRAILING_RULES = [
  *  ['cut', 'back'] -> [ 'cut back', 'cut' ]
  *  [ 'ran', 'with' ]  -> [ 'ran with', 'ran', 'run with', 'run' ]
  */
-const createLinkedWordList = (arr, ignoreLowerCase, minWordNum = 1) => {
-  const linkedWords = text.linkWords(arr, minWordNum);
+const createLinkedWordList = (arr, allLowercase, minWordNum = 1) => {
+  const enablePhrasing = allLowercase;
+  const ignoreLowerCase = allLowercase;
+
+  const linkedWords = text.linkWords(arr, minWordNum, enablePhrasing);
   if (minWordNum <= 1) {
     const wlist = parseFirstWord(arr[0], ignoreLowerCase);
     linkedWords.push(...wlist);
@@ -164,8 +190,13 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
   const wordList = new UniqList();
   wordList.filer = a => a.length >= minLength;
 
-  const lowerStr = sourceStr.toLowerCase();
-  const strList = ignoreLowerCase || lowerStr === sourceStr ? [sourceStr] : [sourceStr, lowerStr];
+  let strList;
+  if (ignoreLowerCase) {
+    strList = [sourceStr];
+  } else {
+    const lowerStr = sourceStr.toLowerCase();
+    strList = lowerStr === sourceStr ? [sourceStr] : [sourceStr, lowerStr];
+  }
 
   for (let i = 0; i < strList.length; i++) {
     const str = strList[i];
