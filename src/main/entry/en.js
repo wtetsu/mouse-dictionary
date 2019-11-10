@@ -15,40 +15,14 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   const replacedSourceStr = rawSourceStr.replace(RE_UNNECESSARY_WORDS, "").replace(RE_SLASH, " / ");
   const sourceStr = text.dealWithHyphens(replacedSourceStr, rule.doLetters);
 
-  const lowerStr = sourceStr.toLowerCase();
-  const isAllLower = lowerStr === sourceStr;
-
   const lookupWords = new UniqList();
 
   if (mustIncludeOriginalText) {
-    lookupWords.merge(sourceStr);
+    lookupWords.push(sourceStr);
   }
 
-  const words1 = createWordsList(sourceStr);
-  const firstWords = words1[0];
-
-  if (isAllLower) {
-    for (let i = 0; i < words1.length; i++) {
-      lookupWords.merge(createLinkedWords(words1[i], true));
-    }
-  } else {
-    const words2 = createWordsList(lowerStr);
-
-    for (let i = 0; i < words1.length; i++) {
-      lookupWords.merge(createLinkedWords(words1[i], false));
-    }
-    for (let i = 0; i < words2.length; i++) {
-      lookupWords.merge(createLinkedWords(words2[i], true));
-    }
-  }
-
-  const quotedStrings = fetchQuotedStrings(sourceStr);
-  for (let i = 0; i < quotedStrings.length; i++) {
-    const word3 = createWordsList(quotedStrings[i]);
-    for (let j = 0; j < word3.length; j++) {
-      lookupWords.merge(createLinkedWords(word3[j], true));
-    }
-  }
+  const { firstWords, linkedWords } = processSourceString(sourceStr);
+  lookupWords.merge(linkedWords);
 
   const firstWord = firstWords && firstWords[0];
   if (firstWord) {
@@ -65,6 +39,40 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   return lookupWords.toArray().filter(s => s.length >= 2 || s === firstWord);
 };
 
+const processSourceString = sourceStr => {
+  const linkedWords = [];
+
+  const lowerStr = sourceStr.toLowerCase();
+  const isAllLower = lowerStr === sourceStr;
+
+  let firstWords;
+  if (isAllLower) {
+    const words1 = createWordsList(sourceStr);
+    for (let i = 0; i < words1.length; i++) {
+      linkedWords.push(...createLinkedWords(words1[i], true));
+    }
+    firstWords = words1[0];
+  } else {
+    const words1 = createWordsList(sourceStr);
+    for (let i = 0; i < words1.length; i++) {
+      linkedWords.push(...createLinkedWords(words1[i], false));
+    }
+    const words2 = createWordsList(lowerStr);
+    for (let i = 0; i < words2.length; i++) {
+      linkedWords.push(...createLinkedWords(words2[i], true));
+    }
+    firstWords = words2[0];
+  }
+
+  const quotedStrings = fetchQuotedStrings(sourceStr);
+  for (let i = 0; i < quotedStrings.length; i++) {
+    const word3 = createWordsList(quotedStrings[i]);
+    for (let j = 0; j < word3.length; j++) {
+      linkedWords.push(...createLinkedWords(word3[j], true));
+    }
+  }
+  return { firstWords, linkedWords };
+};
 const processFirstWord = firstWord => [...dealWithFirstWordHyphen(firstWord), ...divideIntoTwoWords(firstWord)];
 
 const createSlashWord = wordList => {
