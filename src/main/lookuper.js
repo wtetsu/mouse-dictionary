@@ -97,6 +97,7 @@ export default class Lookuper {
     this.shortCache.put(textToLookup, { dom: newDom, hitCount });
     this.lastText = textToLookup;
 
-    console.info(`[${entries.length}]${entries.join(",")}`);
+    console.info(`${entries.join(",")}`);
+    console.info(`${entries.length}`);
   }
 }
