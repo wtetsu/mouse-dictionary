@@ -78,7 +78,7 @@ module.exports = {
       new TerserPlugin({
         terserOptions: {
           compress: {
-            drop_console: true
+            pure_funcs: ["console.info", "console.warn", "console.time", "console.timeEnd"]
           }
         }
       })
