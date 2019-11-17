@@ -8,11 +8,11 @@ import UniqList from "uniqlist";
 import rule from "../rule";
 import text from "../../lib/text";
 
-const RE_UNNECESSARY_WORDS = new RegExp(String.fromCharCode(0x200c), "g");
+const RE_UNNECESSARY_CHARACTERS = new RegExp(String.fromCharCode(0x200c), "g");
 const RE_SLASH = new RegExp("/", "g");
 
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
-  const replacedSourceStr = rawSourceStr.replace(RE_UNNECESSARY_WORDS, "").replace(RE_SLASH, " / ");
+  const replacedSourceStr = rawSourceStr.replace(RE_UNNECESSARY_CHARACTERS, "").replace(RE_SLASH, " / ");
   const sourceStr = text.dealWithHyphens(replacedSourceStr, rule.doLetters);
 
   const lookupWords = new UniqList();
@@ -158,7 +158,10 @@ const createLinkedWords = (words, isAllLower) => {
 };
 
 const TRAILING_RULES = [
-  [{ search: "'s", new: "" }, { search: "s", new: "" }],
+  [
+    { search: "'s", new: "" },
+    { search: "s", new: "" }
+  ],
   [{ search: "er", new: "" }],
   [{ search: "iest", new: "y" }],
   [{ search: "est", new: "" }]
