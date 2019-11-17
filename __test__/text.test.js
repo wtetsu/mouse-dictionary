@@ -8,7 +8,7 @@ beforeAll(() => {
 
 test("", () => {
   const splitIntoWords = str => {
-    return text.splitIntoWords(str, rule.doLetters);
+    return text.splitIntoWords(str, ch => rule.doLetters(ch) === 3);
   };
 
   expect(splitIntoWords("removed from")).toEqual(["removed", "from"]);

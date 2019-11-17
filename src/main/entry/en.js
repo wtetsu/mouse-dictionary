@@ -126,12 +126,14 @@ const divideIntoTwoWords = str => {
   return result;
 };
 
+const isValidCharacter = ch => rule.doLetters(ch);
+
 const createWordsList = str => {
   if (!str) {
     return [];
   }
   const wordsList = [];
-  const words = text.splitIntoWords(str, rule.doLetters);
+  const words = text.splitIntoWords(str, isValidCharacter);
   wordsList.push(words);
   const unifiedSpellingWords = rule.doSpelling(words);
   if (unifiedSpellingWords) {
