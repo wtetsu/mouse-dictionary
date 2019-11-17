@@ -9,7 +9,7 @@ import res from "../logic/resource";
 
 const PersistenceSettings = props => {
   return (
-    <div style={{ position: "sticky", top: 4 }}>
+    <div style={{ position: "sticky", top: 4, zIndex: 1000000000, opacity: 0.95 }}>
       <input type="button" value={res.get("saveSettings")} onClick={props.onClickSaveSettings.bind(this)} />
       <span> </span>
       <input type="button" value={res.get("defaultSettings")} onClick={props.onClickBackToDefaultSettings.bind(this)} />

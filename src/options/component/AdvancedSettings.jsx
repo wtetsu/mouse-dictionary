@@ -7,6 +7,19 @@
 import React from "react";
 import res from "../logic/resource";
 
+import Editor from "react-simple-code-editor";
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-json";
+
+const EDITOR_STYLE = {
+  width: 800,
+  border: "1px solid #d1d1d1",
+  borderRadius: "3px",
+  fontSize: 13,
+  marginBottom: 20
+};
+
 const AdvancedSettings = props => {
   const settings = props.settings;
   if (!settings) {
@@ -89,7 +102,6 @@ const AdvancedSettings = props => {
           {res.get("lookupWithCapitalized")}
           <input type="checkbox" name="lookupWithCapitalized" value={lookupWithCapitalized} onChange={changeBoolSettings} />
         </label>
-
         <label>
           {res.get("parseWordsLimit")}
           &nbsp;
@@ -101,10 +113,8 @@ const AdvancedSettings = props => {
             style={{ width: 60 }}
           />
         </label>
-
         <h3>
           {res.get("htmlTemplate")}
-
           <a
             href="https://github.com/wtetsu/mouse-dictionary/wiki/HTML-templates"
             target="_blank"
@@ -115,51 +125,56 @@ const AdvancedSettings = props => {
           </a>
         </h3>
         <label>{res.get("htmlTemplateWindow")}</label>
-        <textarea
-          name="dialogTemplate"
+
+        <Editor
           value={dialogTemplate}
-          style={{ width: 800, height: 200 }}
-          onChange={changeSettings}
+          onValueChange={value => props.changeSettings("dialogTemplate", value)}
+          highlight={code => highlight(code, languages.markup)}
+          padding={10}
+          style={EDITOR_STYLE}
         />
         <label>{res.get("htmlTemplateDesc")}</label>
-        <textarea
-          name="contentWrapperTemplate"
+        <Editor
           value={contentWrapperTemplate}
-          style={{ width: 800, height: 30 }}
-          onChange={changeSettings}
+          onValueChange={value => props.changeSettings("contentWrapperTemplate", value)}
+          highlight={code => highlight(code, languages.markup)}
+          padding={10}
+          style={EDITOR_STYLE}
         />
         <label>{res.get("htmlTemplateDescText")}</label>
-        <textarea
-          name="contentTemplate"
+        <Editor
           value={contentTemplate}
-          style={{ width: 800, height: 350 }}
-          onChange={changeSettings}
+          onValueChange={value => props.changeSettings("contentTemplate", value)}
+          highlight={code => highlight(code, languages.markup)}
+          padding={10}
+          style={EDITOR_STYLE}
         />
-
         <h3>{res.get("styles")}</h3>
         <label>{res.get("stylesActive")}</label>
-        <textarea
-          name="normalDialogStyles"
+        <Editor
           value={normalDialogStyles}
-          style={{ width: 800, height: 80 }}
-          onChange={changeSettings}
+          onValueChange={value => props.changeSettings("normalDialogStyles", value)}
+          highlight={code => highlight(code, languages.json)}
+          padding={10}
+          style={EDITOR_STYLE}
         />
         <label>{res.get("stylesMoving")}</label>
-        <textarea
-          name="movingDialogStyles"
+        <Editor
           value={movingDialogStyles}
-          style={{ width: 800, height: 80 }}
-          onChange={changeSettings}
+          onValueChange={value => props.changeSettings("movingDialogStyles", value)}
+          highlight={code => highlight(code, languages.json)}
+          padding={10}
+          style={EDITOR_STYLE}
         />
         <label>{res.get("stylesInactive")}</label>
-        <textarea
-          name="hiddenDialogStyles"
+        <Editor
           value={hiddenDialogStyles}
-          style={{ width: 800, height: 80 }}
-          onChange={changeSettings}
+          onValueChange={value => props.changeSettings("hiddenDialogStyles", value)}
+          highlight={code => highlight(code, languages.json)}
+          padding={10}
+          style={EDITOR_STYLE}
         />
         <hr />
-
         <h3>{res.get("replaceRules")}</h3>
         {replaceRulesList}
         <button type="button" onClick={() => props.changeReplaceRule("add")}>
