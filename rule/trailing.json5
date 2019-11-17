@@ -1,6 +1,6 @@
 /**
  * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
- * Copyright 2018-present wtetsu, suiheilibe
+ * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
 [
@@ -29,7 +29,10 @@
     { search: "zzing", new: "z" },
     { search: "ing", new: "" }
   ],
-  [{ search: "ying", new: "ie" }, { search: "ing", new: "e" }],
+  [
+    { search: "ying", new: "ie" },
+    { search: "ing", new: "e" }
+  ],
   [{ search: "ed", new: "" }],
   [{ search: "ed", new: "e" }],
   [{ search: "ies", new: "y" }],
