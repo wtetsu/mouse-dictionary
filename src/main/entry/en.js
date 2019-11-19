@@ -144,6 +144,11 @@ const createWordsList = str => {
   if (unifiedSpellingWords) {
     wordsList.push(unifiedSpellingWords);
   }
+
+  const dotIndex = str.indexOf(".");
+  if (dotIndex >= 2) {
+    wordsList.push(text.splitIntoWords(str.substring(0, dotIndex), isValidCharacter));
+  }
   return wordsList;
 };
 
