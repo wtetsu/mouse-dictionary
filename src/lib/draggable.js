@@ -6,37 +6,15 @@
 
 import dom from "./dom";
 import utils from "./utils";
+import edge from "./edge";
 
 const MODE_NONE = 0;
 const MODE_MOVING = 1;
 const MODE_RESIZING = 2;
-
-const EDGE_WIDTH = 8;
-
-const EDGE_TOP = 1;
-const EDGE_RIGHT = 2;
-const EDGE_BOTTOM = 4;
-const EDGE_LEFT = 8;
-
-// Create a "packed" array
-// https://v8.dev/blog/elements-kinds
-const CURSOR_STYLES = [
-  "move",
-  "ns-resize", // EDGE_TOP
-  "ew-resize", // EDGE_RIGHT
-  "nesw-resize", // EDGE_TOP | EDGE_RIGHT
-  "ns-resize", // EDGE_BOTTOM
-  "move",
-  "nwse-resize", // EDGE_BOTTOM | EDGE_RIGHT
-  "move",
-  "ew-resize", // EDGE_LEFT
-  "nwse-resize", // EDGE_TOP | EDGE_LEFT
-  "move",
-  "move",
-  "nesw-resize" // EDGE_BOTTOM | EDGE_LEFT
-];
-
+const JUMP_SPACE = 5;
+const MIN_DIALOG_SIZE = 50;
 const POSITION_FIELDS = ["left", "top", "width", "height"];
+
 export default class Draggable {
   constructor(normalStyles, movingStyles, scrollable) {
     this.normalStyles = normalStyles;
@@ -46,11 +24,10 @@ export default class Draggable {
     this.onchange = null;
     this.current = { left: null, top: null, width: null, height: null };
     this.last = { left: null, top: null, width: null, height: null };
-    this.cursorEdge = 0;
+    this.edge = edge.build({ gripWidth: { top: 20, right: scrollable ? 35 : 20, bottom: 20, left: 20 } });
+    this.edgeState = 0;
     this.selectable = false;
     this.initialize();
-    this.gripWidth = 20;
-    this.rightGripWidth = scrollable ? 35 : 20;
     this.mouseMoveFunctions = [this.updateEdgeState, this.move, this.resize];
   }
 
@@ -76,37 +53,20 @@ export default class Draggable {
   }
 
   updateEdgeState(e) {
+    const edgeState = this.edge.getEdgeState(this.current, e.x, e.y);
     if (!this.selectable) {
-      this.cursorEdge = this.getEdgeState(e.x, e.y);
-      this.mainElementStyle.set("cursor", CURSOR_STYLES[this.cursorEdge]);
+      this.edgeState = edgeState;
+      this.mainElementStyle.set("cursor", this.edge.getCursorStyle(this.edgeState));
       return;
     }
 
-    if (utils.isInsideRange(this.current, e)) {
-      this.cursorEdge = 0;
+    if (edgeState & edge.INSIDE) {
+      this.edgeState = 0;
       this.mainElementStyle.set("cursor", "text");
     } else {
       this.selectable = false;
       this.mainElementStyle.set("cursor", "move");
     }
-  }
-
-  getEdgeState(x, y) {
-    if (isNaN(x) || isNaN(y)) {
-      return 0;
-    }
-    let edge = 0;
-    if (x - this.current.left <= this.gripWidth) {
-      edge = EDGE_LEFT;
-    } else if (this.current.left + (this.current.width + EDGE_WIDTH) - x <= this.rightGripWidth) {
-      edge = EDGE_RIGHT;
-    }
-    if (y - this.current.top <= this.gripWidth) {
-      edge |= EDGE_TOP;
-    } else if (this.current.top + (this.current.height + EDGE_WIDTH) - y <= this.gripWidth) {
-      edge |= EDGE_BOTTOM;
-    }
-    return edge;
   }
 
   move(e) {
@@ -128,26 +88,25 @@ export default class Draggable {
   }
 
   resize(e) {
-    const MIN_SIZE = 50;
     const x = utils.convertToInt(e.pageX);
     const y = utils.convertToInt(e.pageY);
 
     const latest = { left: null, top: null, width: null, height: null };
 
-    if (this.cursorEdge & EDGE_BOTTOM) {
-      latest.height = Math.max(this.starting.height + y - this.starting.y, MIN_SIZE);
-    } else if (this.cursorEdge & EDGE_TOP) {
-      latest.height = Math.max(this.starting.height - y + this.starting.y, MIN_SIZE);
+    if (this.edgeState & edge.BOTTOM) {
+      latest.height = Math.max(this.starting.height + y - this.starting.y, MIN_DIALOG_SIZE);
+    } else if (this.edgeState & edge.TOP) {
+      latest.height = Math.max(this.starting.height - y + this.starting.y, MIN_DIALOG_SIZE);
       latest.top = this.starting.top + y - this.starting.y;
     }
-    if (this.cursorEdge & EDGE_RIGHT) {
-      latest.width = Math.max(this.starting.width + x - this.starting.x, MIN_SIZE);
-    } else if (this.cursorEdge & EDGE_LEFT) {
-      latest.width = Math.max(this.starting.width - x + this.starting.x, MIN_SIZE);
+    if (this.edgeState & edge.RIGHT) {
+      latest.width = Math.max(this.starting.width + x - this.starting.x, MIN_DIALOG_SIZE);
+    } else if (this.edgeState & edge.LEFT) {
+      latest.width = Math.max(this.starting.width - x + this.starting.x, MIN_DIALOG_SIZE);
       latest.left = this.starting.left + x - this.starting.x;
     }
 
-    for (let prop of POSITION_FIELDS) {
+    for (const prop of POSITION_FIELDS) {
       this.applyNewStyle(latest, prop);
     }
   }
@@ -198,32 +157,35 @@ export default class Draggable {
     if (this.selectable) {
       return;
     }
-    const edge = this.getEdgeState(e.x, e.y);
-    if (edge === 0 && utils.isInsideRange(this.current, e)) {
+    const edgeState = this.edge.getEdgeState(this.current, e.x, e.y);
+    if (edgeState & edge.INSIDE) {
       this.selectable = true;
       this.mainElementStyle.set("cursor", "text");
       return;
     }
-    const SPACE = 5;
-    if (edge & EDGE_LEFT) {
-      this.current.left = SPACE;
-    } else if (edge & EDGE_RIGHT) {
-      this.current.left = document.documentElement.clientWidth - this.mainElement.clientWidth - SPACE;
+    this.jump(edgeState);
+    this.finishChanging();
+  }
+
+  jump(edgeState) {
+    if (edgeState & edgeState.LEFT) {
+      this.current.left = JUMP_SPACE;
+    } else if (edgeState & edgeState.RIGHT) {
+      this.current.left = document.documentElement.clientWidth - this.mainElement.clientWidth - JUMP_SPACE;
     }
-    if (edge & EDGE_TOP) {
-      this.current.top = SPACE;
-    } else if (edge & EDGE_BOTTOM) {
-      this.current.top = window.innerHeight - this.mainElement.clientHeight - SPACE;
+    if (edgeState & edgeState.TOP) {
+      this.current.top = JUMP_SPACE;
+    } else if (edgeState & edgeState.BOTTOM) {
+      this.current.top = window.innerHeight - this.mainElement.clientHeight - JUMP_SPACE;
     }
     this.moveElement(this.current.left, this.current.top);
-    this.finishChanging();
   }
 
   handleMouseDown(e) {
     if (this.selectable) {
       return;
     }
-    this.mode = this.cursorEdge >= 1 ? MODE_RESIZING : MODE_MOVING;
+    this.mode = this.edgeState & edge.EDGE ? MODE_RESIZING : MODE_MOVING;
     const newStarting = {
       x: utils.convertToInt(e.pageX),
       y: utils.convertToInt(e.pageY),
