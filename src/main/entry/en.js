@@ -145,11 +145,23 @@ const createWordsList = str => {
     wordsList.push(unifiedSpellingWords);
   }
 
-  const dotIndex = str.indexOf(".");
-  if (dotIndex >= 2) {
-    wordsList.push(text.splitIntoWords(str.substring(0, dotIndex), isValidCharacter));
+  const breakIndex = findBreak(str);
+  if (breakIndex >= 2) {
+    wordsList.push(text.splitIntoWords(str.substring(0, breakIndex), isValidCharacter));
   }
   return wordsList;
+};
+
+const findBreak = str => {
+  let r = -1;
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    if (code === 44 || code === 46) {
+      r = i;
+      break;
+    }
+  }
+  return r;
 };
 
 const createLinkedWords = (words, isAllLower) => {

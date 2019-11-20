@@ -398,6 +398,12 @@ test("", () => {
       "in the wild" //
     ])
   );
+
+  expect(generateEntries("in the wild, That is a pen.")).toEqual(
+    expect.arrayContaining([
+      "in the wild" //
+    ])
+  );
 });
 
 test("", () => {
