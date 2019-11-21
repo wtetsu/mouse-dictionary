@@ -37,7 +37,8 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
 
-  if (firstWord) {
+  if (firstWord && firstWord.length >= 2) {
+    lookupWords.push(firstWord.substring(0, 1).toUpperCase() + firstWord.substring(1).toLowerCase());
     lookupWords.push(firstWord.toUpperCase());
   }
 
