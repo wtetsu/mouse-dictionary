@@ -5,12 +5,15 @@
  */
 
 import React from "react";
+import AceEditor from "react-ace";
+import ace from "ace-builds/src-noconflict/ace";
+import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/theme-xcode";
+import "ace-builds/src-noconflict/theme-tomorrow";
 import res from "../logic/resource";
 
-import Editor from "react-simple-code-editor";
-import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-markup";
-import "prismjs/components/prism-json";
+ace.config.set("basePath", "/options");
 
 const EDITOR_STYLE = {
   width: 800,
@@ -124,55 +127,84 @@ const AdvancedSettings = props => {
             ?
           </a>
         </h3>
-        <label>{res.get("htmlTemplateWindow")}</label>
 
-        <Editor
+        <label>{res.get("htmlTemplateWindow")}</label>
+        <AceEditor
+          mode="html"
+          theme="xcode"
+          onChange={value => props.changeSettings("dialogTemplate", value)}
+          name="dialogTemplate"
+          editorProps={{ $blockScrolling: true }}
           value={dialogTemplate}
-          onValueChange={value => props.changeSettings("dialogTemplate", value)}
-          highlight={code => highlight(code, languages.markup)}
-          padding={10}
-          style={EDITOR_STYLE}
+          showPrintMargin={false}
+          highlightActiveLine={false}
+          style={{ ...EDITOR_STYLE, height: 250 }}
         />
+
         <label>{res.get("htmlTemplateDesc")}</label>
-        <Editor
+        <AceEditor
+          mode="html"
+          theme="xcode"
+          onChange={value => props.changeSettings("contentWrapperTemplate", value)}
+          name="contentWrapperTemplate"
+          editorProps={{ $blockScrolling: true }}
           value={contentWrapperTemplate}
-          onValueChange={value => props.changeSettings("contentWrapperTemplate", value)}
-          highlight={code => highlight(code, languages.markup)}
-          padding={10}
-          style={EDITOR_STYLE}
+          showPrintMargin={false}
+          highlightActiveLine={false}
+          style={{ ...EDITOR_STYLE, height: 70 }}
         />
+
         <label>{res.get("htmlTemplateDescText")}</label>
-        <Editor
+        <AceEditor
+          mode="html"
+          theme="xcode"
+          onChange={value => props.changeSettings("contentTemplate", value)}
+          name="contentTemplate"
+          editorProps={{ $blockScrolling: true }}
           value={contentTemplate}
-          onValueChange={value => props.changeSettings("contentTemplate", value)}
-          highlight={code => highlight(code, languages.markup)}
-          padding={10}
-          style={EDITOR_STYLE}
+          showPrintMargin={false}
+          highlightActiveLine={false}
+          style={{ ...EDITOR_STYLE, height: 400 }}
         />
+
         <h3>{res.get("styles")}</h3>
         <label>{res.get("stylesActive")}</label>
-        <Editor
+        <AceEditor
+          mode="json"
+          theme="tomorrow"
+          onChange={e => props.changeSettings("normalDialogStyles", e)}
+          name="normalDialogStyles"
+          editorProps={{ $blockScrolling: true }}
           value={normalDialogStyles}
-          onValueChange={value => props.changeSettings("normalDialogStyles", value)}
-          highlight={code => highlight(code, languages.json)}
-          padding={10}
-          style={EDITOR_STYLE}
+          showPrintMargin={false}
+          highlightActiveLine={false}
+          style={{ ...EDITOR_STYLE, height: 85 }}
         />
+
         <label>{res.get("stylesMoving")}</label>
-        <Editor
+        <AceEditor
+          mode="json"
+          theme="tomorrow"
+          onChange={e => props.changeSettings("movingDialogStyles", e)}
+          name="movingDialogStyles"
+          editorProps={{ $blockScrolling: true }}
           value={movingDialogStyles}
-          onValueChange={value => props.changeSettings("movingDialogStyles", value)}
-          highlight={code => highlight(code, languages.json)}
-          padding={10}
-          style={EDITOR_STYLE}
+          showPrintMargin={false}
+          highlightActiveLine={false}
+          style={{ ...EDITOR_STYLE, height: 85 }}
         />
+
         <label>{res.get("stylesInactive")}</label>
-        <Editor
+        <AceEditor
+          mode="json"
+          theme="tomorrow"
+          onChange={e => props.changeSettings("hiddenDialogStyles", e)}
+          name="hiddenDialogStyles"
+          editorProps={{ $blockScrolling: true }}
           value={hiddenDialogStyles}
-          onValueChange={value => props.changeSettings("hiddenDialogStyles", value)}
-          highlight={code => highlight(code, languages.json)}
-          padding={10}
-          style={EDITOR_STYLE}
+          showPrintMargin={false}
+          highlightActiveLine={false}
+          style={{ ...EDITOR_STYLE, height: 85 }}
         />
         <hr />
         <h3>{res.get("replaceRules")}</h3>

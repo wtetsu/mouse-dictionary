@@ -8,7 +8,9 @@ const isProd = process.env.NODE_ENV === "production";
 
 const copyWebpackPluginConfigs = [
   { from: "static", to: "." },
-  { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" }
+  { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
+  { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-html.js", to: "options/" },
+  { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-json.js", to: "options/" }
 ];
 
 if (!isProd) {
