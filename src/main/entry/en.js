@@ -139,16 +139,17 @@ const createWordsList = str => {
     return [];
   }
   const wordsList = [];
+
+  const breakIndex = findBreak(str);
+  if (breakIndex >= 2) {
+    wordsList.push(text.splitIntoWords(str.substring(0, breakIndex), isValidCharacter));
+  }
+
   const words = text.splitIntoWords(str, isValidCharacter);
   wordsList.push(words);
   const unifiedSpellingWords = rule.doSpelling(words);
   if (unifiedSpellingWords) {
     wordsList.push(unifiedSpellingWords);
-  }
-
-  const breakIndex = findBreak(str);
-  if (breakIndex >= 2) {
-    wordsList.push(text.splitIntoWords(str.substring(0, breakIndex), isValidCharacter));
   }
   return wordsList;
 };
