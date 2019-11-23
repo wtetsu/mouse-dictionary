@@ -371,7 +371,7 @@ export default class Main extends React.Component {
 
   addReplaceRule() {
     const newSettings = immer(this.state.settings, d => {
-      const newKey = new Date().toString();
+      const newKey = new Date().getTime().toString();
       d.replaceRules.push({ key: newKey, search: "", replace: "" });
     });
     this.setState({ settings: newSettings });
