@@ -196,7 +196,7 @@ export default class Main extends React.Component {
   }
 
   async initializeUserSettings() {
-    const settings = await config.loadRawSettings();
+    const settings = preprocessSettings(await config.loadRawSettings());
     this.setState({ settings });
     this.generator = new Generator(settings);
   }
@@ -494,7 +494,12 @@ export default class Main extends React.Component {
   }
 
   async doSaveSettings() {
-    await config.saveSettings(this.state.settings);
+    const settings = immer(this.state.settings, d => {
+      for (const replaceRule of d.replaceRules) {
+        delete replaceRule.key;
+      }
+    });
+    await config.saveSettings(settings);
     swal({
       text: res.get("finishSaving"),
       icon: "info"
@@ -503,7 +508,7 @@ export default class Main extends React.Component {
 
   doBackToDefaultSettings() {
     this.removeTrialWindow();
-    const newSettings = getDefaultSettings();
+    const newSettings = preprocessSettings(getDefaultSettings());
     this.setState({ settings: newSettings });
   }
 
@@ -576,4 +581,11 @@ const fileMayBeShiftJis = async file => {
       fail();
     }
   });
+};
+
+const preprocessSettings = settings => {
+  for (let i = 0; i < settings.replaceRules.length; i++) {
+    settings.replaceRules[i].key = i.toString();
+  }
+  return settings;
 };

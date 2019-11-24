@@ -23,22 +23,18 @@ export default {
 
   replaceRules: [
     {
-      key: "0",
       search: "(■.+|◆.+)",
       replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
     },
     {
-      key: "1",
       search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
       replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
     },
     {
-      key: "2",
       search: "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
       replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
     },
     {
-      key: "3",
       search: "\\n|\\\\n",
       replace: "<br/>"
     }
