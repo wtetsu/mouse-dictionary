@@ -76,5 +76,6 @@ export default {
   loadSelectedFile: "LOAD",
   clearLoadedData: "CLEAR",
   loadInitialDict: "デフォルト辞書データの再ロード",
-  downloadDictData: "追加辞書データをダウンロードする"
+  downloadDictData: "追加辞書データをダウンロードする",
+  clipboardJson: "クリップボードにコピー"
 };

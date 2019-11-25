@@ -79,5 +79,6 @@ export default {
   loadSelectedFile: "LOAD",
   clearLoadedData: "CLEAR",
   loadInitialDict: "Reload default dictionary data",
-  downloadDictData: "Download additional dictionary data"
+  downloadDictData: "Download additional dictionary data",
+  clipboardJson: "Copy to clipboard"
 };

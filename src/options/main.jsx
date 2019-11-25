@@ -11,6 +11,14 @@ import { render } from "react-dom";
 import Main from "./component/Main";
 import rule from "../main/rule";
 
+import ace from "ace-builds/src-noconflict/ace";
+import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/theme-xcode";
+import "ace-builds/src-noconflict/theme-tomorrow";
+import "ace-builds/src-noconflict/theme-solarized_light";
+ace.config.set("basePath", "/options");
+
 window.onerror = msg => {
   swal({
     text: msg,

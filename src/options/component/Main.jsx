@@ -18,13 +18,22 @@ import dict from "../logic/dict";
 import data from "../logic/data";
 import dom from "../../lib/dom";
 import storage from "../../lib/storage";
-import utils from "../../lib/utils";
 import Generator from "../../main/generator";
 import view from "../../main/view";
 import config from "../../main/config";
 import entry from "../../main/entry";
 import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
+
+import AceEditor from "react-ace";
+
+const EDITOR_STYLE = {
+  width: 800,
+  border: "1px solid #d1d1d1",
+  borderRadius: "3px",
+  fontSize: 13,
+  marginBottom: 20
+};
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -44,7 +53,8 @@ export default class Main extends React.Component {
       basicSettingsOpened: false,
       advancedSettingsOpened: false,
       lang: initialLang,
-      initialized: false
+      initialized: false,
+      json: ""
     };
 
     this.doChangeState = this.doChangeState.bind(this);
@@ -60,6 +70,9 @@ export default class Main extends React.Component {
     this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
     this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
 
+    this.doImportJson = this.doImportJson.bind(this);
+    this.doCancelJson = this.doCancelJson.bind(this);
+
     this.updateTrialWindowWithDebounce = lodash.debounce(
       () => {
         this.updateTrialWindow(this.state.settings);
@@ -74,6 +87,8 @@ export default class Main extends React.Component {
 
     return (
       <>
+        {/* <input type="button" onClick={this.showJson} value="JSON!!!!!!!"></input> */}
+
         <div style={{ textAlign: "center", marginBottom: "10px" }}>
           <a
             href={`https://mouse-dictionary.netlify.com/${this.state.lang}/`}
@@ -170,11 +185,52 @@ export default class Main extends React.Component {
           <br />
 
           {this.state.advancedSettingsOpened && (
-            <AdvancedSettings
-              changeSettings={this.doChangeSettings}
-              changeReplaceRule={this.doChangeReplaceRule}
-              settings={state.settings}
-            />
+            <>
+              <AdvancedSettings
+                changeSettings={this.doChangeSettings}
+                changeReplaceRule={this.doChangeReplaceRule}
+                settings={state.settings}
+              />
+
+              <hr />
+
+              <label>JSON</label>
+              <input
+                type="button"
+                className="button-outline button-small"
+                value={res.get("clipboardJson")}
+                style={{ marginRight: 5, cursor: "pointer" }}
+                onClick={() => {
+                  navigator.clipboard.writeText(this.state.json);
+                }}
+              />
+
+              <AceEditor
+                mode="json"
+                theme="solarized_light"
+                onChange={value => this.doChangeState("json", value)}
+                name="json"
+                editorProps={{ $blockScrolling: true }}
+                value={this.state.json}
+                showPrintMargin={false}
+                highlightActiveLine={false}
+                style={{ ...EDITOR_STYLE, height: 700 }}
+              />
+              <input
+                type="button"
+                className="button-outline button-small"
+                value={"IMPORT"}
+                style={{ marginRight: 5, cursor: "pointer" }}
+                onClick={this.doImportJson}
+              />
+              <input
+                type="button"
+                className="button-outline button-small"
+                value={"REVERT"}
+                style={{ marginRight: 5, cursor: "pointer" }}
+                onClick={this.doCancelJson}
+              />
+            </>
           )}
         </div>
       </>
@@ -196,9 +252,12 @@ export default class Main extends React.Component {
   }
 
   async initializeUserSettings() {
-    const settings = preprocessSettings(await config.loadRawSettings());
+    const settings = preProcessSettings(await config.loadRawSettings());
     this.setState({ settings });
     this.generator = new Generator(settings);
+
+    // TODO
+    this.setState({ json: JSON.stringify(postProcessSettings(settings), null, 2) });
   }
 
   async updateDictDataUsage() {
@@ -494,11 +553,7 @@ export default class Main extends React.Component {
   }
 
   async doSaveSettings() {
-    const settings = immer(this.state.settings, d => {
-      for (const replaceRule of d.replaceRules) {
-        delete replaceRule.key;
-      }
-    });
+    const settings = postProcessSettings(this.state.settings);
     await config.saveSettings(settings);
     swal({
       text: res.get("finishSaving"),
@@ -508,7 +563,7 @@ export default class Main extends React.Component {
 
   doBackToDefaultSettings() {
     this.removeTrialWindow();
-    const newSettings = preprocessSettings(getDefaultSettings());
+    const newSettings = preProcessSettings(getDefaultSettings());
     this.setState({ settings: newSettings });
   }
 
@@ -532,6 +587,20 @@ export default class Main extends React.Component {
     this.setState({
       lang: newLang
     });
+  }
+
+  doImportJson() {
+    try {
+      const newSettings = JSON.parse(this.state.json);
+      this.setState({ settings: newSettings });
+    } catch {
+      alert("JSON error");
+    }
+  }
+  doCancelJson() {
+    const processedSettings = postProcessSettings(this.state.settings);
+    const json = JSON.stringify(processedSettings, null, 2);
+    this.setState({ json });
   }
 }
 
@@ -583,9 +652,17 @@ const fileMayBeShiftJis = async file => {
   });
 };
 
-const preprocessSettings = settings => {
+const preProcessSettings = settings => {
   for (let i = 0; i < settings.replaceRules.length; i++) {
     settings.replaceRules[i].key = i.toString();
   }
   return settings;
+};
+
+const postProcessSettings = settings => {
+  return immer(settings, d => {
+    for (const replaceRule of d.replaceRules) {
+      delete replaceRule.key;
+    }
+  });
 };
