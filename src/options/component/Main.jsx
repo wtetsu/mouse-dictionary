@@ -24,16 +24,7 @@ import config from "../../main/config";
 import entry from "../../main/entry";
 import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
-
-import AceEditor from "react-ace";
-
-const EDITOR_STYLE = {
-  width: 800,
-  border: "1px solid #d1d1d1",
-  borderRadius: "3px",
-  fontSize: 13,
-  marginBottom: 20
-};
+import JsonEditor from "./JsonEditor";
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -52,6 +43,7 @@ export default class Main extends React.Component {
       trialText: "rained cats and dogs",
       basicSettingsOpened: false,
       advancedSettingsOpened: false,
+      jsonEditorOpened: false,
       lang: initialLang,
       initialized: false,
       json: ""
@@ -69,9 +61,6 @@ export default class Main extends React.Component {
     this.doToggleBasicSettings = this.doToggleBasicSettings.bind(this);
     this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
     this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
-
-    this.doImportJson = this.doImportJson.bind(this);
-    this.doCancelJson = this.doCancelJson.bind(this);
 
     this.updateTrialWindowWithDebounce = lodash.debounce(
       () => {
@@ -192,44 +181,40 @@ export default class Main extends React.Component {
                 settings={state.settings}
               />
 
-              <hr />
-
-              <label>JSON</label>
-              <input
+              <button
                 type="button"
-                className="button-outline button-small"
-                value={res.get("clipboardJson")}
+                className="button-small button-black"
                 style={{ marginRight: 5, cursor: "pointer" }}
                 onClick={() => {
-                  navigator.clipboard.writeText(this.state.json);
+                  const json = JSON.stringify(postProcessSettings(this.state.settings), null, 2);
+                  const jsonEditorOpened = !this.state.jsonEditorOpened;
+                  this.setState({ json, jsonEditorOpened });
                 }}
-              />
+              >
+                {res.get("openJsonEditor")}
+              </button>
 
-              <AceEditor
-                mode="json"
-                theme="solarized_light"
-                onChange={value => this.doChangeState("json", value)}
-                name="json"
-                editorProps={{ $blockScrolling: true }}
-                value={this.state.json}
-                showPrintMargin={false}
-                highlightActiveLine={false}
-                style={{ ...EDITOR_STYLE, height: 700 }}
-              />
-              <input
-                type="button"
-                className="button-outline button-small"
-                value={"IMPORT"}
-                style={{ marginRight: 5, cursor: "pointer" }}
-                onClick={this.doImportJson}
-              />
-              <input
-                type="button"
-                className="button-outline button-small"
-                value={"REVERT"}
-                style={{ marginRight: 5, cursor: "pointer" }}
-                onClick={this.doCancelJson}
-              />
+              {this.state.jsonEditorOpened && (
+                <div
+                  style={{
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 10000,
+                    backgroundColor: "#ffffff",
+                    position: "fixed",
+                    opacity: 0.99
+                  }}
+                >
+                  <JsonEditor
+                    json={this.state.json}
+                    setState={newState => {
+                      this.setState(newState);
+                    }}
+                  />
+                </div>
+              )}
             </>
           )}
         </div>
@@ -255,9 +240,6 @@ export default class Main extends React.Component {
     const settings = preProcessSettings(await config.loadRawSettings());
     this.setState({ settings });
     this.generator = new Generator(settings);
-
-    // TODO
-    this.setState({ json: JSON.stringify(postProcessSettings(settings), null, 2) });
   }
 
   async updateDictDataUsage() {
@@ -587,20 +569,6 @@ export default class Main extends React.Component {
     this.setState({
       lang: newLang
     });
-  }
-
-  doImportJson() {
-    try {
-      const newSettings = JSON.parse(this.state.json);
-      this.setState({ settings: newSettings });
-    } catch {
-      alert("JSON error");
-    }
-  }
-  doCancelJson() {
-    const processedSettings = postProcessSettings(this.state.settings);
-    const json = JSON.stringify(processedSettings, null, 2);
-    this.setState({ json });
   }
 }
 
