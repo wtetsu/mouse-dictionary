@@ -6,6 +6,7 @@
 
 import React from "react";
 import AceEditor from "react-ace";
+import immer from "immer";
 import swal from "sweetalert";
 import res from "../logic/resource";
 
@@ -17,8 +18,28 @@ const EDITOR_STYLE = {
   marginBottom: 20
 };
 
+const sameType = (a, b) => {
+  if (Array.isArray(a)) {
+    return Array.isArray(b);
+  }
+  return typeof a === typeof b;
+};
+
 const JsonEditor = props => {
   const [json, setJson] = React.useState(props.json);
+
+  const createSettings = json => {
+    const newSettings = JSON.parse(json);
+    const orgSettings = JSON.parse(props.json);
+    return immer(orgSettings, d => {
+      for (const key of Object.keys(d)) {
+        if (!sameType(d[key], newSettings[key])) {
+          throw new Error();
+        }
+        d[key] = newSettings[key];
+      }
+    });
+  };
 
   return (
     <div style={{ margin: 20 }}>
@@ -50,9 +71,9 @@ const JsonEditor = props => {
         style={{ marginRight: 5, cursor: "pointer" }}
         onClick={() => {
           try {
-            const settings = JSON.parse(json);
+            const settings = createSettings(json);
             props.setState({ settings, jsonEditorOpened: false });
-          } catch {
+          } catch (e) {
             swal({ text: res.get("JsonImportError"), icon: "warning" });
           }
         }}
