@@ -212,6 +212,7 @@ export default class Main extends React.Component {
                   <JsonEditor
                     json={this.state.json}
                     setState={newState => {
+                      this.removeTrialWindow();
                       this.setState(newState);
                     }}
                   />
