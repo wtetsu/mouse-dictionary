@@ -66,26 +66,6 @@ const BasicSettings = props => {
 
       <br />
 
-      <label>{res.get("dictionaryData")}</label>
-      <input
-        type="button"
-        className="button-outline button-small"
-        value={res.get("loadInitialDict")}
-        style={{ marginRight: 5, cursor: "pointer" }}
-        onClick={props.doLoadInitialDict}
-        disabled={props.busy ? "disabled" : null}
-      />
-      <p>
-        <a
-          href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ textDecoration: "underline", fontSize: "small" }}
-        >
-          {res.get("downloadDictData")}
-        </a>
-      </p>
-
       <h3>{res.get("colorAndFont")}</h3>
       <div className="container">
         <div className="row" style={{ width: 690 }}>
@@ -126,6 +106,15 @@ const BasicSettings = props => {
           </div>
         </div>
       </div>
+      <label>{res.get("dictionaryData")}</label>
+      <input
+        type="button"
+        className="button-outline button-small"
+        value={res.get("loadInitialDict")}
+        style={{ marginRight: 5, cursor: "pointer" }}
+        onClick={props.doLoadInitialDict}
+        disabled={props.busy ? "disabled" : null}
+      />
     </fieldset>
   );
 

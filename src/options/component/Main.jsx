@@ -111,18 +111,26 @@ export default class Main extends React.Component {
             style={{ verticalAlign: "middle", display: this.state.initialized ? "none" : "inline" }}
           />
 
-          {!this.state.busy && !env.disableUserSettings && this.state.initialized && <hr />}
-
           {!this.state.busy && !env.disableUserSettings && this.state.initialized && (
-            <div>
-              <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-              <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
-                {this.state.basicSettingsOpened ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
+            <>
+              <hr style={{ marginTop: 15 }} />
+              <a
+                href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "underline", fontSize: "small" }}
+              >
+                {res.get("downloadDictData")}
               </a>
-            </div>
-          )}
 
-          <br />
+              <div style={{ marginTop: 30 }}>
+                <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
+                <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
+                  {this.state.basicSettingsOpened ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
+                </a>
+              </div>
+            </>
+          )}
 
           {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
             <>
@@ -175,12 +183,6 @@ export default class Main extends React.Component {
 
           {this.state.advancedSettingsOpened && (
             <>
-              <AdvancedSettings
-                changeSettings={this.doChangeSettings}
-                changeReplaceRule={this.doChangeReplaceRule}
-                settings={state.settings}
-              />
-
               <button
                 type="button"
                 className="button-small button-black"
@@ -215,6 +217,12 @@ export default class Main extends React.Component {
                   />
                 </div>
               )}
+
+              <AdvancedSettings
+                changeSettings={this.doChangeSettings}
+                changeReplaceRule={this.doChangeReplaceRule}
+                settings={state.settings}
+              />
             </>
           )}
         </div>
