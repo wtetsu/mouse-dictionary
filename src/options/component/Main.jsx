@@ -75,8 +75,6 @@ export default class Main extends React.Component {
 
     return (
       <>
-        {/* <input type="button" onClick={this.showJson} value="JSON!!!!!!!"></input> */}
-
         <div style={{ textAlign: "center", marginBottom: "10px" }}>
           <a
             href={`https://mouse-dictionary.netlify.com/${this.state.lang}/`}
