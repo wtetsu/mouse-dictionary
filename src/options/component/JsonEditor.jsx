@@ -9,13 +9,13 @@ import AceEditor from "react-ace";
 import immer from "immer";
 import swal from "sweetalert";
 import res from "../logic/resource";
+import data from "../logic/data";
 
 const EDITOR_STYLE = {
   width: 800,
   border: "1px solid #d1d1d1",
   borderRadius: "3px",
-  fontSize: 13,
-  marginBottom: 20
+  fontSize: 13
 };
 
 const canReplace = (a, b) => {
@@ -26,11 +26,14 @@ const canReplace = (a, b) => {
 };
 
 const JsonEditor = props => {
-  const [json, setJson] = React.useState(() => JSON.stringify(props.initialValue, null, 2));
+  const [json, setJson] = React.useState(() => {
+    const initialValue = data.postProcessSettings(props.initialValue);
+    return JSON.stringify(initialValue, null, 2);
+  });
 
   const createSettings = json => {
-    const newSettings = JSON.parse(json);
-    const orgSettings = props.initialValue;
+    const newSettings = data.preProcessSettings(JSON.parse(json));
+    const orgSettings = data.postProcessSettings(props.initialValue);
     return immer(orgSettings, d => {
       for (const key of Object.keys(d)) {
         if (!canReplace(d[key], newSettings[key])) {
@@ -44,27 +47,6 @@ const JsonEditor = props => {
   return (
     <div style={{ margin: 20 }}>
       <p>{res.get("aboutJsonEditor")}</p>
-      <span
-        style={{ cursor: "pointer", textDecoration: "underline", fontSize: "small" }}
-        onClick={() => {
-          navigator.clipboard.writeText(json);
-        }}
-      >
-        {res.get("clipboardJson")}
-      </span>
-
-      <AceEditor
-        mode="json"
-        theme="solarized_light"
-        onChange={value => setJson(value)}
-        name="dialogTemplate"
-        editorProps={{ $blockScrolling: true }}
-        value={json}
-        showPrintMargin={false}
-        highlightActiveLine={false}
-        style={{ ...EDITOR_STYLE, height: 700 }}
-      />
-
       <button
         type="button"
         className="button-small button-black"
@@ -88,6 +70,26 @@ const JsonEditor = props => {
       >
         {res.get("closeJsonEditor")}
       </button>
+
+      <AceEditor
+        mode="json"
+        theme="solarized_light"
+        onChange={value => setJson(value)}
+        name="dialogTemplate"
+        editorProps={{ $blockScrolling: true }}
+        value={json}
+        showPrintMargin={false}
+        highlightActiveLine={false}
+        style={{ ...EDITOR_STYLE, height: 700 }}
+      />
+      <span
+        style={{ cursor: "pointer", textDecoration: "underline", fontSize: "small" }}
+        onClick={() => {
+          navigator.clipboard.writeText(json);
+        }}
+      >
+        {res.get("clipboardJson")}
+      </span>
     </div>
   );
 };

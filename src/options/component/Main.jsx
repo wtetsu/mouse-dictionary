@@ -242,7 +242,7 @@ export default class Main extends React.Component {
   }
 
   async initializeUserSettings() {
-    const settings = preProcessSettings(await config.loadRawSettings());
+    const settings = data.preProcessSettings(await config.loadRawSettings());
     this.setState({ settings });
     this.generator = new Generator(settings);
   }
@@ -540,7 +540,7 @@ export default class Main extends React.Component {
   }
 
   async doSaveSettings() {
-    const settings = postProcessSettings(this.state.settings);
+    const settings = data.postProcessSettings(this.state.settings);
     await config.saveSettings(settings);
     swal({
       text: res.get("finishSaving"),
@@ -550,7 +550,8 @@ export default class Main extends React.Component {
 
   doBackToDefaultSettings() {
     this.removeTrialWindow();
-    const newSettings = preProcessSettings(getDefaultSettings());
+
+    const newSettings = data.preProcessSettings(getDefaultSettings());
     this.setState({ settings: newSettings });
   }
 
@@ -621,21 +622,6 @@ const fileMayBeShiftJis = async file => {
       reader.readAsArrayBuffer(file);
     } catch {
       fail();
-    }
-  });
-};
-
-const preProcessSettings = settings => {
-  for (let i = 0; i < settings.replaceRules.length; i++) {
-    settings.replaceRules[i].key = i.toString();
-  }
-  return settings;
-};
-
-const postProcessSettings = settings => {
-  return immer(settings, d => {
-    for (const replaceRule of d.replaceRules) {
-      delete replaceRule.key;
     }
   });
 };
