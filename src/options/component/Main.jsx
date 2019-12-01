@@ -45,8 +45,7 @@ export default class Main extends React.Component {
       advancedSettingsOpened: false,
       jsonEditorOpened: false,
       lang: initialLang,
-      initialized: false,
-      json: ""
+      initialized: false
     };
 
     this.doChangeState = this.doChangeState.bind(this);
@@ -188,9 +187,8 @@ export default class Main extends React.Component {
                 className="button-small button-black"
                 style={{ marginRight: 5, cursor: "pointer" }}
                 onClick={() => {
-                  const json = JSON.stringify(postProcessSettings(this.state.settings), null, 2);
                   const jsonEditorOpened = !this.state.jsonEditorOpened;
-                  this.setState({ json, jsonEditorOpened });
+                  this.setState({ jsonEditorOpened });
                 }}
               >
                 {res.get("openJsonEditor")}
@@ -210,7 +208,7 @@ export default class Main extends React.Component {
                   }}
                 >
                   <JsonEditor
-                    json={this.state.json}
+                    initialValue={this.state.settings}
                     setState={newState => {
                       this.removeTrialWindow();
                       this.setState(newState);

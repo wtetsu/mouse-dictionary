@@ -18,7 +18,7 @@ const EDITOR_STYLE = {
   marginBottom: 20
 };
 
-const sameType = (a, b) => {
+const canReplace = (a, b) => {
   if (Array.isArray(a)) {
     return Array.isArray(b);
   }
@@ -26,14 +26,14 @@ const sameType = (a, b) => {
 };
 
 const JsonEditor = props => {
-  const [json, setJson] = React.useState(props.json);
+  const [json, setJson] = React.useState(() => JSON.stringify(props.initialValue, null, 2));
 
   const createSettings = json => {
     const newSettings = JSON.parse(json);
-    const orgSettings = JSON.parse(props.json);
+    const orgSettings = props.initialValue;
     return immer(orgSettings, d => {
       for (const key of Object.keys(d)) {
-        if (!sameType(d[key], newSettings[key])) {
+        if (!canReplace(d[key], newSettings[key])) {
           throw new Error();
         }
         d[key] = newSettings[key];
