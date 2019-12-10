@@ -38,7 +38,6 @@ const CURSOR_STYLES = [
 class Edge {
   constructor(options) {
     this.gripWidth = options.gripWidth;
-    this.edgeWidth = 8;
   }
 
   getEdgeState(rect, x, y) {
@@ -46,29 +45,33 @@ class Edge {
       return 0;
     }
     let edge = 0;
-    if (x - rect.left <= this.gripWidth.left) {
-      edge = LEFT;
-    } else if (rect.left + (rect.width + this.edgeWidth) - x <= this.gripWidth.right) {
-      edge = RIGHT;
+    if (inRange(rect.left, x, rect.left + this.gripWidth)) {
+      edge |= LEFT;
+    } else if (inRange(rect.left + rect.width - this.gripWidth, x, rect.left + rect.width)) {
+      edge |= RIGHT;
     }
-    if (y - rect.top <= this.gripWidth.top) {
+    if (inRange(rect.top, y, rect.top + this.gripWidth)) {
       edge |= TOP;
-    } else if (rect.top + (rect.height + this.edgeWidth) - y <= this.gripWidth.bottom) {
+    } else if (inRange(rect.top + rect.height - this.gripWidth, y, rect.top + rect.height)) {
       edge |= BOTTOM;
     }
-    if (edge === 0 && utils.isInsideRange(rect, { x, y })) {
-      edge = INSIDE;
+    if (edge !== 0 || utils.isInsideRange(rect, { x, y })) {
+      edge |= INSIDE;
     }
     return edge;
   }
 
   getCursorStyle(edgeState) {
-    return CURSOR_STYLES[edgeState];
+    return CURSOR_STYLES[edgeState & EDGE];
   }
 }
 
 const build = options => {
   return new Edge(options);
+};
+
+const inRange = (low, value, high) => {
+  return low <= value && value <= high;
 };
 
 export default {

@@ -16,7 +16,7 @@ const MIN_DIALOG_SIZE = 50;
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
 export default class Draggable {
-  constructor(normalStyles, movingStyles, scrollable) {
+  constructor(normalStyles, movingStyles) {
     this.normalStyles = normalStyles;
     this.movingStyles = movingStyles;
     this.mainElement = null;
@@ -24,7 +24,7 @@ export default class Draggable {
     this.onchange = null;
     this.current = { left: null, top: null, width: null, height: null };
     this.last = { left: null, top: null, width: null, height: null };
-    this.edge = edge.build({ gripWidth: { top: 20, right: scrollable ? 35 : 20, bottom: 20, left: 20 } });
+    this.edge = edge.build({ gripWidth: 20 });
     this.edgeState = 0;
     this.selectable = false;
     this.initialize();
@@ -136,12 +136,12 @@ export default class Draggable {
     this.mainElementStyle = new dom.VirtualStyle(mainElement);
     this.makeElementDraggable(mainElement);
 
-    this.current.width = utils.convertToInt(mainElement.style.width);
-    this.current.height = utils.convertToInt(mainElement.style.height);
+    this.current.width = mainElement.clientWidth;
+    this.current.height = mainElement.clientHeight;
 
     this.mainElement.addEventListener("click", () => {
-      this.current.width = utils.convertToInt(this.mainElement.style.width);
-      this.current.height = utils.convertToInt(this.mainElement.style.height);
+      this.current.width = this.mainElement.clientWidth;
+      this.current.height = this.mainElement.clientHeight;
     });
   }
 

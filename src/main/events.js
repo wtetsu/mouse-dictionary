@@ -17,8 +17,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
   const traverse = traverser.build(rule.doLetters, settings.parseWordsLimit);
   const lookuper = new Lookuper(settings, doUpdateContent);
 
-  const scrollable = settings.scroll === "scroll";
-  const draggable = new Draggable(settings.normalDialogStyles, settings.movingDialogStyles, scrollable);
+  const draggable = new Draggable(settings.normalDialogStyles, settings.movingDialogStyles);
   draggable.onchange = e => config.savePosition(e);
   draggable.add(dialog);
 
