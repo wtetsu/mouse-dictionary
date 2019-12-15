@@ -578,8 +578,10 @@ export default class Main extends React.Component {
   }
 }
 
+const defaultSettingsJson = JSON.stringify(defaultSettings);
+
 const getDefaultSettings = () => {
-  return lodash.cloneDeep(defaultSettings);
+  return JSON.parse(defaultSettingsJson);
 };
 
 const shouldRecreateTrialWindowProps = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
