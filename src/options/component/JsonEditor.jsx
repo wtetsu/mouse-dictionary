@@ -55,7 +55,7 @@ const JsonEditor = props => {
           try {
             const settings = createSettings(json);
             props.setState({ settings, jsonEditorOpened: false });
-          } catch (e) {
+          } catch {
             swal({ text: res.get("JsonImportError"), icon: "warning" });
           }
         }}
