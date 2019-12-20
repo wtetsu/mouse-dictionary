@@ -541,11 +541,18 @@ export default class Main extends React.Component {
 
   async doSaveSettings() {
     const settings = data.postProcessSettings(this.state.settings);
-    await config.saveSettings(settings);
-    swal({
-      text: res.get("finishSaving"),
-      icon: "info"
-    });
+    try {
+      await config.saveSettings(settings);
+      swal({
+        text: res.get("finishSaving"),
+        icon: "info"
+      });
+    } catch (e) {
+      swal({
+        text: e.message,
+        icon: "error"
+      });
+    }
   }
 
   doBackToDefaultSettings() {
