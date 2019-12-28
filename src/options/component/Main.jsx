@@ -7,7 +7,7 @@
 import React from "react";
 import ContentEditable from "react-contenteditable";
 import swal from "sweetalert";
-import lodash from "lodash";
+import debounce from "lodash/debounce";
 import immer from "immer";
 import LoadDictionary from "./LoadDictionary";
 import BasicSettings from "./BasicSettings";
@@ -61,7 +61,7 @@ export default class Main extends React.Component {
     this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
     this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
 
-    this.updateTrialWindowWithDebounce = lodash.debounce(
+    this.updateTrialWindowWithDebounce = debounce(
       () => {
         this.updateTrialWindow(this.state.settings);
       },
