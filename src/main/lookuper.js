@@ -28,6 +28,8 @@ export default class Lookuper {
     this.generator = new Generator(settings);
     const cacheSize = process.env.NODE_ENV === "production" ? 100 : 0;
     this.shortCache = new ShortCache(cacheSize);
+
+    this.reListForRefs = [/<→(.+?)>/g, /<→(.+?)$>/g];
   }
 
   canUpdate() {
@@ -85,8 +87,9 @@ export default class Lookuper {
 
   async run(textToLookup, includeOrgText, enableShortWord, threshold) {
     const { entries, lang } = entry.build(textToLookup, this.lookupWithCapitalized, includeOrgText);
-    const descriptions = await storage.local.get(entries);
-    const { html, hitCount } = this.generator.generate(entries, descriptions, enableShortWord && lang === "en");
+    const { heads, descriptions } = await fetchDescriptions(entries, this.reListForRefs);
+
+    const { html, hitCount } = this.generator.generate(heads, descriptions, enableShortWord && lang === "en");
     const newDom = dom.create(html);
 
     if (hitCount < threshold) {
@@ -101,3 +104,52 @@ export default class Lookuper {
     console.info(`${entries.length}`);
   }
 }
+
+const fetchDescriptions = async (entries, reListForRefs) => {
+  const baseDescriptions = await storage.local.get(entries);
+  const baseHeads = entries.filter(e => baseDescriptions[e]);
+
+  console.time("lookup2");
+  const refHeads = pickOutRefs(baseDescriptions, reListForRefs);
+  const refDescriptions = {};
+  if (refHeads.length >= 1) {
+    const r = await storage.local.get(refHeads);
+    Object.assign(refDescriptions, r);
+  }
+  console.timeEnd("lookup2");
+  const heads = [...baseHeads, ...refHeads];
+  const descriptions = { ...baseDescriptions, ...refDescriptions };
+  return { heads, descriptions };
+};
+
+const pickOutRefs = (descriptions, reListForRefs) => {
+  const resultSet = new Set();
+  const existingKeys = new Set(Object.keys(descriptions));
+  const descList = Object.values(descriptions);
+
+  for (let i = 0; i < descList.length; i++) {
+    const desc = descList[i];
+    const refList = capture(desc, reListForRefs);
+
+    for (let i = 0; i < refList.length; i++) {
+      const ref = refList[i];
+      if (existingKeys.has(ref)) {
+        continue;
+      }
+      resultSet.add(ref);
+    }
+  }
+  return Array.from(resultSet);
+};
+
+const capture = (str, reList) => {
+  const capturedStrings = [];
+  for (let i = 0; i < reList.length; i++) {
+    const re = reList[i];
+    const matches = str.matchAll(re);
+    for (const m of matches) {
+      capturedStrings.push(m[1]);
+    }
+  }
+  return capturedStrings;
+};
