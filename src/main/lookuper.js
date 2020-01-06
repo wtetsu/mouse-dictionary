@@ -29,7 +29,7 @@ export default class Lookuper {
     const cacheSize = process.env.NODE_ENV === "production" ? 100 : 0;
     this.shortCache = new ShortCache(cacheSize);
 
-    this.reListForRefs = [/<→(.+?)>/g, /<→(.+?)$>/g];
+    this.reForReferences = /[→＝]([ A-z]+)/g;
   }
 
   canUpdate() {
@@ -87,7 +87,7 @@ export default class Lookuper {
 
   async run(textToLookup, includeOrgText, enableShortWord, threshold) {
     const { entries, lang } = entry.build(textToLookup, this.lookupWithCapitalized, includeOrgText);
-    const { heads, descriptions } = await fetchDescriptions(entries, this.reListForRefs);
+    const { heads, descriptions } = await fetchDescriptions(entries, this.reForReferences);
 
     const { html, hitCount } = this.generator.generate(heads, descriptions, enableShortWord && lang === "en");
     const newDom = dom.create(html);
@@ -105,12 +105,12 @@ export default class Lookuper {
   }
 }
 
-const fetchDescriptions = async (entries, reListForRefs) => {
+const fetchDescriptions = async (entries, reForReferences) => {
   const baseDescriptions = await storage.local.get(entries);
   const baseHeads = entries.filter(e => baseDescriptions[e]);
 
   console.time("lookup2");
-  const refHeads = pickOutRefs(baseDescriptions, reListForRefs);
+  const refHeads = pickOutRefs(baseDescriptions, reForReferences);
   const refDescriptions = {};
   if (refHeads.length >= 1) {
     const r = await storage.local.get(refHeads);
@@ -122,14 +122,14 @@ const fetchDescriptions = async (entries, reListForRefs) => {
   return { heads, descriptions };
 };
 
-const pickOutRefs = (descriptions, reListForRefs) => {
+const pickOutRefs = (descriptions, reForReferences) => {
   const resultSet = new Set();
   const existingKeys = new Set(Object.keys(descriptions));
   const descList = Object.values(descriptions);
 
   for (let i = 0; i < descList.length; i++) {
     const desc = descList[i];
-    const refList = capture(desc, reListForRefs);
+    const refList = capture(desc, reForReferences);
 
     for (let i = 0; i < refList.length; i++) {
       const ref = refList[i];
@@ -142,14 +142,11 @@ const pickOutRefs = (descriptions, reListForRefs) => {
   return Array.from(resultSet);
 };
 
-const capture = (str, reList) => {
+const capture = (str, re) => {
   const capturedStrings = [];
-  for (let i = 0; i < reList.length; i++) {
-    const re = reList[i];
-    const matches = str.matchAll(re);
-    for (const m of matches) {
-      capturedStrings.push(m[1]);
-    }
+  const matches = str.matchAll(re);
+  for (const m of matches) {
+    capturedStrings.push(m[1]);
   }
   return capturedStrings;
 };
