@@ -16,7 +16,7 @@ const JSON_FIELDS = new Set(["normalDialogStyles", "movingDialogStyles", "hidden
 
 const loadAll = async () => {
   if (env.disableUserSettings) {
-    return {};
+    return { settings: defaultSettings, position: {} };
   }
   const data = await getStoredData([KEY_USER_CONFIG, KEY_LAST_POSITION]);
   const mergedSettings = { ...defaultSettings, ...data[KEY_USER_CONFIG] };
