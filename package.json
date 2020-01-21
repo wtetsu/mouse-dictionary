@@ -9,6 +9,7 @@
     "watch": "webpack -w --config webpack.config.chrome.js",
     "release": "npm run release-chrome && npm run release-firefox",
     "lint": "eslint src/**/*.js",
+    "format": "prettier --write src/**/*.js",
     "test": "jest",
     "test-watch": "jest --watch",
     "test-cov": "npm test -- --coverage",
@@ -50,6 +51,7 @@
     "jest": "^24.9.0",
     "lodash-webpack-plugin": "^0.11.5",
     "milligram": "^1.3.0",
+    "prettier": "^1.19.1",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   }
