@@ -8,7 +8,7 @@
     "build": "npm run build-chrome && npm run build-firefox",
     "watch": "webpack -w --config webpack.config.chrome.js",
     "release": "npm run release-chrome && npm run release-firefox",
-    "lint": "eslint src/**/*.js",
+    "lint": "eslint src/**/*.js && prettier --check src/**/*.js",
     "format": "prettier --write src/**/*.js",
     "test": "jest",
     "test-watch": "jest --watch",
