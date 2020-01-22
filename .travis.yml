@@ -5,6 +5,7 @@ install:
 node_js:
   - "stable"
 script:
+  - npm run lint
   - npm run test-cov && codecov
 cache: npm
 dist: trusty
