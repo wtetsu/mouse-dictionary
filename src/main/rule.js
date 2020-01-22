@@ -25,7 +25,11 @@ let deinjaConvert = () => {};
 const registerLetters = data => utils.updateMap(lettersRule, data);
 const registerNoun = data => utils.updateMap(nounRule, data);
 const registerPhrase = data => Object.assign(phraseRule, data);
-const registerPronoun = data => Object.assign(pronounRule, data.map(datum => new Map(datum)));
+const registerPronoun = data =>
+  Object.assign(
+    pronounRule,
+    data.map(datum => new Map(datum))
+  );
 const registerSpelling = data => utils.updateMap(spellingRule, data);
 const registerTrailing = data => Object.assign(trailingRule, data);
 const registerVerb = data => utils.updateMap(verbRule, data);
