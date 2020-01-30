@@ -18,8 +18,8 @@ export default {
   headFontSize: "small",
   descFontSize: "small",
 
-  width: 300,
-  height: 400,
+  width: 350,
+  height: 600,
 
   replaceRules: [
     {
