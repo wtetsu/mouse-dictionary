@@ -49,7 +49,7 @@ export default class Lookuper {
     if (!this.canUpdate()) {
       return;
     }
-    await this.update(text, false, true, 0);
+    await this.update(text, this.lookupWithCapitalized, false, true, 0);
   }
 
   async aimedLookup(text) {
@@ -58,10 +58,10 @@ export default class Lookuper {
       return;
     }
     this.aimed = true;
-    await this.update(text, true, false, 1);
+    await this.update(text, true, true, false, 1);
   }
 
-  async update(text, includeOriginalText, enableShortWord, threshold) {
+  async update(text, withCapitalized, includeOriginalText, enableShortWord, threshold) {
     if (!text) {
       return;
     }
@@ -81,27 +81,23 @@ export default class Lookuper {
       }
     }
     console.time("lookup");
-    await this.run(textToLookup, includeOriginalText, enableShortWord, threshold);
+    const { html, hitCount } = await this.run(textToLookup, withCapitalized, includeOriginalText, enableShortWord);
+    if (hitCount >= threshold) {
+      const newDom = dom.create(html);
+      this.doUpdateContent(newDom, hitCount);
+      this.shortCache.put(textToLookup, { dom: newDom, hitCount });
+      this.lastText = textToLookup;
+    }
     console.timeEnd("lookup");
   }
 
-  async run(textToLookup, includeOrgText, enableShortWord, threshold) {
-    const { entries, lang } = entry.build(textToLookup, this.lookupWithCapitalized, includeOrgText);
-    const { heads, descriptions } = await fetchDescriptions(entries, this.reForReferences);
-
-    const { html, hitCount } = this.generator.generate(heads, descriptions, enableShortWord && lang === "en");
-    const newDom = dom.create(html);
-
-    if (hitCount < threshold) {
-      return;
-    }
-    this.doUpdateContent(newDom, hitCount);
-
-    this.shortCache.put(textToLookup, { dom: newDom, hitCount });
-    this.lastText = textToLookup;
-
+  async run(textToLookup, withCapitalized, includeOrgText, enableShortWord) {
+    const { entries, lang } = entry.build(textToLookup, withCapitalized, includeOrgText);
     console.info(`${entries.join(",")}`);
     console.info(`${entries.length}`);
+    const { heads, descriptions } = await fetchDescriptions(entries, this.reForReferences);
+    const { html, hitCount } = this.generator.generate(heads, descriptions, enableShortWord && lang === "en");
+    return { html, hitCount };
   }
 }
 

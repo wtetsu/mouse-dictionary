@@ -39,7 +39,6 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
 
   if (firstWord && firstWord.length >= 2) {
     lookupWords.push(firstWord.substring(0, 1).toUpperCase() + firstWord.substring(1).toLowerCase());
-    lookupWords.push(firstWord.toUpperCase());
   }
 
   return lookupWords.toArray().filter(s => s.length >= 2 || s === firstWord);
