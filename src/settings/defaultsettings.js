@@ -19,7 +19,7 @@ export default {
   descFontSize: "small",
 
   width: 350,
-  height: 600,
+  height: 500,
 
   replaceRules: [
     {
