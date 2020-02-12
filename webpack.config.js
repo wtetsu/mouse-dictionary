@@ -20,7 +20,7 @@ if (!isProd) {
 module.exports = {
   mode: process.env.NODE_ENV || "development",
   entry: {
-    "options/options": "./src/options/main.jsx",
+    "options/options": "./src/options/app.jsx",
     main: "./src/main/main.js"
   },
   output: {
