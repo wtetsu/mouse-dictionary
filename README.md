@@ -63,6 +63,20 @@ For Firefox:
 npm run build-firefox
 ```
 
+## Release build
+
+For Chrome:
+
+```sh
+NODE_ENV=production npm run build-chrome
+```
+
+For Firefox:
+
+```sh
+NODE_ENV=production npm run build-firefox
+```
+
 
 ## Cross-extension messaging
 
