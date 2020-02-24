@@ -68,6 +68,9 @@ export default class Main extends React.Component {
       64,
       { leading: true }
     );
+
+    this.trialWindow = null;
+    this.needRecreateTrialWindow = false;
   }
 
   render() {
@@ -301,8 +304,8 @@ export default class Main extends React.Component {
   }
 
   doChangeSettings(name, newValue) {
-    if (shouldRecreateTrialWindow(name)) {
-      this.removeTrialWindow();
+    if (dialogFields.has(name)) {
+      this.needRecreateTrialWindow = true;
     }
     const newSettings = immer(this.state.settings, d => {
       d[name] = newValue;
@@ -471,6 +474,12 @@ export default class Main extends React.Component {
     } catch {
       // NOP
     }
+    let orgTrialWindow = null;
+    if (this.needRecreateTrialWindow) {
+      orgTrialWindow = this.trialWindow;
+      this.trialWindow = null;
+      this.needRecreateTrialWindow = false;
+    }
     if (!this.trialWindow) {
       try {
         this.trialWindow = this.createTrialWindow(settings);
@@ -486,6 +495,9 @@ export default class Main extends React.Component {
         height: `${settings.height}px`,
         zIndex: 9999
       });
+    }
+    if (orgTrialWindow && orgTrialWindow.dialog) {
+      document.body.removeChild(orgTrialWindow.dialog);
     }
   }
 
@@ -556,8 +568,7 @@ export default class Main extends React.Component {
   }
 
   doBackToDefaultSettings() {
-    this.removeTrialWindow();
-
+    this.needRecreateTrialWindow = true;
     const newSettings = data.preProcessSettings(getDefaultSettings());
     this.setState({ settings: newSettings });
   }
@@ -591,11 +602,7 @@ const getDefaultSettings = () => {
   return JSON.parse(defaultSettingsJson);
 };
 
-const shouldRecreateTrialWindowProps = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
-
-const shouldRecreateTrialWindow = propName => {
-  return shouldRecreateTrialWindowProps.has(propName);
-};
+const dialogFields = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
 
 const decideInitialLanguage = languages => {
   if (!languages) {
