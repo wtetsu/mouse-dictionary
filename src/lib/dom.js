@@ -118,6 +118,28 @@ const getChildren = (elem, skip) => {
   return result.reverse();
 };
 
+const clone = (orgElement, baseElement) => {
+  const clonedElement = baseElement || document.createElement(orgElement.tagName);
+
+  // Copy all styles
+  clonedElement.style.cssText = getComputedStyle(orgElement, "").cssText;
+  clonedElement.scrollTop = orgElement.scrollTop;
+  clonedElement.scrollLeft = orgElement.scrollLeft;
+
+  return clonedElement;
+};
+
+// "100px" -> 100.0
+const pxToFloat = str => {
+  if (!str) {
+    return 0;
+  }
+  if (str.endsWith("px")) {
+    return parseFloat(str.slice(0, -2));
+  }
+  return parseFloat(str);
+};
+
 /**
  * VirtualStyle can apply styles to the inner element.
  * This has "shadow" styles internally which can prevent from unnecessary style updates.
@@ -178,4 +200,4 @@ class VirtualStyle {
   }
 }
 
-export default { create, applyStyles, replace, traverse, VirtualStyle };
+export default { create, applyStyles, replace, traverse, clone, pxToFloat, VirtualStyle };
