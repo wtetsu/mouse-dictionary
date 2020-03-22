@@ -116,11 +116,7 @@ const min = (a, b) => {
 
 const getSelection = () => {
   const selection = window.getSelection();
-  return selection
-    .toString()
-    .replace("\r", " ")
-    .replace("\n", " ")
-    .trim();
+  return selection.toString().replace("\r", " ").replace("\n", " ").trim();
 };
 
 export default {
