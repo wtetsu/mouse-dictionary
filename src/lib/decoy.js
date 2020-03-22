@@ -13,6 +13,7 @@ const create = () => {
 class Decoy {
   constructor(tag = "div") {
     this.elementCache = document.createElement(tag);
+    this.decoy = null;
   }
 
   activate(underlay) {
