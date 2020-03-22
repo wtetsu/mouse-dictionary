@@ -69,6 +69,9 @@ const prepare = (decoy, underlay) => {
   decoy.innerText = getElementText(underlay);
 
   const style = createDecoyStyle(decoy, underlay);
+  style.width = underlay.clientWidth;
+  style.height = underlay.clientHeight;
+
   dom.applyStyles(decoy, style);
 
   return decoy;
