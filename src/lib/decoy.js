@@ -12,6 +12,19 @@ const create = tag => {
 
 const INPUT_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT", "OPTION"]);
 
+const DEFAULT_STYLES = {
+  position: "absolute",
+  zIndex: 2147483647,
+  opacity: 0
+};
+
+const STYLES = {
+  INPUT: { overflow: "hidden", whiteSpace: "nowrap" },
+  TEXTAREA: { overflowY: "hidden" },
+  SELECT: { overflow: "hidden", whiteSpace: "nowrap" },
+  OPTION: { overflow: "hidden", whiteSpace: "nowrap" }
+};
+
 class Decoy {
   constructor(tag) {
     this.elementCache = createElement(tag);
@@ -78,15 +91,12 @@ const createDecoyStyle = (decoy, underlay) => {
   const top = offset.top - dom.pxToFloat(decoy.style.marginTop);
   const left = offset.left - dom.pxToFloat(decoy.style.marginLeft);
 
-  return {
+  const dynamicStyles = {
     top: `${top}px`,
-    left: `${left}px`,
-    position: "absolute",
-    zIndex: 2147483647,
-    opacity: 0,
-    overflow: "hidden",
-    textOverflow: "ellipsis"
+    left: `${left}px`
   };
+
+  return { ...dynamicStyles, ...DEFAULT_STYLES, ...STYLES[underlay.tagName] };
 };
 
 const getOffset = element => {
