@@ -5,6 +5,7 @@
  */
 
 import dom from "./dom";
+import decoy from "./decoy";
 
 const build = (doConfirmValidCharacter, maxWords) => {
   const traverser = new Traverser(doConfirmValidCharacter, maxWords);
@@ -28,6 +29,7 @@ class Traverser {
     this.JA_MAX_LENGTH = 40;
     this.getTargetCharacterType = doGetTargetCharacterType || (code => (isEnglishLikeCharacter(code) ? 3 : 0));
     this.maxWords = maxWords || 8;
+    this.decoy = decoy.create();
   }
 
   fetchTextUnderCursor(element, clientX, clientY) {
@@ -68,12 +70,9 @@ class Traverser {
     if (!element.value) {
       return null;
     }
-    const overlay = prepareOverlay(element);
 
     try {
-      document.body.appendChild(overlay);
-      overlay.scrollTop = element.scrollTop;
-      overlay.scrollLeft = element.scrollLeft;
+      this.decoy.activate(element);
 
       const range = getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
       if (!range) {
@@ -85,7 +84,7 @@ class Traverser {
         return this.fetchTextFromTextNode(node, offset, this.maxWords);
       }
     } finally {
-      document.body.removeChild(overlay);
+      this.decoy.deactivate();
     }
   }
 
@@ -213,41 +212,5 @@ const createGetCaretNodeAndOffsetFromPointFunction = ownerDocument => {
 };
 
 const isEnglishLikeCharacter = code => 0x20 <= code && code <= 0x7e;
-
-const _overlay = document.createElement("div");
-
-const prepareOverlay = orgElement => {
-  const overlay = dom.clone(orgElement, _overlay);
-  overlay.innerText = orgElement.value;
-
-  const style = createOverlayStyle(overlay, orgElement);
-  dom.applyStyles(overlay, style);
-
-  return overlay;
-};
-
-const createOverlayStyle = (overlay, orgElement) => {
-  const offset = getOffset(orgElement);
-  const top = offset.top - dom.pxToFloat(overlay.style.marginTop);
-  const left = offset.left - dom.pxToFloat(overlay.style.marginLeft);
-
-  return {
-    top: `${top}px`,
-    left: `${left}px`,
-    position: "absolute",
-    zIndex: 2147483647,
-    opacity: 0
-  };
-};
-
-const getOffset = element => {
-  const rect = element.getBoundingClientRect();
-  const doc = document.documentElement;
-
-  return {
-    top: rect.top + window.pageYOffset - doc.clientTop,
-    left: rect.left + window.pageXOffset - doc.clientLeft
-  };
-};
 
 export default { build };
