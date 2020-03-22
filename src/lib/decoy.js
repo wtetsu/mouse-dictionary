@@ -83,7 +83,9 @@ const createDecoyStyle = (decoy, underlay) => {
     left: `${left}px`,
     position: "absolute",
     zIndex: 2147483647,
-    opacity: 0
+    opacity: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis"
   };
 };
 
