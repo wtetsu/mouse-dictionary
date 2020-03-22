@@ -10,6 +10,8 @@ const create = tag => {
   return new Decoy(tag);
 };
 
+const INPUT_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT", "OPTION"]);
+
 class Decoy {
   constructor(tag) {
     this.elementCache = createElement(tag);
@@ -18,6 +20,9 @@ class Decoy {
 
   activate(underlay) {
     if (!this.elementCache) {
+      return;
+    }
+    if (!INPUT_TAGS.has(underlay.tagName)) {
       return;
     }
     const decoy = prepare(dom.clone(underlay, this.elementCache), underlay);
@@ -48,13 +53,25 @@ const createElement = tag => {
 };
 
 const prepare = (decoy, underlay) => {
-  decoy.innerText = underlay.value;
+  decoy.innerText = getElementText(underlay);
 
   const style = createDecoyStyle(decoy, underlay);
   dom.applyStyles(decoy, style);
 
   return decoy;
 };
+
+const getElementText = element => {
+  if (element.tagName === "SELECT") {
+    return getSelectText(element);
+  }
+  return element.text || element.value;
+};
+
+function getSelectText(element) {
+  var index = element.selectedIndex;
+  return element.options[index]?.text;
+}
 
 const createDecoyStyle = (decoy, underlay) => {
   const offset = getOffset(underlay);

@@ -64,13 +64,6 @@ class Traverser {
   }
 
   fetchTextFromElementNode(element, clientX, clientY) {
-    if (element.nodeName !== "TEXTAREA" && element.nodeName !== "INPUT") {
-      return null;
-    }
-    if (!element.value) {
-      return null;
-    }
-
     try {
       this.decoy.activate(element);
 
