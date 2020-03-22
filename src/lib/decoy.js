@@ -6,17 +6,20 @@
 
 import dom from "./dom";
 
-const create = () => {
-  return new Decoy();
+const create = tag => {
+  return new Decoy(tag);
 };
 
 class Decoy {
-  constructor(tag = "div") {
-    this.elementCache = document.createElement(tag);
+  constructor(tag) {
+    this.elementCache = createElement(tag);
     this.decoy = null;
   }
 
   activate(underlay) {
+    if (!this.elementCache) {
+      return;
+    }
     const decoy = prepare(dom.clone(underlay, this.elementCache), underlay);
     document.body.appendChild(decoy);
     decoy.scrollTop = underlay.scrollTop;
@@ -26,6 +29,9 @@ class Decoy {
   }
 
   deactivate() {
+    if (!this.elementCache) {
+      return;
+    }
     const decoy = this.decoy;
     this.decoy = null;
     if (decoy) {
@@ -33,6 +39,13 @@ class Decoy {
     }
   }
 }
+
+const createElement = tag => {
+  if (!tag) {
+    return null;
+  }
+  return document.createElement(tag);
+};
 
 const prepare = (decoy, underlay) => {
   decoy.innerText = underlay.value;

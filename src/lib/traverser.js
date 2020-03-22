@@ -29,7 +29,7 @@ class Traverser {
     this.JA_MAX_LENGTH = 40;
     this.getTargetCharacterType = doGetTargetCharacterType || (code => (isEnglishLikeCharacter(code) ? 3 : 0));
     this.maxWords = maxWords || 8;
-    this.decoy = decoy.create();
+    this.decoy = decoy.create("div");
   }
 
   fetchTextUnderCursor(element, clientX, clientY) {
