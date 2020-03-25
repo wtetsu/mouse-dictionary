@@ -40,7 +40,7 @@ class Decoy {
     }
     const decoy = prepare(dom.clone(underlay, this.elementCache), underlay);
 
-    // Specify only absolute side
+    // Specify only absolute size
     decoy.style.width = `${underlay.clientWidth}px`;
     decoy.style.height = `${underlay.clientHeight}px`;
     decoy.style.removeProperty("min-width");
