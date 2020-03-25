@@ -123,8 +123,6 @@ const clone = (orgElement, baseElement) => {
 
   // Copy all styles
   clonedElement.style.cssText = getComputedCssText(orgElement);
-  clonedElement.scrollTop = orgElement.scrollTop;
-  clonedElement.scrollLeft = orgElement.scrollLeft;
 
   return clonedElement;
 };

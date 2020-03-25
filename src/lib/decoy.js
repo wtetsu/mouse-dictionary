@@ -20,7 +20,7 @@ const DEFAULT_STYLES = {
 
 const STYLES = {
   INPUT: { overflow: "hidden", whiteSpace: "nowrap" },
-  TEXTAREA: { overflowY: "hidden" },
+  TEXTAREA: { overflow: "hidden" },
   SELECT: { overflow: "hidden", whiteSpace: "nowrap" },
   OPTION: { overflow: "hidden", whiteSpace: "nowrap" }
 };
@@ -39,6 +39,14 @@ class Decoy {
       return;
     }
     const decoy = prepare(dom.clone(underlay, this.elementCache), underlay);
+
+    // Specify only absolute side
+    decoy.style.width = `${underlay.clientWidth}px`;
+    decoy.style.height = `${underlay.clientHeight}px`;
+    decoy.style.removeProperty("min-width");
+    decoy.style.removeProperty("min-height");
+    decoy.style.removeProperty("max-width");
+    decoy.style.removeProperty("max-height");
     document.body.appendChild(decoy);
     decoy.scrollTop = underlay.scrollTop;
     decoy.scrollLeft = underlay.scrollLeft;
