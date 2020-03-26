@@ -54,7 +54,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
     const m = request.message;
     switch (m.type) {
       case "text":
-        lookuper.update(m.text, m.mustIncludeOriginalText, m.enableShortWord);
+        lookuper.update(m.text, m.withCapitalized, m.mustIncludeOriginalText, m.enableShortWord);
         break;
       case "mousemove":
         draggable.onMouseMove(m);

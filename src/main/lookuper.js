@@ -61,7 +61,7 @@ export default class Lookuper {
     await this.update(text, true, true, false, 1);
   }
 
-  async update(text, withCapitalized, includeOriginalText, enableShortWord, threshold) {
+  async update(text, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
     if (!text) {
       return;
     }
