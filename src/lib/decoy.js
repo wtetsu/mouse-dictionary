@@ -40,18 +40,17 @@ class Decoy {
     }
     const decoy = prepare(dom.clone(underlay, this.elementCache), underlay);
 
-    // Specify only absolute size
-    decoy.style.width = `${underlay.clientWidth}px`;
-    decoy.style.height = `${underlay.clientHeight}px`;
-    decoy.style.removeProperty("min-width");
-    decoy.style.removeProperty("min-height");
-    decoy.style.removeProperty("max-width");
-    decoy.style.removeProperty("max-height");
     document.body.appendChild(decoy);
+    this.decoy = decoy;
+
+    // These values are required to be set after appendChild.
     decoy.scrollTop = underlay.scrollTop;
     decoy.scrollLeft = underlay.scrollLeft;
-
-    this.decoy = decoy;
+    const correctionWidth = underlay.clientWidth - decoy.clientWidth;
+    const correctionHeight = underlay.clientHeight - decoy.clientHeight;
+    const width = `${underlay.clientWidth + correctionWidth}px`;
+    const height = `${underlay.clientHeight + correctionHeight}px`;
+    dom.applyStyles(decoy, { width, height });
   }
 
   deactivate() {
@@ -77,11 +76,14 @@ const prepare = (decoy, underlay) => {
   decoy.innerText = getElementText(underlay);
 
   const style = createDecoyStyle(decoy, underlay);
-  style.width = underlay.clientWidth;
-  style.height = underlay.clientHeight;
 
+  // Specify only absolute size
+  style.width = `${underlay.clientWidth}px`;
+  style.height = `${underlay.clientHeight}px`;
   dom.applyStyles(decoy, style);
-
+  for (const p of ["min-width", "min-height", "max-width", "max-height"]) {
+    decoy.style.removeProperty(p);
+  }
   return decoy;
 };
 
