@@ -22,7 +22,7 @@ const updateMap = (map, data) => {
  */
 const omap = (object, func, specifiedProps) => {
   const result = {};
-  const props = specifiedProps || Object.keys(object);
+  const props = specifiedProps ?? Object.keys(object);
   for (let i = 0; i < props.length; i++) {
     const prop = props[i];
     result[prop] = func ? func(object[prop]) : null;

@@ -47,5 +47,5 @@ const decideLanguage = () => {
 export default key => {
   const lang = decideLanguage();
   const res = resources[lang];
-  return res[key] || null;
+  return res[key] ?? null;
 };

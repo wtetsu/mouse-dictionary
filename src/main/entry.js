@@ -17,7 +17,7 @@ let languageDetector = text => (isEnglishText(text) ? "en" : "ja");
 
 const build = (text, withCapitalized, mustIncludeOriginalText) => {
   const lang = languageDetector(text);
-  const generator = generators[lang] || generators.default;
+  const generator = generators[lang] ?? generators.default;
   const entries = generator(text, withCapitalized, mustIncludeOriginalText);
   return { entries, lang };
 };

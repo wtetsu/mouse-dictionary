@@ -27,8 +27,8 @@ const build = (doConfirmValidCharacter, maxWords) => {
 class Traverser {
   constructor(doGetTargetCharacterType, maxWords) {
     this.JA_MAX_LENGTH = 40;
-    this.getTargetCharacterType = doGetTargetCharacterType || (code => (isEnglishLikeCharacter(code) ? 3 : 0));
-    this.maxWords = maxWords || 8;
+    this.getTargetCharacterType = doGetTargetCharacterType ?? (code => (isEnglishLikeCharacter(code) ? 3 : 0));
+    this.maxWords = maxWords ?? 8;
     this.decoy = decoy.create("div");
   }
 

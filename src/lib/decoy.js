@@ -91,7 +91,7 @@ const getElementText = element => {
   if (element.tagName === "SELECT") {
     return getSelectText(element);
   }
-  return element.text || element.value;
+  return element.text ?? element.value;
 };
 
 function getSelectText(element) {

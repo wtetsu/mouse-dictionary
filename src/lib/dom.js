@@ -119,7 +119,7 @@ const getChildren = (elem, skip) => {
 };
 
 const clone = (orgElement, baseElement) => {
-  const clonedElement = baseElement || document.createElement(orgElement.tagName);
+  const clonedElement = baseElement ?? document.createElement(orgElement.tagName);
 
   // Copy all styles
   clonedElement.style.cssText = getComputedCssText(orgElement);

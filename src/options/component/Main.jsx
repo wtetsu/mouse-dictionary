@@ -533,7 +533,7 @@ export default class Main extends React.Component {
     if (!this.trialWindow) {
       return;
     }
-    const actualTrialText = trialText || this.state.trialText;
+    const actualTrialText = trialText ?? this.state.trialText;
 
     const { entries, lang } = entry.build(actualTrialText, settings.lookupWithCapitalized, false);
 

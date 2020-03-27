@@ -31,7 +31,7 @@ const load = async ({ file, encoding, format, event }) => {
     throw new Error("Unknown File Format: " + format);
   }
 
-  const ev = event || (() => {});
+  const ev = event ?? (() => {});
 
   return new Promise((resolve, reject) => {
     let wordCount = 0;
