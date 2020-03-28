@@ -21,7 +21,7 @@ const sync = {
   set: async args => doAsync(syncs.set, args),
   async pickOut(key) {
     const data = await sync.get(key);
-    return data && data[key];
+    return data?.[key];
   }
 };
 
@@ -30,7 +30,7 @@ const local = {
   set: async args => doAsync(locals.set, args),
   async pickOut(key) {
     const data = await local.get(key);
-    return data && data[key];
+    return data?.[key];
   },
   getBytesInUse: async () => doAsync(locals.getBytesInUse)
 };

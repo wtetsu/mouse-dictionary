@@ -53,7 +53,7 @@ const processSecondOrLaterLaunch = async existingElement => {
 
 const isFramePage = () => {
   const frames = document.getElementsByTagName("frame");
-  return frames && frames.length >= 1;
+  return frames?.length >= 1;
 };
 
 const toggleDialog = (area, userSettings) => {

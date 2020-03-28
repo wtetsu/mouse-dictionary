@@ -24,7 +24,7 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   const { firstWords, linkedWords } = processSourceString(sourceStr);
   lookupWords.merge(linkedWords);
 
-  const firstWord = firstWords && firstWords[0];
+  const firstWord = firstWords?.[0];
   if (firstWord) {
     lookupWords.merge(processFirstWord(firstWord));
   }
@@ -37,8 +37,8 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
   }
 
-  if (firstWord && firstWord.length >= 2) {
-    lookupWords.push(firstWord.substring(0, 1).toUpperCase() + firstWord.substring(1).toLowerCase());
+  if (firstWord?.length >= 2) {
+    lookupWords.push(toTitle(firstWord));
   }
 
   return lookupWords.toArray().filter(s => s.length >= 2 || s === firstWord);
@@ -293,4 +293,7 @@ const fetchQuotedStrings = str => {
   return result;
 };
 
+const toTitle = str => {
+  return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+};
 export default createLookupWordsEn;

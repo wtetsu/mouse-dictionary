@@ -152,7 +152,7 @@ text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
     for (let j = 0; j < tlist.length; j++) {
       const t = tlist[j];
       let w = text.replaceTrailingCharacters(str, t.search, t.new);
-      if (w && w.length >= minLength) {
+      if (w?.length >= minLength) {
         words.push(w);
         break;
       }

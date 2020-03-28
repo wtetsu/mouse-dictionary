@@ -496,7 +496,7 @@ export default class Main extends React.Component {
         zIndex: 9999
       });
     }
-    if (orgTrialWindow && orgTrialWindow.dialog) {
+    if (orgTrialWindow?.dialog) {
       document.body.removeChild(orgTrialWindow.dialog);
     }
   }
@@ -523,7 +523,7 @@ export default class Main extends React.Component {
   }
 
   removeTrialWindow() {
-    if (this.trialWindow && this.trialWindow.dialog) {
+    if (this.trialWindow?.dialog) {
       document.body.removeChild(this.trialWindow.dialog);
       this.trialWindow = null;
     }
