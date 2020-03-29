@@ -4,7 +4,8 @@ const LodashWebpackPlugin = require("lodash-webpack-plugin");
 const UniteJsonPlugin = require("./webpack_plugins/UniteJsonPlugin");
 const jaRule = require("deinja/src/data");
 
-const isProd = process.env.NODE_ENV === "production";
+const mode = process.env.NODE_ENV || "development";
+const isProd = mode === "production";
 
 const copyWebpackPluginConfigs = [
   { from: "static", to: "." },
@@ -18,7 +19,7 @@ if (!isProd) {
 }
 
 module.exports = {
-  mode: process.env.NODE_ENV || "development",
+  mode: mode,
   entry: {
     "options/options": "./src/options/app.jsx",
     main: "./src/main/main.js"
@@ -31,7 +32,10 @@ module.exports = {
       {
         test: /\.js$/,
         use: {
-          loader: "babel-loader"
+          loader: "babel-loader",
+          options: {
+            cacheDirectory: !isProd
+          }
         },
         exclude: /node_modules/
       },
@@ -40,7 +44,10 @@ module.exports = {
         use: [
           {
             loader: "babel-loader",
-            options: { presets: ["@babel/env", "@babel/react"] }
+            options: {
+              cacheDirectory: !isProd,
+              presets: ["@babel/env", "@babel/react"]
+            }
           }
         ],
         exclude: /node_modules/
