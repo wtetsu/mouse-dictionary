@@ -30,6 +30,15 @@
     { search: "ing", new: "" }
   ],
   [
+    { search: "ggest", new: "g" },
+    { search: "ppier", new: "ppy" },
+    { search: "ppiest", new: "ppy" },
+    { search: "ier", new: "y" },
+    { search: "iest", new: "y" },
+    { search: "er", new: "" },
+    { search: "est", new: "" }
+  ],
+  [
     { search: "ying", new: "ie" },
     { search: "ing", new: "e" }
   ],
