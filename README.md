@@ -6,7 +6,7 @@
 
 <img src="https://github.com/wtetsu/mouse-dictionary/blob/images/logo.png" title="Mouse Dictionary" width="400" height="229">
 
-[Mouse Dictionary](https://mouse-dictionary.netlify.com/en/) is a super fast dictionary for Chrome and Firefox.
+[Mouse Dictionary](https://mouse-dictionary.netlify.app/en/) is a super fast dictionary for Chrome and Firefox.
 
 Features:
 - Blazing fast

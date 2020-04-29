@@ -80,7 +80,7 @@ export default class Main extends React.Component {
       <>
         <div style={{ textAlign: "center", marginBottom: "10px" }}>
           <a
-            href={`https://mouse-dictionary.netlify.com/${this.state.lang}/`}
+            href={`https://mouse-dictionary.netlify.app/${this.state.lang}/`}
             target="_blank"
             rel="noopener noreferrer"
             style={{ textDecoration: "underline", fontSize: "small" }}
