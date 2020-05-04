@@ -8,6 +8,7 @@
     "build": "npm run build-chrome && npm run build-firefox",
     "watch": "webpack -w --config webpack.config.chrome.js",
     "release": "npm run release-chrome && npm run release-firefox",
+    "archive": "npm run release && npm run archive-chrome && npm run archive-firefox",
     "lint": "eslint src/**/*.{js,jsx} && prettier --check src/**/*.{js,jsx}",
     "format": "prettier --write src/**/*.{js,jsx}",
     "test": "jest",
@@ -18,9 +19,11 @@
     "watch-chrome": "webpack -w --config webpack.config.chrome.js",
     "release-chrome": "NODE_ENV=production npm run build-chrome",
     "release-chrome-beta": "NODE_ENV=production npm run build-chrome-beta",
+    "archive-chrome": "NODE_ENV=chrome node archive.js",
     "build-firefox": "webpack --config webpack.config.firefox.js",
     "watch-firefox": "webpack -w --config webpack.config.firefox.js",
-    "release-firefox": "NODE_ENV=production npm run build-firefox"
+    "release-firefox": "NODE_ENV=production npm run build-firefox",
+    "archive-firefox": "NODE_ENV=firefox node archive.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.8.3",
@@ -41,6 +44,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
+    "archiver": "^4.0.1",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^25.1.0",
