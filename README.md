@@ -9,11 +9,14 @@
 [Mouse Dictionary](https://mouse-dictionary.netlify.app/en/) is a super fast dictionary for Chrome and Firefox.
 
 Features:
-- Blazing fast
-- Detect phrases in text intelligently
-- You can import your own text data
-- Divide special expression into individual words and look them up at once(e.g. camelCase, snake_case)
-- Customizable
+- Super fast (react in 1/60 second)
+- Detect phrases quite intelligently
+- Can import your own text data
+- Look up connected words at one
+  - camelCase -> "camel", "case"
+  - snake_case -> "snake", "case"
+  - splitinto  -> "split into"
+- Customizable view
 
 Download it.
 
@@ -43,13 +46,15 @@ Want to use for the German language? Take a look these great articles!
 
 ## How to develop
 
-Use npm 6+.
+### Preparation
 
-Preparation:
+Use npm 6+.
 
 ```sh
 npm install
 ```
+
+### Build
 
 For Chrome:
 
@@ -63,7 +68,24 @@ For Firefox:
 npm run build-firefox
 ```
 
-## Release build
+### Watch
+
+If you want to keep building every time after you edit source code, watch would be quite useful.
+
+For Chrome:
+
+```sh
+npm run watch-chrome
+```
+
+For Firefox:
+
+```sh
+npm run watch-firefox
+```
+
+
+### Release build
 
 For Chrome:
 
@@ -77,6 +99,14 @@ For Firefox:
 NODE_ENV=production npm run build-firefox
 ```
 
+## Contribution
+
+For the moment, Mouse Dictionary project doesn't have any strict rule about contribution. Feel free to create any issues and pull requests.
+
+Some guides:
+
+* Editor: the main developer uses VSCode
+* Before you commit: try running `npm run test` and `npm run lint`
 
 ## Cross-extension messaging
 
