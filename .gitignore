@@ -57,6 +57,11 @@ typings/
 # dotenv environment variables file
 .env
 
+# Editor
+*.swp
+*~
+tags
+
 .*/
 dist/
 dist-*/

@@ -30,6 +30,26 @@
     { search: "ing", new: "" }
   ],
   [
+    { search: "er", new: "e" },
+    { search: "est", new: "e" }
+  ],
+  [
+    { search: "tter", new: "t" },
+    { search: "ttest", new: "t" },
+    { search: "dder", new: "d" },
+    { search: "ddest", new: "d" },
+    { search: "gger", new: "g" },
+    { search: "ggest", new: "g" },
+    { search: "ppier", new: "ppy" },
+    { search: "ppiest", new: "ppy" },
+    { search: "nner", new: "n" },
+    { search: "nnest", new: "n" },
+    { search: "ier", new: "y" },
+    { search: "iest", new: "y" },
+    { search: "er", new: "" },
+    { search: "est", new: "" }
+  ],
+  [
     { search: "ying", new: "ie" },
     { search: "ing", new: "e" }
   ],

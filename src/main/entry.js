@@ -7,17 +7,18 @@
 import entryGeneratorJa from "./entry/ja";
 import entryGeneratorEn from "./entry/en";
 
+const generators = {
+  en: entryGeneratorEn,
+  ja: entryGeneratorJa,
+  default: entryGeneratorEn
+};
+
+let languageDetector = text => (isEnglishText(text) ? "en" : "ja");
+
 const build = (text, withCapitalized, mustIncludeOriginalText) => {
-  const lang = isEnglishText(text) ? "en" : "ja";
-  let entries;
-  switch (lang) {
-    case "en":
-      entries = entryGeneratorEn(text, withCapitalized, mustIncludeOriginalText);
-      break;
-    case "ja":
-      entries = entryGeneratorJa(text, withCapitalized, mustIncludeOriginalText);
-      break;
-  }
+  const lang = languageDetector(text);
+  const generator = generators[lang] ?? generators.default;
+  const entries = generator(text, withCapitalized, mustIncludeOriginalText);
   return { entries, lang };
 };
 
@@ -34,4 +35,12 @@ const isEnglishText = str => {
   return result;
 };
 
-export default { build };
+const registerGenerator = (lang, generator) => {
+  generators[lang] = generator;
+};
+
+const registerLanguageDetector = detector => {
+  languageDetector = detector;
+};
+
+export default { build, registerGenerator, registerLanguageDetector };

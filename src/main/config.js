@@ -90,8 +90,8 @@ const getStoredData = async keys => {
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
-    const json = storedData[key] || "{}";
-    result[key] = parseJson(json) || {};
+    const json = storedData[key] ?? "{}";
+    result[key] = parseJson(json) ?? {};
   }
 
   return result;

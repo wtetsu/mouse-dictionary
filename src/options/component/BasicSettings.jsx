@@ -74,7 +74,7 @@ const BasicSettings = props => {
             <ChromePicker
               width={200}
               color={settings.headFontColor}
-              onChangeComplete={changeColor.bind(this, "headFontColor")}
+              onChange={changeColor.bind(this, "headFontColor")}
               disableAlpha={true}
             />
             <br />
@@ -87,7 +87,7 @@ const BasicSettings = props => {
             <ChromePicker
               width={200}
               color={settings.descFontColor}
-              onChangeComplete={changeColor.bind(this, "descFontColor")}
+              onChange={changeColor.bind(this, "descFontColor")}
               disableAlpha={true}
             />
             <br />
@@ -100,7 +100,7 @@ const BasicSettings = props => {
             <ChromePicker
               width={200}
               color={settings.backgroundColor}
-              onChangeComplete={changeColor.bind(this, "backgroundColor")}
+              onChange={changeColor.bind(this, "backgroundColor")}
               disableAlpha={true}
             />
           </div>

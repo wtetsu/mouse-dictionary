@@ -22,7 +22,7 @@ const updateMap = (map, data) => {
  */
 const omap = (object, func, specifiedProps) => {
   const result = {};
-  const props = specifiedProps || Object.keys(object);
+  const props = specifiedProps ?? Object.keys(object);
   for (let i = 0; i < props.length; i++) {
     const prop = props[i];
     result[prop] = func ? func(object[prop]) : null;
@@ -116,11 +116,7 @@ const min = (a, b) => {
 
 const getSelection = () => {
   const selection = window.getSelection();
-  return selection
-    .toString()
-    .replace("\r", " ")
-    .replace("\n", " ")
-    .trim();
+  return selection.toString().replace("\r", " ").replace("\n", " ").trim();
 };
 
 export default {

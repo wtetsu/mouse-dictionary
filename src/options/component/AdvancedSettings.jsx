@@ -22,14 +22,14 @@ const AdvancedSettings = props => {
     return "<div></div>";
   }
 
-  const lookupWithCapitalized = (settings && settings.lookupWithCapitalized) || false;
-  const contentWrapperTemplate = (settings && settings.contentWrapperTemplate) || "";
-  const dialogTemplate = (settings && settings.dialogTemplate) || "";
-  const contentTemplate = (settings && settings.contentTemplate) || "";
+  const lookupWithCapitalized = settings?.lookupWithCapitalized ?? false;
+  const contentWrapperTemplate = settings?.contentWrapperTemplate ?? "";
+  const dialogTemplate = settings?.dialogTemplate ?? "";
+  const contentTemplate = settings?.contentTemplate ?? "";
 
-  const normalDialogStyles = (settings && settings.normalDialogStyles) || "";
-  const movingDialogStyles = (settings && settings.movingDialogStyles) || "";
-  const hiddenDialogStyles = (settings && settings.hiddenDialogStyles) || "";
+  const normalDialogStyles = settings?.normalDialogStyles ?? "";
+  const movingDialogStyles = settings?.movingDialogStyles ?? "";
+  const hiddenDialogStyles = settings?.hiddenDialogStyles ?? "";
 
   const changeSettings = e => {
     const value = e.target.type === "number" ? parseInt(e.target.value, 10) : e.target.value;
@@ -39,10 +39,10 @@ const AdvancedSettings = props => {
     props.changeSettings(e.target.name, e.target.checked);
   };
 
-  const replaceRules = (settings && settings.replaceRules) || [];
+  const replaceRules = settings?.replaceRules ?? [];
   const replaceRulesList = replaceRules.map((r, i) => {
     return (
-      <div key={r.key || r.search}>
+      <div key={r.key ?? r.search}>
         <button
           type="button"
           className="button button-outline button-arrow"
