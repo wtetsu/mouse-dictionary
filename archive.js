@@ -1,33 +1,33 @@
-var fs = require('fs');
-var archiver = require('archiver');
+const fs = require("fs");
+const archiver = require("archiver");
 
-const browser = process.env.NODE_ENV; // target browser (chrome, firefox).
+const main = () => {
+  const postfix = process.argv[2];
+  const targetPath = `dist-${postfix}/`;
+  const zipPath = __dirname + `/mouse-dictionary-${postfix}.zip`;
+  const stream = fs.createWriteStream(zipPath);
 
-var output = fs.createWriteStream(__dirname + `/${process.env.npm_package_name}-${browser}.zip`);
-var archive = archiver('zip', {
-  zlib: { level: 9 } // Sets the compression level.
-});
+  const archive = startArchiver(targetPath, stream);
 
-output.on('close', function() {
-  console.log(archive.pointer() / 1000000.0 + ' total MBytes');
-  console.log('archiver has been finalized and the output file descriptor has closed.');
-});
+  stream.on("close", () => {
+    const size = archive.pointer() / 1_000.0 + " KB";
+    console.log(`${zipPath}: ${size}`);
+  });
 
-output.on('end', function() {
-  console.log('Data has been drained');
-});
+  archive.finalize();
+};
 
-archive.on('warning', function(err) {
+const startArchiver = (targetPath, stream) => {
+  const archive = archiver("zip", { zlib: { level: 9 } });
+  archive.on("warning", err => {
     throw err;
-});
+  });
+  archive.on("error", err => {
+    throw err;
+  });
+  archive.pipe(stream);
+  archive.directory(targetPath, false);
+  return archive;
+};
 
-archive.on('error', function(err) {
-  throw err;
-});
-
-archive.pipe(output);
-
-archive.directory(`dist-${browser}/`, false);
-
-archive.finalize();
-
+main();

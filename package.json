@@ -8,7 +8,6 @@
     "build": "npm run build-chrome && npm run build-firefox",
     "watch": "webpack -w --config webpack.config.chrome.js",
     "release": "npm run release-chrome && npm run release-firefox",
-    "archive": "npm run release && npm run archive-chrome && npm run archive-firefox",
     "lint": "eslint src/**/*.{js,jsx} && prettier --check src/**/*.{js,jsx}",
     "format": "prettier --write src/**/*.{js,jsx}",
     "test": "jest",
@@ -18,14 +17,15 @@
     "watch-chrome": "webpack -w --config webpack.config.chrome.js",
     "release-chrome": "NODE_ENV=production npm run build-chrome",
     "release-chrome-beta": "NODE_ENV=production npm run build-chrome-beta",
-    "archive-chrome": "NODE_ENV=chrome node archive.js",
+    "package-chrome": "npm run release-chrome && node archive.js chrome",
     "build-firefox": "webpack --config webpack.config.firefox.js",
     "watch-firefox": "webpack -w --config webpack.config.firefox.js",
     "release-firefox": "NODE_ENV=production npm run build-firefox",
-    "archive-firefox": "NODE_ENV=firefox node archive.js"
+    "package-firefox": "npm run release-firefox && node archive.js firefox"
   },
   "dependencies": {
     "@babel/polyfill": "^7.8.7",
+    "cross-env": "^7.0.2",
     "deinja": "0.0.3",
     "hogan.js": "^3.0.2",
     "immer": "^6.0.3",
