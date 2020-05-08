@@ -18,11 +18,11 @@
     "watch-chrome": "webpack -w --config webpack.config.chrome.js",
     "release-chrome": "cross-env NODE_ENV=production npm run build-chrome",
     "release-chrome-beta": "cross-env NODE_ENV=production npm run build-chrome-beta",
-    "package-chrome": "npm run release-chrome && node archive.js chrome",
+    "package-chrome": "npm run release-chrome && node build_tools/archive.js chrome",
     "build-firefox": "webpack --config webpack.config.firefox.js",
     "watch-firefox": "webpack -w --config webpack.config.firefox.js",
     "release-firefox": "cross-env NODE_ENV=production npm run build-firefox",
-    "package-firefox": "npm run release-firefox && node archive.js firefox"
+    "package-firefox": "npm run release-firefox && node build_tools/archive.js firefox"
   },
   "dependencies": {
     "@babel/polyfill": "^7.8.7",

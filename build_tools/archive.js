@@ -10,7 +10,7 @@ const main = () => {
   const archive = startArchiver(targetPath, stream);
 
   stream.on("close", () => {
-    const size = archive.pointer() / 1_000.0 + " KB";
+    const size = archive.pointer() / 1_024.0 + " KB";
     console.log(`${zipPath}: ${size}`);
   });
 

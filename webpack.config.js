@@ -1,7 +1,7 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const LodashWebpackPlugin = require("lodash-webpack-plugin");
-const UniteJsonPlugin = require("./webpack_plugins/UniteJsonPlugin");
+const UniteJsonPlugin = require("./build_tools/webpack_plugins/UniteJsonPlugin");
 const jaRule = require("deinja/src/data");
 
 const mode = process.env.NODE_ENV || "development";
