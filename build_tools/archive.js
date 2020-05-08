@@ -1,13 +1,25 @@
 const fs = require("fs");
 const archiver = require("archiver");
+const path = require("path");
 
 const main = () => {
+  if (process.argv.length <= 2) {
+    console.error(`Usage: node archive.js postfix`);
+    process.exit(1);
+  }
+
   const postfix = process.argv[2];
-  const targetPath = `dist-${postfix}/`;
-  const zipPath = __dirname + `/mouse-dictionary-${postfix}.zip`;
+  const sourcePath = `dist-${postfix}`;
+
+  if (!fs.existsSync(sourcePath)) {
+    console.error(`Not found: ${sourcePath}`);
+    process.exit(1);
+  }
+
+  const zipPath = path.join(__dirname, `mouse-dictionary-${postfix}.zip`);
   const stream = fs.createWriteStream(zipPath);
 
-  const archive = startArchiver(targetPath, stream);
+  const archive = startArchiver(sourcePath, stream);
 
   stream.on("close", () => {
     const size = archive.pointer() / 1_024.0 + " KB";
