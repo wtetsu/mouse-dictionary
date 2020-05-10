@@ -2,5 +2,5 @@ node_modules/
 __test__/
 webpack.config.js
 webpack.config.*.js
-webpack_plugins/
-archive.js
+build_tools/
+
