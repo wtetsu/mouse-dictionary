@@ -2,28 +2,19 @@ const fs = require("fs");
 const archiver = require("archiver");
 const path = require("path");
 
-const main = () => {
-  if (process.argv.length <= 2) {
-    console.error(`Usage: node archive.js postfix`);
-    process.exit(1);
-  }
-
-  const postfix = process.argv[2];
-  const sourcePath = `dist-${postfix}`;
-
+const main = (sourcePath, outZipPath) => {
   if (!fs.existsSync(sourcePath)) {
     console.error(`Not found: ${sourcePath}`);
     process.exit(1);
   }
 
-  const zipPath = path.join(__dirname, `mouse-dictionary-${postfix}.zip`);
-  const stream = fs.createWriteStream(zipPath);
+  const stream = fs.createWriteStream(outZipPath);
 
   const archive = startArchiver(sourcePath, stream);
 
   stream.on("close", () => {
     const size = archive.pointer() / 1_024.0 + " KB";
-    console.log(`${zipPath}: ${size}`);
+    console.log(`${outZipPath}: ${size}`);
   });
 
   archive.finalize();
@@ -42,4 +33,16 @@ const startArchiver = (targetPath, stream) => {
   return archive;
 };
 
-main();
+if (require.main === module) {
+  if (process.argv.length <= 2) {
+    console.error(`Usage: node archive.js postfix`);
+    process.exit(1);
+  }
+
+  const postfix = process.argv[2];
+  const sourcePath = `dist-${postfix}`;
+  const outZipName = `mouse-dictionary-${postfix}.zip`;
+  const outZipPath = path.join(__dirname, outZipName);
+
+  main(sourcePath, outZipPath);
+}
