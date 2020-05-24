@@ -1,21 +1,23 @@
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const LodashWebpackPlugin = require("lodash-webpack-plugin");
+const LodashPlugin = require("lodash-webpack-plugin");
 const UniteJsonPlugin = require("./build_tools/webpack_plugins/UniteJsonPlugin");
 const jaRule = require("deinja/src/data");
 
 const mode = process.env.NODE_ENV || "development";
 const isProd = mode === "production";
 
-const copyWebpackPluginConfigs = [
-  { from: "static", to: "." },
-  { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
-  { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-html.js", to: "options/" },
-  { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-json.js", to: "options/" }
-];
+const copyWebpackPluginConfigs = {
+  patterns: [
+    { from: "static", to: "." },
+    { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
+    { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-html.js", to: "options/" },
+    { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-json.js", to: "options/" }
+  ]
+};
 
 if (!isProd) {
-  copyWebpackPluginConfigs.push({ from: "static_overwrite", to: "." });
+  copyWebpackPluginConfigs.patterns.push({ from: "static_overwrite", to: "." });
 }
 
 module.exports = {
@@ -58,7 +60,7 @@ module.exports = {
     extensions: [".js", ".jsx"]
   },
   plugins: [
-    new CopyWebpackPlugin(copyWebpackPluginConfigs),
+    new CopyPlugin(copyWebpackPluginConfigs),
     new UniteJsonPlugin([
       {
         from: [
@@ -74,7 +76,7 @@ module.exports = {
         to: "data/rule.json"
       }
     ]),
-    new LodashWebpackPlugin()
+    new LodashPlugin()
   ],
   devtool: isProd ? false : "cheap-module-inline-source-map",
   performance: {
