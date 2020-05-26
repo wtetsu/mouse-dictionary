@@ -88,22 +88,22 @@ export default class Draggable {
   }
 
   resize(e) {
-    const x = utils.convertToInt(e.pageX);
-    const y = utils.convertToInt(e.pageY);
+    const movedX = utils.convertToInt(e.pageX) - this.starting.x;
+    const movedY = utils.convertToInt(e.pageY) - this.starting.y;
 
     const latest = { left: null, top: null, width: null, height: null };
 
     if (this.edgeState & edge.BOTTOM) {
-      latest.height = Math.max(this.starting.height + y - this.starting.y, MIN_DIALOG_SIZE);
+      latest.height = Math.max(this.starting.height + movedY, MIN_DIALOG_SIZE);
     } else if (this.edgeState & edge.TOP) {
-      latest.height = Math.max(this.starting.height - y + this.starting.y, MIN_DIALOG_SIZE);
-      latest.top = this.starting.top + y - this.starting.y;
+      latest.height = Math.max(this.starting.height - movedY, MIN_DIALOG_SIZE);
+      latest.top = this.starting.top + movedY;
     }
     if (this.edgeState & edge.RIGHT) {
-      latest.width = Math.max(this.starting.width + x - this.starting.x, MIN_DIALOG_SIZE);
+      latest.width = Math.max(this.starting.width + movedX, MIN_DIALOG_SIZE);
     } else if (this.edgeState & edge.LEFT) {
-      latest.width = Math.max(this.starting.width - x + this.starting.x, MIN_DIALOG_SIZE);
-      latest.left = this.starting.left + x - this.starting.x;
+      latest.width = Math.max(this.starting.width - movedX, MIN_DIALOG_SIZE);
+      latest.left = this.starting.left + movedX;
     }
 
     for (const prop of POSITION_FIELDS) {
