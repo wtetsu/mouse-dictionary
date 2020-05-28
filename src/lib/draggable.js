@@ -91,24 +91,27 @@ export default class Draggable {
     const movedX = utils.convertToInt(e.pageX) - this.starting.x;
     const movedY = utils.convertToInt(e.pageY) - this.starting.y;
 
-    const latest = { left: null, top: null, width: null, height: null };
+    const latest = this.calculateNextSquare(movedX, movedY);
+    for (const prop of POSITION_FIELDS) {
+      this.applyNewStyle(latest, prop);
+    }
+  }
 
+  calculateNextSquare(movedX, movedY) {
+    const latest = { left: null, top: null, width: null, height: null };
     if (this.edgeState & edge.BOTTOM) {
       latest.height = Math.max(this.starting.height + movedY, MIN_DIALOG_SIZE);
     } else if (this.edgeState & edge.TOP) {
       latest.height = Math.max(this.starting.height - movedY, MIN_DIALOG_SIZE);
-      latest.top = this.starting.top + movedY;
+      latest.top = this.starting.top + this.starting.height - latest.height;
     }
     if (this.edgeState & edge.RIGHT) {
       latest.width = Math.max(this.starting.width + movedX, MIN_DIALOG_SIZE);
     } else if (this.edgeState & edge.LEFT) {
       latest.width = Math.max(this.starting.width - movedX, MIN_DIALOG_SIZE);
-      latest.left = this.starting.left + movedX;
+      latest.left = this.starting.left + this.starting.width - latest.width;
     }
-
-    for (const prop of POSITION_FIELDS) {
-      this.applyNewStyle(latest, prop);
-    }
+    return latest;
   }
 
   applyNewStyle(latest, prop) {
