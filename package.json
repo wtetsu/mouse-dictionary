@@ -25,10 +25,10 @@
     "package-firefox": "npm run release-firefox && node build_tools/archive.js firefox"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.8.7",
+    "@babel/polyfill": "^7.10.1",
     "deinja": "0.0.3",
     "hogan.js": "^3.0.2",
-    "immer": "^6.0.8",
+    "immer": "^6.0.9",
     "react": "^16.13.1",
     "react-ace": "^9.0.0",
     "react-color": "^2.18.1",
@@ -39,10 +39,10 @@
     "uniqlist": "^1.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/plugin-transform-modules-commonjs": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "@babel/preset-react": "^7.9.4",
+    "@babel/core": "^7.10.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.1",
+    "@babel/preset-env": "^7.10.1",
+    "@babel/preset-react": "^7.10.1",
     "archiver": "^4.0.1",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
