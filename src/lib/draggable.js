@@ -12,8 +12,8 @@ const MODE_NONE = 0;
 const MODE_MOVING = 1;
 const MODE_RESIZING = 2;
 const JUMP_SPACE = 5;
-const MIN_DIALOG_SIZE = 50;
-const POSITION_FIELDS = ["left", "top", "width", "height"];
+const MIN_ELEMENT_SIZE = 50;
+const SQUARE_FIELDS = ["left", "top", "width", "height"];
 
 export default class Draggable {
   constructor(normalStyles, movingStyles) {
@@ -32,7 +32,8 @@ export default class Draggable {
   }
 
   initialize() {
-    this.starting = { x: null, y: null, width: null, height: null, left: null, right: null };
+    this.starting = { x: null, y: null };
+    this.changingSquare = null;
     this.mode = MODE_NONE;
   }
 
@@ -59,7 +60,6 @@ export default class Draggable {
       this.mainElementStyle.set("cursor", this.edge.getCursorStyle(this.edgeState));
       return;
     }
-
     if (edgeState & edge.INSIDE) {
       this.edgeState = 0;
       this.mainElementStyle.set("cursor", "text");
@@ -70,10 +70,9 @@ export default class Draggable {
   }
 
   move(e) {
-    const latest = {
-      left: this.starting.left + utils.convertToInt(e.pageX) - this.starting.x,
-      top: this.starting.top + utils.convertToInt(e.pageY) - this.starting.y
-    };
+    const movedX = utils.convertToInt(e.pageX) - this.starting.x;
+    const movedY = utils.convertToInt(e.pageY) - this.starting.y;
+    const latest = this.changingSquare.move(movedX, movedY);
     if (utils.areSame(this.current, latest)) {
       return;
     }
@@ -90,28 +89,10 @@ export default class Draggable {
   resize(e) {
     const movedX = utils.convertToInt(e.pageX) - this.starting.x;
     const movedY = utils.convertToInt(e.pageY) - this.starting.y;
-
-    const latest = this.calculateNextSquare(movedX, movedY);
-    for (const prop of POSITION_FIELDS) {
+    const latest = this.changingSquare.resize(movedX, movedY);
+    for (const prop of SQUARE_FIELDS) {
       this.applyNewStyle(latest, prop);
     }
-  }
-
-  calculateNextSquare(movedX, movedY) {
-    const latest = { left: null, top: null, width: null, height: null };
-    if (this.edgeState & edge.BOTTOM) {
-      latest.height = Math.max(this.starting.height + movedY, MIN_DIALOG_SIZE);
-    } else if (this.edgeState & edge.TOP) {
-      latest.height = Math.max(this.starting.height - movedY, MIN_DIALOG_SIZE);
-      latest.top = this.starting.top + this.starting.height - latest.height;
-    }
-    if (this.edgeState & edge.RIGHT) {
-      latest.width = Math.max(this.starting.width + movedX, MIN_DIALOG_SIZE);
-    } else if (this.edgeState & edge.LEFT) {
-      latest.width = Math.max(this.starting.width - movedX, MIN_DIALOG_SIZE);
-      latest.left = this.starting.left + this.starting.width - latest.width;
-    }
-    return latest;
   }
 
   applyNewStyle(latest, prop) {
@@ -124,13 +105,10 @@ export default class Draggable {
   }
 
   callOnChange() {
-    if (!this.onchange) {
-      return;
-    }
     if (utils.areSame(this.current, this.last)) {
       return;
     }
-    this.onchange({ ...this.current });
+    this.onchange?.({ ...this.current });
     Object.assign(this.last, this.current);
   }
 
@@ -189,12 +167,11 @@ export default class Draggable {
       return;
     }
     this.mode = this.edgeState & edge.EDGE ? MODE_RESIZING : MODE_MOVING;
-    const newStarting = {
-      x: utils.convertToInt(e.pageX),
-      y: utils.convertToInt(e.pageY),
-      ...utils.omap(this.mainElement.style, utils.convertToInt, POSITION_FIELDS)
-    };
-    Object.assign(this.starting, newStarting);
+    this.starting.x = utils.convertToInt(e.pageX);
+    this.starting.y = utils.convertToInt(e.pageY);
+
+    const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
+    this.changingSquare = edge.createSquare(square, this.edgeState, MIN_ELEMENT_SIZE);
     e.preventDefault();
   }
 }

@@ -12,6 +12,8 @@ const BOTTOM = 4;
 const LEFT = 8;
 const EDGE = TOP | RIGHT | BOTTOM | LEFT;
 const INSIDE = 16;
+const DOWNWARDS = { near: TOP, far: BOTTOM };
+const RIGHTWARDS = { near: LEFT, far: RIGHT };
 
 // Create a "packed" array
 // https://v8.dev/blog/elements-kinds
@@ -74,8 +76,55 @@ const inRange = (low, value, high) => {
   return low <= value && value <= high;
 };
 
+class Square {
+  constructor(onsetSquare, edgeState, minimumLength) {
+    this.square = onsetSquare;
+    this.edgeState = edgeState;
+    this.minimumLength = minimumLength;
+  }
+
+  move(movedX, movedY) {
+    return {
+      left: this.square.left + movedX,
+      top: this.square.top + movedY
+    };
+  }
+
+  resize(movedX, movedY) {
+    const resizedSquare = { left: null, top: null, width: null, height: null };
+
+    const downwardsPosition = this.calculate1dPosition(DOWNWARDS, this.square.top, this.square.height, movedY);
+    resizedSquare.top = downwardsPosition.position;
+    resizedSquare.height = downwardsPosition.length;
+
+    const rightwardsPosition = this.calculate1dPosition(RIGHTWARDS, this.square.left, this.square.width, movedX);
+    resizedSquare.left = rightwardsPosition.position;
+    resizedSquare.width = rightwardsPosition.length;
+
+    return resizedSquare;
+  }
+
+  calculate1dPosition(edges, startPosition, startLength, movedLength) {
+    if (this.edgeState & edges.near) {
+      const length = Math.max(startLength - movedLength, this.minimumLength);
+      const position = startPosition + startLength - length;
+      return { position, length };
+    }
+    if (this.edgeState & edges.far) {
+      const length = Math.max(startLength + movedLength, this.minimumLength);
+      return { position: null, length };
+    }
+    return {};
+  }
+}
+
+const createSquare = (square, edgeState, minimumLength) => {
+  return new Square(square, edgeState, minimumLength);
+};
+
 export default {
   build,
+  createSquare,
   TOP,
   RIGHT,
   BOTTOM,
