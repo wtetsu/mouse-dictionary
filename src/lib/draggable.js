@@ -139,7 +139,7 @@ export default class Draggable {
       return;
     }
     const edgeState = this.edge.getEdgeState(this.current, e.x, e.y);
-    if (edgeState & edge.INSIDE) {
+    if (edgeState === edge.INSIDE) {
       this.selectable = true;
       this.mainElementStyle.set("cursor", "text");
       return;
@@ -149,14 +149,14 @@ export default class Draggable {
   }
 
   jump(edgeState) {
-    if (edgeState & edgeState.LEFT) {
+    if (edgeState & edge.LEFT) {
       this.current.left = JUMP_SPACE;
-    } else if (edgeState & edgeState.RIGHT) {
+    } else if (edgeState & edge.RIGHT) {
       this.current.left = document.documentElement.clientWidth - this.mainElement.clientWidth - JUMP_SPACE;
     }
-    if (edgeState & edgeState.TOP) {
+    if (edgeState & edge.TOP) {
       this.current.top = JUMP_SPACE;
-    } else if (edgeState & edgeState.BOTTOM) {
+    } else if (edgeState & edge.BOTTOM) {
       this.current.top = window.innerHeight - this.mainElement.clientHeight - JUMP_SPACE;
     }
     this.moveElement(this.current.left, this.current.top);
