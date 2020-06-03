@@ -31,16 +31,6 @@ body {
   border-color: transparent;
 }
 
-/* Fix issues of Milligram: https://github.com/milligram/milligram/issues/161 */
-select {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 0 29 14" width="29"><path fill="%23d1d1d1" d="M9.37727 3.625l5.08154 6.93523L19.54036 3.625"/></svg>')
-    center right no-repeat;
-  padding-right: 3rem;
-}
-select:focus {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 0 29 14" width="29"><path fill="%239b4dca" d="M9.37727 3.625l5.08154 6.93523L19.54036 3.625"/></svg>');
-}
-
 hr {
   margin: 0 0 0 0;
 }
