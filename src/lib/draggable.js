@@ -70,8 +70,7 @@ export default class Draggable {
   }
 
   move(e) {
-    const movedX = utils.convertToInt(e.pageX) - this.starting.x;
-    const movedY = utils.convertToInt(e.pageY) - this.starting.y;
+    const [movedX, movedY] = this.moved(e);
     const latest = this.changingSquare.move(movedX, movedY);
     if (utils.areSame(this.current, latest)) {
       return;
@@ -87,12 +86,15 @@ export default class Draggable {
   }
 
   resize(e) {
-    const movedX = utils.convertToInt(e.pageX) - this.starting.x;
-    const movedY = utils.convertToInt(e.pageY) - this.starting.y;
+    const [movedX, movedY] = this.moved(e);
     const latest = this.changingSquare.resize(movedX, movedY);
     for (const prop of SQUARE_FIELDS) {
       this.applyNewStyle(latest, prop);
     }
+  }
+
+  moved(e) {
+    return [utils.convertToInt(e.pageX) - this.starting.x, utils.convertToInt(e.pageY) - this.starting.y];
   }
 
   applyNewStyle(latest, prop) {
