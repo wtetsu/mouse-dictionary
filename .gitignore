@@ -69,4 +69,5 @@ dist-*/
 *.sh
 coverage/
 static_overwrite/
-static/viewer
+static_thirdparty/
+
