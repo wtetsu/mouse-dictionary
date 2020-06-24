@@ -45,7 +45,7 @@ export default class Main extends React.Component {
       advancedSettingsOpened: false,
       jsonEditorOpened: false,
       lang: initialLang,
-      initialized: false
+      initialized: false,
     };
 
     this.doChangeState = this.doChangeState.bind(this);
@@ -139,8 +139,8 @@ export default class Main extends React.Component {
                 innerRef={this.contentEditable}
                 html={this.state.trialText}
                 disabled={false}
-                onChange={e => this.doChangeState("trialText", e.target.value)}
-                onKeyDown={e => {
+                onChange={(e) => this.doChangeState("trialText", e.target.value)}
+                onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
                   }
@@ -205,12 +205,12 @@ export default class Main extends React.Component {
                     zIndex: 10000,
                     backgroundColor: "#ffffff",
                     position: "fixed",
-                    opacity: 0.99
+                    opacity: 0.99,
                   }}
                 >
                   <JsonEditor
                     initialValue={this.state.settings}
-                    setState={newState => {
+                    setState={(newState) => {
                       this.removeTrialWindow();
                       this.setState(newState);
                     }}
@@ -257,7 +257,7 @@ export default class Main extends React.Component {
     const byteSize = await storage.local.getBytesInUse();
     const kb = isFinite(byteSize) ? Math.floor(byteSize / 1024).toLocaleString() : "";
     this.setState({
-      dictDataUsage: kb
+      dictDataUsage: kb,
     });
   }
 
@@ -266,7 +266,7 @@ export default class Main extends React.Component {
       text: res.get(messageId),
       icon: "info",
       buttons: true,
-      closeOnClickOutside: false
+      closeOnClickOutside: false,
     });
     if (!willLoad) {
       return;
@@ -292,7 +292,7 @@ export default class Main extends React.Component {
 
     await swal({
       text: res.get("finishRegister", finalWordCount),
-      icon: "success"
+      icon: "success",
     });
   }
 
@@ -307,7 +307,7 @@ export default class Main extends React.Component {
     if (dialogFields.has(name)) {
       this.needRecreateTrialWindow = true;
     }
-    const newSettings = immer(this.state.settings, d => {
+    const newSettings = immer(this.state.settings, (d) => {
       d[name] = newValue;
     });
     this.setState({ settings: newSettings });
@@ -319,7 +319,7 @@ export default class Main extends React.Component {
     if (!file) {
       swal({
         title: res.get("selectDictFile"),
-        icon: "info"
+        icon: "info",
       });
       return;
     }
@@ -329,7 +329,7 @@ export default class Main extends React.Component {
         willContinue = await swal({
           title: res.get("fileMayNotBeShiftJis"),
           icon: "warning",
-          buttons: true
+          buttons: true,
         });
       }
     }
@@ -341,7 +341,7 @@ export default class Main extends React.Component {
   async loadDictionaryFile(file) {
     const encoding = this.state.encoding;
     const format = this.state.format;
-    const event = ev => {
+    const event = (ev) => {
       switch (ev.name) {
         case "reading": {
           const loaded = ev.loaded.toLocaleString();
@@ -360,14 +360,14 @@ export default class Main extends React.Component {
       const { wordCount } = await dict.load({ file, encoding, format, event });
       swal({
         text: res.get("finishRegister", wordCount),
-        icon: "success"
+        icon: "success",
       });
       config.setDataReady(true);
       this.updateDictDataUsage();
     } catch (e) {
       swal({
         text: e.toString(),
-        icon: "error"
+        icon: "error",
       });
     } finally {
       this.setState({ busy: false, progress: "" });
@@ -419,7 +419,7 @@ export default class Main extends React.Component {
   }
 
   addReplaceRule() {
-    const newSettings = immer(this.state.settings, d => {
+    const newSettings = immer(this.state.settings, (d) => {
       const newKey = new Date().getTime().toString();
       d.replaceRules.push({ key: newKey, search: "", replace: "" });
     });
@@ -436,7 +436,7 @@ export default class Main extends React.Component {
     if (index < 0 || index >= this.state.settings.replaceRules.length) {
       return;
     }
-    const newSettings = immer(this.state.settings, d => {
+    const newSettings = immer(this.state.settings, (d) => {
       d.replaceRules[index][type] = value;
     });
     this.setState({ settings: newSettings });
@@ -447,7 +447,7 @@ export default class Main extends React.Component {
     if (Math.min(index, index2) < 0 || Math.max(index, index2) >= this.state.settings.replaceRules.length) {
       return;
     }
-    const newSettings = immer(this.state.settings, d => {
+    const newSettings = immer(this.state.settings, (d) => {
       const rules = d.replaceRules;
       [rules[index], rules[index2]] = [rules[index2], rules[index]];
     });
@@ -455,7 +455,7 @@ export default class Main extends React.Component {
   }
 
   deleteReplaceRule(index) {
-    const newSettings = immer(this.state.settings, d => {
+    const newSettings = immer(this.state.settings, (d) => {
       d.replaceRules.splice(index, 1);
     });
     this.setState({ settings: newSettings });
@@ -493,7 +493,7 @@ export default class Main extends React.Component {
       dom.applyStyles(this.trialWindow.dialog, {
         width: `${settings.width}px`,
         height: `${settings.height}px`,
-        zIndex: 9999
+        zIndex: 9999,
       });
     }
     if (orgTrialWindow?.dialog) {
@@ -502,7 +502,7 @@ export default class Main extends React.Component {
   }
 
   createTrialWindow(settings) {
-    const tmpSettings = immer(settings, d => {
+    const tmpSettings = immer(settings, (d) => {
       d.normalDialogStyles = null;
       d.hiddenDialogStyles = null;
       d.movingDialogStyles = null;
@@ -510,13 +510,13 @@ export default class Main extends React.Component {
     const trialWindow = view.create(tmpSettings);
     dom.applyStyles(trialWindow.dialog, {
       cursor: "zoom-out",
-      top: "30px"
+      top: "30px",
     });
 
     trialWindow.dialog.addEventListener("click", () => {
       dom.applyStyles(trialWindow.dialog, {
         width: "100px",
-        height: "100px"
+        height: "100px",
       });
     });
     return trialWindow;
@@ -557,12 +557,12 @@ export default class Main extends React.Component {
       await config.saveSettings(settings);
       swal({
         text: res.get("finishSaving"),
-        icon: "info"
+        icon: "info",
       });
     } catch (e) {
       swal({
         text: e.message,
-        icon: "error"
+        icon: "error",
       });
     }
   }
@@ -577,13 +577,13 @@ export default class Main extends React.Component {
     this.removeTrialWindow();
     this.setState({
       basicSettingsOpened: !this.state.basicSettingsOpened,
-      advancedSettingsOpened: false
+      advancedSettingsOpened: false,
     });
   }
 
   doToggleAdvancedSettings() {
     this.setState({
-      advancedSettingsOpened: !this.state.advancedSettingsOpened
+      advancedSettingsOpened: !this.state.advancedSettingsOpened,
     });
   }
 
@@ -591,7 +591,7 @@ export default class Main extends React.Component {
     const newLang = this.state.lang === "ja" ? "en" : "ja";
     res.setLang(newLang);
     this.setState({
-      lang: newLang
+      lang: newLang,
     });
   }
 }
@@ -604,7 +604,7 @@ const getDefaultSettings = () => {
 
 const dialogFields = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
 
-const decideInitialLanguage = languages => {
+const decideInitialLanguage = (languages) => {
   if (!languages) {
     return "en";
   }
@@ -620,10 +620,10 @@ const decideInitialLanguage = languages => {
   return result;
 };
 
-const fileMayBeShiftJis = async file => {
+const fileMayBeShiftJis = async (file) => {
   return new Promise((done, fail) => {
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       try {
         const buffer = e.target.result;
         const length = Math.min(512, buffer.byteLength);

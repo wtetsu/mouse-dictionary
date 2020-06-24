@@ -86,5 +86,5 @@ export default {
   JsonImportError: "Invalid JSON",
   clipboardJson: "Copy to clipboard",
   aboutJsonEditor:
-    "This is JSON data which expresses the whole Mouse Dictionary's settings. Please use it for backup, sharing and so forth."
+    "This is JSON data which expresses the whole Mouse Dictionary's settings. Please use it for backup, sharing and so forth.",
 };

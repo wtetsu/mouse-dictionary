@@ -9,7 +9,7 @@ import { ChromePicker } from "react-color";
 import res from "../logic/resource";
 import env from "../../settings/env";
 
-const BasicSettings = props => {
+const BasicSettings = (props) => {
   const settings = props.settings;
   if (!settings) {
     return "<div></div>";
@@ -19,7 +19,7 @@ const BasicSettings = props => {
   const scrollOptions = createScrollOptions();
   const fontSizeOptions = createFontSizeOptions();
 
-  const changeSettings = e => {
+  const changeSettings = (e) => {
     const value = e.target.type === "number" ? parseInt(e.target.value, 10) : e.target.value;
     props.changeSettings(e.target.name, value);
   };
@@ -125,17 +125,17 @@ const createPositionOptions = () => {
   const positions = [
     {
       name: res.get("positionLeft"),
-      value: "left"
+      value: "left",
     },
     {
       name: res.get("positionRight"),
-      value: "right"
-    }
+      value: "right",
+    },
   ];
   if (!env.disableKeepingWindowStatus) {
     positions.push({
       name: res.get("positionKeep"),
-      value: "keep"
+      value: "keep",
     });
   }
   return createOptions(positions);
@@ -145,12 +145,12 @@ const createScrollOptions = () => {
   const scrolls = [
     {
       name: res.get("scrollOn"),
-      value: "scroll"
+      value: "scroll",
     },
     {
       name: res.get("scrollOff"),
-      value: "hidden"
-    }
+      value: "hidden",
+    },
   ];
   return createOptions(scrolls);
 };
@@ -158,45 +158,45 @@ const createScrollOptions = () => {
 const FONT_SIZES = [
   {
     name: "xx-small",
-    value: "xx-small"
+    value: "xx-small",
   },
   {
     name: "x-small",
-    value: "x-small"
+    value: "x-small",
   },
   {
     name: "smaller",
-    value: "smaller"
+    value: "smaller",
   },
   {
     name: "small",
-    value: "small"
+    value: "small",
   },
   {
     name: "medium",
-    value: "medium"
+    value: "medium",
   },
   {
     name: "large",
-    value: "large"
+    value: "large",
   },
   {
     name: "larger",
-    value: "larger"
+    value: "larger",
   },
   {
     name: "x-large",
-    value: "x-large"
+    value: "x-large",
   },
   {
     name: "xx-large",
-    value: "xx-large"
-  }
+    value: "xx-large",
+  },
 ];
 const createFontSizeOptions = () => createOptions(FONT_SIZES);
 
-const createOptions = list => {
-  return list.map(it => (
+const createOptions = (list) => {
+  return list.map((it) => (
     <option key={it.value} value={it.value}>
       {it.name}
     </option>

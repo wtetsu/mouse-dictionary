@@ -1,14 +1,13 @@
 {
   "parser": "babel-eslint",
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:prettier/recommended"],
   "env": {
-    "browser": true
+    "browser": true,
+    "es6": true
   },
   "parserOptions": {
     "sourceType": "module",
-    "allowImportExportEverywhere": false,
-    "codeFrame": false,
-    "ecmaVersion": 2017,
+    "ecmaVersion": 2020,
     "ecmaFeatures": {
       "jsx": true,
       "modules": true
@@ -16,17 +15,11 @@
   },
   "globals": {
     "chrome": true,
-    "Promise": true,
     "BROWSER": true,
     "DIALOG_ID": true,
-    "process": true,
-    "Set": true,
-    "Uint8Array": true,
-    "Map": true
+    "process": true
   },
   "rules": {
-    "no-console": 0,
-    "max-len": [2, { "code": 150, "tabWidth": 2, "ignoreUrls": true }],
     "react/prop-types": 0,
     "linebreak-style": ["error", "unix"],
     "semi": ["error", "always"],
@@ -34,7 +27,7 @@
   },
   "settings": {
     "react": {
-      "version": "16.5"
+      "version": "detect"
     }
   }
 }

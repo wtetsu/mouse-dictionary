@@ -6,7 +6,7 @@
 
 import dom from "./dom";
 
-const create = tag => {
+const create = (tag) => {
   return new Decoy(tag);
 };
 
@@ -15,14 +15,14 @@ const INPUT_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT", "OPTION"]);
 const DEFAULT_STYLES = {
   position: "absolute",
   zIndex: 2147483647,
-  opacity: 0
+  opacity: 0,
 };
 
 const STYLES = {
   INPUT: { overflow: "hidden", whiteSpace: "nowrap" },
   TEXTAREA: { overflow: "hidden" },
   SELECT: { overflow: "hidden", whiteSpace: "nowrap" },
-  OPTION: { overflow: "hidden", whiteSpace: "nowrap" }
+  OPTION: { overflow: "hidden", whiteSpace: "nowrap" },
 };
 
 class Decoy {
@@ -65,7 +65,7 @@ class Decoy {
   }
 }
 
-const createElement = tag => {
+const createElement = (tag) => {
   if (!tag) {
     return null;
   }
@@ -87,7 +87,7 @@ const prepare = (decoy, underlay) => {
   return decoy;
 };
 
-const getElementText = element => {
+const getElementText = (element) => {
   if (element.tagName === "SELECT") {
     return getSelectText(element);
   }
@@ -106,19 +106,19 @@ const createDecoyStyle = (decoy, underlay) => {
 
   const dynamicStyles = {
     top: `${top}px`,
-    left: `${left}px`
+    left: `${left}px`,
   };
 
   return { ...dynamicStyles, ...DEFAULT_STYLES, ...STYLES[underlay.tagName] };
 };
 
-const getOffset = element => {
+const getOffset = (element) => {
   const rect = element.getBoundingClientRect();
   const doc = document.documentElement;
 
   return {
     top: rect.top + window.pageYOffset - doc.clientTop,
-    left: rect.left + window.pageXOffset - doc.clientLeft
+    left: rect.left + window.pageXOffset - doc.clientLeft,
   };
 };
 

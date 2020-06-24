@@ -18,14 +18,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
   const lookuper = new Lookuper(settings, doUpdateContent);
 
   const draggable = new Draggable(settings.normalDialogStyles, settings.movingDialogStyles);
-  draggable.onchange = e => config.savePosition(e);
+  draggable.onchange = (e) => config.savePosition(e);
   draggable.add(dialog);
 
   document.body.addEventListener("mousedown", () => {
     lookuper.suspended = true;
   });
 
-  document.body.addEventListener("mouseup", e => {
+  document.body.addEventListener("mouseup", (e) => {
     draggable.onMouseUp();
     lookuper.suspended = false;
     lookuper.aimedLookup(utils.getSelection());
@@ -35,22 +35,22 @@ const attach = async (settings, dialog, doUpdateContent) => {
     lookuper.halfLocked = didMouseUpOnTheWindow;
   });
 
-  const onMouseMoveFirst = async e => {
+  const onMouseMoveFirst = async (e) => {
     // Wait until rule loading finish
     await rule.load();
     onMouseMove = onMouseMoveSecondOrLater;
     onMouseMove(e);
   };
 
-  const onMouseMoveSecondOrLater = e => {
+  const onMouseMoveSecondOrLater = (e) => {
     draggable.onMouseMove(e);
     const textUnderCursor = traverse(e.target, e.clientX, e.clientY);
     lookuper.lookup(textUnderCursor);
   };
   let onMouseMove = onMouseMoveFirst;
-  document.body.addEventListener("mousemove", e => onMouseMove(e));
+  document.body.addEventListener("mousemove", (e) => onMouseMove(e));
 
-  chrome.runtime.onMessage.addListener(request => {
+  chrome.runtime.onMessage.addListener((request) => {
     const m = request.message;
     switch (m.type) {
       case "text":

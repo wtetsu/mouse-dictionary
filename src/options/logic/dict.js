@@ -36,16 +36,16 @@ const load = async ({ file, encoding, format, event }) => {
   return new Promise((resolve, reject) => {
     let wordCount = 0;
     const reader = new FileReader();
-    reader.onprogress = e => {
+    reader.onprogress = (e) => {
       ev({ name: "reading", loaded: e.loaded, total: e.total });
     };
-    reader.onload = e => {
+    reader.onload = (e) => {
       const data = e.target.result;
 
       let dictData = {};
       const reader = new LineReader(data);
       reader.eachLine(
-        line => {
+        (line) => {
           const hd = parser.addLine(line);
           if (hd) {
             dictData[hd.head] = hd.desc;
@@ -76,7 +76,7 @@ const load = async ({ file, encoding, format, event }) => {
             () => {
               resolve({ wordCount });
             },
-            error => {
+            (error) => {
               throw new Error(`Error: ${error}`);
             }
           );
@@ -89,7 +89,7 @@ const load = async ({ file, encoding, format, event }) => {
   });
 };
 
-const registerDefaultDict = async fnProgress => {
+const registerDefaultDict = async (fnProgress) => {
   const dict = await loadJsonFile("/data/dict.json");
   fnProgress(0, 0);
   let wordCount = 0;
@@ -101,20 +101,20 @@ const registerDefaultDict = async fnProgress => {
   return wordCount;
 };
 
-const loadJsonFile = async fname => {
+const loadJsonFile = async (fname) => {
   const url = chrome.extension.getURL(fname);
   const response = await fetch(url);
   return response.json();
 };
 
-const registerDict = async fname => {
+const registerDict = async (fname) => {
   const dictData = await loadJsonFile(fname);
   const wordCount = Object.keys(dictData).length;
   await save(dictData);
   return wordCount;
 };
 
-const save = dictData => {
+const save = (dictData) => {
   return storage.local.set(dictData);
 };
 

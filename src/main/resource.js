@@ -9,11 +9,11 @@
 
 const resources = {
   ja: {
-    doesntSupportFrame: "Mouse Dictionaryは、フレームのあるページで使用することはできません。"
+    doesntSupportFrame: "Mouse Dictionaryは、フレームのあるページで使用することはできません。",
   },
   en: {
-    doesntSupportFrame: "Mouse Dictionary doesn't support frame pages."
-  }
+    doesntSupportFrame: "Mouse Dictionary doesn't support frame pages.",
+  },
 };
 
 if (BROWSER === "FIREFOX") {
@@ -44,7 +44,7 @@ const decideLanguage = () => {
   return result;
 };
 
-export default key => {
+export default (key) => {
   const lang = decideLanguage();
   const res = resources[lang];
   return res[key] ?? null;

@@ -15,7 +15,7 @@ const EDITOR_STYLE = {
   width: 800,
   border: "1px solid #d1d1d1",
   borderRadius: "3px",
-  fontSize: 13
+  fontSize: 13,
 };
 
 const canReplace = (a, b) => {
@@ -25,16 +25,16 @@ const canReplace = (a, b) => {
   return typeof a === typeof b;
 };
 
-const JsonEditor = props => {
+const JsonEditor = (props) => {
   const [json, setJson] = React.useState(() => {
     const initialValue = data.postProcessSettings(props.initialValue);
     return JSON.stringify(initialValue, null, 2);
   });
 
-  const createSettings = json => {
+  const createSettings = (json) => {
     const newSettings = data.preProcessSettings(JSON.parse(json));
     const orgSettings = data.postProcessSettings(props.initialValue);
-    return immer(orgSettings, d => {
+    return immer(orgSettings, (d) => {
       for (const key of Object.keys(d)) {
         if (!canReplace(d[key], newSettings[key])) {
           throw new Error();
@@ -74,7 +74,7 @@ const JsonEditor = props => {
       <AceEditor
         mode="json"
         theme="solarized_light"
-        onChange={value => setJson(value)}
+        onChange={(value) => setJson(value)}
         name="dialogTemplate"
         editorProps={{ $blockScrolling: true }}
         value={json}

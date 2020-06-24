@@ -13,10 +13,10 @@ const EDITOR_STYLE = {
   border: "1px solid #d1d1d1",
   borderRadius: "3px",
   fontSize: 13,
-  marginBottom: 20
+  marginBottom: 20,
 };
 
-const AdvancedSettings = props => {
+const AdvancedSettings = (props) => {
   const settings = props.settings;
   if (!settings) {
     return "<div></div>";
@@ -31,11 +31,11 @@ const AdvancedSettings = props => {
   const movingDialogStyles = settings?.movingDialogStyles ?? "";
   const hiddenDialogStyles = settings?.hiddenDialogStyles ?? "";
 
-  const changeSettings = e => {
+  const changeSettings = (e) => {
     const value = e.target.type === "number" ? parseInt(e.target.value, 10) : e.target.value;
     props.changeSettings(e.target.name, value);
   };
-  const changeBoolSettings = e => {
+  const changeBoolSettings = (e) => {
     props.changeSettings(e.target.name, e.target.checked);
   };
 
@@ -65,7 +65,7 @@ const AdvancedSettings = props => {
           key={`replaceRule.search.${i}`}
           value={r.search}
           style={{ width: 230 }}
-          onChange={e => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
+          onChange={(e) => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
         />
         <span>{res.get("replaceRule1")}</span>
         <input
@@ -74,7 +74,7 @@ const AdvancedSettings = props => {
           key={`replaceRule.replace.${i}`}
           value={r.replace}
           style={{ width: 370 }}
-          onChange={e => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
+          onChange={(e) => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
         />
         <span>{res.get("replaceRule2")}</span>
 
@@ -96,7 +96,12 @@ const AdvancedSettings = props => {
         <h2>{res.get("advancedSettings")}</h2>
         <label>
           {res.get("lookupWithCapitalized")}
-          <input type="checkbox" name="lookupWithCapitalized" value={lookupWithCapitalized} onChange={changeBoolSettings} />
+          <input
+            type="checkbox"
+            name="lookupWithCapitalized"
+            value={lookupWithCapitalized}
+            onChange={changeBoolSettings}
+          />
         </label>
         <label>
           {res.get("parseWordsLimit")}
@@ -125,7 +130,7 @@ const AdvancedSettings = props => {
         <AceEditor
           mode="html"
           theme="xcode"
-          onChange={value => props.changeSettings("dialogTemplate", value)}
+          onChange={(value) => props.changeSettings("dialogTemplate", value)}
           name="dialogTemplate"
           editorProps={{ $blockScrolling: true }}
           value={dialogTemplate}
@@ -138,7 +143,7 @@ const AdvancedSettings = props => {
         <AceEditor
           mode="html"
           theme="xcode"
-          onChange={value => props.changeSettings("contentWrapperTemplate", value)}
+          onChange={(value) => props.changeSettings("contentWrapperTemplate", value)}
           name="contentWrapperTemplate"
           editorProps={{ $blockScrolling: true }}
           value={contentWrapperTemplate}
@@ -151,7 +156,7 @@ const AdvancedSettings = props => {
         <AceEditor
           mode="html"
           theme="xcode"
-          onChange={value => props.changeSettings("contentTemplate", value)}
+          onChange={(value) => props.changeSettings("contentTemplate", value)}
           name="contentTemplate"
           editorProps={{ $blockScrolling: true }}
           value={contentTemplate}
@@ -165,7 +170,7 @@ const AdvancedSettings = props => {
         <AceEditor
           mode="json"
           theme="tomorrow"
-          onChange={e => props.changeSettings("normalDialogStyles", e)}
+          onChange={(e) => props.changeSettings("normalDialogStyles", e)}
           name="normalDialogStyles"
           editorProps={{ $blockScrolling: true }}
           value={normalDialogStyles}
@@ -178,7 +183,7 @@ const AdvancedSettings = props => {
         <AceEditor
           mode="json"
           theme="tomorrow"
-          onChange={e => props.changeSettings("movingDialogStyles", e)}
+          onChange={(e) => props.changeSettings("movingDialogStyles", e)}
           name="movingDialogStyles"
           editorProps={{ $blockScrolling: true }}
           value={movingDialogStyles}
@@ -191,7 +196,7 @@ const AdvancedSettings = props => {
         <AceEditor
           mode="json"
           theme="tomorrow"
-          onChange={e => props.changeSettings("hiddenDialogStyles", e)}
+          onChange={(e) => props.changeSettings("hiddenDialogStyles", e)}
           name="hiddenDialogStyles"
           editorProps={{ $blockScrolling: true }}
           value={hiddenDialogStyles}

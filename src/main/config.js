@@ -41,7 +41,7 @@ const loadRawSettings = async () => {
   return { ...defaultSettings, ...userSettings };
 };
 
-const parseSettings = settings => {
+const parseSettings = (settings) => {
   const result = {};
   const keys = Object.keys(settings);
   for (let i = 0; i < keys.length; i++) {
@@ -58,7 +58,7 @@ const parseSettings = settings => {
   return result;
 };
 
-const parseJson = json => {
+const parseJson = (json) => {
   if (!json) {
     return null;
   }
@@ -73,18 +73,18 @@ const parseJson = json => {
   return result;
 };
 
-const saveSettings = settings => storage.sync.set({ [KEY_USER_CONFIG]: JSON.stringify(settings) });
+const saveSettings = (settings) => storage.sync.set({ [KEY_USER_CONFIG]: JSON.stringify(settings) });
 
-const savePosition = async e => {
+const savePosition = async (e) => {
   if (env.disableUserSettings || env.disableKeepingWindowStatus) {
     return;
   }
   return storage.sync.set({
-    [KEY_LAST_POSITION]: JSON.stringify(e)
+    [KEY_LAST_POSITION]: JSON.stringify(e),
   });
 };
 
-const getStoredData = async keys => {
+const getStoredData = async (keys) => {
   const result = {};
   const storedData = await storage.sync.get(keys);
 
@@ -99,7 +99,7 @@ const getStoredData = async keys => {
 
 const isDataReady = () => storage.local.pickOut(KEY_LOADED);
 
-const setDataReady = ready => storage.local.set({ [KEY_LOADED]: ready });
+const setDataReady = (ready) => storage.local.set({ [KEY_LOADED]: ready });
 
 export default {
   loadAll,
@@ -108,5 +108,5 @@ export default {
   saveSettings,
   savePosition,
   isDataReady,
-  setDataReady
+  setDataReady,
 };

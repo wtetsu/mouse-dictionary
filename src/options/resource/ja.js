@@ -82,5 +82,6 @@ export default {
   importJson: "JSONを設定に反映",
   JsonImportError: "正しいJSONデータになっていません",
   clipboardJson: "クリップボードにコピー",
-  aboutJsonEditor: "Mouse Dictionary設定全体のJSONデータです。バックアップや共有にご利用ください ※辞書データは含みません"
+  aboutJsonEditor:
+    "Mouse Dictionary設定全体のJSONデータです。バックアップや共有にご利用ください ※辞書データは含みません",
 };

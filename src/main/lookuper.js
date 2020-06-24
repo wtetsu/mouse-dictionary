@@ -103,7 +103,7 @@ export default class Lookuper {
 
 const fetchDescriptions = async (entries, reForReferences) => {
   const baseDescriptions = await storage.local.get(entries);
-  const baseHeads = entries.filter(e => baseDescriptions[e]);
+  const baseHeads = entries.filter((e) => baseDescriptions[e]);
 
   console.time("lookup2");
   const refHeads = pickOutRefs(baseDescriptions, reForReferences);

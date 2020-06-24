@@ -10,7 +10,7 @@ import en from "../resource/en";
 
 let _lang = null;
 
-const setLang = newLang => {
+const setLang = (newLang) => {
   _lang = newLang;
 };
 

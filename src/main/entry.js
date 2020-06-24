@@ -10,10 +10,10 @@ import entryGeneratorEn from "./entry/en";
 const generators = {
   en: entryGeneratorEn,
   ja: entryGeneratorJa,
-  default: entryGeneratorEn
+  default: entryGeneratorEn,
 };
 
-let languageDetector = text => (isEnglishText(text) ? "en" : "ja");
+let languageDetector = (text) => (isEnglishText(text) ? "en" : "ja");
 
 const build = (text, withCapitalized, mustIncludeOriginalText) => {
   const lang = languageDetector(text);
@@ -22,7 +22,7 @@ const build = (text, withCapitalized, mustIncludeOriginalText) => {
   return { entries, lang };
 };
 
-const isEnglishText = str => {
+const isEnglishText = (str) => {
   let result = true;
   for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);
@@ -39,7 +39,7 @@ const registerGenerator = (lang, generator) => {
   generators[lang] = generator;
 };
 
-const registerLanguageDetector = detector => {
+const registerLanguageDetector = (detector) => {
   languageDetector = detector;
 };
 

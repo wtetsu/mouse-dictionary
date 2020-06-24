@@ -27,7 +27,7 @@ const build = (doConfirmValidCharacter, maxWords) => {
 class Traverser {
   constructor(doGetTargetCharacterType, maxWords) {
     this.JA_MAX_LENGTH = 40;
-    this.getTargetCharacterType = doGetTargetCharacterType ?? (code => (isEnglishLikeCharacter(code) ? 3 : 0));
+    this.getTargetCharacterType = doGetTargetCharacterType ?? ((code) => (isEnglishLikeCharacter(code) ? 3 : 0));
     this.maxWords = maxWords ?? 8;
     this.decoy = decoy.create("div");
   }
@@ -174,7 +174,7 @@ let getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
   return getCaretNodeAndOffsetFromPoint(ownerDocument, pointX, pointY);
 };
 
-const createGetCaretNodeAndOffsetFromPointFunction = ownerDocument => {
+const createGetCaretNodeAndOffsetFromPointFunction = (ownerDocument) => {
   let newFunction;
   if (ownerDocument.caretPositionFromPoint) {
     // for Firefox (based on recent WD of CSSOM View Module)
@@ -185,7 +185,7 @@ const createGetCaretNodeAndOffsetFromPointFunction = ownerDocument => {
       }
       return {
         node: position.offsetNode,
-        offset: position.offset
+        offset: position.offset,
       };
     };
   } else if (ownerDocument.caretRangeFromPoint) {
@@ -197,13 +197,13 @@ const createGetCaretNodeAndOffsetFromPointFunction = ownerDocument => {
       }
       return {
         node: range.startContainer,
-        offset: range.startOffset
+        offset: range.startOffset,
       };
     };
   }
   return newFunction;
 };
 
-const isEnglishLikeCharacter = code => 0x20 <= code && code <= 0x7e;
+const isEnglishLikeCharacter = (code) => 0x20 <= code && code <= 0x7e;
 
 export default { build };

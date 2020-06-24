@@ -18,7 +18,7 @@ export default class Generator {
       descFontColor: settings.descFontColor,
       headFontSize: settings.headFontSize,
       descFontSize: settings.descFontSize,
-      cssReset
+      cssReset,
     };
 
     this.scroll = settings.scroll;
@@ -39,7 +39,7 @@ export default class Generator {
   createContentHtml(words, descriptions, compiledContentTemplate, enableShortWordLength) {
     const parameters = {
       ...this.baseParameters,
-      words: this.createWordsParameter(words, descriptions, enableShortWordLength)
+      words: this.createWordsParameter(words, descriptions, enableShortWordLength),
     };
     const html = compiledContentTemplate.render(parameters);
     return html;
@@ -69,7 +69,7 @@ export default class Generator {
         isShort: word.length <= shortWordLength,
         shortDesc: desc.substring(0, this.cutShortWordDescription),
         isFirst: false,
-        isLast: false
+        isLast: false,
       });
     }
     if (data.length >= 1) {
@@ -110,7 +110,7 @@ const compileReplaceRule = (rule, renderParameters) => {
 
   return {
     search: re,
-    replace
+    replace,
   };
 };
 
@@ -118,11 +118,11 @@ const mapForEscapeHtml = {
   "&": "&amp;",
   "<": "&lt;",
   ">": "&gt;",
-  '"': "&quot;"
+  '"': "&quot;",
 };
 
 const reForEscapeHtml = /&|<|>|"/g;
 
-const escapeHtml = str => {
-  return str.replace(reForEscapeHtml, ch => mapForEscapeHtml[ch]);
+const escapeHtml = (str) => {
+  return str.replace(reForEscapeHtml, (ch) => mapForEscapeHtml[ch]);
 };

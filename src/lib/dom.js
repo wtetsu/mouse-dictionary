@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-const create = html => {
+const create = (html) => {
   const template = document.createElement("template");
   template.innerHTML = html.trim();
   return template.content.firstChild;
@@ -31,7 +31,7 @@ const replace = (element, newDom) => {
 const MAX_TRAVERSE_LEVEL = 4;
 const MAX_TRAVERSE_WORDS = 10;
 
-const traverse = elem => {
+const traverse = (elem) => {
   const resultWords = [];
 
   let current = elem;
@@ -56,7 +56,7 @@ const traverse = elem => {
   return joinWords(resultWords.slice(0, MAX_TRAVERSE_WORDS));
 };
 
-const joinWords = words => {
+const joinWords = (words) => {
   const newWords = [];
   let i = 0;
   for (;;) {
@@ -127,7 +127,7 @@ const clone = (orgElement, baseElement) => {
   return clonedElement;
 };
 
-const getComputedCssText = element => {
+const getComputedCssText = (element) => {
   const computedStyle = getComputedStyle(element, "");
   if (computedStyle.cssText) {
     return computedStyle.cssText;
@@ -143,7 +143,7 @@ const getComputedCssText = element => {
   return styles.join(";");
 };
 
-const isNumberString = str => {
+const isNumberString = (str) => {
   if (!str) {
     return false;
   }
@@ -160,7 +160,7 @@ const isNumberString = str => {
 };
 
 // "100px" -> 100.0
-const pxToFloat = str => {
+const pxToFloat = (str) => {
   if (!str) {
     return 0;
   }

@@ -22,18 +22,18 @@ const verbRule = new Map();
 const lettersRule = new Map();
 
 let deinjaConvert = () => {};
-const registerLetters = data => utils.updateMap(lettersRule, data);
-const registerNoun = data => utils.updateMap(nounRule, data);
-const registerPhrase = data => Object.assign(phraseRule, data);
-const registerPronoun = data =>
+const registerLetters = (data) => utils.updateMap(lettersRule, data);
+const registerNoun = (data) => utils.updateMap(nounRule, data);
+const registerPhrase = (data) => Object.assign(phraseRule, data);
+const registerPronoun = (data) =>
   Object.assign(
     pronounRule,
-    data.map(datum => new Map(datum))
+    data.map((datum) => new Map(datum))
   );
-const registerSpelling = data => utils.updateMap(spellingRule, data);
-const registerTrailing = data => Object.assign(trailingRule, data);
-const registerVerb = data => utils.updateMap(verbRule, data);
-const registerJa = data => {
+const registerSpelling = (data) => utils.updateMap(spellingRule, data);
+const registerTrailing = (data) => Object.assign(trailingRule, data);
+const registerVerb = (data) => utils.updateMap(verbRule, data);
+const registerJa = (data) => {
   deinjaConvert = buildDeinja(data);
 };
 
@@ -41,7 +41,7 @@ const DEFAULT_RULE_FILE = "data/rule.json";
 
 // Note: Parsing JSON is faster than long Object literals.
 // https://v8.dev/blog/cost-of-javascript-2019
-const readAndLoadRuleFiles = async ruleFile => {
+const readAndLoadRuleFiles = async (ruleFile) => {
   console.time("rule");
 
   const rulePromise = utils.loadJson(ruleFile);
@@ -57,7 +57,7 @@ const readAndLoadRuleFiles = async ruleFile => {
   return loadedRuleData;
 };
 
-const registerRuleData = ruleData => {
+const registerRuleData = (ruleData) => {
   const processes = [
     { field: "letters", register: registerLetters },
     { field: "noun", register: registerNoun },
@@ -66,7 +66,7 @@ const registerRuleData = ruleData => {
     { field: "spelling", register: registerSpelling },
     { field: "trailing", register: registerTrailing },
     { field: "verb", register: registerVerb },
-    { field: "ja", register: registerJa }
+    { field: "ja", register: registerJa },
   ];
 
   for (let i = 0; i < processes.length; i++) {
@@ -87,10 +87,10 @@ const load = async (ruleFile = DEFAULT_RULE_FILE) => {
 export default {
   load,
   registerRuleData,
-  doBase: word => base({ noun: nounRule, trailing: trailingRule, verb: verbRule }, word),
-  doLetters: ch => lettersRule.get(ch),
-  doPhrase: words => phrase(phraseRule, words),
-  doPronoun: words => pronoun(pronounRule, words),
-  doSpelling: words => spelling(spellingRule, words),
-  doJa: word => deinjaConvert(word)
+  doBase: (word) => base({ noun: nounRule, trailing: trailingRule, verb: verbRule }, word),
+  doLetters: (ch) => lettersRule.get(ch),
+  doPhrase: (words) => phrase(phraseRule, words),
+  doPronoun: (words) => pronoun(pronounRule, words),
+  doSpelling: (words) => spelling(spellingRule, words),
+  doJa: (word) => deinjaConvert(word),
 };

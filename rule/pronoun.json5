@@ -23,7 +23,7 @@
     ["themselves", "oneself"],
     ["him", "someone"],
     ["them", "someone"],
-    ["us", "someone"]
+    ["us", "someone"],
   ],
   [
     ["my", "someone's"],
@@ -44,7 +44,7 @@
     ["themselves", "oneself"],
     ["him", "someone"],
     ["them", "someone"],
-    ["us", "someone"]
+    ["us", "someone"],
   ],
   [
     ["my", "someone's"],
@@ -65,6 +65,6 @@
     ["themselves", "oneself"],
     ["him", "someone"],
     ["them", "someone"],
-    ["us", "someone"]
-  ]
+    ["us", "someone"],
+  ],
 ]

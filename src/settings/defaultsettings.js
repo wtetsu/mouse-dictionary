@@ -24,20 +24,20 @@ export default {
   replaceRules: [
     {
       search: "(■.+|◆.+)",
-      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
+      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>',
     },
     {
       search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
-      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
+      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>',
     },
     {
       search: "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
-      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>'
+      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>',
     },
     {
       search: "\\n|\\\\n",
-      replace: "<br/>"
-    }
+      replace: "<br/>",
+    },
   ],
 
   normalDialogStyles: `{
@@ -94,5 +94,5 @@ export default {
       <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:0;height:1px;width:100%;" />
     {{/isLast}}
   {{/words}}
-</div>`
+</div>`,
 };

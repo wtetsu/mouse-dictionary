@@ -19,10 +19,10 @@ import "ace-builds/src-noconflict/theme-tomorrow";
 import "ace-builds/src-noconflict/theme-solarized_light";
 ace.config.set("basePath", "/options");
 
-window.onerror = msg => {
+window.onerror = (msg) => {
   swal({
     text: msg,
-    icon: "error"
+    icon: "error",
   });
 };
 

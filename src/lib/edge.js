@@ -34,7 +34,7 @@ const CURSOR_STYLES = [
   "move",
   "move",
   "move",
-  "move"
+  "move",
 ];
 
 class Edge {
@@ -68,7 +68,7 @@ class Edge {
   }
 }
 
-const build = options => {
+const build = (options) => {
   return new Edge(options);
 };
 
@@ -86,7 +86,7 @@ class Square {
   move(movedX, movedY) {
     return {
       left: this.square.left + movedX,
-      top: this.square.top + movedY
+      top: this.square.top + movedY,
     };
   }
 
@@ -130,5 +130,5 @@ export default {
   BOTTOM,
   LEFT,
   EDGE,
-  INSIDE
+  INSIDE,
 };

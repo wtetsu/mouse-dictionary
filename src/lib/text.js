@@ -88,7 +88,7 @@ text.splitIntoWords = (str, doIsValidCharacter = isValidCharacter) => {
   return words;
 };
 
-const makeArrayIncludingLoweredString = str => {
+const makeArrayIncludingLoweredString = (str) => {
   const arr = [str];
   const loweredStr = str.toLowerCase();
   if (loweredStr !== str) {
@@ -100,7 +100,7 @@ const makeArrayIncludingLoweredString = str => {
 /**
  * "camelCase" -> ["camel", "case"]
  */
-text.splitString = str => {
+text.splitString = (str) => {
   const arr = [];
   let startIndex = 0;
   let i = 0;
@@ -202,7 +202,7 @@ const makeLinkedWords = (wordList, minWordNum, enablePhrasing = true) => {
     if (i >= minWordNum - 1) {
       linkedWords.push(currentWords.join(" "));
       if (enablePhrasing) {
-        const phraseProcessed = rule.doPhrase(currentWords).map(a => a.join(" "));
+        const phraseProcessed = rule.doPhrase(currentWords).map((a) => a.join(" "));
         phraseProcessedWords.push(...phraseProcessed);
       }
     }
@@ -210,16 +210,16 @@ const makeLinkedWords = (wordList, minWordNum, enablePhrasing = true) => {
   return { linkedWords, phraseProcessedWords };
 };
 
-const makeFirstWordsList = firstWord => {
+const makeFirstWordsList = (firstWord) => {
   const firstWordsList = [[firstWord]];
   const base = rule.doBase(firstWord);
   if (base.length >= 1) {
-    firstWordsList.push(...base.map(a => [a]));
+    firstWordsList.push(...base.map((a) => [a]));
   }
 
   return firstWordsList;
 };
 
-const isValidCharacter = code => code >= 33 && code <= 126;
+const isValidCharacter = (code) => code >= 33 && code <= 126;
 
 export default text;

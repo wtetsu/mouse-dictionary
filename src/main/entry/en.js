@@ -34,17 +34,17 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.merge(slashWords);
   }
   if (withCapitalized) {
-    lookupWords.merge(lookupWords.toArray().map(s => s.toUpperCase()));
+    lookupWords.merge(lookupWords.toArray().map((s) => s.toUpperCase()));
   }
 
   if (firstWord?.length >= 2) {
     lookupWords.push(toTitle(firstWord));
   }
 
-  return lookupWords.toArray().filter(s => s.length >= 2 || s === firstWord);
+  return lookupWords.toArray().filter((s) => s.length >= 2 || s === firstWord);
 };
 
-const processSourceString = sourceStr => {
+const processSourceString = (sourceStr) => {
   const linkedWords = [];
 
   const lowerStr = sourceStr.toLowerCase();
@@ -78,9 +78,9 @@ const processSourceString = sourceStr => {
   }
   return { firstWords, linkedWords };
 };
-const processFirstWord = firstWord => [...dealWithFirstWordHyphen(firstWord), ...divideIntoTwoWords(firstWord)];
+const processFirstWord = (firstWord) => [...dealWithFirstWordHyphen(firstWord), ...divideIntoTwoWords(firstWord)];
 
-const createSlashWord = wordList => {
+const createSlashWord = (wordList) => {
   if (!wordList) {
     return null;
   }
@@ -94,7 +94,7 @@ const createSlashWord = wordList => {
 const JOINER_LIST = ["-", "", " "];
 
 // "ladies-in-waiting" -> ["ladies-in-waiting", "lady-in-waiting", ...]
-const dealWithFirstWordHyphen = theFirstWord => {
+const dealWithFirstWordHyphen = (theFirstWord) => {
   const wordList = theFirstWord.split("-");
   if (wordList.length <= 1) {
     return [];
@@ -120,7 +120,7 @@ const dealWithFirstWordHyphen = theFirstWord => {
   return result.toArray();
 };
 
-const divideIntoTwoWords = str => {
+const divideIntoTwoWords = (str) => {
   const result = [];
   for (let i = 2; i <= str.length - 2; i++) {
     const former = str.slice(0, i);
@@ -131,9 +131,9 @@ const divideIntoTwoWords = str => {
   return result;
 };
 
-const isValidCharacter = ch => rule.doLetters(ch);
+const isValidCharacter = (ch) => rule.doLetters(ch);
 
-const createWordsList = str => {
+const createWordsList = (str) => {
   if (!str) {
     return [];
   }
@@ -153,7 +153,7 @@ const createWordsList = str => {
   return wordsList;
 };
 
-const findBreak = str => {
+const findBreak = (str) => {
   let r = -1;
   for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);
@@ -185,11 +185,11 @@ const createLinkedWords = (words, isAllLower) => {
 const TRAILING_RULES = [
   [
     { search: "'s", new: "" },
-    { search: "s", new: "" }
+    { search: "s", new: "" },
   ],
   [{ search: "er", new: "" }],
   [{ search: "iest", new: "y" }],
-  [{ search: "est", new: "" }]
+  [{ search: "est", new: "" }],
 ];
 
 /**
@@ -224,7 +224,7 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
     return [];
   }
   const wordList = new UniqList();
-  wordList.filer = a => a.length >= minLength;
+  wordList.filer = (a) => a.length >= minLength;
 
   let strList;
   if (ignoreLowerCase) {
@@ -275,7 +275,7 @@ const isHyphenLikeCharacter = (sourceStr, position) => {
 
 const QUOTE_CHARS = ['"', "'"];
 
-const fetchQuotedStrings = str => {
+const fetchQuotedStrings = (str) => {
   const result = [];
   for (const q of QUOTE_CHARS) {
     const nextQuoteIndex = str.indexOf(q, 1);
@@ -293,7 +293,7 @@ const fetchQuotedStrings = str => {
   return result;
 };
 
-const toTitle = str => {
+const toTitle = (str) => {
   return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
 };
 export default createLookupWordsEn;

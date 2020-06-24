@@ -7,32 +7,32 @@
 const locals = {
   get: (...args) => chrome.storage.local.get(...args),
   set: (...args) => chrome.storage.local.set(...args),
-  getBytesInUse: (...args) => chrome.storage.local.getBytesInUse(...args)
+  getBytesInUse: (...args) => chrome.storage.local.getBytesInUse(...args),
 };
 
 const syncs = {
   get: (...args) => chrome.storage.sync.get(...args),
-  set: (...args) => chrome.storage.sync.set(...args)
+  set: (...args) => chrome.storage.sync.set(...args),
 };
 
 // A wrapper of chrome.storage.sync.
 const sync = {
-  get: async args => doAsync(syncs.get, args),
-  set: async args => doAsync(syncs.set, args),
+  get: async (args) => doAsync(syncs.get, args),
+  set: async (args) => doAsync(syncs.set, args),
   async pickOut(key) {
     const data = await sync.get(key);
     return data?.[key];
-  }
+  },
 };
 
 const local = {
-  get: async args => doAsync(locals.get, args),
-  set: async args => doAsync(locals.set, args),
+  get: async (args) => doAsync(locals.get, args),
+  set: async (args) => doAsync(locals.set, args),
   async pickOut(key) {
     const data = await local.get(key);
     return data?.[key];
   },
-  getBytesInUse: async () => doAsync(locals.getBytesInUse)
+  getBytesInUse: async () => doAsync(locals.getBytesInUse),
 };
 
 const doAsync = async (fn, params) => {
@@ -41,7 +41,7 @@ const doAsync = async (fn, params) => {
   }
   return new Promise((resolve, reject) => {
     try {
-      const callBack = data => {
+      const callBack = (data) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {

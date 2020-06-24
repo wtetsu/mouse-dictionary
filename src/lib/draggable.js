@@ -129,8 +129,8 @@ export default class Draggable {
   }
 
   makeElementDraggable(mainElement) {
-    mainElement.addEventListener("dblclick", e => this.handleDoubleClick(e));
-    mainElement.addEventListener("mousedown", e => this.handleMouseDown(e));
+    mainElement.addEventListener("dblclick", (e) => this.handleDoubleClick(e));
+    mainElement.addEventListener("mousedown", (e) => this.handleMouseDown(e));
     this.mainElementStyle.set("cursor", "move");
     this.current.left = utils.convertToInt(mainElement.style.left);
     this.current.top = utils.convertToInt(mainElement.style.top);
