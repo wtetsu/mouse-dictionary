@@ -30,7 +30,7 @@
     "hogan.js": "^3.0.2",
     "immer": "^7.0.5",
     "react": "^16.13.1",
-    "react-ace": "^9.0.0",
+    "react-ace": "^9.1.1",
     "react-color": "^2.18.1",
     "react-contenteditable": "^3.3.5",
     "react-dom": "^16.13.1",
