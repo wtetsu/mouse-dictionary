@@ -10,13 +10,18 @@
 
 Features:
 - Super fast (react in 1/60 second)
-- Detect phrases quite intelligently
-- Can import your own text data
+- Awesome phrases detection
+- Capable of importing your own text data
 - Look up connected words at one
   - camelCase -> "camel", "case"
   - snake_case -> "snake", "case"
   - splitinto  -> "split into"
 - Customizable view
+- Available not only on very normal document:
+  - YouTube captions
+  - input elements
+  - textarea
+  - ...
 
 Download it.
 
@@ -56,6 +61,7 @@ npm install
 
 ### Build
 
+#### Debug build
 For Chrome:
 
 ```sh
@@ -66,6 +72,21 @@ For Firefox:
 
 ```sh
 npm run build-firefox
+```
+
+
+### Release build
+
+For Chrome:
+
+```sh
+npm run release-chrome
+```
+
+For Firefox:
+
+```sh
+npm run release-firefox
 ```
 
 ### Watch
@@ -84,20 +105,6 @@ For Firefox:
 npm run watch-firefox
 ```
 
-
-### Release build
-
-For Chrome:
-
-```sh
-NODE_ENV=production npm run build-chrome
-```
-
-For Firefox:
-
-```sh
-NODE_ENV=production npm run build-firefox
-```
 
 ## Contribution
 
