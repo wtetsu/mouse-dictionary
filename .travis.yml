@@ -7,6 +7,7 @@ node_js:
 script:
   - npm run lint
   - npm run test-cov && codecov
+  - npm run release
 cache: npm
 dist: trusty
 sudo: false
