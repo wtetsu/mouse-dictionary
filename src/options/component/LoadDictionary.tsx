@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import SimpleSelect from "./SimpleSelect.jsx";
+import SimpleSelect from "./SimpleSelect";
 import res from "../logic/resource";
 import env from "../../settings/env";
 
