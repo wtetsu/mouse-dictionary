@@ -75,7 +75,7 @@ npm run build-firefox
 ```
 
 
-### Release build
+#### Release build
 
 For Chrome:
 
