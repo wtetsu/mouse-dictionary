@@ -5,11 +5,21 @@
  */
 
 import React from "react";
-import SimpleSelect from "./SimpleSelect";
-import res from "../logic/resource";
+import { SimpleSelect } from "./SimpleSelect";
+import * as res from "../logic/resource";
 import env from "../../settings/env";
 
-const LoadDictionary = (props) => {
+type Props = {
+  encoding: string;
+  format: string;
+  busy: boolean;
+  progress: string;
+  dictDataUsage: string;
+  onUpdate: (state: any) => void;
+  trigger: (type: "load" | "clear") => void;
+};
+
+export const LoadDictionary: React.FC<Props> = (props) => {
   const ENCODINGS = [
     { id: "Shift-JIS", name: "Shift-JIS" },
     { id: "UTF-8", name: "UTF-8" },
@@ -23,8 +33,8 @@ const LoadDictionary = (props) => {
     { id: "JSON", name: res.get("formatJson") },
   ];
 
-  const changeState = (name, e) => {
-    props.changeState(name, e.target.value);
+  const changeState = (name: string, e: React.ChangeEvent<HTMLSelectElement>) => {
+    props.onUpdate({ [name]: e.target.value });
   };
 
   return (
@@ -40,16 +50,16 @@ const LoadDictionary = (props) => {
         type="button"
         value={res.get("loadSelectedFile")}
         style={{ marginRight: 5 }}
-        onClick={props.doLoad}
-        disabled={props.busy ? "disabled" : null}
+        onClick={() => props.trigger("load")}
+        disabled={props.busy}
       />
       {!env.disableClearDataButton && (
         <input
           type="button"
           value={res.get("clearLoadedData")}
           style={{ marginRight: 5 }}
-          onClick={props.doClear}
-          disabled={props.busy ? "disabled" : null}
+          onClick={() => props.trigger("clear")}
+          disabled={props.busy}
         />
       )}
       <img
@@ -67,5 +77,3 @@ const LoadDictionary = (props) => {
     </div>
   );
 };
-
-export default LoadDictionary;

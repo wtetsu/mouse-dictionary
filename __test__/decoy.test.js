@@ -7,7 +7,7 @@ test("", () => {
   const lines = [];
   lines.push('<input type="text" value="this is text">');
 
-  const elem = dom.create(lines.map(a => a.trim()).join(""));
+  const elem = dom.create(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
@@ -27,7 +27,7 @@ test("", () => {
   const lines = [];
   lines.push("<textarea>this is text</textarea>");
 
-  const elem = dom.create(lines.map(a => a.trim()).join(""));
+  const elem = dom.create(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
@@ -47,7 +47,7 @@ test("", () => {
   const lines = [];
   lines.push("<select><option>this is text</option></select>");
 
-  const elem = dom.create(lines.map(a => a.trim()).join(""));
+  const elem = dom.create(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
@@ -67,7 +67,7 @@ test("", () => {
   const lines = [];
   lines.push("<div>this is text</div>");
 
-  const elem = dom.create(lines.map(a => a.trim()).join(""));
+  const elem = dom.create(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
@@ -86,7 +86,7 @@ test("", () => {
   const lines = [];
   lines.push('<input type="text" value="this is text">');
 
-  const elem = dom.create(lines.map(a => a.trim()).join(""));
+  const elem = dom.create(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();

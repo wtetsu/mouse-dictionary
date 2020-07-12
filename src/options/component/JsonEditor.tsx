@@ -8,8 +8,9 @@ import React from "react";
 import AceEditor from "react-ace";
 import immer from "immer";
 import swal from "sweetalert";
-import res from "../logic/resource";
-import data from "../logic/data";
+import * as res from "../logic/resource";
+import * as data from "../logic/data";
+import { MouseDictionarySettings } from "../types";
 
 const EDITOR_STYLE = {
   width: 800,
@@ -18,20 +19,29 @@ const EDITOR_STYLE = {
   fontSize: 13,
 };
 
-const canReplace = (a, b) => {
+const canReplace = (a: number | string | boolean | [], b: number | string | boolean | []) => {
   if (Array.isArray(a)) {
     return Array.isArray(b);
   }
   return typeof a === typeof b;
 };
 
-const JsonEditor = (props) => {
+type Props = {
+  initialValue: MouseDictionarySettings;
+  onUpdate: (e: JsonEditorUpdateEvent) => void;
+};
+
+type JsonEditorUpdateEvent = {
+  payload: { settings?: MouseDictionarySettings; state?: Record<string, any> };
+};
+
+export const JsonEditor: React.FC<Props> = (props) => {
   const [json, setJson] = React.useState(() => {
     const initialValue = data.postProcessSettings(props.initialValue);
     return JSON.stringify(initialValue, null, 2);
   });
 
-  const createSettings = (json) => {
+  const createSettings = (json: string): MouseDictionarySettings => {
     const newSettings = data.preProcessSettings(JSON.parse(json));
     const orgSettings = data.postProcessSettings(props.initialValue);
     return immer(orgSettings, (d) => {
@@ -44,6 +54,23 @@ const JsonEditor = (props) => {
     });
   };
 
+  const updateAndClose = (json: string) => {
+    try {
+      const settings = createSettings(json);
+      const state = { jsonEditorOpened: false };
+      const payload = { settings, state };
+      props.onUpdate({ payload });
+    } catch {
+      swal({ text: res.get("JsonImportError"), icon: "warning" });
+    }
+  };
+
+  const close = () => {
+    const state = { jsonEditorOpened: false };
+    const payload = { state };
+    props.onUpdate({ payload });
+  };
+
   return (
     <div style={{ margin: 20 }}>
       <p>{res.get("aboutJsonEditor")}</p>
@@ -51,14 +78,7 @@ const JsonEditor = (props) => {
         type="button"
         className="button-small button-black"
         style={{ marginRight: 5, cursor: "pointer" }}
-        onClick={() => {
-          try {
-            const settings = createSettings(json);
-            props.setState({ settings, jsonEditorOpened: false });
-          } catch {
-            swal({ text: res.get("JsonImportError"), icon: "warning" });
-          }
-        }}
+        onClick={() => updateAndClose(json)}
       >
         {res.get("importJson")}
       </button>
@@ -66,7 +86,7 @@ const JsonEditor = (props) => {
         type="button"
         className="button-outline button-small button-black"
         style={{ marginRight: 5, cursor: "pointer" }}
-        onClick={() => props.setState({ jsonEditorOpened: false })}
+        onClick={() => close()}
       >
         {res.get("closeJsonEditor")}
       </button>
@@ -84,14 +104,10 @@ const JsonEditor = (props) => {
       />
       <span
         style={{ cursor: "pointer", textDecoration: "underline", fontSize: "small" }}
-        onClick={() => {
-          navigator.clipboard.writeText(json);
-        }}
+        onClick={() => navigator.clipboard.writeText(json)}
       >
         {res.get("clipboardJson")}
       </span>
     </div>
   );
 };
-
-export default JsonEditor;

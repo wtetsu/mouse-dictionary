@@ -4,17 +4,20 @@
  * Licensed under MIT
  */
 
-export default class JsonDictParser {
+import { DictParser, DictEntry } from "./dictparser";
+
+export class JsonDictParser implements DictParser {
+  lines: string[];
   constructor() {
     this.lines = [];
   }
 
-  addLine(line) {
+  addLine(line: string): DictEntry {
     this.lines.push(line);
     return null;
   }
 
-  flush() {
+  flush(): Record<string, string> {
     const json = this.lines.join("");
     const dictdata = JSON.parse(json);
     this.lines = [];

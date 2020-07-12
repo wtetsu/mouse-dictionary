@@ -3,13 +3,13 @@ import rule from "../src/main/rule";
 import fs from "fs";
 
 beforeAll(() => {
-  define("chrome.extension.getURL", name => name);
-  define("fetch", async file => {
+  define("chrome.extension.getURL", (name) => name);
+  define("fetch", async (file) => {
     const data = fs.readFileSync(file);
     return {
       json: () => {
         return JSON.parse(data);
-      }
+      },
     };
   });
 });

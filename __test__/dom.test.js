@@ -50,7 +50,7 @@ test("", () => {
   lines.push("  <span>text12</span>"); // truncated
   lines.push("</div>");
 
-  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("text01 text02 text03 text04 text05 text06 text07 text08 text09 text10");
 });
 
@@ -98,7 +98,7 @@ test("", () => {
   lines.push("  </span>");
   lines.push("</div>");
 
-  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("bbb-ccc ddd eee fff ggg hhh");
 });
 
@@ -108,7 +108,7 @@ test("", () => {
   lines.push('<span id="start"></span>');
   lines.push("</div>");
 
-  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("");
 });
 
@@ -123,7 +123,7 @@ test("", () => {
   lines.push("<span>text04</span>");
   lines.push("</div>");
 
-  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("text01-text02 text03-text04");
 });
 
@@ -137,7 +137,7 @@ test("", () => {
   lines.push("<span>text04</span>");
   lines.push("</div>");
 
-  const start = dom.create(lines.map(a => a.trim()).join("")).querySelector("#start");
+  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("-text02 text03-text04");
 });
 
@@ -168,4 +168,33 @@ test("", () => {
   element.style = {};
   vStyle.apply({ cursor: "move", color: "blue" });
   expect(element.style).toEqual({ cursor: "move", color: "blue" });
+});
+
+test("", () => {
+  expect(dom.pxToFloat()).toEqual(0);
+  expect(dom.pxToFloat("")).toEqual(0);
+  expect(dom.pxToFloat("@@")).toEqual(NaN);
+  expect(dom.pxToFloat("123")).toEqual(123);
+  expect(dom.pxToFloat("123px")).toEqual(123);
+  expect(dom.pxToFloat("123.5px")).toEqual(123.5);
+});
+
+test("", () => {
+  const lines = [];
+  lines.push('<div style="width:200px;height:300px;">');
+  lines.push('<span id="start">-</span>');
+  lines.push("<span>text02</span>");
+  lines.push("<span>text03</span>");
+  lines.push("<span>-</span>");
+  lines.push("<span>text04</span>");
+  lines.push("</div>");
+
+  const elem = dom.create(lines.map((a) => a.trim()).join(""));
+
+  const clonedElem = dom.clone(elem);
+
+  expect(clonedElem).not.toEqual(elem);
+
+  expect(clonedElem.style.width).toEqual("200px");
+  expect(clonedElem.style.height).toEqual("300px");
 });

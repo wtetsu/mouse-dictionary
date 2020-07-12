@@ -1,8 +1,8 @@
 import utils from "../src/lib/utils";
 
 test("", () => {
-  expect(utils.omap({ a: 1, b: 2, c: 3 }, v => v * 2)).toEqual({ a: 2, b: 4, c: 6 });
-  expect(utils.omap({ a: 1, b: 2, c: 3 }, v => v * 2, ["b", "c"])).toEqual({ b: 4, c: 6 });
+  expect(utils.omap({ a: 1, b: 2, c: 3 }, (v) => v * 2)).toEqual({ a: 2, b: 4, c: 6 });
+  expect(utils.omap({ a: 1, b: 2, c: 3 }, (v) => v * 2, ["b", "c"])).toEqual({ b: 4, c: 6 });
 
   expect(utils.omap({ a: 1, b: 2, c: 3 }, null, ["b", "c"])).toEqual({ b: null, c: null });
   expect(utils.omap({ a: 1, b: 2, c: 3 })).toEqual({ a: null, b: null, c: null });
@@ -50,7 +50,7 @@ test("", () => {
         left: 800,
         top: 700,
         width: 300,
-        height: 200
+        height: 200,
       },
       0,
       0
@@ -59,7 +59,7 @@ test("", () => {
     left: 724,
     top: 600,
     width: 300,
-    height: 200
+    height: 200,
   });
 
   expect(
@@ -67,13 +67,13 @@ test("", () => {
       left: 800,
       top: 700,
       width: 300,
-      height: 200
+      height: 200,
     })
   ).toEqual({
     left: 719,
     top: 595,
     width: 300,
-    height: 200
+    height: 200,
   });
 
   expect(
@@ -81,13 +81,13 @@ test("", () => {
       left: -100,
       top: -200,
       width: 300,
-      height: 200
+      height: 200,
     })
   ).toEqual({
     left: 5,
     top: 5,
     width: 300,
-    height: 200
+    height: 200,
   });
 
   window.innerWidth = 200;
@@ -98,13 +98,13 @@ test("", () => {
       left: -100,
       top: -200,
       width: 300,
-      height: 200
+      height: 200,
     })
   ).toEqual({
     left: 5,
     top: 5,
     width: 190,
-    height: 90
+    height: 90,
   });
 
   expect(
@@ -112,13 +112,13 @@ test("", () => {
       left: null,
       top: null,
       width: null,
-      height: null
+      height: null,
     })
   ).toEqual({
     left: null,
     top: null,
     width: null,
-    height: null
+    height: null,
   });
 });
 

@@ -4,12 +4,15 @@
  * Licensed under MIT
  */
 
-export default class SimpleDictParser {
-  constructor(delimiter) {
+import { DictParser, DictEntry } from "./dictparser";
+
+export class SimpleDictParser implements DictParser {
+  delimiter: string;
+  constructor(delimiter: string) {
     this.delimiter = delimiter;
   }
 
-  addLine(line) {
+  addLine(line: string): DictEntry {
     let hd = null;
     const didx = line.indexOf(this.delimiter);
     if (didx >= 0) {
@@ -22,7 +25,7 @@ export default class SimpleDictParser {
     return hd;
   }
 
-  flush() {
+  flush(): Record<string, string> {
     return null;
   }
 }

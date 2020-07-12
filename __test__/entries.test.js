@@ -28,7 +28,7 @@ test("", () => {
       "thousand",
       "thousand ~ down",
       "thousand down",
-      "thousand mile"
+      "thousand mile",
     ])
   );
 
@@ -48,7 +48,7 @@ test("", () => {
       "announcement of",
       "announcement",
       "announcement ~ hoge",
-      "announcement hoge"
+      "announcement hoge",
     ])
   );
 
@@ -74,7 +74,7 @@ test("", () => {
       "wonder i",
       "wonder ~ i shall",
       "wonder A i B",
-      "wonder i shall"
+      "wonder i shall",
     ])
   );
 
@@ -101,7 +101,7 @@ test("", () => {
       "gray",
       "blue-",
       "-gray",
-      "bluegray"
+      "bluegray",
     ])
   );
 
@@ -115,7 +115,7 @@ test("", () => {
     expect.arrayContaining([
       "folk tales", //
       "folk",
-      "folk tale"
+      "folk tale",
     ])
   );
 });
@@ -124,7 +124,7 @@ test("", () => {
   expect(generateEntries("deal with")).toEqual(
     expect.arrayContaining([
       "deal with", //
-      "deal"
+      "deal",
     ])
   );
   expect(generateEntries("dealt with")).toEqual(
@@ -132,7 +132,7 @@ test("", () => {
       "dealt with", //
       "dealt",
       "deal with",
-      "deal"
+      "deal",
     ])
   );
   expect(generateEntries("dealing with")).toEqual(
@@ -140,14 +140,14 @@ test("", () => {
       "dealing with", //
       "dealing",
       "deal with",
-      "deal"
+      "deal",
     ])
   );
 
   expect(generateEntries("run with")).toEqual(
     expect.arrayContaining([
       "run with", //
-      "run"
+      "run",
     ])
   );
   expect(generateEntries("ran with")).toEqual(
@@ -155,7 +155,7 @@ test("", () => {
       "ran with", //
       "ran",
       "run with",
-      "run"
+      "run",
     ])
   );
   expect(generateEntries("running with")).toEqual(
@@ -163,7 +163,7 @@ test("", () => {
       "running with", //
       "running",
       "run with",
-      "run"
+      "run",
     ])
   );
 
@@ -176,7 +176,7 @@ test("", () => {
       "deal dealt",
       "deal",
       "dealt ~ dealt",
-      "deal ~ dealt"
+      "deal ~ dealt",
     ])
   );
 });
@@ -185,7 +185,7 @@ test("", () => {
   expect(generateEntries("cut back")).toEqual(
     expect.arrayContaining([
       "cut back", //
-      "cut"
+      "cut",
     ])
   );
   expect(generateEntries("cutting back")).toEqual(
@@ -193,14 +193,14 @@ test("", () => {
       "cutting back", //
       "cutting",
       "cut back",
-      "cut"
+      "cut",
     ])
   );
 
   expect(generateEntries("die out")).toEqual(
     expect.arrayContaining([
       "die out", //
-      "die"
+      "die",
     ])
   );
   expect(generateEntries("dying out")).toEqual(
@@ -208,14 +208,14 @@ test("", () => {
       "dying out", //
       "dying",
       "die out",
-      "die"
+      "die",
     ])
   );
 
   expect(generateEntries("play with")).toEqual(
     expect.arrayContaining([
       "play with", //
-      "play"
+      "play",
     ])
   );
   expect(generateEntries("played with")).toEqual(
@@ -223,14 +223,14 @@ test("", () => {
       "played with", //
       "played",
       "play with",
-      "play"
+      "play",
     ])
   );
 
   expect(generateEntries("pop up")).toEqual(
     expect.arrayContaining([
       "pop up", //
-      "pop"
+      "pop",
     ])
   );
   expect(generateEntries("popped up")).toEqual(
@@ -238,7 +238,7 @@ test("", () => {
       "popped up", //
       "popped",
       "pop up",
-      "pop"
+      "pop",
     ])
   );
 });
@@ -253,7 +253,7 @@ test("", () => {
       "worker",
       "processes",
       "process",
-      "work"
+      "work",
     ])
   );
 });
@@ -266,7 +266,7 @@ test("", () => {
       "on",
       "on ~ own",
       "on own",
-      "on one"
+      "on one",
     ])
   );
 
@@ -282,7 +282,7 @@ test("", () => {
       "on one",
       "on someone's own",
       "on someone's",
-      "on someone"
+      "on someone",
     ])
   );
 
@@ -308,7 +308,7 @@ test("", () => {
       "someone's ~ son",
       "someone's son",
       "someone' ~ son",
-      "someone' son"
+      "someone' son",
     ])
   );
 
@@ -319,21 +319,21 @@ test("", () => {
       "Senete",
       "senete's",
       "senete'",
-      "senete"
+      "senete",
     ])
   );
 
   expect(generateEntries("by oneself")).toEqual(
     expect.arrayContaining([
       "by oneself", //
-      "by"
+      "by",
     ])
   );
   expect(generateEntries("by myself")).toEqual(
     expect.arrayContaining([
       "by myself", //
       "by",
-      "by oneself"
+      "by oneself",
     ])
   );
 
@@ -356,7 +356,7 @@ test("", () => {
       "brush someone",
       "brush taro's dog",
       "brush taro's",
-      "brush taro"
+      "brush taro",
     ])
   );
 });
@@ -378,7 +378,7 @@ test("", () => {
     expect.arrayContaining([
       "pros / cons", //
       "pros and cons",
-      "pros or cons"
+      "pros or cons",
     ])
   );
 
@@ -387,7 +387,7 @@ test("", () => {
       "pros/cons", //
       "pros / cons",
       "pros and cons",
-      "pros or cons"
+      "pros or cons",
     ])
   );
 });
@@ -395,13 +395,13 @@ test("", () => {
 test("", () => {
   expect(generateEntries("in the wild. That is a pen.")).toEqual(
     expect.arrayContaining([
-      "in the wild" //
+      "in the wild", //
     ])
   );
 
   expect(generateEntries("in the wild, That is a pen.")).toEqual(
     expect.arrayContaining([
-      "in the wild" //
+      "in the wild", //
     ])
   );
 });

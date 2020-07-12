@@ -4,14 +4,20 @@
  * Licensed under MIT
  */
 
-export default class LineReader {
-  constructor(data) {
+type EachLineCallback = (line: string, linenum: number) => void;
+
+export class LineReader {
+  data: string;
+  lineFeedString: string;
+  currentIndex: number;
+
+  constructor(data: string) {
     this.data = data;
     this.lineFeedString = this.detectLineFeedString(data);
     this.currentIndex = 0;
   }
 
-  detectLineFeedString(data) {
+  detectLineFeedString(data: string): string {
     const index = data.indexOf("\n");
     if (index < 0) {
       return null;
@@ -22,11 +28,11 @@ export default class LineReader {
     return "\n";
   }
 
-  eachLine(fnEachLine, fnFinished) {
+  eachLine(fnEachLine: EachLineCallback, fnFinished: () => void): void {
     this.processNextLine(fnEachLine, fnFinished, 0);
   }
 
-  processNextLine(fnEachLine, fnFinished, linenum) {
+  processNextLine(fnEachLine: EachLineCallback, fnFinished: () => void, linenum: number): Promise<void> {
     const line = this.getNextLine();
     if (line !== null) {
       return Promise.all([fnEachLine(line, linenum)]).then(() => {
@@ -39,7 +45,7 @@ export default class LineReader {
     }
   }
 
-  getNextLine() {
+  getNextLine(): string {
     if (this.currentIndex === -1) {
       return null;
     }

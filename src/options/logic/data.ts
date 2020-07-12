@@ -5,8 +5,9 @@
  */
 
 import immer from "immer";
+import { MouseDictionarySettings } from "../types";
 
-const byteArrayMayBeShiftJis = (array) => {
+export const byteArrayMayBeShiftJis = (array: Uint8Array): boolean => {
   let mayBeShiftJis = true;
   let nextShouldSecondByte = false;
   for (let index = 0; index < array.length; index++) {
@@ -42,7 +43,7 @@ const isShiftJisSoleChar = (byte) => {
   return (byte >= 0x00 && byte <= 0x1f) || (byte >= 0x20 && byte <= 0x7f) || (byte >= 0xa1 && byte <= 0xdf);
 };
 
-const preProcessSettings = (settings) => {
+export const preProcessSettings = (settings: MouseDictionarySettings): MouseDictionarySettings => {
   return immer(settings, (d) => {
     for (let i = 0; i < d.replaceRules.length; i++) {
       d.replaceRules[i].key = i.toString();
@@ -50,16 +51,10 @@ const preProcessSettings = (settings) => {
   });
 };
 
-const postProcessSettings = (settings) => {
+export const postProcessSettings = (settings: MouseDictionarySettings): MouseDictionarySettings => {
   return immer(settings, (d) => {
     for (const replaceRule of d.replaceRules) {
       delete replaceRule.key;
     }
   });
-};
-
-export default {
-  byteArrayMayBeShiftJis,
-  preProcessSettings,
-  postProcessSettings,
 };

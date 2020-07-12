@@ -4,18 +4,23 @@
  * Licensed under MIT
  */
 
+import { DictParser, DictEntry } from "./dictparser";
+
 const HEADWORD_FIRST = "■";
 const DELIMITER1 = " : ";
 const SPECIAL_DELIMITERS = ["  {", "〔", " {"];
 const NEW_LINE = "\n";
 
-export default class EijiroParser {
+export class EijiroParser implements DictParser {
+  lines: string[];
+  currentHead: string;
+
   constructor() {
     this.lines = [];
     this.currentHead = null;
   }
 
-  addLine(line) {
+  addLine(line: string): DictEntry {
     const hd = this.parseLine(line);
     if (hd === null) {
       return null;
@@ -34,7 +39,7 @@ export default class EijiroParser {
     return head && desc ? { head, desc } : null;
   }
 
-  parseLine(line) {
+  parseLine(line: string): DictEntry {
     if (!line.startsWith(HEADWORD_FIRST)) {
       return null;
     }
@@ -46,7 +51,7 @@ export default class EijiroParser {
 
     const firstHalf = line.substring(1, dindex1);
 
-    let result = null;
+    let result: DictEntry = null;
     for (let i = 0; i < SPECIAL_DELIMITERS.length; i++) {
       const delimiter = SPECIAL_DELIMITERS[i];
 
@@ -69,8 +74,8 @@ export default class EijiroParser {
     };
   }
 
-  flush() {
-    const data = {};
+  flush(): Record<string, string> {
+    const data: Record<string, string> = {};
     if (this.currentHead && this.lines.length >= 1) {
       data[this.currentHead] = this.lines.join(NEW_LINE);
     }

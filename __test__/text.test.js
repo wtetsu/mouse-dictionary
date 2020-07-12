@@ -7,8 +7,8 @@ beforeAll(() => {
 });
 
 test("", () => {
-  const splitIntoWords = str => {
-    return text.splitIntoWords(str, ch => rule.doLetters(ch) === 3);
+  const splitIntoWords = (str) => {
+    return text.splitIntoWords(str, (ch) => rule.doLetters(ch) === 3);
   };
 
   expect(splitIntoWords("removed from")).toEqual(["removed", "from"]);
@@ -76,31 +76,31 @@ test("", () => {
     "word0 word1",
     "word0",
     "word0 ~ word2",
-    "word0 word2"
+    "word0 word2",
   ]);
   testList(text.linkWords(["announcement", "of", "hoge"]), [
     "announcement of hoge",
     "announcement of",
     "announcement",
     "announcement ~ hoge",
-    "announcement hoge"
+    "announcement hoge",
   ]);
   testList(text.linkWords(["Announcement", "of", "Hoge"]), [
     "Announcement of Hoge",
     "Announcement of",
     "Announcement",
     "Announcement ~ Hoge",
-    "Announcement Hoge"
+    "Announcement Hoge",
   ]);
   testList(text.linkWords(["American", "English"]), [
     "American English", //
-    "American"
+    "American",
   ]);
   testList(text.linkWords(["dealt", "with"]), [
     "dealt with", //
     "dealt",
     "deal with",
-    "deal"
+    "deal",
   ]);
 });
 
@@ -108,17 +108,17 @@ test("", () => {
   expect(text.splitString("camelCase")).toEqual([
     "camel", //
     "Case",
-    "case"
+    "case",
   ]);
   expect(text.splitString("PascalCase")).toEqual([
     "Pascal", //
     "pascal",
     "Case",
-    "case"
+    "case",
   ]);
   expect(text.splitString("snake_case")).toEqual([
     "snake", //
-    "case"
+    "case",
   ]);
   expect(text.splitString("UPPER_SNAKE_CASE")).toEqual([
     "UPPER", //
@@ -126,12 +126,12 @@ test("", () => {
     "SNAKE",
     "snake",
     "CASE",
-    "case"
+    "case",
   ]);
 });
 
 test("", () => {
-  const dealWithHyphens = str => {
+  const dealWithHyphens = (str) => {
     return text.dealWithHyphens(str, rule.doLetters);
   };
 

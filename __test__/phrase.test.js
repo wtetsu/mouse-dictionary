@@ -14,22 +14,22 @@ test("3", () => {
       ["a", "__", "c"],
       ["a", "b", "~"],
       ["a", "b", "__"],
-      ["a", "c"]
+      ["a", "c"],
     ])
   );
   expect(rule.doPhrase(["power", "of", "100"])).toEqual(
     expect.arrayContaining([
-      ["power", "of", "__"] //
+      ["power", "of", "__"], //
     ])
   );
   expect(rule.doPhrase(["after", "two", "weeks"])).toEqual(
     expect.arrayContaining([
-      ["after", "__", "weeks"] //
+      ["after", "__", "weeks"], //
     ])
   );
   expect(rule.doPhrase(["after", "a", "lot", "of", "weeks"])).toEqual(
     expect.arrayContaining([
-      ["after", "__", "weeks"] //
+      ["after", "__", "weeks"], //
     ])
   );
 });
@@ -46,7 +46,7 @@ test("4", () => {
       ["a", "b", "c", "__"],
       ["a", "__", "d"],
       ["a", "A", "c", "B"],
-      ["a", "d"]
+      ["a", "d"],
     ])
   );
 });
@@ -67,7 +67,7 @@ test("5", () => {
       ["a", "A", "c", "B", "e"],
       ["a", "A", "c", "d", "B"],
       ["a", "b", "A", "d", "B"],
-      ["a", "b", "c", "d", "__"]
+      ["a", "b", "c", "d", "__"],
     ])
   );
 });
@@ -81,7 +81,7 @@ test("20", () => {
 test("", () => {
   expect(rule.doPhrase(["make", "some", "modifications"])).toEqual(
     expect.arrayContaining([
-      ["make", "a", "modifications"] //
+      ["make", "a", "modifications"], //
     ])
   );
   expect(rule.doPhrase(["make", "thousands", "of", "modifications"])).toEqual(

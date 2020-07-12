@@ -6,7 +6,8 @@
 
 import React from "react";
 import AceEditor from "react-ace";
-import res from "../logic/resource";
+import * as res from "../logic/resource";
+import { MouseDictionarySettings, UpdateEventHandler } from "../types";
 
 const EDITOR_STYLE = {
   width: 800,
@@ -16,10 +17,33 @@ const EDITOR_STYLE = {
   marginBottom: 20,
 };
 
-const AdvancedSettings = (props) => {
+type AdvancedSettingsProps = {
+  settings: MouseDictionarySettings;
+  onUpdate: UpdateEventHandler;
+  changeReplaceRule: (e: AdvancedSettingsChangeReplaceRuleEvent) => void;
+};
+
+export type AdvancedSettingsChangeReplaceRuleEvent =
+  | {
+      type: "add";
+    }
+  | {
+      type: "change";
+      payload: { name: string; value: string };
+    }
+  | {
+      type: "move";
+      payload: { index: number; offset: number };
+    }
+  | {
+      type: "delete";
+      payload: { index: number };
+    };
+
+export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   const settings = props.settings;
   if (!settings) {
-    return "<div></div>";
+    return <div></div>;
   }
 
   const lookupWithCapitalized = settings?.lookupWithCapitalized ?? false;
@@ -33,10 +57,12 @@ const AdvancedSettings = (props) => {
 
   const changeSettings = (e) => {
     const value = e.target.type === "number" ? parseInt(e.target.value, 10) : e.target.value;
-    props.changeSettings(e.target.name, value);
+    const settingsPatch = { [e.target.name]: value };
+    props.onUpdate(null, settingsPatch);
   };
   const changeBoolSettings = (e) => {
-    props.changeSettings(e.target.name, e.target.checked);
+    const settingsPatch = { [e.target.name]: e.target.checked };
+    props.onUpdate(null, settingsPatch);
   };
 
   const replaceRules = settings?.replaceRules ?? [];
@@ -46,7 +72,7 @@ const AdvancedSettings = (props) => {
         <button
           type="button"
           className="button button-outline button-arrow"
-          onClick={() => props.changeReplaceRule("move", { index: i, offset: -1 })}
+          onClick={() => props.changeReplaceRule({ type: "move", payload: { index: i, offset: -1 } })}
           disabled={i === 0}
         >
           ↑
@@ -54,7 +80,7 @@ const AdvancedSettings = (props) => {
         <button
           type="button"
           className="button button-outline button-arrow"
-          onClick={() => props.changeReplaceRule("move", { index: i, offset: +1 })}
+          onClick={() => props.changeReplaceRule({ type: "move", payload: { index: i, offset: +1 } })}
           disabled={i === replaceRules.length - 1}
         >
           ↓
@@ -65,7 +91,9 @@ const AdvancedSettings = (props) => {
           key={`replaceRule.search.${i}`}
           value={r.search}
           style={{ width: 230 }}
-          onChange={(e) => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
+          onChange={(e) =>
+            props.changeReplaceRule({ type: "change", payload: { name: e.target.name, value: e.target.value } })
+          }
         />
         <span>{res.get("replaceRule1")}</span>
         <input
@@ -74,14 +102,16 @@ const AdvancedSettings = (props) => {
           key={`replaceRule.replace.${i}`}
           value={r.replace}
           style={{ width: 370 }}
-          onChange={(e) => props.changeReplaceRule("change", { name: e.target.name, value: e.target.value })}
+          onChange={(e) =>
+            props.changeReplaceRule({ type: "change", payload: { name: e.target.name, value: e.target.value } })
+          }
         />
         <span>{res.get("replaceRule2")}</span>
 
         <button
           type="button"
           className="button button-arrow"
-          onClick={() => props.changeReplaceRule("delete", { index: i })}
+          onClick={() => props.changeReplaceRule({ type: "delete", payload: { index: i } })}
           style={{ marginLeft: 3 }}
         >
           ×
@@ -99,8 +129,8 @@ const AdvancedSettings = (props) => {
           <input
             type="checkbox"
             name="lookupWithCapitalized"
-            value={lookupWithCapitalized}
             onChange={changeBoolSettings}
+            checked={lookupWithCapitalized}
           />
         </label>
         <label>
@@ -130,7 +160,7 @@ const AdvancedSettings = (props) => {
         <AceEditor
           mode="html"
           theme="xcode"
-          onChange={(value) => props.changeSettings("dialogTemplate", value)}
+          onChange={(value) => props.onUpdate(null, { dialogTemplate: value })}
           name="dialogTemplate"
           editorProps={{ $blockScrolling: true }}
           value={dialogTemplate}
@@ -143,7 +173,7 @@ const AdvancedSettings = (props) => {
         <AceEditor
           mode="html"
           theme="xcode"
-          onChange={(value) => props.changeSettings("contentWrapperTemplate", value)}
+          onChange={(value) => props.onUpdate(null, { contentWrapperTemplate: value })}
           name="contentWrapperTemplate"
           editorProps={{ $blockScrolling: true }}
           value={contentWrapperTemplate}
@@ -156,7 +186,7 @@ const AdvancedSettings = (props) => {
         <AceEditor
           mode="html"
           theme="xcode"
-          onChange={(value) => props.changeSettings("contentTemplate", value)}
+          onChange={(value) => props.onUpdate(null, { contentTemplate: value })}
           name="contentTemplate"
           editorProps={{ $blockScrolling: true }}
           value={contentTemplate}
@@ -170,7 +200,7 @@ const AdvancedSettings = (props) => {
         <AceEditor
           mode="json"
           theme="tomorrow"
-          onChange={(e) => props.changeSettings("normalDialogStyles", e)}
+          onChange={(value) => props.onUpdate(null, { normalDialogStyles: value })}
           name="normalDialogStyles"
           editorProps={{ $blockScrolling: true }}
           value={normalDialogStyles}
@@ -183,7 +213,7 @@ const AdvancedSettings = (props) => {
         <AceEditor
           mode="json"
           theme="tomorrow"
-          onChange={(e) => props.changeSettings("movingDialogStyles", e)}
+          onChange={(json) => props.onUpdate(null, { movingDialogStyles: json })}
           name="movingDialogStyles"
           editorProps={{ $blockScrolling: true }}
           value={movingDialogStyles}
@@ -196,7 +226,7 @@ const AdvancedSettings = (props) => {
         <AceEditor
           mode="json"
           theme="tomorrow"
-          onChange={(e) => props.changeSettings("hiddenDialogStyles", e)}
+          onChange={(value) => props.onUpdate(null, { hiddenDialogStyles: value })}
           name="hiddenDialogStyles"
           editorProps={{ $blockScrolling: true }}
           value={hiddenDialogStyles}
@@ -207,12 +237,10 @@ const AdvancedSettings = (props) => {
         <hr />
         <h3>{res.get("replaceRules")}</h3>
         {replaceRulesList}
-        <button type="button" onClick={() => props.changeReplaceRule("add")}>
+        <button type="button" onClick={() => props.changeReplaceRule({ type: "add" })}>
           {res.get("add")}
         </button>
       </fieldset>
     </form>
   );
 };
-
-export default AdvancedSettings;

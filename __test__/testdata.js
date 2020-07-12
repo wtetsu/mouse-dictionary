@@ -12,11 +12,11 @@ const load = () => {
     spelling: readJson("spelling.json5"),
     trailing: readJson("trailing.json5"),
     verb: readJson("verb.json5"),
-    ja: jaRule
+    ja: jaRule,
   });
 };
 
-const readJson = fileName => {
+const readJson = (fileName) => {
   const json = fs.readFileSync(`rule/${fileName}`, "utf8");
   return json5.parse(json);
 };

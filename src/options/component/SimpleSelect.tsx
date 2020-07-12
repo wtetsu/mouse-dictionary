@@ -6,7 +6,14 @@
 
 import React from "react";
 
-const SimpleSelect = (props) => {
+type Props = {
+  name: string;
+  value: string;
+  options: { id: string; name: string }[];
+  onChange: (arg0: string, arg1: React.ChangeEvent<HTMLSelectElement>) => void;
+};
+
+export const SimpleSelect: React.FC<Props> = (props) => {
   const options = props.options.map((e) => (
     <option key={e.id} value={e.id}>
       {e.name}
@@ -18,5 +25,3 @@ const SimpleSelect = (props) => {
     </select>
   );
 };
-
-export default SimpleSelect;

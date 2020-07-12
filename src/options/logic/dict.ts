@@ -4,14 +4,47 @@
  * Licensed under MIT
  */
 
-import LineReader from "./linereader";
-import EijiroParser from "./eijiroparser";
-import SimpleDictParser from "./simpledictparser";
-import JsonDictParser from "./jsondictparser";
+import { LineReader } from "./linereader";
+import { EijiroParser, SimpleDictParser, JsonDictParser } from "./dictparser";
 import storage from "../../lib/storage";
 import env from "../../settings/env";
 
-const load = async ({ file, encoding, format, event }) => {
+type ProgressCallback = (wordCount: number, progress: string) => void;
+
+type DictionaryInformation = {
+  files: string[];
+};
+
+type LoadCallback = (param: LoadCallbackParam) => void;
+
+type LoadCallbackParam =
+  | {
+      name: "reading";
+      loaded: number;
+      total: number;
+    }
+  | {
+      name: "loading";
+      count: number;
+      word: AWord;
+    };
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const emptyCallback: LoadCallback = () => {};
+
+type LoadParam = {
+  file: File;
+  encoding: string;
+  format: string;
+  event: LoadCallback;
+};
+
+type AWord = {
+  head: string;
+  desc: string;
+};
+
+export const load = async ({ file, encoding, format, event }: LoadParam): Promise<number> => {
   let parser = null;
   switch (format) {
     case "TSV":
@@ -31,7 +64,7 @@ const load = async ({ file, encoding, format, event }) => {
     throw new Error("Unknown File Format: " + format);
   }
 
-  const ev = event ?? (() => {});
+  const ev = event ?? emptyCallback;
 
   return new Promise((resolve, reject) => {
     let wordCount = 0;
@@ -40,20 +73,20 @@ const load = async ({ file, encoding, format, event }) => {
       ev({ name: "reading", loaded: e.loaded, total: e.total });
     };
     reader.onload = (e) => {
-      const data = e.target.result;
+      const data = <string>e.target.result;
 
       let dictData = {};
       const reader = new LineReader(data);
       reader.eachLine(
         (line) => {
-          const hd = parser.addLine(line);
+          const hd: AWord = parser.addLine(line);
           if (hd) {
             dictData[hd.head] = hd.desc;
             wordCount += 1;
 
             if (wordCount === 1 || (wordCount >= 1 && wordCount % env.registerRecordsAtOnce === 0)) {
               ev({ name: "loading", count: wordCount, word: hd });
-              let tmp = dictData;
+              const tmp = dictData;
               dictData = {};
               return save(tmp);
             }
@@ -74,7 +107,7 @@ const load = async ({ file, encoding, format, event }) => {
 
           save(dictData).then(
             () => {
-              resolve({ wordCount });
+              resolve(wordCount);
             },
             (error) => {
               throw new Error(`Error: ${error}`);
@@ -89,9 +122,9 @@ const load = async ({ file, encoding, format, event }) => {
   });
 };
 
-const registerDefaultDict = async (fnProgress) => {
-  const dict = await loadJsonFile("/data/dict.json");
-  fnProgress(0, 0);
+export const registerDefaultDict = async (fnProgress: ProgressCallback): Promise<number> => {
+  const dict = (await loadJsonFile("/data/dict.json")) as DictionaryInformation;
+  fnProgress(0, "0");
   let wordCount = 0;
   for (let i = 0; i < dict.files.length; i++) {
     wordCount += await registerDict(dict.files[i]);
@@ -101,21 +134,19 @@ const registerDefaultDict = async (fnProgress) => {
   return wordCount;
 };
 
-const loadJsonFile = async (fname) => {
+const loadJsonFile = async (fname: string): Promise<Record<string, any>> => {
   const url = chrome.extension.getURL(fname);
   const response = await fetch(url);
   return response.json();
 };
 
-const registerDict = async (fname) => {
+const registerDict = async (fname: string): Promise<number> => {
   const dictData = await loadJsonFile(fname);
   const wordCount = Object.keys(dictData).length;
   await save(dictData);
   return wordCount;
 };
 
-const save = (dictData) => {
+const save = (dictData: Record<string, string>): Promise<void> => {
   return storage.local.set(dictData);
 };
-
-export default { load, registerDefaultDict };

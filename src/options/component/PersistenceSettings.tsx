@@ -5,16 +5,18 @@
  */
 
 import React from "react";
-import res from "../logic/resource";
+import * as res from "../logic/resource";
 
-const PersistenceSettings = (props) => {
+type Props = {
+  trigger: (type: "save" | "factoryReset") => void;
+};
+
+export const PersistenceSettings: React.FC<Props> = (props) => {
   return (
     <div style={{ position: "sticky", top: 4, zIndex: 9999, opacity: 0.95 }}>
-      <input type="button" value={res.get("saveSettings")} onClick={props.onClickSaveSettings.bind(this)} />
+      <input type="button" value={res.get("saveSettings")} onClick={() => props.trigger("save")} />
       <span> </span>
-      <input type="button" value={res.get("defaultSettings")} onClick={props.onClickBackToDefaultSettings.bind(this)} />
+      <input type="button" value={res.get("defaultSettings")} onClick={() => props.trigger("factoryReset")} />
     </div>
   );
 };
-
-export default PersistenceSettings;

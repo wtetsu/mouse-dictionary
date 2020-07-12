@@ -9,13 +9,14 @@ import ContentEditable from "react-contenteditable";
 import swal from "sweetalert";
 import debounce from "lodash/debounce";
 import immer from "immer";
-import LoadDictionary from "./LoadDictionary";
-import BasicSettings from "./BasicSettings";
-import AdvancedSettings from "./AdvancedSettings";
-import PersistenceSettings from "./PersistenceSettings";
-import res from "../logic/resource";
-import dict from "../logic/dict";
-import data from "../logic/data";
+import { LoadDictionary } from "./LoadDictionary";
+import { BasicSettings } from "./BasicSettings";
+import { AdvancedSettings, AdvancedSettingsChangeReplaceRuleEvent } from "./AdvancedSettings";
+import { PersistenceSettings } from "./PersistenceSettings";
+import { JsonEditor } from "./JsonEditor";
+import * as res from "../logic/resource";
+import * as dict from "../logic/dict";
+import * as data from "../logic/data";
 import dom from "../../lib/dom";
 import storage from "../../lib/storage";
 import Generator from "../../main/generator";
@@ -24,14 +25,37 @@ import config from "../../main/config";
 import entry from "../../main/entry";
 import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
-import JsonEditor from "./JsonEditor";
+import { MouseDictionarySettings } from "../types";
 
-export default class Main extends React.Component {
-  constructor(props) {
+type MainState = {
+  encoding: string;
+  format: string;
+  dictDataUsage: string;
+  busy: boolean;
+  progress: string;
+  settings: MouseDictionarySettings;
+  trialText: string;
+  basicSettingsOpened: boolean;
+  advancedSettingsOpened: boolean;
+  jsonEditorOpened: boolean;
+  lang: string;
+  initialized: boolean;
+};
+
+type PreviewWindows = { dialog: HTMLElement; content: HTMLElement };
+
+export class Main extends React.Component<Record<string, unknown>, MainState> {
+  contentEditable: { current: any };
+  updatePreviewWindowWithDebounce: () => void;
+  previewWindow: PreviewWindows;
+  needRecreatePreviewWindow: boolean;
+  generator: Generator;
+
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.contentEditable = React.createRef();
 
-    const initialLang = decideInitialLanguage(navigator.languages);
+    const initialLang = decideInitialLanguage([...navigator.languages]);
     res.setLang(initialLang);
     this.state = {
       encoding: "Shift-JIS",
@@ -48,32 +72,19 @@ export default class Main extends React.Component {
       initialized: false,
     };
 
-    this.doChangeState = this.doChangeState.bind(this);
-    this.doChangeSettings = this.doChangeSettings.bind(this);
-    this.doChangeReplaceRule = this.doChangeReplaceRule.bind(this);
-
-    this.doLoad = this.doLoad.bind(this);
-    this.doClear = this.doClear.bind(this);
-    this.doLoadInitialDict = this.doLoadInitialDict.bind(this);
-    this.doSaveSettings = this.doSaveSettings.bind(this);
-    this.doBackToDefaultSettings = this.doBackToDefaultSettings.bind(this);
-    this.doToggleBasicSettings = this.doToggleBasicSettings.bind(this);
-    this.doToggleAdvancedSettings = this.doToggleAdvancedSettings.bind(this);
-    this.doSwitchLanguage = this.doSwitchLanguage.bind(this);
-
-    this.updateTrialWindowWithDebounce = debounce(
+    this.updatePreviewWindowWithDebounce = debounce(
       () => {
-        this.updateTrialWindow(this.state.settings);
+        this.updatePreviewWindow(this.state.settings);
       },
       64,
       { leading: true }
     );
 
-    this.trialWindow = null;
-    this.needRecreateTrialWindow = false;
+    this.previewWindow = null;
+    this.needRecreatePreviewWindow = false;
   }
 
-  render() {
+  render(): JSX.Element {
     const state = this.state;
 
     return (
@@ -90,18 +101,26 @@ export default class Main extends React.Component {
         </div>
 
         <div>
-          <div onClick={this.doSwitchLanguage} style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}>
+          <div onClick={this.switchLanguage} style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}>
             {this.state.lang}
           </div>
           <LoadDictionary
             encoding={state.encoding}
             format={state.format}
-            changeState={this.doChangeState}
-            doLoad={this.doLoad}
-            doClear={this.doClear}
             dictDataUsage={state.dictDataUsage}
             busy={state.busy}
             progress={state.progress}
+            onUpdate={(statePatch) => this.updateState(statePatch)}
+            trigger={(type) => {
+              switch (type) {
+                case "load":
+                  this.loadDictionaryData();
+                  break;
+                case "clear":
+                  this.clearDictionaryData();
+                  break;
+              }
+            }}
           />
 
           <img
@@ -125,7 +144,7 @@ export default class Main extends React.Component {
 
               <div style={{ marginTop: 30 }}>
                 <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-                <a onClick={this.doToggleBasicSettings} style={{ cursor: "pointer" }}>
+                <a style={{ cursor: "pointer" }} onClick={() => this.toggleBasicSettings()}>
                   {this.state.basicSettingsOpened ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
                 </a>
               </div>
@@ -139,7 +158,7 @@ export default class Main extends React.Component {
                 innerRef={this.contentEditable}
                 html={this.state.trialText}
                 disabled={false}
-                onChange={(e) => this.doChangeState("trialText", e.target.value)}
+                onChange={(e) => this.updateState({ trialText: e.target.value })}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -154,15 +173,29 @@ export default class Main extends React.Component {
 
           {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
             <PersistenceSettings
-              onClickSaveSettings={this.doSaveSettings}
-              onClickBackToDefaultSettings={this.doBackToDefaultSettings}
+              trigger={(type) => {
+                switch (type) {
+                  case "save":
+                    this.saveSettings();
+                    break;
+                  case "factoryReset":
+                    this.doFactoryReset();
+                    break;
+                }
+              }}
             />
           )}
 
           {this.state.basicSettingsOpened && (
             <BasicSettings
-              changeSettings={this.doChangeSettings}
-              doLoadInitialDict={this.doLoadInitialDict}
+              onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
+              trigger={(type) => {
+                switch (type) {
+                  case "loadInitialDict":
+                    this.doLoadInitialDict();
+                    break;
+                }
+              }}
               busy={state.busy}
               settings={state.settings}
               trialText={state.trialText}
@@ -173,7 +206,7 @@ export default class Main extends React.Component {
           {this.state.basicSettingsOpened && (
             <div>
               <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-              <a onClick={this.doToggleAdvancedSettings} style={{ cursor: "pointer" }}>
+              <a style={{ cursor: "pointer" }} onClick={() => this.toggleAdvancedSettings()}>
                 {this.state.advancedSettingsOpened ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
               </a>
             </div>
@@ -210,17 +243,23 @@ export default class Main extends React.Component {
                 >
                   <JsonEditor
                     initialValue={this.state.settings}
-                    setState={(newState) => {
-                      this.removeTrialWindow();
-                      this.setState(newState);
+                    onUpdate={(e) => {
+                      this.removePreviewWindow();
+                      const newState = immer(this.state, (d) => {
+                        Object.assign(d, e.payload.state);
+                        if (e.payload.settings) {
+                          d.settings = e.payload.settings;
+                        }
+                      });
+                      this.updateState(newState);
                     }}
                   />
                 </div>
               )}
 
               <AdvancedSettings
-                changeSettings={this.doChangeSettings}
-                changeReplaceRule={this.doChangeReplaceRule}
+                onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
+                changeReplaceRule={(e) => this.updateReplaceRule(e)}
                 settings={state.settings}
               />
             </>
@@ -230,7 +269,7 @@ export default class Main extends React.Component {
     );
   }
 
-  async componentDidMount() {
+  async componentDidMount(): Promise<void> {
     const isLoaded = await config.isDataReady();
     if (!isLoaded) {
       this.confirmAndLoadInitialDict("confirmLoadInitialDict");
@@ -240,17 +279,17 @@ export default class Main extends React.Component {
     this.setState({ initialized: true });
   }
 
-  componentDidUpdate() {
-    this.updateTrialWindowWithDebounce();
+  componentDidUpdate(): void {
+    this.updatePreviewWindowWithDebounce();
   }
 
-  async initializeUserSettings() {
+  async initializeUserSettings(): Promise<void> {
     const settings = data.preProcessSettings(await config.loadRawSettings());
     this.setState({ settings });
     this.generator = new Generator(settings);
   }
 
-  async updateDictDataUsage() {
+  async updateDictDataUsage(): Promise<void> {
     if (env.disableUserSettings) {
       return;
     }
@@ -261,11 +300,11 @@ export default class Main extends React.Component {
     });
   }
 
-  async confirmAndLoadInitialDict(messageId) {
+  async confirmAndLoadInitialDict(messageId: string): Promise<void> {
     const willLoad = await swal({
       text: res.get(messageId),
       icon: "info",
-      buttons: true,
+      buttons: [true, true],
       closeOnClickOutside: false,
     });
     if (!willLoad) {
@@ -275,8 +314,8 @@ export default class Main extends React.Component {
     this.loadInitialDict();
   }
 
-  async loadInitialDict() {
-    let finalWordCount;
+  async loadInitialDict(): Promise<void> {
+    let finalWordCount: number;
     try {
       this.setState({ busy: true, basicSettingsOpened: false, advancedSettingsOpened: false });
       finalWordCount = await dict.registerDefaultDict((wordCount, progress) => {
@@ -296,30 +335,37 @@ export default class Main extends React.Component {
     });
   }
 
-  doChangeState(name, value) {
-    this.setState({ [name]: value });
-    if (name === "trialText") {
-      this.updateTrialText(this.state.settings, value);
-    }
-  }
-
-  doChangeSettings(name, newValue) {
-    if (dialogFields.has(name)) {
-      this.needRecreateTrialWindow = true;
-    }
-    const newSettings = immer(this.state.settings, (d) => {
-      d[name] = newValue;
+  updateState(statePatch: Record<string, any>, settingsPatch: MouseDictionarySettings = null): void {
+    const newState = immer(this.state, (d) => {
+      Object.assign(d, statePatch);
+      if (settingsPatch) {
+        Object.assign(d.settings, settingsPatch);
+      }
     });
-    this.setState({ settings: newSettings });
+    this.setState(newState);
+    if (statePatch?.trialText) {
+      this.updateTrialText(statePatch.trialText, newState.settings.lookupWithCapitalized);
+    }
+    if (!settingsPatch) {
+      return;
+    }
+    for (const name of Object.keys(settingsPatch)) {
+      if (dialogFields.has(name)) {
+        this.needRecreatePreviewWindow = true;
+        break;
+      }
+    }
   }
 
-  async doLoad() {
-    const file = document.getElementById("dictdata").files[0];
+  async loadDictionaryData(): Promise<void> {
+    const input = document.getElementById("dictdata") as HTMLInputElement;
+    const file = input.files[0];
+
     const encoding = this.state.encoding;
     if (!file) {
       swal({
         title: res.get("selectDictFile"),
-        icon: "info",
+        icon: "warning",
       });
       return;
     }
@@ -329,7 +375,7 @@ export default class Main extends React.Component {
         willContinue = await swal({
           title: res.get("fileMayNotBeShiftJis"),
           icon: "warning",
-          buttons: true,
+          buttons: [true, true],
         });
       }
     }
@@ -338,10 +384,10 @@ export default class Main extends React.Component {
     }
   }
 
-  async loadDictionaryFile(file) {
+  async loadDictionaryFile(file: File): Promise<void> {
     const encoding = this.state.encoding;
     const format = this.state.format;
-    const event = (ev) => {
+    const event = (ev: any) => {
       switch (ev.name) {
         case "reading": {
           const loaded = ev.loaded.toLocaleString();
@@ -357,7 +403,7 @@ export default class Main extends React.Component {
     };
     try {
       this.setState({ busy: true, basicSettingsOpened: false, advancedSettingsOpened: false });
-      const { wordCount } = await dict.load({ file, encoding, format, event });
+      const wordCount = await dict.load({ file, encoding, format, event });
       swal({
         text: res.get("finishRegister", wordCount),
         icon: "success",
@@ -377,7 +423,7 @@ export default class Main extends React.Component {
   /**
    * Not supported for the moment due to instability of chrome.storage.local.clear()
    */
-  async doClear() {
+  async clearDictionaryData(): Promise<void> {
     // const willDelete = await swal({
     //   text: res.get("clearAllDictData"),
     //   icon: "warning",
@@ -397,28 +443,28 @@ export default class Main extends React.Component {
     // this.updateDictDataUsage();
   }
 
-  doLoadInitialDict() {
+  doLoadInitialDict(): void {
     this.confirmAndLoadInitialDict("confirmReloadInitialDict");
   }
 
-  doChangeReplaceRule(type, data) {
-    switch (type) {
+  updateReplaceRule(action: AdvancedSettingsChangeReplaceRuleEvent): void {
+    switch (action.type) {
       case "add":
         this.addReplaceRule();
         break;
       case "change":
-        this.changeReplaceRule(data.name, data.value);
+        this.changeReplaceRule(action.payload.name, action.payload.value);
         break;
       case "move":
-        this.moveReplaceRule(data.index, data.offset);
+        this.moveReplaceRule(action.payload.index, action.payload.offset);
         break;
       case "delete":
-        this.deleteReplaceRule(data.index);
+        this.deleteReplaceRule(action.payload.index);
         break;
     }
   }
 
-  addReplaceRule() {
+  addReplaceRule(): void {
     const newSettings = immer(this.state.settings, (d) => {
       const newKey = new Date().getTime().toString();
       d.replaceRules.push({ key: newKey, search: "", replace: "" });
@@ -426,7 +472,7 @@ export default class Main extends React.Component {
     this.setState({ settings: newSettings });
   }
 
-  changeReplaceRule(name, value) {
+  changeReplaceRule(name: string, value: string): void {
     // name: replaceRule.search.0
     const [, type, indexStr] = name.split(".");
     if (!["search", "replace"].includes(type)) {
@@ -442,7 +488,7 @@ export default class Main extends React.Component {
     this.setState({ settings: newSettings });
   }
 
-  moveReplaceRule(index, offset) {
+  moveReplaceRule(index: number, offset: number): void {
     const index2 = index + offset;
     if (Math.min(index, index2) < 0 || Math.max(index, index2) >= this.state.settings.replaceRules.length) {
       return;
@@ -454,14 +500,14 @@ export default class Main extends React.Component {
     this.setState({ settings: newSettings });
   }
 
-  deleteReplaceRule(index) {
+  deleteReplaceRule(index: number): void {
     const newSettings = immer(this.state.settings, (d) => {
       d.replaceRules.splice(index, 1);
     });
     this.setState({ settings: newSettings });
   }
 
-  updateTrialWindow(settings) {
+  updatePreviewWindow(settings: MouseDictionarySettings): void {
     if (!this.state.basicSettingsOpened) {
       return;
     }
@@ -474,40 +520,40 @@ export default class Main extends React.Component {
     } catch {
       // NOP
     }
-    let orgTrialWindow = null;
-    if (this.needRecreateTrialWindow) {
-      orgTrialWindow = this.trialWindow;
-      this.trialWindow = null;
-      this.needRecreateTrialWindow = false;
+    let orgPreviewWindow = null;
+    if (this.needRecreatePreviewWindow) {
+      orgPreviewWindow = this.previewWindow;
+      this.previewWindow = null;
+      this.needRecreatePreviewWindow = false;
     }
-    if (!this.trialWindow) {
+    if (!this.previewWindow) {
       try {
-        this.trialWindow = this.createTrialWindow(settings);
-        document.body.appendChild(this.trialWindow.dialog);
+        this.previewWindow = this.createPreviewWindow(settings);
+        document.body.appendChild(this.previewWindow.dialog);
       } catch (e) {
         console.error(e);
       }
     }
-    if (this.trialWindow) {
-      this.updateTrialText(settings);
-      dom.applyStyles(this.trialWindow.dialog, {
+    if (this.previewWindow) {
+      this.updateTrialText(this.state.trialText, settings.lookupWithCapitalized);
+      dom.applyStyles(this.previewWindow.dialog, {
         width: `${settings.width}px`,
         height: `${settings.height}px`,
         zIndex: 9999,
       });
     }
-    if (orgTrialWindow?.dialog) {
-      document.body.removeChild(orgTrialWindow.dialog);
+    if (orgPreviewWindow?.dialog) {
+      document.body.removeChild(orgPreviewWindow.dialog);
     }
   }
 
-  createTrialWindow(settings) {
+  createPreviewWindow(settings: MouseDictionarySettings): PreviewWindows {
     const tmpSettings = immer(settings, (d) => {
       d.normalDialogStyles = null;
       d.hiddenDialogStyles = null;
       d.movingDialogStyles = null;
     });
-    const trialWindow = view.create(tmpSettings);
+    const trialWindow: PreviewWindows = view.create(tmpSettings);
     dom.applyStyles(trialWindow.dialog, {
       cursor: "zoom-out",
       top: "30px",
@@ -522,36 +568,34 @@ export default class Main extends React.Component {
     return trialWindow;
   }
 
-  removeTrialWindow() {
-    if (this.trialWindow?.dialog) {
-      document.body.removeChild(this.trialWindow.dialog);
-      this.trialWindow = null;
+  removePreviewWindow(): void {
+    if (this.previewWindow?.dialog) {
+      document.body.removeChild(this.previewWindow.dialog);
+      this.previewWindow = null;
     }
   }
 
-  async updateTrialText(settings, trialText) {
-    if (!this.trialWindow) {
+  async updateTrialText(trialText: string, lookupWithCapitalized: boolean): Promise<void> {
+    if (!this.previewWindow) {
       return;
     }
-    const actualTrialText = trialText ?? this.state.trialText;
-
-    const { entries, lang } = entry.build(actualTrialText, settings.lookupWithCapitalized, false);
+    const { entries, lang } = entry.build(trialText, lookupWithCapitalized, false);
 
     console.time("update");
 
     const descriptions = await storage.local.get(entries);
     const { html } = await this.generator.generate(entries, descriptions, lang === "en");
 
-    if (this.trialWindow) {
+    if (this.previewWindow) {
       const newDom = dom.create(html);
-      this.trialWindow.content.innerHTML = "";
-      this.trialWindow.content.appendChild(newDom);
+      this.previewWindow.content.innerHTML = "";
+      this.previewWindow.content.appendChild(newDom);
     }
 
     console.timeEnd("update");
   }
 
-  async doSaveSettings() {
+  async saveSettings(): Promise<void> {
     const settings = data.postProcessSettings(this.state.settings);
     try {
       await config.saveSettings(settings);
@@ -567,27 +611,27 @@ export default class Main extends React.Component {
     }
   }
 
-  doBackToDefaultSettings() {
-    this.needRecreateTrialWindow = true;
+  doFactoryReset(): void {
+    this.needRecreatePreviewWindow = true;
     const newSettings = data.preProcessSettings(getDefaultSettings());
     this.setState({ settings: newSettings });
   }
 
-  doToggleBasicSettings() {
-    this.removeTrialWindow();
+  toggleBasicSettings(): void {
+    this.removePreviewWindow();
     this.setState({
       basicSettingsOpened: !this.state.basicSettingsOpened,
       advancedSettingsOpened: false,
     });
   }
 
-  doToggleAdvancedSettings() {
+  toggleAdvancedSettings(): void {
     this.setState({
       advancedSettingsOpened: !this.state.advancedSettingsOpened,
     });
   }
 
-  doSwitchLanguage() {
+  switchLanguage(): void {
     const newLang = this.state.lang === "ja" ? "en" : "ja";
     res.setLang(newLang);
     this.setState({
@@ -604,7 +648,7 @@ const getDefaultSettings = () => {
 
 const dialogFields = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
 
-const decideInitialLanguage = (languages) => {
+const decideInitialLanguage = (languages: string[]) => {
   if (!languages) {
     return "en";
   }
@@ -620,12 +664,12 @@ const decideInitialLanguage = (languages) => {
   return result;
 };
 
-const fileMayBeShiftJis = async (file) => {
+const fileMayBeShiftJis = async (file: File) => {
   return new Promise((done, fail) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const buffer = e.target.result;
+        const buffer = e.target.result as ArrayBuffer;
         const length = Math.min(512, buffer.byteLength);
         const bytes = new Uint8Array(buffer, 0, length);
         const mayBeSjis = data.byteArrayMayBeShiftJis(bytes);

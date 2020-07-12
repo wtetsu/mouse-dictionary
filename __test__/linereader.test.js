@@ -1,13 +1,13 @@
-import LineReader from "../src/options/logic/linereader";
+import { LineReader } from "../src/options/logic/linereader";
 
-test("", done => {
+test("", (done) => {
   let reader = new LineReader("aaa\nbbb\nccc");
 
   let lines = [];
   reader.eachLine(
-    line => {
+    (line) => {
       lines.push(line);
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve();
         }, 100);
@@ -20,14 +20,14 @@ test("", done => {
   );
 });
 
-test("", done => {
+test("", (done) => {
   let reader = new LineReader("aaa\r\nbbb\r\nccc");
 
   let lines = [];
   reader.eachLine(
-    line => {
+    (line) => {
       lines.push(line);
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve();
         }, 100);
@@ -40,14 +40,14 @@ test("", done => {
   );
 });
 
-test("", done => {
+test("", (done) => {
   let reader = new LineReader("aaabbbccc");
 
   let lines = [];
   reader.eachLine(
-    line => {
+    (line) => {
       lines.push(line);
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve();
         }, 100);

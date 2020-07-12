@@ -8,7 +8,7 @@ import "@babel/polyfill";
 import swal from "sweetalert";
 import React from "react";
 import { render } from "react-dom";
-import Main from "./component/Main";
+import { Main } from "./component/Main";
 import rule from "../main/rule";
 
 import ace from "ace-builds/src-noconflict/ace";
@@ -21,7 +21,7 @@ ace.config.set("basePath", "/options");
 
 window.onerror = (msg) => {
   swal({
-    text: msg,
+    text: msg.toString(),
     icon: "error",
   });
 };

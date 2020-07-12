@@ -6,26 +6,46 @@
 
 import React from "react";
 import { ChromePicker } from "react-color";
-import res from "../logic/resource";
+import * as res from "../logic/resource";
 import env from "../../settings/env";
+import { MouseDictionarySettings, UpdateEventHandler } from "../types";
 
-const BasicSettings = (props) => {
+type Props = {
+  settings: MouseDictionarySettings;
+  trialText: string;
+  busy: boolean;
+  onUpdate: UpdateEventHandler;
+  trigger: (type: "loadInitialDict") => void;
+};
+
+export const BasicSettings: React.FC<Props> = (props) => {
   const settings = props.settings;
   if (!settings) {
-    return "<div></div>";
+    return <div></div>;
   }
 
   const positionOptions = createPositionOptions();
   const scrollOptions = createScrollOptions();
   const fontSizeOptions = createFontSizeOptions();
 
-  const changeSettings = (e) => {
-    const value = e.target.type === "number" ? parseInt(e.target.value, 10) : e.target.value;
-    props.changeSettings(e.target.name, value);
+  const changeSettings = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const value = e.target.value;
+    const settingsPatch = { [e.target.name]: value };
+    props.onUpdate(null, settingsPatch);
   };
 
-  const changeColor = (name, e) => {
-    props.changeSettings(name, e.hex);
+  const changeNumberSettings = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    if (value < 0) {
+      return;
+    }
+    const settingsPatch = { [e.target.name]: value };
+    props.onUpdate(null, settingsPatch);
+  };
+
+  const changeColor = (name: string, e: { hex: string }) => {
+    const settingsPatch = { [name]: e.hex };
+    props.onUpdate(null, settingsPatch);
   };
 
   const settings1 = (
@@ -37,7 +57,7 @@ const BasicSettings = (props) => {
         type="number"
         name="shortWordLength"
         value={settings.shortWordLength}
-        onChange={changeSettings}
+        onChange={changeNumberSettings}
         style={{ width: 60 }}
       />
       <span> {res.get("abbreviateShortWordDesc1")} </span>
@@ -45,15 +65,21 @@ const BasicSettings = (props) => {
         type="number"
         name="cutShortWordDescription"
         value={settings.cutShortWordDescription}
-        onChange={changeSettings}
+        onChange={changeNumberSettings}
         style={{ width: 60 }}
       />
       <span> {res.get("abbreviateShortWordDesc2")}</span>
       <label>{res.get("initialSize")}</label>
       <span>{res.get("width")}</span>
-      <input type="number" name="width" value={settings.width} onChange={changeSettings} style={{ width: 90 }} />
+      <input type="number" name="width" value={settings.width} onChange={changeNumberSettings} style={{ width: 90 }} />
       <span> {res.get("height")}</span>
-      <input type="number" name="height" value={settings.height} onChange={changeSettings} style={{ width: 90 }} />
+      <input
+        type="number"
+        name="height"
+        value={settings.height}
+        onChange={changeNumberSettings}
+        style={{ width: 90 }}
+      />
       <label>{res.get("initialPosition")}</label>
       <select name="initialPosition" value={settings.initialPosition} onChange={changeSettings} style={{ width: 250 }}>
         {positionOptions}
@@ -112,8 +138,8 @@ const BasicSettings = (props) => {
         className="button-outline button-small"
         value={res.get("loadInitialDict")}
         style={{ marginRight: 5, cursor: "pointer" }}
-        onClick={props.doLoadInitialDict}
-        disabled={props.busy ? "disabled" : null}
+        onClick={() => props.trigger("loadInitialDict")}
+        disabled={props.busy}
       />
     </fieldset>
   );
@@ -202,5 +228,3 @@ const createOptions = (list) => {
     </option>
   ));
 };
-
-export default BasicSettings;

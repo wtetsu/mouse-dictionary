@@ -1,0 +1,48 @@
+{
+  "overrides": [
+    {
+      "files": ["src/options/**/*.ts", "src/options/**/*.tsx"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "rules": {
+        "react/prop-types": 0,
+        "@typescript-eslint/no-explicit-any": 0
+      }
+    }
+  ],
+  "parser": "@typescript-eslint/parser",
+
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2020,
+    "ecmaFeatures": {
+      "jsx": true,
+      "modules": true
+    }
+  },
+  "globals": {
+    "chrome": true,
+    "BROWSER": true,
+    "DIALOG_ID": true,
+    "process": true
+  },
+  "rules": {
+    "linebreak-style": ["error", "unix"],
+    "semi": ["error", "always"],
+    "eqeqeq": 2
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

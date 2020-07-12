@@ -1,14 +1,13 @@
 {
   "presets": [
     [
-      "@babel/preset-env",
+      "@babel/env",
       {
-        "targets": {
-          "chrome": "68",
-          "firefox": "62"
-        }
+        "targets": ["last 5 chrome version", "last 5 firefox version"]
       }
-    ]
+    ],
+    ["@babel/react"],
+    ["@babel/typescript"]
   ],
   "plugins": []
 }

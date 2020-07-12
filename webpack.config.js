@@ -32,7 +32,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(:?js|ts)$/,
+        test: /\.js$/,
         use: {
           loader: "babel-loader",
           options: {
@@ -42,13 +42,22 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(:?jsx|tsx)$/,
+        test: /\.ts$/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            cacheDirectory: !isProd,
+          },
+        },
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.tsx$/,
         use: [
           {
             loader: "babel-loader",
             options: {
               cacheDirectory: !isProd,
-              presets: ["@babel/env", "@babel/react"],
             },
           },
         ],

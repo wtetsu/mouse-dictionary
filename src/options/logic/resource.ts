@@ -8,14 +8,14 @@ import sprintf from "sprintf-js";
 import ja from "../resource/ja";
 import en from "../resource/en";
 
-let _lang = null;
+let _lang: string = null;
 
-const setLang = (newLang) => {
+export const setLang = (newLang: string): void => {
   _lang = newLang;
 };
 
-const get = (key, ...params) => {
-  let templates;
+export const get = (key: string, ...params: any[]): string => {
+  let templates: Record<string, string>;
   switch (_lang) {
     case "ja":
       templates = ja;
@@ -28,7 +28,7 @@ const get = (key, ...params) => {
       break;
   }
 
-  let r;
+  let r: string;
   const tmpl = templates[key];
   if (tmpl) {
     const sprintfParams = [tmpl].concat(params);
@@ -38,5 +38,3 @@ const get = (key, ...params) => {
   }
   return r;
 };
-
-export default { setLang, get };
