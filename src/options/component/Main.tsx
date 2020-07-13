@@ -42,12 +42,12 @@ type MainState = {
   initialized: boolean;
 };
 
-type PreviewWindows = { dialog: HTMLElement; content: HTMLElement };
+type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };
 
 export class Main extends React.Component<Record<string, unknown>, MainState> {
   contentEditable: { current: any };
   updatePreviewWindowWithDebounce: () => void;
-  previewWindow: PreviewWindows;
+  previewWindow: PreviewWindow;
   needRecreatePreviewWindow: boolean;
   generator: Generator;
 
@@ -453,7 +453,7 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
         this.addReplaceRule();
         break;
       case "change":
-        this.changeReplaceRule(action.payload.name, action.payload.value);
+        this.changeReplaceRule(action.payload.index, action.payload.target, action.payload.value);
         break;
       case "move":
         this.moveReplaceRule(action.payload.index, action.payload.offset);
@@ -472,18 +472,13 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
     this.setState({ settings: newSettings });
   }
 
-  changeReplaceRule(name: string, value: string): void {
-    // name: replaceRule.search.0
-    const [, type, indexStr] = name.split(".");
-    if (!["search", "replace"].includes(type)) {
-      return;
-    }
-    const index = parseInt(indexStr, 10);
-    if (index < 0 || index >= this.state.settings.replaceRules.length) {
+  changeReplaceRule(index: number, target: "search" | "replace", value: string): void {
+    const isValidIndex = index >= 0 && index < this.state.settings.replaceRules.length;
+    if (!isValidIndex) {
       return;
     }
     const newSettings = immer(this.state.settings, (d) => {
-      d.replaceRules[index][type] = value;
+      d.replaceRules[index][target] = value;
     });
     this.setState({ settings: newSettings });
   }
@@ -547,13 +542,13 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
     }
   }
 
-  createPreviewWindow(settings: MouseDictionarySettings): PreviewWindows {
+  createPreviewWindow(settings: MouseDictionarySettings): PreviewWindow {
     const tmpSettings = immer(settings, (d) => {
       d.normalDialogStyles = null;
       d.hiddenDialogStyles = null;
       d.movingDialogStyles = null;
     });
-    const trialWindow: PreviewWindows = view.create(tmpSettings);
+    const trialWindow = view.create(tmpSettings) as PreviewWindow;
     dom.applyStyles(trialWindow.dialog, {
       cursor: "zoom-out",
       top: "30px",

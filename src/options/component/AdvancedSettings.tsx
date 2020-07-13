@@ -29,15 +29,24 @@ export type AdvancedSettingsChangeReplaceRuleEvent =
     }
   | {
       type: "change";
-      payload: { name: string; value: string };
+      payload: {
+        index: number;
+        target: "search" | "replace";
+        value: string;
+      };
     }
   | {
       type: "move";
-      payload: { index: number; offset: number };
+      payload: {
+        index: number;
+        offset: number;
+      };
     }
   | {
       type: "delete";
-      payload: { index: number };
+      payload: {
+        index: number;
+      };
     };
 
 export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
@@ -92,7 +101,10 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           value={r.search}
           style={{ width: 230 }}
           onChange={(e) =>
-            props.changeReplaceRule({ type: "change", payload: { name: e.target.name, value: e.target.value } })
+            props.changeReplaceRule({
+              type: "change",
+              payload: { index: i, target: "search", value: e.target.value },
+            })
           }
         />
         <span>{res.get("replaceRule1")}</span>
@@ -103,7 +115,10 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           value={r.replace}
           style={{ width: 370 }}
           onChange={(e) =>
-            props.changeReplaceRule({ type: "change", payload: { name: e.target.name, value: e.target.value } })
+            props.changeReplaceRule({
+              type: "change",
+              payload: { index: i, target: "replace", value: e.target.value },
+            })
           }
         />
         <span>{res.get("replaceRule2")}</span>
