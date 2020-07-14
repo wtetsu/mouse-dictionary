@@ -7,7 +7,8 @@
 import React from "react";
 import AceEditor from "react-ace";
 import * as res from "../logic/resource";
-import { MouseDictionarySettings, UpdateEventHandler } from "../types";
+import { MouseDictionarySettings, UpdateEventHandler, Replace } from "../types";
+import { ReplaceRule, ReplaceRuleChangeEvent } from "./ReplaceRule";
 
 const EDITOR_STYLE = {
   width: 800,
@@ -20,34 +21,8 @@ const EDITOR_STYLE = {
 type AdvancedSettingsProps = {
   settings: MouseDictionarySettings;
   onUpdate: UpdateEventHandler;
-  changeReplaceRule: (e: AdvancedSettingsChangeReplaceRuleEvent) => void;
+  changeReplaceRule: (e: ReplaceRuleChangeEvent) => void;
 };
-
-export type AdvancedSettingsChangeReplaceRuleEvent =
-  | {
-      type: "add";
-    }
-  | {
-      type: "change";
-      payload: {
-        index: number;
-        target: "search" | "replace";
-        value: string;
-      };
-    }
-  | {
-      type: "move";
-      payload: {
-        index: number;
-        offset: number;
-      };
-    }
-  | {
-      type: "delete";
-      payload: {
-        index: number;
-      };
-    };
 
 export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   const settings = props.settings;
@@ -73,67 +48,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
     const settingsPatch = { [e.target.name]: e.target.checked };
     props.onUpdate(null, settingsPatch);
   };
-
-  const replaceRules = settings?.replaceRules ?? [];
-  const replaceRulesList = replaceRules.map((r, i) => {
-    return (
-      <div key={r.key ?? r.search}>
-        <button
-          type="button"
-          className="button button-outline button-arrow"
-          onClick={() => props.changeReplaceRule({ type: "move", payload: { index: i, offset: -1 } })}
-          disabled={i === 0}
-        >
-          ↑
-        </button>
-        <button
-          type="button"
-          className="button button-outline button-arrow"
-          onClick={() => props.changeReplaceRule({ type: "move", payload: { index: i, offset: +1 } })}
-          disabled={i === replaceRules.length - 1}
-        >
-          ↓
-        </button>
-        <input
-          type="text"
-          name={`replaceRule.search.${i}`}
-          key={`replaceRule.search.${i}`}
-          value={r.search}
-          style={{ width: 230 }}
-          onChange={(e) =>
-            props.changeReplaceRule({
-              type: "change",
-              payload: { index: i, target: "search", value: e.target.value },
-            })
-          }
-        />
-        <span>{res.get("replaceRule1")}</span>
-        <input
-          type="text"
-          name={`replaceRule.replace.${i}`}
-          key={`replaceRule.replace.${i}`}
-          value={r.replace}
-          style={{ width: 370 }}
-          onChange={(e) =>
-            props.changeReplaceRule({
-              type: "change",
-              payload: { index: i, target: "replace", value: e.target.value },
-            })
-          }
-        />
-        <span>{res.get("replaceRule2")}</span>
-
-        <button
-          type="button"
-          className="button button-arrow"
-          onClick={() => props.changeReplaceRule({ type: "delete", payload: { index: i } })}
-          style={{ marginLeft: 3 }}
-        >
-          ×
-        </button>
-      </div>
-    );
-  });
 
   return (
     <form className="settingsForm">
@@ -251,7 +165,10 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
         />
         <hr />
         <h3>{res.get("replaceRules")}</h3>
-        {replaceRulesList}
+        <ReplaceRule
+          replaceRules={props.settings.replaceRules}
+          changeReplaceRule={(e: ReplaceRuleChangeEvent) => props.changeReplaceRule(e)}
+        ></ReplaceRule>
         <button type="button" onClick={() => props.changeReplaceRule({ type: "add" })}>
           {res.get("add")}
         </button>

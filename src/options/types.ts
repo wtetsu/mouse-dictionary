@@ -12,7 +12,7 @@ export type MouseDictionarySettings = {
   descFontSize?: string;
   width?: number;
   height?: number;
-  replaceRules?: ReplaceRule[];
+  replaceRules?: Replace[];
   normalDialogStyles?: string;
   movingDialogStyles?: string;
   hiddenDialogStyles?: string;
@@ -21,7 +21,7 @@ export type MouseDictionarySettings = {
   contentTemplate?: string;
 };
 
-type ReplaceRule = {
+export type Replace = {
   key: string;
   search: string;
   replace: string;

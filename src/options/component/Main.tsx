@@ -27,9 +27,9 @@ import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
 import { MouseDictionarySettings } from "../types";
 
+type MainProps = Record<string, unknown>;
+
 type MainState = {
-  encoding: string;
-  format: string;
   dictDataUsage: string;
   busy: boolean;
   progress: string;
@@ -44,7 +44,7 @@ type MainState = {
 
 type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };
 
-export class Main extends React.Component<Record<string, unknown>, MainState> {
+export class Main extends React.Component<MainProps, MainState> {
   contentEditable: { current: any };
   updatePreviewWindowWithDebounce: () => void;
   previewWindow: PreviewWindow;
@@ -58,8 +58,6 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
     const initialLang = decideInitialLanguage([...navigator.languages]);
     res.setLang(initialLang);
     this.state = {
-      encoding: "Shift-JIS",
-      format: "EIJIRO",
       dictDataUsage: null,
       busy: false,
       progress: "",
@@ -72,14 +70,9 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
       initialized: false,
     };
 
-    this.updatePreviewWindowWithDebounce = debounce(
-      () => {
-        this.updatePreviewWindow(this.state.settings);
-      },
-      64,
-      { leading: true }
-    );
-
+    this.updatePreviewWindowWithDebounce = debounce(() => this.updatePreviewWindow(this.state.settings), 64, {
+      leading: true,
+    });
     this.previewWindow = null;
     this.needRecreatePreviewWindow = false;
   }
@@ -101,20 +94,19 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
         </div>
 
         <div>
-          <div onClick={this.switchLanguage} style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}>
+          <div
+            style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}
+            onClick={() => this.switchLanguage()}
+          >
             {this.state.lang}
           </div>
           <LoadDictionary
-            encoding={state.encoding}
-            format={state.format}
-            dictDataUsage={state.dictDataUsage}
             busy={state.busy}
             progress={state.progress}
-            onUpdate={(statePatch) => this.updateState(statePatch)}
-            trigger={(type) => {
-              switch (type) {
+            trigger={(e) => {
+              switch (e.type) {
                 case "load":
-                  this.loadDictionaryData();
+                  this.loadDictionaryData(e.payload.encoding, e.payload.format);
                   break;
                 case "clear":
                   this.clearDictionaryData();
@@ -129,6 +121,13 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
             height="32"
             style={{ verticalAlign: "middle", display: this.state.initialized ? "none" : "inline" }}
           />
+
+          <div style={{ fontSize: "75%" }}>
+            {this.state.dictDataUsage && <div>{res.get("dictDataUsage", this.state.dictDataUsage)}</div>}
+            <div>
+              <span>{this.state.progress}</span>
+            </div>
+          </div>
 
           {!this.state.busy && !env.disableUserSettings && this.state.initialized && (
             <>
@@ -357,11 +356,9 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
     }
   }
 
-  async loadDictionaryData(): Promise<void> {
+  async loadDictionaryData(encoding: string, format: string): Promise<void> {
     const input = document.getElementById("dictdata") as HTMLInputElement;
     const file = input.files[0];
-
-    const encoding = this.state.encoding;
     if (!file) {
       swal({
         title: res.get("selectDictFile"),
@@ -380,13 +377,11 @@ export class Main extends React.Component<Record<string, unknown>, MainState> {
       }
     }
     if (willContinue) {
-      this.loadDictionaryFile(file);
+      this.loadDictionaryFile(file, encoding, format);
     }
   }
 
-  async loadDictionaryFile(file: File): Promise<void> {
-    const encoding = this.state.encoding;
-    const format = this.state.format;
+  async loadDictionaryFile(file: File, encoding: string, format: string): Promise<void> {
     const event = (ev: any) => {
       switch (ev.name) {
         case "reading": {

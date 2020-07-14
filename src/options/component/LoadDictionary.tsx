@@ -4,22 +4,36 @@
  * Licensed under MIT
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { SimpleSelect } from "./SimpleSelect";
 import * as res from "../logic/resource";
 import env from "../../settings/env";
 
+type Encoding = "Shift-JIS" | "UTF-8" | "UTF-16";
+type Format = "EIJIRO" | "TSV" | "PDIC_LINE" | "JSON";
+
 type Props = {
-  encoding: string;
-  format: string;
+  defaultEncoding?: Encoding;
+  defaultFormat?: Format;
   busy: boolean;
   progress: string;
-  dictDataUsage: string;
-  onUpdate: (state: any) => void;
-  trigger: (type: "load" | "clear") => void;
+  trigger: (e: TriggerEvent) => void;
 };
 
+type TriggerEvent =
+  | {
+      type: "load";
+      payload: {
+        encoding: Encoding;
+        format: Format;
+      };
+    }
+  | { type: "clear" };
+
 export const LoadDictionary: React.FC<Props> = (props) => {
+  const [encoding, setEncoding] = useState(props.defaultEncoding);
+  const [format, setFormat] = useState(props.defaultFormat);
+
   const ENCODINGS = [
     { id: "Shift-JIS", name: "Shift-JIS" },
     { id: "UTF-8", name: "UTF-8" },
@@ -33,16 +47,22 @@ export const LoadDictionary: React.FC<Props> = (props) => {
     { id: "JSON", name: res.get("formatJson") },
   ];
 
-  const changeState = (name: string, e: React.ChangeEvent<HTMLSelectElement>) => {
-    props.onUpdate({ [name]: e.target.value });
-  };
-
   return (
     <div>
       <label>{res.get("dictDataEncoding")}</label>
-      <SimpleSelect name="encoding" value={props.encoding} options={ENCODINGS} onChange={changeState} />
+      <SimpleSelect
+        name="encoding"
+        value={encoding}
+        options={ENCODINGS}
+        onChange={(_name, e) => setEncoding(e.target.value as Encoding)}
+      />
       <label>{res.get("dictDataFormat")}</label>
-      <SimpleSelect name="format" value={props.format} options={FORMATS} onChange={changeState} />
+      <SimpleSelect
+        name="format"
+        value={format}
+        options={FORMATS}
+        onChange={(_name, e) => setFormat(e.target.value as Format)}
+      />
       <label>{res.get("readDictData")}</label>
       <input type="file" id="dictdata" />
       <br />
@@ -50,7 +70,12 @@ export const LoadDictionary: React.FC<Props> = (props) => {
         type="button"
         value={res.get("loadSelectedFile")}
         style={{ marginRight: 5 }}
-        onClick={() => props.trigger("load")}
+        onClick={() =>
+          props.trigger({
+            type: "load",
+            payload: { encoding, format },
+          })
+        }
         disabled={props.busy}
       />
       {!env.disableClearDataButton && (
@@ -58,7 +83,7 @@ export const LoadDictionary: React.FC<Props> = (props) => {
           type="button"
           value={res.get("clearLoadedData")}
           style={{ marginRight: 5 }}
-          onClick={() => props.trigger("clear")}
+          onClick={() => props.trigger({ type: "clear" })}
           disabled={props.busy}
         />
       )}
@@ -68,12 +93,11 @@ export const LoadDictionary: React.FC<Props> = (props) => {
         height="32"
         style={{ verticalAlign: "middle", display: props.busy ? "inline" : "none" }}
       />
-      <div style={{ fontSize: "75%" }}>
-        {props.dictDataUsage && <div>{res.get("dictDataUsage", props.dictDataUsage)}</div>}
-        <div>
-          <span>{props.progress}</span>
-        </div>
-      </div>
     </div>
   );
+};
+
+LoadDictionary.defaultProps = {
+  defaultEncoding: "Shift-JIS",
+  defaultFormat: "EIJIRO",
 };
