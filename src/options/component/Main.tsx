@@ -11,7 +11,7 @@ import debounce from "lodash/debounce";
 import immer from "immer";
 import { LoadDictionary } from "./LoadDictionary";
 import { BasicSettings } from "./BasicSettings";
-import { AdvancedSettings, AdvancedSettingsChangeReplaceRuleEvent } from "./AdvancedSettings";
+import { AdvancedSettings } from "./AdvancedSettings";
 import { PersistenceSettings } from "./PersistenceSettings";
 import { JsonEditor } from "./JsonEditor";
 import * as res from "../logic/resource";
@@ -258,7 +258,6 @@ export class Main extends React.Component<MainProps, MainState> {
 
               <AdvancedSettings
                 onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
-                changeReplaceRule={(e) => this.updateReplaceRule(e)}
                 settings={state.settings}
               />
             </>
@@ -334,7 +333,7 @@ export class Main extends React.Component<MainProps, MainState> {
     });
   }
 
-  updateState(statePatch: Record<string, any>, settingsPatch: MouseDictionarySettings = null): void {
+  updateState(statePatch: Record<string, any>, settingsPatch: Partial<MouseDictionarySettings> = null): void {
     const newState = immer(this.state, (d) => {
       Object.assign(d, statePatch);
       if (settingsPatch) {
@@ -440,61 +439,6 @@ export class Main extends React.Component<MainProps, MainState> {
 
   doLoadInitialDict(): void {
     this.confirmAndLoadInitialDict("confirmReloadInitialDict");
-  }
-
-  updateReplaceRule(action: AdvancedSettingsChangeReplaceRuleEvent): void {
-    switch (action.type) {
-      case "add":
-        this.addReplaceRule();
-        break;
-      case "change":
-        this.changeReplaceRule(action.payload.index, action.payload.target, action.payload.value);
-        break;
-      case "move":
-        this.moveReplaceRule(action.payload.index, action.payload.offset);
-        break;
-      case "delete":
-        this.deleteReplaceRule(action.payload.index);
-        break;
-    }
-  }
-
-  addReplaceRule(): void {
-    const newSettings = immer(this.state.settings, (d) => {
-      const newKey = new Date().getTime().toString();
-      d.replaceRules.push({ key: newKey, search: "", replace: "" });
-    });
-    this.setState({ settings: newSettings });
-  }
-
-  changeReplaceRule(index: number, target: "search" | "replace", value: string): void {
-    const isValidIndex = index >= 0 && index < this.state.settings.replaceRules.length;
-    if (!isValidIndex) {
-      return;
-    }
-    const newSettings = immer(this.state.settings, (d) => {
-      d.replaceRules[index][target] = value;
-    });
-    this.setState({ settings: newSettings });
-  }
-
-  moveReplaceRule(index: number, offset: number): void {
-    const index2 = index + offset;
-    if (Math.min(index, index2) < 0 || Math.max(index, index2) >= this.state.settings.replaceRules.length) {
-      return;
-    }
-    const newSettings = immer(this.state.settings, (d) => {
-      const rules = d.replaceRules;
-      [rules[index], rules[index2]] = [rules[index2], rules[index]];
-    });
-    this.setState({ settings: newSettings });
-  }
-
-  deleteReplaceRule(index: number): void {
-    const newSettings = immer(this.state.settings, (d) => {
-      d.replaceRules.splice(index, 1);
-    });
-    this.setState({ settings: newSettings });
   }
 
   updatePreviewWindow(settings: MouseDictionarySettings): void {

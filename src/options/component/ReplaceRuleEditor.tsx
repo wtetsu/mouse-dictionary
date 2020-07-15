@@ -7,13 +7,14 @@
 import React from "react";
 import * as res from "../logic/resource";
 import { Replace } from "../types";
+import immer from "immer";
 
 type Props = {
   replaceRules: Replace[];
-  changeReplaceRule: (e: ReplaceRuleChangeEvent) => void;
+  onUpdate: (e: Replace[]) => void;
 };
 
-export type ReplaceRuleChangeEvent =
+type Action =
   | {
       type: "add";
     }
@@ -28,8 +29,8 @@ export type ReplaceRuleChangeEvent =
   | {
       type: "move";
       payload: {
-        index: number;
-        offset: number;
+        index1: number;
+        index2: number;
       };
     }
   | {
@@ -39,17 +40,49 @@ export type ReplaceRuleChangeEvent =
       };
     };
 
-export const ReplaceRule: React.FC<Props> = (props) => {
-  const replaceRules = props.replaceRules ?? [];
+const reduce = (state: Replace[], action: Action): Replace[] => {
+  switch (action.type) {
+    case "add":
+      return immer(state, (d) => {
+        const newKey = new Date().getTime().toString();
+        d.push({ key: newKey, search: "", replace: "" });
+      });
+    case "change":
+      return immer(state, (d) => {
+        const p = action.payload;
+        d[p.index][p.target] = p.value;
+      });
+    case "move":
+      return immer(state, (d) => {
+        const { index1, index2 } = action.payload;
+        const isValidIndex = (index1 >= 0 && index1 < d.length) || (index2 >= 0 && index2 < d.length);
+        if (!isValidIndex) {
+          return;
+        }
+        [d[index1], d[index2]] = [d[index2], d[index1]];
+      });
+
+    case "delete":
+      return immer(state, (d) => {
+        d.splice(action.payload.index, 1);
+      });
+  }
+};
+
+export const ReplaceRuleEditor: React.FC<Props> = (props) => {
+  const update = (action: Action) => {
+    const newRules = reduce(props.replaceRules, action);
+    props.onUpdate(newRules);
+  };
 
   return (
     <>
-      {replaceRules.map((r, i) => (
+      {props.replaceRules.map((r, i) => (
         <div key={r.key ?? r.search}>
           <button
             type="button"
             className="button button-outline button-arrow"
-            onClick={() => props.changeReplaceRule({ type: "move", payload: { index: i, offset: -1 } })}
+            onClick={() => update({ type: "move", payload: { index1: i, index2: i - 1 } })}
             disabled={i === 0}
           >
             ↑
@@ -57,8 +90,8 @@ export const ReplaceRule: React.FC<Props> = (props) => {
           <button
             type="button"
             className="button button-outline button-arrow"
-            onClick={() => props.changeReplaceRule({ type: "move", payload: { index: i, offset: +1 } })}
-            disabled={i === replaceRules.length - 1}
+            onClick={() => update({ type: "move", payload: { index1: i, index2: i + 1 } })}
+            disabled={i === props.replaceRules.length - 1}
           >
             ↓
           </button>
@@ -69,7 +102,7 @@ export const ReplaceRule: React.FC<Props> = (props) => {
             value={r.search}
             style={{ width: 230 }}
             onChange={(e) =>
-              props.changeReplaceRule({
+              update({
                 type: "change",
                 payload: { index: i, target: "search", value: e.target.value },
               })
@@ -83,7 +116,7 @@ export const ReplaceRule: React.FC<Props> = (props) => {
             value={r.replace}
             style={{ width: 370 }}
             onChange={(e) =>
-              props.changeReplaceRule({
+              update({
                 type: "change",
                 payload: { index: i, target: "replace", value: e.target.value },
               })
@@ -94,13 +127,16 @@ export const ReplaceRule: React.FC<Props> = (props) => {
           <button
             type="button"
             className="button button-arrow"
-            onClick={() => props.changeReplaceRule({ type: "delete", payload: { index: i } })}
+            onClick={() => update({ type: "delete", payload: { index: i } })}
             style={{ marginLeft: 3 }}
           >
             ×
           </button>
         </div>
       ))}
+      <button type="button" onClick={() => update({ type: "add" })}>
+        {res.get("add")}
+      </button>
     </>
   );
 };
