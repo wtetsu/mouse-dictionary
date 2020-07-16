@@ -518,7 +518,7 @@ export class Main extends React.Component<MainProps, MainState> {
     console.time("update");
 
     const descriptions = await storage.local.get(entries);
-    const { html } = await this.generator.generate(entries, descriptions, lang === "en");
+    const { html } = this.generator.generate(entries, descriptions, lang === "en");
 
     if (this.previewWindow) {
       const newDom = dom.create(html);

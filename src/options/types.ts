@@ -3,11 +3,12 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
+
 export type MouseDictionaryBasicSettings = {
   shortWordLength: number;
   cutShortWordDescription: number;
-  initialPosition: "right" | "left";
-  scroll: "scroll";
+  initialPosition: InitialPosition;
+  scroll: Scroll;
   backgroundColor: string;
   headFontColor: string;
   descFontColor: string;
@@ -28,6 +29,10 @@ export type MouseDictionaryAdvancedSettings = {
   dialogTemplate: string;
   contentTemplate: string;
 };
+
+export type InitialPosition = "left" | "right" | "keep";
+
+export type Scroll = "scroll" | "hidden";
 
 export type MouseDictionarySettings = MouseDictionaryBasicSettings & MouseDictionaryAdvancedSettings;
 

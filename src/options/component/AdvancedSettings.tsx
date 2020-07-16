@@ -7,8 +7,9 @@
 import React from "react";
 import AceEditor from "react-ace";
 import * as res from "../logic/resource";
-import { MouseDictionaryAdvancedSettings, UpdateEventHandler, Replace } from "../types";
+import { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../types";
 import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
+import immer from "immer";
 
 const EDITOR_STYLE = {
   width: 800,
@@ -33,8 +34,16 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   const movingDialogStyles = props.settings?.movingDialogStyles ?? "";
   const hiddenDialogStyles = props.settings?.hiddenDialogStyles ?? "";
 
-  const update = (patch: Record<string, string | number | boolean | Replace[]>) => {
-    props.onUpdate(null, patch);
+  const update = (patch: Partial<MouseDictionaryAdvancedSettings>) => {
+    const newPatch = immer(patch, (d) => {
+      for (const name of Object.keys(patch)) {
+        const value = patch[name];
+        if (Number.isNaN(value) || (Number.isInteger(value) && value < 0)) {
+          d[name] = 0;
+        }
+      }
+    });
+    props.onUpdate(null, newPatch);
   };
 
   return (
@@ -57,7 +66,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
             type="number"
             name="parseWordsLimit"
             value={parseWordsLimit}
-            onChange={(e) => update({ parseWordsLimit: e.target.value })}
+            onChange={(e) => update({ parseWordsLimit: parseInt(e.target.value, 10) })}
             style={{ width: 60 }}
           />
         </label>

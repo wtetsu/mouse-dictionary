@@ -7,21 +7,20 @@
 import React from "react";
 
 type Props = {
-  name: string;
   value: string;
-  options: { id: string; name: string }[];
-  onChange: (arg0: string, arg1: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: { value: string; name: string }[];
+  onChange: (value: string) => void;
+  style: React.CSSProperties;
 };
 
 export const SimpleSelect: React.FC<Props> = (props) => {
-  const options = props.options.map((e) => (
-    <option key={e.id} value={e.id}>
-      {e.name}
-    </option>
-  ));
   return (
-    <select value={props.value} onChange={(e) => props.onChange(props.name, e)}>
-      {options}
+    <select value={props.value} style={props.style} onChange={(e) => props.onChange(e.target.value)}>
+      {props.options.map((e) => (
+        <option key={e.value} value={e.value}>
+          {e.name}
+        </option>
+      ))}
     </select>
   );
 };

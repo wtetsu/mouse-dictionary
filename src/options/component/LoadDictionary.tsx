@@ -35,34 +35,24 @@ export const LoadDictionary: React.FC<Props> = (props) => {
   const [format, setFormat] = useState(props.defaultFormat);
 
   const ENCODINGS = [
-    { id: "Shift-JIS", name: "Shift-JIS" },
-    { id: "UTF-8", name: "UTF-8" },
-    { id: "UTF-16", name: "UTF-16" },
+    { value: "Shift-JIS", name: "Shift-JIS" },
+    { value: "UTF-8", name: "UTF-8" },
+    { value: "UTF-16", name: "UTF-16" },
   ];
 
   const FORMATS = [
-    { id: "EIJIRO", name: res.get("formatEijiroText") },
-    { id: "TSV", name: res.get("formatTsv") },
-    { id: "PDIC_LINE", name: res.get("formatPdicOneLine") },
-    { id: "JSON", name: res.get("formatJson") },
+    { value: "EIJIRO", name: res.get("formatEijiroText") },
+    { value: "TSV", name: res.get("formatTsv") },
+    { value: "PDIC_LINE", name: res.get("formatPdicOneLine") },
+    { value: "JSON", name: res.get("formatJson") },
   ];
 
   return (
     <div>
       <label>{res.get("dictDataEncoding")}</label>
-      <SimpleSelect
-        name="encoding"
-        value={encoding}
-        options={ENCODINGS}
-        onChange={(_name, e) => setEncoding(e.target.value as Encoding)}
-      />
+      <SimpleSelect value={encoding} options={ENCODINGS} onChange={(value) => setEncoding(value as Encoding)} />
       <label>{res.get("dictDataFormat")}</label>
-      <SimpleSelect
-        name="format"
-        value={format}
-        options={FORMATS}
-        onChange={(_name, e) => setFormat(e.target.value as Format)}
-      />
+      <SimpleSelect value={format} options={FORMATS} onChange={(value) => setFormat(value as Format)} />
       <label>{res.get("readDictData")}</label>
       <input type="file" id="dictdata" />
       <br />
