@@ -9,11 +9,7 @@ import ContentEditable from "react-contenteditable";
 import swal from "sweetalert";
 import debounce from "lodash/debounce";
 import immer from "immer";
-import { LoadDictionary } from "../component/LoadDictionary";
-import { BasicSettings } from "../component/BasicSettings";
-import { AdvancedSettings } from "../component/AdvancedSettings";
-import { PersistenceSettings } from "../component/PersistenceSettings";
-import { JsonEditor } from "../component/JsonEditor";
+import { LoadDictionary, BasicSettings, AdvancedSettings, PersistenceSettings, JsonEditor } from "../component";
 import * as res from "../logic/resource";
 import * as dict from "../logic/dict";
 import * as data from "../logic/data";
@@ -51,7 +47,7 @@ export class Main extends React.Component<MainProps, MainState> {
   needRecreatePreviewWindow: boolean;
   generator: Generator;
 
-  constructor(props: Record<string, unknown>) {
+  constructor(props: MainProps) {
     super(props);
     this.contentEditable = React.createRef();
 
