@@ -8,7 +8,7 @@ import "@babel/polyfill";
 import swal from "sweetalert";
 import React from "react";
 import { render } from "react-dom";
-import { Main } from "./component/Main";
+import { Main } from "./page/Main";
 import rule from "../main/rule";
 
 import ace from "ace-builds/src-noconflict/ace";
