@@ -22,17 +22,17 @@ import entry from "../../main/entry";
 import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
 import { MouseDictionarySettings } from "../types";
+import { DataUsage } from "../component/DataUsage";
 
 type MainProps = Record<string, unknown>;
 
 type MainState = {
-  dictDataUsage: string;
+  dictDataUsage?: number;
   busy: boolean;
   progress: string;
   settings: MouseDictionarySettings;
   trialText: string;
-  basicSettingsOpened: boolean;
-  advancedSettingsOpened: boolean;
+  openedPanelLevel: 0 | 1 | 2;
   jsonEditorOpened: boolean;
   lang: string;
   initialized: boolean;
@@ -59,8 +59,7 @@ export class Main extends React.Component<MainProps, MainState> {
       progress: "",
       settings: null,
       trialText: "rained cats and dogs",
-      basicSettingsOpened: false,
-      advancedSettingsOpened: false,
+      openedPanelLevel: 0,
       jsonEditorOpened: false,
       lang: initialLang,
       initialized: false,
@@ -111,15 +110,8 @@ export class Main extends React.Component<MainProps, MainState> {
             }}
           />
 
-          <img
-            src="loading.gif"
-            width="32"
-            height="32"
-            style={{ verticalAlign: "middle", display: this.state.initialized ? "none" : "inline" }}
-          />
-
           <div style={{ fontSize: "75%" }}>
-            {this.state.dictDataUsage && <div>{res.get("dictDataUsage", this.state.dictDataUsage)}</div>}
+            <DataUsage byteSize={this.state.dictDataUsage}></DataUsage>
             <div>
               <span>{this.state.progress}</span>
             </div>
@@ -140,13 +132,13 @@ export class Main extends React.Component<MainProps, MainState> {
               <div style={{ marginTop: 30 }}>
                 <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
                 <a style={{ cursor: "pointer" }} onClick={() => this.toggleBasicSettings()}>
-                  {this.state.basicSettingsOpened ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
+                  {this.state.openedPanelLevel >= 1 ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
                 </a>
               </div>
             </>
           )}
 
-          {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
+          {this.state.openedPanelLevel >= 1 && (
             <>
               <span>{res.get("trialText")}: </span>
               <ContentEditable
@@ -166,7 +158,7 @@ export class Main extends React.Component<MainProps, MainState> {
             </>
           )}
 
-          {(this.state.basicSettingsOpened || this.state.advancedSettingsOpened) && (
+          {this.state.openedPanelLevel >= 1 && (
             <PersistenceSettings
               trigger={(type) => {
                 switch (type) {
@@ -181,7 +173,7 @@ export class Main extends React.Component<MainProps, MainState> {
             />
           )}
 
-          {this.state.basicSettingsOpened && (
+          {this.state.openedPanelLevel >= 1 && (
             <BasicSettings
               onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
               trigger={(type) => {
@@ -198,18 +190,18 @@ export class Main extends React.Component<MainProps, MainState> {
           )}
 
           <br />
-          {this.state.basicSettingsOpened && (
+          {this.state.openedPanelLevel >= 1 && (
             <div>
               <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
               <a style={{ cursor: "pointer" }} onClick={() => this.toggleAdvancedSettings()}>
-                {this.state.advancedSettingsOpened ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
+                {this.state.openedPanelLevel === 2 ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
               </a>
             </div>
           )}
 
           <br />
 
-          {this.state.advancedSettingsOpened && (
+          {this.state.openedPanelLevel === 2 && (
             <>
               <button
                 type="button"
@@ -287,11 +279,9 @@ export class Main extends React.Component<MainProps, MainState> {
     if (env.disableUserSettings) {
       return;
     }
+    this.setState({ dictDataUsage: null });
     const byteSize = await storage.local.getBytesInUse();
-    const kb = isFinite(byteSize) ? Math.floor(byteSize / 1024).toLocaleString() : "";
-    this.setState({
-      dictDataUsage: kb,
-    });
+    this.setState({ dictDataUsage: byteSize });
   }
 
   async confirmAndLoadInitialDict(messageId: string): Promise<void> {
@@ -311,7 +301,7 @@ export class Main extends React.Component<MainProps, MainState> {
   async loadInitialDict(): Promise<void> {
     let finalWordCount: number;
     try {
-      this.setState({ busy: true, basicSettingsOpened: false, advancedSettingsOpened: false });
+      this.setState({ busy: true, openedPanelLevel: 0 });
       finalWordCount = await dict.registerDefaultDict((wordCount, progress) => {
         const message = res.get("progressRegister", wordCount, progress);
         this.setState({ progress: message });
@@ -392,7 +382,7 @@ export class Main extends React.Component<MainProps, MainState> {
       }
     };
     try {
-      this.setState({ busy: true, basicSettingsOpened: false, advancedSettingsOpened: false });
+      this.setState({ busy: true, openedPanelLevel: 0 });
       const wordCount = await dict.load({ file, encoding, format, event });
       swal({
         text: res.get("finishRegister", wordCount),
@@ -438,7 +428,7 @@ export class Main extends React.Component<MainProps, MainState> {
   }
 
   updatePreviewWindow(settings: MouseDictionarySettings): void {
-    if (!this.state.basicSettingsOpened) {
+    if (this.state.openedPanelLevel === 0) {
       return;
     }
     try {
@@ -549,16 +539,11 @@ export class Main extends React.Component<MainProps, MainState> {
 
   toggleBasicSettings(): void {
     this.removePreviewWindow();
-    this.setState({
-      basicSettingsOpened: !this.state.basicSettingsOpened,
-      advancedSettingsOpened: false,
-    });
+    this.setState({ openedPanelLevel: this.state.openedPanelLevel === 0 ? 1 : 0 });
   }
 
   toggleAdvancedSettings(): void {
-    this.setState({
-      advancedSettingsOpened: !this.state.advancedSettingsOpened,
-    });
+    this.setState({ openedPanelLevel: this.state.openedPanelLevel === 1 ? 2 : 1 });
   }
 
   switchLanguage(): void {

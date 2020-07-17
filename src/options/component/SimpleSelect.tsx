@@ -10,7 +10,7 @@ type Props = {
   value: string;
   options: { value: string; name: string }[];
   onChange: (value: string) => void;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 };
 
 export const SimpleSelect: React.FC<Props> = (props) => {
