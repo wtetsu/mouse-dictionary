@@ -6,7 +6,7 @@ node_js:
   - "stable"
 script:
   - npm run lint
-  - npm run test-cov && codecov
+  - npm run test-cov && codecov -f coverage/lcov.info
   - npm run release
 cache: npm
 dist: trusty
