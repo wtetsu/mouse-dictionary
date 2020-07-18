@@ -7,7 +7,7 @@
 import immer from "immer";
 import { MouseDictionarySettings } from "../types";
 
-export const byteArrayMayBeShiftJis = (array: Uint8Array): boolean => {
+export const byteArrayMayBeShiftJis = (array: Uint8Array | number[]): boolean => {
   let mayBeShiftJis = true;
   let nextShouldSecondByte = false;
   for (let index = 0; index < array.length; index++) {

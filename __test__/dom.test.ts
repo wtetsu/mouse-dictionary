@@ -1,7 +1,9 @@
 import dom from "../src/lib/dom";
 
+const createDom = (html: string): HTMLElement => dom.create(html) as HTMLElement;
+
 const createSpanWithTextNodes = (...textList) => {
-  const e = dom.create("<span></span>");
+  const e = createDom("<span></span>");
   for (let i = 0; i < textList.length; i++) {
     const text = textList[i];
     e.appendChild(document.createTextNode(text));
@@ -10,7 +12,7 @@ const createSpanWithTextNodes = (...textList) => {
 };
 
 test("", () => {
-  const e = dom.create("<span>text</span>");
+  const e = createDom("<span>text</span>") as HTMLElement;
 
   dom.applyStyles(e, { opacity: 0.5 });
   expect(e.style.opacity).toEqual("0.5");
@@ -28,8 +30,8 @@ test("", () => {
 });
 
 test("", () => {
-  const e = dom.create("<div><span>aaa</span></div>");
-  dom.replace(e, dom.create("<span>bbb</span>"));
+  const e = createDom("<div><span>aaa</span></div>");
+  dom.replace(e, createDom("<span>bbb</span>"));
   expect("<span>bbb</span>").toEqual(e.innerHTML);
 });
 
@@ -50,12 +52,12 @@ test("", () => {
   lines.push("  <span>text12</span>"); // truncated
   lines.push("</div>");
 
-  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
+  const start = createDom(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("text01 text02 text03 text04 text05 text06 text07 text08 text09 text10");
 });
 
 test("", () => {
-  const e = dom.create("<span></span>");
+  const e = createDom("<span></span>");
   e.appendChild(createSpanWithTextNodes("a", "b", "c"));
   e.appendChild(createSpanWithTextNodes("d", "e", "f"));
   e.appendChild(createSpanWithTextNodes("g", "h", "i"));
@@ -65,13 +67,13 @@ test("", () => {
 });
 
 test("", () => {
-  const e = dom.create("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
+  const e = createDom("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
 
   expect(dom.traverse(e.childNodes[1])).toEqual("double-edged sword");
 });
 
 test("", () => {
-  const e = dom.create("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
+  const e = createDom("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
 
   expect(dom.traverse(e.childNodes[1])).toEqual("double-edged sword");
 });
@@ -98,7 +100,7 @@ test("", () => {
   lines.push("  </span>");
   lines.push("</div>");
 
-  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
+  const start = createDom(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("bbb-ccc ddd eee fff ggg hhh");
 });
 
@@ -108,7 +110,7 @@ test("", () => {
   lines.push('<span id="start"></span>');
   lines.push("</div>");
 
-  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
+  const start = createDom(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("");
 });
 
@@ -123,7 +125,7 @@ test("", () => {
   lines.push("<span>text04</span>");
   lines.push("</div>");
 
-  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
+  const start = createDom(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("text01-text02 text03-text04");
 });
 
@@ -137,12 +139,12 @@ test("", () => {
   lines.push("<span>text04</span>");
   lines.push("</div>");
 
-  const start = dom.create(lines.map((a) => a.trim()).join("")).querySelector("#start");
+  const start = createDom(lines.map((a) => a.trim()).join("")).querySelector("#start");
   expect(dom.traverse(start)).toEqual("-text02 text03-text04");
 });
 
 test("", () => {
-  const element = {};
+  const element: Record<string, any> = {};
   const vStyle = new dom.VirtualStyle(element);
 
   element.style = {};
@@ -189,7 +191,7 @@ test("", () => {
   lines.push("<span>text04</span>");
   lines.push("</div>");
 
-  const elem = dom.create(lines.map((a) => a.trim()).join(""));
+  const elem = createDom(lines.map((a) => a.trim()).join(""));
 
   const clonedElem = dom.clone(elem);
 

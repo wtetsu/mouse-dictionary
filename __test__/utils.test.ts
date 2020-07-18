@@ -1,5 +1,17 @@
 import utils from "../src/lib/utils";
 
+const setWindowInnerSize = (width: number, height: number) => {
+  //@ts-ignore
+  window.innerWidth = width;
+  //@ts-ignore
+  window.innerHeight = height;
+};
+
+const setWindowGetSelection = (fn: () => string) => {
+  //@ts-ignore
+  window.getSelection = fn;
+};
+
 test("", () => {
   expect(utils.omap({ a: 1, b: 2, c: 3 }, (v) => v * 2)).toEqual({ a: 2, b: 4, c: 6 });
   expect(utils.omap({ a: 1, b: 2, c: 3 }, (v) => v * 2, ["b", "c"])).toEqual({ b: 4, c: 6 });
@@ -42,8 +54,7 @@ test("", () => {
 });
 
 test("", () => {
-  window.innerWidth = 1024;
-  window.innerHeight = 800;
+  setWindowInnerSize(1024, 800);
   expect(
     utils.optimizeInitialPosition(
       {
@@ -90,8 +101,7 @@ test("", () => {
     height: 200,
   });
 
-  window.innerWidth = 200;
-  window.innerHeight = 100;
+  setWindowInnerSize(200, 100);
 
   expect(
     utils.optimizeInitialPosition({
@@ -123,12 +133,12 @@ test("", () => {
 });
 
 test("", () => {
-  window.getSelection = () => "";
+  setWindowGetSelection(() => "");
   expect(utils.getSelection()).toEqual("");
 
-  window.getSelection = () => "    a b c   ";
+  setWindowGetSelection(() => "    a b c   ");
   expect(utils.getSelection()).toEqual("a b c");
 
-  window.getSelection = () => "    aaa\nbbb\rccc   ";
+  setWindowGetSelection(() => "    aaa\nbbb\rccc   ");
   expect(utils.getSelection()).toEqual("aaa bbb ccc");
 });

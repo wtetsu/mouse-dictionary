@@ -1,5 +1,6 @@
 import * as data from "../src/options/logic/data";
 import defaultsettings from "../src/settings/defaultsettings";
+import { MouseDictionarySettings } from "../src/options/types";
 
 test("", () => {
   expect(true).toEqual(data.byteArrayMayBeShiftJis([]));
@@ -19,7 +20,7 @@ test("", () => {
 });
 
 test("", () => {
-  const d1 = defaultsettings;
+  const d1 = defaultsettings as MouseDictionarySettings;
   const d2 = data.preProcessSettings(d1);
   const d3 = data.postProcessSettings(d1);
   expect(false).toEqual(d1 === d2);

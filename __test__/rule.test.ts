@@ -8,7 +8,7 @@ beforeAll(() => {
     const data = fs.readFileSync(file);
     return {
       json: () => {
-        return JSON.parse(data);
+        return JSON.parse(data.toString());
       },
     };
   });
