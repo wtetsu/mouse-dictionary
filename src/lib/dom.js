@@ -4,6 +4,8 @@
  * Licensed under MIT
  */
 
+import ponyfill from "ponyfill";
+
 const create = (html) => {
   const template = document.createElement("template");
   template.innerHTML = html.trim();
@@ -122,41 +124,9 @@ const clone = (orgElement, baseElement) => {
   const clonedElement = baseElement ?? document.createElement(orgElement.tagName);
 
   // Copy all styles
-  clonedElement.style.cssText = getComputedCssText(orgElement);
+  clonedElement.style.cssText = ponyfill.getComputedCssText(orgElement);
 
   return clonedElement;
-};
-
-const getComputedCssText = (element) => {
-  const computedStyle = getComputedStyle(element, "");
-  if (computedStyle.cssText) {
-    return computedStyle.cssText;
-  }
-  const styles = [];
-
-  for (let key in computedStyle) {
-    if (!isNumberString(key)) {
-      const value = computedStyle[key];
-      styles.push(`${key}:${value}`);
-    }
-  }
-  return styles.join(";");
-};
-
-const isNumberString = (str) => {
-  if (!str) {
-    return false;
-  }
-  let isNumberStr = true;
-  for (let i = 0; i < str.length; i++) {
-    const code = str.charCodeAt(i);
-    const isNumberChar = code >= 48 && code <= 57;
-    if (!isNumberChar) {
-      isNumberStr = false;
-      break;
-    }
-  }
-  return isNumberStr;
 };
 
 // "100px" -> 100.0

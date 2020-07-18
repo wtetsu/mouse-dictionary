@@ -68,5 +68,10 @@
     "typescript": "^3.9.7",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^ponyfill$": "<rootDir>/src/lib/ponyfill/chrome"
+    }
   }
 }
