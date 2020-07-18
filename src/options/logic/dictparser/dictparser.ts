@@ -8,5 +8,5 @@ export type DictEntry = { head: string; desc: string };
 
 export interface DictParser {
   addLine(line: string): DictEntry;
-  flush(): Record<string, unknown>;
+  flush(): Record<string, string>;
 }

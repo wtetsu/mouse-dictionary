@@ -35,9 +35,7 @@ module.exports = {
         test: /\.js$/,
         use: {
           loader: "babel-loader",
-          options: {
-            cacheDirectory: !isProd,
-          },
+          options: { cacheDirectory: !isProd },
         },
         exclude: /node_modules/,
       },
@@ -45,9 +43,7 @@ module.exports = {
         test: /\.ts$/,
         use: {
           loader: "babel-loader",
-          options: {
-            cacheDirectory: !isProd,
-          },
+          options: { cacheDirectory: !isProd },
         },
         exclude: /node_modules/,
       },
@@ -56,9 +52,7 @@ module.exports = {
         use: [
           {
             loader: "babel-loader",
-            options: {
-              cacheDirectory: !isProd,
-            },
+            options: { cacheDirectory: !isProd },
           },
         ],
         exclude: /node_modules/,
@@ -66,7 +60,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"],
+    extensions: [".js", ".ts", ".tsx"],
   },
   plugins: [
     new CopyPlugin(copyWebpackPluginConfigs),

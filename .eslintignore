@@ -1,6 +1,5 @@
 node_modules/
 __test__/
-webpack.config.js
-webpack.config.*.js
 build_tools/
-
+*.config.js
+*.config.*.js
