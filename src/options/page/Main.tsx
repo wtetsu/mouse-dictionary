@@ -302,8 +302,8 @@ export class Main extends React.Component<MainProps, MainState> {
     let finalWordCount: number;
     try {
       this.setState({ busy: true, openedPanelLevel: 0 });
-      finalWordCount = await dict.registerDefaultDict((wordCount, progress) => {
-        const message = res.get("progressRegister", wordCount, progress);
+      finalWordCount = await dict.registerDefaultDict((count, progress) => {
+        const message = res.get("progressRegister", { count, progress });
         this.setState({ progress: message });
       });
       this.updateDictDataUsage();
@@ -314,7 +314,7 @@ export class Main extends React.Component<MainProps, MainState> {
     await config.setDataReady(true);
 
     await swal({
-      text: res.get("finishRegister", finalWordCount),
+      text: res.get("finishRegister", { count: finalWordCount }),
       icon: "success",
     });
   }
@@ -376,16 +376,16 @@ export class Main extends React.Component<MainProps, MainState> {
           break;
         }
         case "loading": {
-          this.setState({ progress: res.get("progressRegister", ev.count, ev.word.head) });
+          this.setState({ progress: res.get("progressRegister", { count: ev.count, progress: ev.word.head }) });
           break;
         }
       }
     };
     try {
       this.setState({ busy: true, openedPanelLevel: 0 });
-      const wordCount = await dict.load({ file, encoding, format, event });
+      const count = await dict.load({ file, encoding, format, event });
       swal({
-        text: res.get("finishRegister", wordCount),
+        text: res.get("finishRegister", { count }),
         icon: "success",
       });
       config.setDataReady(true);

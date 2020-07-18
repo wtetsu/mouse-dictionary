@@ -16,6 +16,6 @@ export const DataUsage: React.FC<Props> = (props) => {
     return <img src="loading.gif" width="32" height="32" style={{ verticalAlign: "middle" }} />;
   }
   const sizeString = Math.floor(props.byteSize / 1024).toLocaleString();
-  const sizeInfo = res.get("dictDataUsage", sizeString);
+  const sizeInfo = res.get("dictDataUsage", { size: sizeString });
   return <div>{sizeInfo}</div>;
 };
