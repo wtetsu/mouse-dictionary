@@ -5,7 +5,6 @@
  */
 
 import React from "react";
-import ContentEditable from "react-contenteditable";
 import swal from "sweetalert";
 import debounce from "lodash/debounce";
 import immer from "immer";
@@ -23,6 +22,7 @@ import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
 import { MouseDictionarySettings } from "../types";
 import { DataUsage } from "../component/DataUsage";
+import { EditableSpan } from "../component/EditableSpan";
 
 type MainProps = Record<string, unknown>;
 
@@ -41,7 +41,6 @@ type MainState = {
 type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };
 
 export class Main extends React.Component<MainProps, MainState> {
-  contentEditable: { current: any };
   updatePreviewWindowWithDebounce: () => void;
   previewWindow: PreviewWindow;
   needRecreatePreviewWindow: boolean;
@@ -49,7 +48,6 @@ export class Main extends React.Component<MainProps, MainState> {
 
   constructor(props: MainProps) {
     super(props);
-    this.contentEditable = React.createRef();
 
     const initialLang = decideInitialLanguage([...navigator.languages]);
     res.setLang(initialLang);
@@ -129,7 +127,7 @@ export class Main extends React.Component<MainProps, MainState> {
                 {res.get("downloadDictData")}
               </a>
 
-              <div style={{ marginTop: 30 }}>
+              <div style={{ marginTop: 30, marginBottom: 30 }}>
                 <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
                 <a style={{ cursor: "pointer" }} onClick={() => this.toggleBasicSettings()}>
                   {this.state.openedPanelLevel >= 1 ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
@@ -139,23 +137,16 @@ export class Main extends React.Component<MainProps, MainState> {
           )}
 
           {this.state.openedPanelLevel >= 1 && (
-            <>
+            <div>
               <span>{res.get("trialText")}: </span>
-              <ContentEditable
-                innerRef={this.contentEditable}
-                html={this.state.trialText}
-                disabled={false}
+              <EditableSpan
+                value={this.state.trialText}
                 onChange={(e) => this.updateState({ trialText: e.target.value })}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                  }
-                }}
-                tagName="span"
-              />
+              ></EditableSpan>
+
               <br />
               <br />
-            </>
+            </div>
           )}
 
           {this.state.openedPanelLevel >= 1 && (
