@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import "@babel/polyfill";
 import swal from "sweetalert";
 import React from "react";
 import { render } from "react-dom";
