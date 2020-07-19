@@ -1,3 +1,7 @@
+html {
+  overflow-y: scroll;
+}
+
 body {
   font-family: "hiragino kaku gothic pro", meiryo, sans-serif;
 }
