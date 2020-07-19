@@ -10,7 +10,7 @@
     "release": "npm run release-chrome && npm run release-firefox",
     "package": "npm run package-chrome && npm run package-firefox",
     "lint": "eslint src/**/*.{js,ts,tsx} && prettier --check src/**/*.{js,ts,tsx}",
-    "format": "prettier --write src/**/*.{js,jsx}",
+    "format": "prettier --write src/**/*.{js,ts,tsx}",
     "test": "jest",
     "test-watch": "jest --watch",
     "test-cov": "npm test -- --coverage",
