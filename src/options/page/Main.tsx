@@ -8,7 +8,15 @@ import React from "react";
 import swal from "sweetalert";
 import debounce from "lodash/debounce";
 import immer from "immer";
-import { LoadDictionary, BasicSettings, AdvancedSettings, OperationPanel, JsonEditor } from "../component";
+import {
+  AdvancedSettings,
+  BasicSettings,
+  DataUsage,
+  EditableSpan,
+  JsonEditor,
+  LoadDictionary,
+  OperationPanel,
+} from "../component";
 import * as res from "../logic/resource";
 import * as dict from "../logic/dict";
 import * as data from "../logic/data";
@@ -21,8 +29,6 @@ import entry from "../../main/entry";
 import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
 import { MouseDictionarySettings } from "../types";
-import { DataUsage } from "../component/DataUsage";
-import { EditableSpan } from "../component/EditableSpan";
 
 type MainProps = Record<string, unknown>;
 
@@ -310,7 +316,7 @@ export class Main extends React.Component<MainProps, MainState> {
     });
   }
 
-  updateState(statePatch: Record<string, any>, settingsPatch: Partial<MouseDictionarySettings> = null): void {
+  updateState(statePatch: Partial<MainState>, settingsPatch: Partial<MouseDictionarySettings> = null): void {
     const newState = immer(this.state, (d) => {
       Object.assign(d, statePatch);
       if (settingsPatch) {

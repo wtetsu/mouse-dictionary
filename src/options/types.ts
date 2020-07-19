@@ -42,4 +42,7 @@ export type Replace = {
   replace: string;
 };
 
-export type UpdateEventHandler = (statePatch: any, settingsPatch: Partial<MouseDictionarySettings>) => void;
+export type UpdateEventHandler = (
+  statePatch: Record<string, any>,
+  settingsPatch: Partial<MouseDictionarySettings>
+) => void;
