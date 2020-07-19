@@ -6,5 +6,5 @@
 export * from "./LoadDictionary";
 export * from "./BasicSettings";
 export * from "./AdvancedSettings";
-export * from "./PersistenceSettings";
+export * from "./OperationPanel";
 export * from "./JsonEditor";

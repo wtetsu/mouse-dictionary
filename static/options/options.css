@@ -21,6 +21,8 @@ body {
   margin-right: 1px;
 }
 
+/* https://milligram.io/#buttons */
+
 /* Custom color */
 .button-black {
   background-color: black;
@@ -33,6 +35,22 @@ body {
 }
 .button-black.button-clear {
   border-color: transparent;
+}
+
+/* Custom size */
+.button-small {
+  font-size: 1rem;
+  height: 2.8rem;
+  line-height: 2.8rem;
+  padding: 0 1.5rem;
+  margin: 1.5rm;
+}
+
+.button-large {
+  font-size: 1.2rem;
+  height: 4.5rem;
+  line-height: 4.5rem;
+  padding: 0 2rem;
 }
 
 hr {
