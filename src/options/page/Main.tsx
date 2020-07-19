@@ -9,7 +9,7 @@ import ContentEditable from "react-contenteditable";
 import swal from "sweetalert";
 import debounce from "lodash/debounce";
 import immer from "immer";
-import { LoadDictionary, BasicSettings, AdvancedSettings, PersistenceSettings, JsonEditor } from "../component";
+import { LoadDictionary, BasicSettings, AdvancedSettings, OperationPanel, JsonEditor } from "../component";
 import * as res from "../logic/resource";
 import * as dict from "../logic/dict";
 import * as data from "../logic/data";
@@ -159,7 +159,7 @@ export class Main extends React.Component<MainProps, MainState> {
           )}
 
           {this.state.openedPanelLevel >= 1 && (
-            <PersistenceSettings
+            <OperationPanel
               trigger={(type) => {
                 switch (type) {
                   case "save":
