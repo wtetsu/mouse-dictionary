@@ -6,7 +6,6 @@
 
 import React from "react";
 import swal from "sweetalert";
-import debounce from "lodash/debounce";
 import immer from "immer";
 import {
   AdvancedSettings,
@@ -17,15 +16,12 @@ import {
   LoadDictionary,
   OperationPanel,
 } from "../component";
+import { Preview } from "../logic/preview";
 import * as res from "../logic/resource";
 import * as dict from "../logic/dict";
 import * as data from "../logic/data";
-import dom from "../../lib/dom";
 import storage from "../../lib/storage";
-import Generator from "../../main/generator";
-import view from "../../main/view";
 import config from "../../main/config";
-import entry from "../../main/entry";
 import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
 import { MouseDictionarySettings } from "../types";
@@ -44,13 +40,10 @@ type MainState = {
   initialized: boolean;
 };
 
-type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };
+const DIALOG_FIELDS = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
 
 export class Main extends React.Component<MainProps, MainState> {
-  updatePreviewWindowWithDebounce: () => void;
-  previewWindow: PreviewWindow;
-  needRecreatePreviewWindow: boolean;
-  generator: Generator;
+  preview: Preview;
 
   constructor(props: MainProps) {
     super(props);
@@ -61,19 +54,13 @@ export class Main extends React.Component<MainProps, MainState> {
       dictDataUsage: null,
       busy: false,
       progress: "",
-      settings: null,
+      settings: {} as MouseDictionarySettings,
       trialText: "rained cats and dogs",
       openedPanelLevel: 0,
       jsonEditorOpened: false,
       lang: initialLang,
       initialized: false,
     };
-
-    this.updatePreviewWindowWithDebounce = debounce(() => this.updatePreviewWindow(this.state.settings), 64, {
-      leading: true,
-    });
-    this.previewWindow = null;
-    this.needRecreatePreviewWindow = false;
   }
 
   render(): JSX.Element {
@@ -108,7 +95,7 @@ export class Main extends React.Component<MainProps, MainState> {
                   this.loadDictionaryData(e.payload.encoding, e.payload.format);
                   break;
                 case "clear":
-                  this.clearDictionaryData();
+                  // Not supported for the moment due to instability of chrome.storage.local.clear()
                   break;
               }
             }}
@@ -211,7 +198,7 @@ export class Main extends React.Component<MainProps, MainState> {
                 style={{ marginRight: 5, cursor: "pointer" }}
                 onClick={() => {
                   const jsonEditorOpened = !this.state.jsonEditorOpened;
-                  this.setState({ jsonEditorOpened });
+                  this.updateState({ jsonEditorOpened });
                 }}
               >
                 {res.get("openJsonEditor")}
@@ -233,14 +220,7 @@ export class Main extends React.Component<MainProps, MainState> {
                   <JsonEditor
                     initialValue={this.state.settings}
                     onUpdate={(e) => {
-                      this.removePreviewWindow();
-                      const newState = immer(this.state, (d) => {
-                        Object.assign(d, e.payload.state);
-                        if (e.payload.settings) {
-                          d.settings = e.payload.settings;
-                        }
-                      });
-                      this.updateState(newState);
+                      this.updateState(e.payload.state, e.payload.settings);
                     }}
                   />
                 </div>
@@ -262,28 +242,24 @@ export class Main extends React.Component<MainProps, MainState> {
     if (!isLoaded) {
       this.confirmAndLoadInitialDict("confirmLoadInitialDict");
     }
-    await this.initializeUserSettings();
-    await this.updateDictDataUsage();
-    this.setState({ initialized: true });
-  }
 
-  componentDidUpdate(): void {
-    this.updatePreviewWindowWithDebounce();
-  }
-
-  async initializeUserSettings(): Promise<void> {
     const settings = data.preProcessSettings(await config.loadRawSettings());
     this.setState({ settings });
-    this.generator = new Generator(settings);
+
+    this.preview = new Preview(settings);
+    this.preview.updateText(this.state.trialText, settings.lookupWithCapitalized);
+
+    await this.updateDictDataUsage();
+    this.setState({ initialized: true });
   }
 
   async updateDictDataUsage(): Promise<void> {
     if (env.disableUserSettings) {
       return;
     }
-    this.setState({ dictDataUsage: null });
+    this.updateState({ dictDataUsage: null });
     const byteSize = await storage.local.getBytesInUse();
-    this.setState({ dictDataUsage: byteSize });
+    this.updateState({ dictDataUsage: byteSize });
   }
 
   async confirmAndLoadInitialDict(messageId: string): Promise<void> {
@@ -303,14 +279,14 @@ export class Main extends React.Component<MainProps, MainState> {
   async loadInitialDict(): Promise<void> {
     let finalWordCount: number;
     try {
-      this.setState({ busy: true, openedPanelLevel: 0 });
+      this.updateState({ busy: true, openedPanelLevel: 0 });
       finalWordCount = await dict.registerDefaultDict((count, progress) => {
         const message = res.get("progressRegister", { count, progress });
-        this.setState({ progress: message });
+        this.updateState({ progress: message });
       });
       this.updateDictDataUsage();
     } finally {
-      this.setState({ busy: false, progress: "" });
+      this.updateState({ busy: false, progress: "" });
     }
 
     await config.setDataReady(true);
@@ -329,17 +305,22 @@ export class Main extends React.Component<MainProps, MainState> {
       }
     });
     this.setState(newState);
-    if (statePatch?.trialText) {
-      this.updateTrialText(statePatch.trialText, newState.settings.lookupWithCapitalized);
-    }
-    if (!settingsPatch) {
-      return;
-    }
-    for (const name of Object.keys(settingsPatch)) {
-      if (dialogFields.has(name)) {
-        this.needRecreatePreviewWindow = true;
-        break;
+
+    if (settingsPatch) {
+      let refresh = false;
+      for (const name of Object.keys(settingsPatch)) {
+        if (DIALOG_FIELDS.has(name)) {
+          refresh = true;
+          break;
+        }
       }
+      this.preview.update(newState.settings, newState.trialText, refresh);
+    }
+
+    this.preview.setVisible(newState.openedPanelLevel >= 1 && !newState.jsonEditorOpened);
+
+    if (statePatch?.trialText) {
+      this.preview.updateText(statePatch.trialText, newState.settings.lookupWithCapitalized);
     }
   }
 
@@ -374,17 +355,17 @@ export class Main extends React.Component<MainProps, MainState> {
         case "reading": {
           const loaded = ev.loaded.toLocaleString();
           const total = ev.total.toLocaleString();
-          this.setState({ progress: `${loaded} / ${total} Byte` });
+          this.updateState({ progress: `${loaded} / ${total} Byte` });
           break;
         }
         case "loading": {
-          this.setState({ progress: res.get("progressRegister", { count: ev.count, progress: ev.word.head }) });
+          this.updateState({ progress: res.get("progressRegister", { count: ev.count, progress: ev.word.head }) });
           break;
         }
       }
     };
     try {
-      this.setState({ busy: true, openedPanelLevel: 0 });
+      this.updateState({ busy: true, openedPanelLevel: 0 });
       const count = await dict.load({ file, encoding, format, event });
       swal({
         text: res.get("finishRegister", { count }),
@@ -398,123 +379,8 @@ export class Main extends React.Component<MainProps, MainState> {
         icon: "error",
       });
     } finally {
-      this.setState({ busy: false, progress: "" });
+      this.updateState({ busy: false, progress: "" });
     }
-  }
-
-  /**
-   * Not supported for the moment due to instability of chrome.storage.local.clear()
-   */
-  async clearDictionaryData(): Promise<void> {
-    // const willDelete = await swal({
-    //   text: res.get("clearAllDictData"),
-    //   icon: "warning",
-    //   buttons: true,
-    //   dangerMode: true
-    // });
-    // if (!willDelete) {
-    //   return;
-    // }
-    // this.setState({ busy: true });
-    // await storage.local.clear();
-    // swal({
-    //   text: res.get("finishedClear"),
-    //   icon: "success"
-    // });
-    // this.setState({ busy: false });
-    // this.updateDictDataUsage();
-  }
-
-  doLoadInitialDict(): void {
-    this.confirmAndLoadInitialDict("confirmReloadInitialDict");
-  }
-
-  updatePreviewWindow(settings: MouseDictionarySettings): void {
-    if (this.state.openedPanelLevel === 0) {
-      return;
-    }
-    try {
-      // Creating a Generator instance fails when settings is wrong
-      const newGenerator = new Generator(settings);
-      if (newGenerator) {
-        this.generator = newGenerator;
-      }
-    } catch {
-      // NOP
-    }
-    let orgPreviewWindow = null;
-    if (this.needRecreatePreviewWindow) {
-      orgPreviewWindow = this.previewWindow;
-      this.previewWindow = null;
-      this.needRecreatePreviewWindow = false;
-    }
-    if (!this.previewWindow) {
-      try {
-        this.previewWindow = this.createPreviewWindow(settings);
-        document.body.appendChild(this.previewWindow.dialog);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    if (this.previewWindow) {
-      this.updateTrialText(this.state.trialText, settings.lookupWithCapitalized);
-      dom.applyStyles(this.previewWindow.dialog, {
-        width: `${settings.width}px`,
-        height: `${settings.height}px`,
-        zIndex: 9999,
-      });
-    }
-    if (orgPreviewWindow?.dialog) {
-      document.body.removeChild(orgPreviewWindow.dialog);
-    }
-  }
-
-  createPreviewWindow(settings: MouseDictionarySettings): PreviewWindow {
-    const tmpSettings = immer(settings, (d) => {
-      d.normalDialogStyles = null;
-      d.hiddenDialogStyles = null;
-      d.movingDialogStyles = null;
-    });
-    const trialWindow = view.create(tmpSettings) as PreviewWindow;
-    dom.applyStyles(trialWindow.dialog, {
-      cursor: "zoom-out",
-      top: "30px",
-    });
-
-    trialWindow.dialog.addEventListener("click", () => {
-      dom.applyStyles(trialWindow.dialog, {
-        width: "100px",
-        height: "100px",
-      });
-    });
-    return trialWindow;
-  }
-
-  removePreviewWindow(): void {
-    if (this.previewWindow?.dialog) {
-      document.body.removeChild(this.previewWindow.dialog);
-      this.previewWindow = null;
-    }
-  }
-
-  async updateTrialText(trialText: string, lookupWithCapitalized: boolean): Promise<void> {
-    if (!this.previewWindow) {
-      return;
-    }
-    const { entries, lang } = entry.build(trialText, lookupWithCapitalized, false);
-
-    console.time("update");
-
-    const descriptions = await storage.local.get(entries);
-    const { html } = this.generator.generate(entries, descriptions, lang === "en");
-
-    if (this.previewWindow) {
-      const newDom = dom.create(html);
-      this.previewWindow.content.innerHTML = "";
-      this.previewWindow.content.appendChild(newDom);
-    }
-
-    console.timeEnd("update");
   }
 
   async saveSettings(): Promise<void> {
@@ -534,18 +400,15 @@ export class Main extends React.Component<MainProps, MainState> {
   }
 
   doFactoryReset(): void {
-    this.needRecreatePreviewWindow = true;
-    const newSettings = data.preProcessSettings(getDefaultSettings());
-    this.setState({ settings: newSettings });
+    this.updateState(null, data.preProcessSettings(getDefaultSettings()));
   }
 
   toggleBasicSettings(): void {
-    this.removePreviewWindow();
-    this.setState({ openedPanelLevel: this.state.openedPanelLevel === 0 ? 1 : 0 });
+    this.updateState({ openedPanelLevel: this.state.openedPanelLevel === 0 ? 1 : 0 });
   }
 
   toggleAdvancedSettings(): void {
-    this.setState({ openedPanelLevel: this.state.openedPanelLevel === 1 ? 2 : 1 });
+    this.updateState({ openedPanelLevel: this.state.openedPanelLevel === 1 ? 2 : 1 });
   }
 
   switchLanguage(): void {
@@ -562,8 +425,6 @@ const defaultSettingsJson = JSON.stringify(defaultSettings);
 const getDefaultSettings = () => {
   return JSON.parse(defaultSettingsJson);
 };
-
-const dialogFields = new Set(["scroll", "backgroundColor", "dialogTemplate", "contentWrapperTemplate"]);
 
 const decideInitialLanguage = (languages: string[]) => {
   if (!languages) {
