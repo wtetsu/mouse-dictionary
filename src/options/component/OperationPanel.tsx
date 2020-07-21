@@ -8,6 +8,7 @@ import React from "react";
 import * as res from "../logic/resource";
 
 type Props = {
+  disable: boolean;
   trigger: (type: "save" | "factoryReset") => void;
 };
 
@@ -17,6 +18,7 @@ export const OperationPanel: React.FC<Props> = (props) => {
       <div style={{ position: "sticky", top: 4, zIndex: 9999, opacity: 0.95 }}>
         <button
           type="button"
+          disabled={props.disable}
           className="button button-large"
           style={{ position: "relative", bottom: 0 }}
           onClick={() => props.trigger("save")}
@@ -26,6 +28,7 @@ export const OperationPanel: React.FC<Props> = (props) => {
       </div>
       <button
         type="button"
+        disabled={props.disable}
         className="button-outline button-small"
         style={{ position: "relative", bottom: 0 }}
         onClick={() => props.trigger("factoryReset")}

@@ -17,7 +17,6 @@ type Props = {
   trialText: string;
   busy: boolean;
   onUpdate: UpdateEventHandler;
-  trigger: (type: "loadInitialDict") => void;
 };
 
 const FONT_SIZES = [
@@ -169,15 +168,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
             </div>
           </div>
         </div>
-        <label>{res.get("dictionaryData")}</label>
-        <input
-          type="button"
-          className="button-outline button-small"
-          value={res.get("loadInitialDict")}
-          style={{ marginRight: 5, cursor: "pointer" }}
-          disabled={props.busy}
-          onClick={() => props.trigger("loadInitialDict")}
-        />
+        {props.children}
       </fieldset>
     </form>
   );

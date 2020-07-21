@@ -157,6 +157,7 @@ export class Main extends React.Component<MainProps, MainState> {
 
           {this.state.openedPanelLevel >= 1 && (
             <OperationPanel
+              disable={this.state.busy}
               trigger={(type) => {
                 switch (type) {
                   case "save":
@@ -173,17 +174,21 @@ export class Main extends React.Component<MainProps, MainState> {
           {this.state.openedPanelLevel >= 1 && (
             <BasicSettings
               onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
-              trigger={(type) => {
-                switch (type) {
-                  case "loadInitialDict":
-                    this.doLoadInitialDict();
-                    break;
-                }
-              }}
               busy={state.busy}
               settings={state.settings}
               trialText={state.trialText}
-            />
+            >
+              <label>{res.get("dictionaryData")}</label>
+              <button
+                type="button"
+                className="button-outline button-small"
+                style={{ marginRight: 5, cursor: "pointer" }}
+                disabled={this.state.busy}
+                onClick={() => this.confirmAndLoadInitialDict("confirmReloadInitialDict")}
+              >
+                {res.get("loadInitialDict")}
+              </button>
+            </BasicSettings>
           )}
 
           <br />
