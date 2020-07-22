@@ -247,7 +247,6 @@ export class Main extends React.Component<MainProps, MainState> {
     this.setState({ settings });
 
     this.preview = new Preview(settings);
-    this.preview.updateText(this.state.trialText, settings.lookupWithCapitalized);
 
     await this.updateDictDataUsage();
     this.setState({ initialized: true });
@@ -315,6 +314,10 @@ export class Main extends React.Component<MainProps, MainState> {
         }
       }
       this.preview.update(newState.settings, newState.trialText, refresh);
+    } else {
+      if (newState.openedPanelLevel === 1 && this.state.openedPanelLevel === 0) {
+        this.preview.updateText(newState.trialText, newState.settings.lookupWithCapitalized);
+      }
     }
 
     this.preview.setVisible(newState.openedPanelLevel >= 1 && !newState.jsonEditorOpened);
@@ -404,11 +407,11 @@ export class Main extends React.Component<MainProps, MainState> {
   }
 
   toggleBasicSettings(): void {
-    this.updateState({ openedPanelLevel: this.state.openedPanelLevel === 0 ? 1 : 0 });
+    this.updateState({ openedPanelLevel: this.state.openedPanelLevel !== 0 ? 0 : 1 });
   }
 
   toggleAdvancedSettings(): void {
-    this.updateState({ openedPanelLevel: this.state.openedPanelLevel === 1 ? 2 : 1 });
+    this.updateState({ openedPanelLevel: this.state.openedPanelLevel !== 1 ? 1 : 2 });
   }
 
   switchLanguage(): void {

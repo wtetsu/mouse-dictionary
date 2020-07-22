@@ -1,6 +1,5 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const LodashPlugin = require("lodash-webpack-plugin");
 const UniteJsonPlugin = require("./build_tools/webpack_plugins/UniteJsonPlugin");
 const jaRule = require("deinja/src/data");
 
@@ -79,7 +78,6 @@ module.exports = {
         to: "data/rule.json",
       },
     ]),
-    new LodashPlugin(),
   ],
   devtool: isProd ? false : "cheap-module-inline-source-map",
   performance: {

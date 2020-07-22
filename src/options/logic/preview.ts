@@ -5,7 +5,7 @@
  */
 
 import immer from "immer";
-import debounce from "lodash/debounce";
+import { debounce } from "../logic/debounce";
 import { MouseDictionarySettings } from "../types";
 import dom from "../../lib/dom";
 import storage from "../../lib/storage";
@@ -22,20 +22,19 @@ export class Preview {
   generator: Generator;
 
   constructor(settings: MouseDictionarySettings) {
-    this.update = debounce(this.updateBody.bind(this), 64, { leading: true });
-    this.generator = new Generator(settings);
-
-    this.previewWindow = this.createWindow(settings);
-
+    this.update = debounce(this.updateBody.bind(this), 64);
     this.element = dom.create('<div style="position:absolute;top:10;left:0;"></div>') as HTMLElement;
-    this.element.appendChild(this.previewWindow.dialog);
     this.element.hidden = true;
-
     document.body.appendChild(this.element);
+    this.refreshGenerator(settings);
+    this.refreshElement(settings);
   }
 
   updateBody(settings: MouseDictionarySettings, text: string, refresh: boolean): void {
-    this.updateWindow(settings, refresh);
+    if (refresh) {
+      this.refreshElement(settings);
+    }
+    this.refreshGenerator(settings);
     this.updateText(text, settings.lookupWithCapitalized);
     dom.applyStyles(this.previewWindow.dialog, {
       width: `${settings.width}px`,
@@ -83,7 +82,7 @@ export class Preview {
     return trialWindow;
   }
 
-  updateWindow(settings: MouseDictionarySettings, refresh: boolean): void {
+  refreshGenerator(settings: MouseDictionarySettings): void {
     try {
       const newGenerator = new Generator(settings);
       if (newGenerator) {
@@ -92,20 +91,19 @@ export class Preview {
     } catch {
       // Creating a Generator instance fails when settings is incorrect
     }
+  }
 
-    let orgPreviewWindow = null;
-    if (refresh) {
-      orgPreviewWindow = this.previewWindow;
-      this.previewWindow = null;
+  refreshElement(settings: MouseDictionarySettings): void {
+    const orgPreviewWindow = this.previewWindow;
+    this.previewWindow = null;
+
+    try {
+      this.previewWindow = this.createWindow(settings);
+      this.element.appendChild(this.previewWindow.dialog);
+    } catch (e) {
+      console.error(e);
     }
-    if (!this.previewWindow) {
-      try {
-        this.previewWindow = this.createWindow(settings);
-        this.element.appendChild(this.previewWindow.dialog);
-      } catch (e) {
-        console.error(e);
-      }
-    }
+
     if (orgPreviewWindow?.dialog) {
       this.element.removeChild(orgPreviewWindow.dialog);
     }
