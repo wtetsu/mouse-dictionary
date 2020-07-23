@@ -76,19 +76,19 @@ export const JsonEditor: React.FC<Props> = (props) => {
       <p>{res.get("aboutJsonEditor")}</p>
       <button
         type="button"
-        className="button-small button-black"
-        style={{ marginRight: 5, cursor: "pointer" }}
-        onClick={() => updateAndClose(json)}
-      >
-        {res.get("importJson")}
-      </button>
-      <button
-        type="button"
-        className="button-outline button-small button-black"
+        className="button-outline button-black"
         style={{ marginRight: 5, cursor: "pointer" }}
         onClick={() => close()}
       >
         {res.get("closeJsonEditor")}
+      </button>
+      <button
+        type="button"
+        className="button-black"
+        style={{ marginRight: 5, cursor: "pointer" }}
+        onClick={() => updateAndClose(json)}
+      >
+        {res.get("importJson")}
       </button>
 
       <AceEditor

@@ -25,6 +25,9 @@ import config from "../../main/config";
 import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
 import { MouseDictionarySettings } from "../types";
+import { Overlay } from "../component/Overlay";
+import { Panel } from "../component/Panel";
+import { ExternalLink } from "../component/ExternalLink";
 
 type MainProps = Record<string, unknown>;
 
@@ -63,180 +66,6 @@ export class Main extends React.Component<MainProps, MainState> {
     };
   }
 
-  render(): JSX.Element {
-    const state = this.state;
-
-    return (
-      <>
-        <div style={{ textAlign: "center", marginBottom: "10px" }}>
-          <a
-            href={`https://mouse-dictionary.netlify.app/${this.state.lang}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ textDecoration: "underline", fontSize: "small" }}
-          >
-            <img src="logo.png" width="250" />
-          </a>
-        </div>
-
-        <div>
-          <div
-            style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}
-            onClick={() => this.switchLanguage()}
-          >
-            {this.state.lang}
-          </div>
-          <LoadDictionary
-            busy={state.busy}
-            progress={state.progress}
-            trigger={(e) => {
-              switch (e.type) {
-                case "load":
-                  this.loadDictionaryData(e.payload.encoding, e.payload.format);
-                  break;
-                case "clear":
-                  // Not supported for the moment due to instability of chrome.storage.local.clear()
-                  break;
-              }
-            }}
-          />
-
-          <div style={{ fontSize: "75%" }}>
-            <DataUsage byteSize={this.state.dictDataUsage}></DataUsage>
-            <div>
-              <span>{this.state.progress}</span>
-            </div>
-          </div>
-
-          {!this.state.busy && !env.disableUserSettings && this.state.initialized && (
-            <>
-              <hr style={{ marginTop: 15 }} />
-              <a
-                href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "underline", fontSize: "small" }}
-              >
-                {res.get("downloadDictData")}
-              </a>
-
-              <div style={{ marginTop: 30, marginBottom: 30 }}>
-                <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-                <a style={{ cursor: "pointer" }} onClick={() => this.toggleBasicSettings()}>
-                  {this.state.openedPanelLevel >= 1 ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
-                </a>
-              </div>
-            </>
-          )}
-
-          {this.state.openedPanelLevel >= 1 && (
-            <div>
-              <span>{res.get("trialText")}: </span>
-              <EditableSpan
-                value={this.state.trialText}
-                onChange={(e) => this.updateState({ trialText: e.target.value })}
-              ></EditableSpan>
-
-              <br />
-              <br />
-            </div>
-          )}
-
-          {this.state.openedPanelLevel >= 1 && (
-            <OperationPanel
-              disable={this.state.busy}
-              trigger={(type) => {
-                switch (type) {
-                  case "save":
-                    this.saveSettings();
-                    break;
-                  case "factoryReset":
-                    this.doFactoryReset();
-                    break;
-                }
-              }}
-            />
-          )}
-
-          {this.state.openedPanelLevel >= 1 && (
-            <BasicSettings
-              onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
-              busy={state.busy}
-              settings={state.settings}
-              trialText={state.trialText}
-            >
-              <label>{res.get("dictionaryData")}</label>
-              <button
-                type="button"
-                className="button-outline button-small"
-                style={{ marginRight: 5, cursor: "pointer" }}
-                disabled={this.state.busy}
-                onClick={() => this.confirmAndLoadInitialDict("confirmReloadInitialDict")}
-              >
-                {res.get("loadInitialDict")}
-              </button>
-            </BasicSettings>
-          )}
-
-          <br />
-          {this.state.openedPanelLevel >= 1 && (
-            <div>
-              <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-              <a style={{ cursor: "pointer" }} onClick={() => this.toggleAdvancedSettings()}>
-                {this.state.openedPanelLevel === 2 ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
-              </a>
-            </div>
-          )}
-
-          <br />
-
-          {this.state.openedPanelLevel === 2 && (
-            <>
-              <button
-                type="button"
-                className="button-small button-black"
-                style={{ marginRight: 5, cursor: "pointer" }}
-                onClick={() => {
-                  const jsonEditorOpened = !this.state.jsonEditorOpened;
-                  this.updateState({ jsonEditorOpened });
-                }}
-              >
-                {res.get("openJsonEditor")}
-              </button>
-
-              {this.state.jsonEditorOpened && (
-                <div
-                  style={{
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    zIndex: 10000,
-                    backgroundColor: "#ffffff",
-                    position: "fixed",
-                    opacity: 0.99,
-                  }}
-                >
-                  <JsonEditor
-                    initialValue={this.state.settings}
-                    onUpdate={(e) => {
-                      this.updateState(e.payload.state, e.payload.settings);
-                    }}
-                  />
-                </div>
-              )}
-
-              <AdvancedSettings
-                onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
-                settings={state.settings}
-              />
-            </>
-          )}
-        </div>
-      </>
-    );
-  }
-
   async componentDidMount(): Promise<void> {
     const isLoaded = await config.isDataReady();
     if (!isLoaded) {
@@ -266,7 +95,6 @@ export class Main extends React.Component<MainProps, MainState> {
     if (!willLoad) {
       return;
     }
-
     this.loadInitialDict();
   }
 
@@ -391,6 +219,138 @@ export class Main extends React.Component<MainProps, MainState> {
     this.setState({
       lang: newLang,
     });
+  }
+
+  render(): JSX.Element {
+    const state = this.state;
+    return (
+      <>
+        <div style={{ textAlign: "center", marginBottom: "10px" }}>
+          <ExternalLink href={`https://mouse-dictionary.netlify.app/${state.lang}/`}>
+            <img src="logo.png" width="250" />
+          </ExternalLink>
+        </div>
+
+        <div>
+          <div
+            style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }}
+            onClick={() => this.switchLanguage()}
+          >
+            {state.lang}
+          </div>
+          <LoadDictionary
+            busy={state.busy}
+            progress={state.progress}
+            trigger={(e) => {
+              switch (e.type) {
+                case "load":
+                  return this.loadDictionaryData(e.payload.encoding, e.payload.format);
+                case "clear":
+                  // Not supported for the moment due to instability of chrome.storage.local.clear()
+                  return;
+              }
+            }}
+          />
+
+          <div style={{ fontSize: "75%" }}>
+            <DataUsage byteSize={state.dictDataUsage}></DataUsage>
+            <div>
+              <span>{state.progress}</span>
+            </div>
+          </div>
+
+          <Panel active={!state.busy && !env.disableUserSettings && state.initialized}>
+            <hr style={{ marginTop: 15 }} />
+            <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data">
+              {res.get("downloadDictData")}
+            </ExternalLink>
+
+            <div style={{ marginTop: 30, marginBottom: 30 }}>
+              <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
+              <a style={{ cursor: "pointer" }} onClick={() => this.toggleBasicSettings()}>
+                {state.openedPanelLevel >= 1 ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
+              </a>
+            </div>
+          </Panel>
+
+          <Panel active={state.openedPanelLevel >= 1}>
+            <div>
+              <span>{res.get("trialText")}: </span>
+              <EditableSpan
+                value={state.trialText}
+                onChange={(e) => this.updateState({ trialText: e.target.value })}
+              ></EditableSpan>
+              <br />
+              <br />
+            </div>
+            <OperationPanel
+              disable={state.busy}
+              trigger={(type) => {
+                switch (type) {
+                  case "save":
+                    return this.saveSettings();
+                  case "factoryReset":
+                    return this.doFactoryReset();
+                }
+              }}
+            />
+            <BasicSettings
+              onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
+              busy={state.busy}
+              settings={state.settings}
+              trialText={state.trialText}
+            >
+              <label>{res.get("dictionaryData")}</label>
+              <button
+                type="button"
+                className="button-outline button-small"
+                style={{ marginRight: 5, cursor: "pointer" }}
+                disabled={state.busy}
+                onClick={() => this.confirmAndLoadInitialDict("confirmReloadInitialDict")}
+              >
+                {res.get("loadInitialDict")}
+              </button>
+            </BasicSettings>
+            <br />
+            <div>
+              <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
+              <a style={{ cursor: "pointer" }} onClick={() => this.toggleAdvancedSettings()}>
+                {state.openedPanelLevel === 2 ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
+              </a>
+            </div>
+            <br />
+          </Panel>
+
+          <Panel active={state.openedPanelLevel >= 2}>
+            <button
+              type="button"
+              className="button-small button-black"
+              style={{ marginRight: 5, cursor: "pointer" }}
+              onClick={() => {
+                const jsonEditorOpened = !state.jsonEditorOpened;
+                this.updateState({ jsonEditorOpened });
+              }}
+            >
+              {res.get("openJsonEditor")}
+            </button>
+
+            <AdvancedSettings
+              onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
+              settings={state.settings}
+            />
+          </Panel>
+
+          <Overlay active={state.jsonEditorOpened}>
+            <JsonEditor
+              initialValue={state.settings}
+              onUpdate={(e) => {
+                this.updateState(e.payload.state, e.payload.settings);
+              }}
+            />
+          </Overlay>
+        </div>
+      </>
+    );
   }
 }
 
