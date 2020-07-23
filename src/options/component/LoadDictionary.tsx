@@ -16,7 +16,6 @@ type Props = {
   defaultEncoding?: Encoding;
   defaultFormat?: Format;
   busy: boolean;
-  progress: string;
   trigger: (e: TriggerEvent) => void;
 };
 

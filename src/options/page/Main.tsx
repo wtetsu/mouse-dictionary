@@ -20,7 +20,6 @@ import * as res from "../logic/resource";
 import * as dict from "../logic/dict";
 import * as data from "../logic/data";
 import * as message from "../logic/message";
-import storage from "../../lib/storage";
 import config from "../../main/config";
 import env from "../../settings/env";
 import defaultSettings from "../../settings/defaultsettings";
@@ -67,35 +66,26 @@ export class Main extends React.Component<MainProps, MainState> {
   }
 
   async componentDidMount(): Promise<void> {
-    const isLoaded = await config.isDataReady();
-    if (!isLoaded) {
-      this.confirmAndLoadInitialDict("confirmLoadInitialDict");
-    }
-
     const settings = data.preProcessSettings(await config.loadRawSettings());
     this.setState({ settings });
-
     this.preview = new Preview(settings);
 
-    await this.updateDictDataUsage();
-    this.setState({ initialized: true });
-  }
-
-  async updateDictDataUsage(): Promise<void> {
-    if (env.disableUserSettings) {
+    const isLoaded = await config.isDataReady();
+    if (!isLoaded) {
+      const ok = await this.confirmAndLoadInitialDict("confirmLoadInitialDict");
+      this.updateState({ initialized: ok, dictDataUsage: -1 });
       return;
     }
-    this.updateState({ dictDataUsage: null });
-    const byteSize = await storage.local.getBytesInUse();
-    this.updateState({ dictDataUsage: byteSize });
+    this.updateState({ initialized: true });
   }
 
-  async confirmAndLoadInitialDict(messageId: string): Promise<void> {
+  async confirmAndLoadInitialDict(messageId: string): Promise<boolean> {
     const willLoad = await message.notice(res.get(messageId), "okCancel");
     if (!willLoad) {
-      return;
+      return false;
     }
-    this.loadInitialDict();
+    await this.loadInitialDict();
+    return true;
   }
 
   async loadInitialDict(): Promise<void> {
@@ -106,7 +96,7 @@ export class Main extends React.Component<MainProps, MainState> {
         const message = res.get("progressRegister", { count, progress });
         this.updateState({ progress: message });
       });
-      this.updateDictDataUsage();
+      this.updateState({ dictDataUsage: -1 });
     } finally {
       this.updateState({ busy: false, progress: "" });
     }
@@ -167,7 +157,9 @@ export class Main extends React.Component<MainProps, MainState> {
           break;
         }
         case "loading": {
-          this.updateState({ progress: res.get("progressRegister", { count: ev.count, progress: ev.word.head }) });
+          this.updateState({
+            progress: res.get("progressRegister", { count: ev.count?.toLocaleString(), progress: ev.word.head }),
+          });
           break;
         }
       }
@@ -175,9 +167,9 @@ export class Main extends React.Component<MainProps, MainState> {
     try {
       this.updateState({ busy: true, openedPanelLevel: 0 });
       const count = await dict.load({ file, encoding, format, event });
-      message.success(res.get("finishRegister", { count }));
+      message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
       config.setDataReady(true);
-      this.updateDictDataUsage();
+      this.updateState({ dictDataUsage: -1 });
     } catch (e) {
       message.error(e.toString());
     } finally {
@@ -224,7 +216,6 @@ export class Main extends React.Component<MainProps, MainState> {
           </div>
           <LoadDictionary
             busy={state.busy}
-            progress={state.progress}
             trigger={(e) => {
               switch (e.type) {
                 case "load":
@@ -236,19 +227,26 @@ export class Main extends React.Component<MainProps, MainState> {
             }}
           />
 
+          <Panel active={!env.disableUserSettings && !state.busy}>
+            <DataUsage
+              byteSize={state.dictDataUsage}
+              onUpdate={(byteSize) => this.updateState({ dictDataUsage: byteSize })}
+            />
+          </Panel>
           <div style={{ fontSize: "75%" }}>
-            <DataUsage byteSize={state.dictDataUsage}></DataUsage>
-            <div>
-              <span>{state.progress}</span>
-            </div>
+            <span>{state.progress}</span>
           </div>
+
+          <div
+            style={{ cursor: "pointer", fontSize: "75%" }}
+            onClick={() => this.updateState({ dictDataUsage: -1 })}
+          ></div>
 
           <Panel active={!state.busy && !env.disableUserSettings && state.initialized}>
             <hr style={{ marginTop: 15 }} />
             <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data">
               {res.get("downloadDictData")}
             </ExternalLink>
-
             <div style={{ marginTop: 30, marginBottom: 30 }}>
               <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
               <a style={{ cursor: "pointer" }} onClick={() => this.toggleBasicSettings()}>
@@ -317,7 +315,6 @@ export class Main extends React.Component<MainProps, MainState> {
             >
               {res.get("openJsonEditor")}
             </button>
-
             <AdvancedSettings
               onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
               settings={state.settings}
@@ -327,9 +324,7 @@ export class Main extends React.Component<MainProps, MainState> {
           <Overlay active={state.jsonEditorOpened}>
             <JsonEditor
               initialValue={state.settings}
-              onUpdate={(e) => {
-                this.updateState(e.payload.state, e.payload.settings);
-              }}
+              onUpdate={(e) => this.updateState(e.payload.state, e.payload.settings)}
             />
           </Overlay>
         </div>

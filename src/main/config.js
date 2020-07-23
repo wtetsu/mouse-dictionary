@@ -11,6 +11,7 @@ import env from "../settings/env";
 const KEY_USER_CONFIG = "**** config ****";
 const KEY_LAST_POSITION = "**** last_position ****";
 const KEY_LOADED = "**** loaded ****";
+const KEY_BYTES_IN_USE = "**** bytes_in_use ****";
 
 const JSON_FIELDS = new Set(["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"]);
 
@@ -101,6 +102,10 @@ const isDataReady = () => storage.local.pickOut(KEY_LOADED);
 
 const setDataReady = (ready) => storage.local.set({ [KEY_LOADED]: ready });
 
+const getBytesInUse = () => storage.local.pickOut(KEY_BYTES_IN_USE);
+
+const setBytesInUse = (bytes) => storage.local.set({ [KEY_BYTES_IN_USE]: bytes });
+
 export default {
   loadAll,
   loadSettings,
@@ -109,4 +114,6 @@ export default {
   savePosition,
   isDataReady,
   setDataReady,
+  getBytesInUse,
+  setBytesInUse,
 };
