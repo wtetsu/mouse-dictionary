@@ -40,6 +40,12 @@ test("", async () => {
     return new Blob([bytes.buffer]) as File;
   };
 
+  try {
+    await data.fileMayBeShiftJis({} as Blob);
+  } catch (e) {
+    expect(true).toEqual(e instanceof Error);
+  }
+
   expect(true).toEqual(await data.fileMayBeShiftJis(createFile([])));
 
   expect(true).toEqual(await data.fileMayBeShiftJis(createFile([0x81, 0x40])));

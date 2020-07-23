@@ -7,26 +7,12 @@
 import immer from "immer";
 import { MouseDictionarySettings } from "../types";
 
-export const fileMayBeShiftJis = async (file: File): Promise<boolean> => {
-  return new Promise((done, fail) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const buffer = e.target.result as ArrayBuffer;
-        const length = Math.min(512, buffer.byteLength);
-        const bytes = new Uint8Array(buffer, 0, length);
-        const mayBeSjis = byteArrayMayBeShiftJis(bytes);
-        done(mayBeSjis);
-      } catch {
-        fail();
-      }
-    };
-    try {
-      reader.readAsArrayBuffer(file);
-    } catch {
-      fail();
-    }
-  });
+export const fileMayBeShiftJis = async (file: Blob): Promise<boolean> => {
+  const e = await readFile(file);
+  const buffer = e.target.result as ArrayBuffer;
+  const length = Math.min(512, buffer.byteLength);
+  const bytes = new Uint8Array(buffer, 0, length);
+  return byteArrayMayBeShiftJis(bytes);
 };
 
 export const byteArrayMayBeShiftJis = (array: Uint8Array | number[]): boolean => {
@@ -88,4 +74,18 @@ export const hasAny = <T extends unknown>(set: Set<T>, array: T[]): boolean => {
     }
   }
   return false;
+};
+
+const readFile = async (file: Blob): Promise<ProgressEvent<FileReader>> => {
+  return new Promise((done, fail) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      done(e);
+    };
+    try {
+      reader.readAsArrayBuffer(file);
+    } catch (e) {
+      fail(new Error(e.toString()));
+    }
+  });
 };
