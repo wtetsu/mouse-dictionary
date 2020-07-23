@@ -124,14 +124,8 @@ export class Main extends React.Component<MainProps, MainState> {
     this.setState(newState);
 
     if (settingsPatch) {
-      let refresh = false;
-      for (const name of Object.keys(settingsPatch)) {
-        if (DIALOG_FIELDS.has(name)) {
-          refresh = true;
-          break;
-        }
-      }
-      this.preview.update(newState.settings, newState.trialText, refresh);
+      const shouldRefresh = data.hasAny(DIALOG_FIELDS, Object.keys(settingsPatch));
+      this.preview.update(newState.settings, newState.trialText, shouldRefresh);
     } else {
       if (newState.openedPanelLevel === 1 && this.state.openedPanelLevel === 0) {
         this.preview.updateText(newState.trialText, newState.settings.lookupWithCapitalized);
@@ -154,7 +148,7 @@ export class Main extends React.Component<MainProps, MainState> {
     }
     let willContinue = true;
     if (encoding === "Shift-JIS") {
-      if (!(await fileMayBeShiftJis(file))) {
+      if (!(await data.fileMayBeShiftJis(file))) {
         willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
       }
     }
@@ -188,16 +182,6 @@ export class Main extends React.Component<MainProps, MainState> {
       message.error(e.toString());
     } finally {
       this.updateState({ busy: false, progress: "" });
-    }
-  }
-
-  async saveSettings(): Promise<void> {
-    const settings = data.postProcessSettings(this.state.settings);
-    try {
-      await config.saveSettings(settings);
-      message.info(res.get("finishSaving"));
-    } catch (e) {
-      message.error(e.message);
     }
   }
 
@@ -288,7 +272,7 @@ export class Main extends React.Component<MainProps, MainState> {
               trigger={(type) => {
                 switch (type) {
                   case "save":
-                    return this.saveSettings();
+                    return saveSettings(state.settings);
                   case "factoryReset":
                     return this.doFactoryReset();
                 }
@@ -376,24 +360,12 @@ const decideInitialLanguage = (languages: string[]) => {
   return result;
 };
 
-const fileMayBeShiftJis = async (file: File) => {
-  return new Promise((done, fail) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const buffer = e.target.result as ArrayBuffer;
-        const length = Math.min(512, buffer.byteLength);
-        const bytes = new Uint8Array(buffer, 0, length);
-        const mayBeSjis = data.byteArrayMayBeShiftJis(bytes);
-        done(mayBeSjis);
-      } catch {
-        fail();
-      }
-    };
-    try {
-      reader.readAsArrayBuffer(file);
-    } catch {
-      fail();
-    }
-  });
+const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void> => {
+  const settings = data.postProcessSettings(rawSettings);
+  try {
+    await config.saveSettings(settings);
+    message.info(res.get("finishSaving"));
+  } catch (e) {
+    message.error(e.message);
+  }
 };

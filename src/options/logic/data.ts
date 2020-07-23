@@ -7,6 +7,28 @@
 import immer from "immer";
 import { MouseDictionarySettings } from "../types";
 
+export const fileMayBeShiftJis = async (file: File): Promise<boolean> => {
+  return new Promise((done, fail) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const buffer = e.target.result as ArrayBuffer;
+        const length = Math.min(512, buffer.byteLength);
+        const bytes = new Uint8Array(buffer, 0, length);
+        const mayBeSjis = byteArrayMayBeShiftJis(bytes);
+        done(mayBeSjis);
+      } catch {
+        fail();
+      }
+    };
+    try {
+      reader.readAsArrayBuffer(file);
+    } catch {
+      fail();
+    }
+  });
+};
+
 export const byteArrayMayBeShiftJis = (array: Uint8Array | number[]): boolean => {
   let mayBeShiftJis = true;
   let nextShouldSecondByte = false;
@@ -31,15 +53,15 @@ export const byteArrayMayBeShiftJis = (array: Uint8Array | number[]): boolean =>
   return mayBeShiftJis;
 };
 
-const isShiftJisFirstByte = (byte) => {
+const isShiftJisFirstByte = (byte: number) => {
   return (byte >= 0x81 && byte <= 0x9f) || (byte >= 0xe0 && byte <= 0xef);
 };
 
-const isShiftJisSecondByte = (byte) => {
+const isShiftJisSecondByte = (byte: number) => {
   return (byte >= 0x40 && byte <= 0x7e) || (byte >= 0x80 && byte <= 0xfc);
 };
 
-const isShiftJisSoleChar = (byte) => {
+const isShiftJisSoleChar = (byte: number) => {
   return (byte >= 0x00 && byte <= 0x1f) || (byte >= 0x20 && byte <= 0x7f) || (byte >= 0xa1 && byte <= 0xdf);
 };
 
@@ -57,4 +79,13 @@ export const postProcessSettings = (settings: MouseDictionarySettings): MouseDic
       delete replaceRule.key;
     }
   });
+};
+
+export const hasAny = <T extends unknown>(set: Set<T>, array: T[]): boolean => {
+  for (const name of array) {
+    if (set.has(name)) {
+      return true;
+    }
+  }
+  return false;
 };
