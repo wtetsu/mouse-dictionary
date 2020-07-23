@@ -7,7 +7,6 @@
 const locals = {
   get: (...args) => chrome.storage.local.get(...args),
   set: (...args) => chrome.storage.local.set(...args),
-  getBytesInUse: (...args) => chrome.storage.local.getBytesInUse(...args),
 };
 
 const syncs = {
@@ -15,11 +14,10 @@ const syncs = {
   set: (...args) => chrome.storage.sync.set(...args),
 };
 
-// A wrapper of chrome.storage.sync.
 const sync = {
   get: async (args) => doAsync(syncs.get, args),
   set: async (args) => doAsync(syncs.set, args),
-  async pickOut(key) {
+  async pick(key) {
     const data = await sync.get(key);
     return data?.[key];
   },
@@ -28,11 +26,10 @@ const sync = {
 const local = {
   get: async (args) => doAsync(locals.get, args),
   set: async (args) => doAsync(locals.set, args),
-  async pickOut(key) {
+  async pick(key) {
     const data = await local.get(key);
     return data?.[key];
   },
-  getBytesInUse: async () => doAsync(locals.getBytesInUse),
 };
 
 const doAsync = async (fn, params) => {
@@ -59,4 +56,4 @@ const doAsync = async (fn, params) => {
   });
 };
 
-export default { sync, local };
+export default { local, sync, doAsync };

@@ -5,8 +5,7 @@
  */
 
 import React, { useEffect } from "react";
-import { res } from "../logic";
-import { config, storage } from "../ref";
+import { res, storage, config } from "../logic";
 
 type Props = {
   byteSize: number;

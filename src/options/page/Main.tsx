@@ -18,8 +18,8 @@ import {
   Overlay,
   Panel,
 } from "../component";
-import { data, dict, message, Preview, res } from "../logic";
-import { config, env, defaultSettings } from "../ref";
+import { config, data, dict, message, Preview, res } from "../logic";
+import { env, defaultSettings } from "../ref";
 import { MouseDictionarySettings } from "../types";
 
 type MainProps = Record<string, unknown>;
