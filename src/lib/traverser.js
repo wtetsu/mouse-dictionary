@@ -1,11 +1,12 @@
 /**
  * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
- * Copyright 2018-present wtetsu, suiheilibe
+ * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
 
 import dom from "./dom";
 import decoy from "./decoy";
+import ponyfill from "ponyfill";
 
 const build = (doConfirmValidCharacter, maxWords) => {
   const traverser = new Traverser(doConfirmValidCharacter, maxWords);
@@ -33,7 +34,7 @@ class Traverser {
   }
 
   fetchTextUnderCursor(element, clientX, clientY) {
-    const range = getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
+    const range = ponyfill.getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
     if (!range) {
       return null;
     }
@@ -67,7 +68,7 @@ class Traverser {
     try {
       this.decoy.activate(element);
 
-      const range = getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
+      const range = ponyfill.getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
       if (!range) {
         return;
       }
@@ -166,42 +167,6 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
     return text + followingText;
   }
   return text + " " + followingText;
-};
-
-let getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
-  // Only the first execution
-  getCaretNodeAndOffsetFromPoint = createGetCaretNodeAndOffsetFromPointFunction(ownerDocument);
-  return getCaretNodeAndOffsetFromPoint(ownerDocument, pointX, pointY);
-};
-
-const createGetCaretNodeAndOffsetFromPointFunction = (ownerDocument) => {
-  let newFunction;
-  if (ownerDocument.caretPositionFromPoint) {
-    // for Firefox (based on recent WD of CSSOM View Module)
-    newFunction = (ownerDocument, pointX, pointY) => {
-      const position = ownerDocument.caretPositionFromPoint(pointX, pointY);
-      if (!position) {
-        return null;
-      }
-      return {
-        node: position.offsetNode,
-        offset: position.offset,
-      };
-    };
-  } else if (ownerDocument.caretRangeFromPoint) {
-    // for Chrome
-    newFunction = (ownerDocument, pointX, pointY) => {
-      const range = ownerDocument.caretRangeFromPoint(pointX, pointY);
-      if (!range) {
-        return null;
-      }
-      return {
-        node: range.startContainer,
-        offset: range.startOffset,
-      };
-    };
-  }
-  return newFunction;
 };
 
 const isEnglishLikeCharacter = (code) => 0x20 <= code && code <= 0x7e;

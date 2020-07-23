@@ -9,4 +9,15 @@ const getComputedCssText = (params) => {
   return computedStyle.cssText;
 };
 
-export default { getComputedCssText };
+const getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
+  const range = ownerDocument.caretRangeFromPoint(pointX, pointY);
+  if (!range) {
+    return null;
+  }
+  return {
+    node: range.startContainer,
+    offset: range.startOffset,
+  };
+};
+
+export default { getComputedCssText, getCaretNodeAndOffsetFromPoint };

@@ -1,6 +1,6 @@
 /**
  * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
- * Copyright 2018-present wtetsu
+ * Copyright 2018-present wtetsu, suiheilibe
  * Licensed under MIT
  */
 
@@ -33,4 +33,15 @@ const isNumberString = (str) => {
   return isNumberStr;
 };
 
-export default { getComputedCssText };
+const getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
+  const position = ownerDocument.caretPositionFromPoint(pointX, pointY);
+  if (!position) {
+    return null;
+  }
+  return {
+    node: position.offsetNode,
+    offset: position.offset,
+  };
+};
+
+export default { getComputedCssText, getCaretNodeAndOffsetFromPoint };
