@@ -7,9 +7,9 @@
 import React from "react";
 import AceEditor from "react-ace";
 import immer from "immer";
-import swal from "sweetalert";
 import * as res from "../logic/resource";
 import * as data from "../logic/data";
+import * as message from "../logic/message";
 import { MouseDictionarySettings } from "../types";
 
 const EDITOR_STYLE = {
@@ -61,7 +61,7 @@ export const JsonEditor: React.FC<Props> = (props) => {
       const payload = { settings, state };
       props.onUpdate({ payload });
     } catch {
-      swal({ text: res.get("JsonImportError"), icon: "warning" });
+      message.warn(res.get("JsonImportError"));
     }
   };
 

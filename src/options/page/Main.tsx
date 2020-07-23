@@ -5,7 +5,6 @@
  */
 
 import React from "react";
-import swal from "sweetalert";
 import immer from "immer";
 import {
   AdvancedSettings,
@@ -20,6 +19,7 @@ import { Preview } from "../logic/preview";
 import * as res from "../logic/resource";
 import * as dict from "../logic/dict";
 import * as data from "../logic/data";
+import * as message from "../logic/message";
 import storage from "../../lib/storage";
 import config from "../../main/config";
 import env from "../../settings/env";
@@ -262,12 +262,7 @@ export class Main extends React.Component<MainProps, MainState> {
   }
 
   async confirmAndLoadInitialDict(messageId: string): Promise<void> {
-    const willLoad = await swal({
-      text: res.get(messageId),
-      icon: "info",
-      buttons: [true, true],
-      closeOnClickOutside: false,
-    });
+    const willLoad = await message.notice(res.get(messageId), "okCancel");
     if (!willLoad) {
       return;
     }
@@ -287,13 +282,8 @@ export class Main extends React.Component<MainProps, MainState> {
     } finally {
       this.updateState({ busy: false, progress: "" });
     }
-
     await config.setDataReady(true);
-
-    await swal({
-      text: res.get("finishRegister", { count: finalWordCount }),
-      icon: "success",
-    });
+    await message.success(res.get("finishRegister", { count: finalWordCount }));
   }
 
   updateState(statePatch: Partial<MainState>, settingsPatch: Partial<MouseDictionarySettings> = null): void {
@@ -331,20 +321,13 @@ export class Main extends React.Component<MainProps, MainState> {
     const input = document.getElementById("dictdata") as HTMLInputElement;
     const file = input.files[0];
     if (!file) {
-      swal({
-        title: res.get("selectDictFile"),
-        icon: "warning",
-      });
+      message.warn(res.get("selectDictFile"));
       return;
     }
     let willContinue = true;
     if (encoding === "Shift-JIS") {
       if (!(await fileMayBeShiftJis(file))) {
-        willContinue = await swal({
-          title: res.get("fileMayNotBeShiftJis"),
-          icon: "warning",
-          buttons: [true, true],
-        });
+        willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
       }
     }
     if (willContinue) {
@@ -370,17 +353,11 @@ export class Main extends React.Component<MainProps, MainState> {
     try {
       this.updateState({ busy: true, openedPanelLevel: 0 });
       const count = await dict.load({ file, encoding, format, event });
-      swal({
-        text: res.get("finishRegister", { count }),
-        icon: "success",
-      });
+      message.success(res.get("finishRegister", { count }));
       config.setDataReady(true);
       this.updateDictDataUsage();
     } catch (e) {
-      swal({
-        text: e.toString(),
-        icon: "error",
-      });
+      message.error(e.toString());
     } finally {
       this.updateState({ busy: false, progress: "" });
     }
@@ -390,15 +367,9 @@ export class Main extends React.Component<MainProps, MainState> {
     const settings = data.postProcessSettings(this.state.settings);
     try {
       await config.saveSettings(settings);
-      swal({
-        text: res.get("finishSaving"),
-        icon: "info",
-      });
+      message.info(res.get("finishSaving"));
     } catch (e) {
-      swal({
-        text: e.message,
-        icon: "error",
-      });
+      message.error(e.message);
     }
   }
 
