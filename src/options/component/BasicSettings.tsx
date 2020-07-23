@@ -65,6 +65,10 @@ export const BasicSettings: React.FC<Props> = (props) => {
     props.onUpdate(null, newPatch);
   };
 
+  type ColorPickerChangeEvent = {
+    hex: string;
+  };
+
   return (
     <form className="settingsForm">
       <fieldset>
@@ -93,7 +97,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
           type="number"
           name="width"
           value={settings.width}
-          style={{ width: 90 }}
+          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : null }}
           onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
         />
         <span> {res.get("height")}</span>
@@ -101,7 +105,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
           type="number"
           name="height"
           value={settings.height}
-          style={{ width: 90 }}
+          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : null }}
           onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
         />
         <label>{res.get("initialPosition")}</label>
@@ -131,7 +135,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
                 width={200}
                 color={settings.headFontColor}
                 disableAlpha={true}
-                onChange={(e) => update({ headFontColor: e.hex })}
+                onChange={(e: ColorPickerChangeEvent) => update({ headFontColor: e.hex })}
               />
               <br />
               <SimpleSelect
@@ -147,7 +151,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
                 width={200}
                 color={settings.descFontColor}
                 disableAlpha={true}
-                onChange={(e) => update({ descFontColor: e.hex })}
+                onChange={(e: ColorPickerChangeEvent) => update({ descFontColor: e.hex })}
               />
               <br />
               <SimpleSelect
@@ -163,7 +167,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
                 width={200}
                 color={settings.backgroundColor}
                 disableAlpha={true}
-                onChange={(e) => update({ backgroundColor: e.hex })}
+                onChange={(e: ColorPickerChangeEvent) => update({ backgroundColor: e.hex })}
               />
             </div>
           </div>
