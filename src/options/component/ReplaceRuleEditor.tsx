@@ -5,9 +5,9 @@
  */
 
 import React from "react";
-import * as res from "../logic/resource";
-import { Replace } from "../types";
 import immer from "immer";
+import { res } from "../logic";
+import { Replace } from "../types";
 
 type Props = {
   replaceRules: Replace[];

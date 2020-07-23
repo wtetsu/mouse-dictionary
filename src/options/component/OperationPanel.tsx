@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import * as res from "../logic/resource";
+import { res } from "../logic";
 
 type Props = {
   disable: boolean;

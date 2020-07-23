@@ -7,9 +7,7 @@
 import React from "react";
 import AceEditor from "react-ace";
 import immer from "immer";
-import * as res from "../logic/resource";
-import * as data from "../logic/data";
-import * as message from "../logic/message";
+import { res, data, message } from "../logic";
 import { MouseDictionarySettings } from "../types";
 
 const EDITOR_STYLE = {

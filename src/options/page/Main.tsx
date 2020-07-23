@@ -11,22 +11,16 @@ import {
   BasicSettings,
   DataUsage,
   EditableSpan,
+  ExternalLink,
   JsonEditor,
   LoadDictionary,
   OperationPanel,
+  Overlay,
+  Panel,
 } from "../component";
-import { Preview } from "../logic/preview";
-import * as res from "../logic/resource";
-import * as dict from "../logic/dict";
-import * as data from "../logic/data";
-import * as message from "../logic/message";
-import config from "../../main/config";
-import env from "../../settings/env";
-import defaultSettings from "../../settings/defaultsettings";
+import { data, dict, message, Preview, res } from "../logic";
+import { config, env, defaultSettings } from "../ref";
 import { MouseDictionarySettings } from "../types";
-import { Overlay } from "../component/Overlay";
-import { Panel } from "../component/Panel";
-import { ExternalLink } from "../component/ExternalLink";
 
 type MainProps = Record<string, unknown>;
 

@@ -6,8 +6,7 @@
 
 import { LineReader } from "./linereader";
 import { EijiroParser, SimpleDictParser, JsonDictParser } from "./dictparser";
-import storage from "../../lib/storage";
-import env from "../../settings/env";
+import { storage, env } from "../ref";
 
 type ProgressCallback = (wordCount: number, progress: string) => void;
 

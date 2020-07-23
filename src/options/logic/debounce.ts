@@ -3,6 +3,8 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  *
+ * Super simple, no dependency implementation of debounce.
+ *
  * Based on:
  * https://github.com/lodash/lodash/blob/master/debounce.js
  * https://github.com/component/debounce/blob/master/index.js

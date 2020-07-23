@@ -6,11 +6,11 @@
 
 import React from "react";
 import { ChromePicker } from "react-color";
-import * as res from "../logic/resource";
-import env from "../../settings/env";
-import { MouseDictionaryBasicSettings, UpdateEventHandler, InitialPosition, Scroll } from "../types";
-import { SimpleSelect } from "./SimpleSelect";
 import immer from "immer";
+import { res } from "../logic";
+import { env } from "../ref";
+import { SimpleSelect } from "./SimpleSelect";
+import { MouseDictionaryBasicSettings, UpdateEventHandler, InitialPosition, Scroll } from "../types";
 
 type Props = {
   settings: MouseDictionaryBasicSettings;

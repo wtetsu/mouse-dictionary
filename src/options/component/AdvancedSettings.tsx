@@ -6,10 +6,10 @@
 
 import React from "react";
 import AceEditor from "react-ace";
-import * as res from "../logic/resource";
-import { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../types";
-import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
 import immer from "immer";
+import { res } from "../logic";
+import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
+import { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../types";
 
 const EDITOR_STYLE = {
   width: 800,
