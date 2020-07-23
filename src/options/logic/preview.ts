@@ -23,7 +23,7 @@ export class Preview {
 
   constructor(settings: MouseDictionarySettings) {
     this.update = debounce(this.updateBody.bind(this), 64);
-    this.element = dom.create('<div style="position:absolute;top:10;left:0;"></div>') as HTMLElement;
+    this.element = dom.create('<div style="position:absolute;top:10;left:0;z-index:-1;"></div>') as HTMLElement;
     this.element.hidden = true;
     document.body.appendChild(this.element);
     this.refreshGenerator(settings);
@@ -39,7 +39,6 @@ export class Preview {
     dom.applyStyles(this.previewWindow.dialog, {
       width: `${settings.width}px`,
       height: `${settings.height}px`,
-      zIndex: 9999,
     });
   }
 
