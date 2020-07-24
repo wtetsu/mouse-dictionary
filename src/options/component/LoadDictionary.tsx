@@ -5,9 +5,9 @@
  */
 
 import React, { useState } from "react";
+import { Button } from "./Button";
 import { SimpleSelect } from "./SimpleSelect";
 import { res } from "../logic";
-import { env } from "../extern";
 
 type Encoding = "Shift-JIS" | "UTF-8" | "UTF-16";
 type Format = "EIJIRO" | "TSV" | "PDIC_LINE" | "JSON";
@@ -55,27 +55,12 @@ export const LoadDictionary: React.FC<Props> = (props) => {
       <label>{res.get("readDictData")}</label>
       <input type="file" id="dictdata" />
       <br />
-      <input
-        type="button"
-        value={res.get("loadSelectedFile")}
-        style={{ marginRight: 5 }}
-        onClick={() =>
-          props.trigger({
-            type: "load",
-            payload: { encoding, format },
-          })
-        }
+      <Button
+        type="primary"
+        text={res.get("loadSelectedFile")}
+        onClick={() => props.trigger({ type: "load", payload: { encoding, format } })}
         disabled={props.busy}
       />
-      {!env.disableClearDataButton && (
-        <input
-          type="button"
-          value={res.get("clearLoadedData")}
-          style={{ marginRight: 5 }}
-          onClick={() => props.trigger({ type: "clear" })}
-          disabled={props.busy}
-        />
-      )}
       <img
         src="loading.gif"
         width="32"

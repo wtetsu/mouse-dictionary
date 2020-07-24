@@ -5,6 +5,7 @@
  */
 export * from "./AdvancedSettings";
 export * from "./BasicSettings";
+export * from "./Button";
 export * from "./DataUsage";
 export * from "./EditableSpan";
 export * from "./ExternalLink";

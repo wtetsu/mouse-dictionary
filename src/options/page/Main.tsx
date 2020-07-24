@@ -9,6 +9,7 @@ import immer from "immer";
 import {
   AdvancedSettings,
   BasicSettings,
+  Button,
   DataUsage,
   EditableSpan,
   ExternalLink,
@@ -277,15 +278,12 @@ export class Main extends React.Component<MainProps, MainState> {
               trialText={state.trialText}
             >
               <label>{res.get("dictionaryData")}</label>
-              <button
-                type="button"
-                className="button-outline button-small"
-                style={{ marginRight: 5, cursor: "pointer" }}
+              <Button
+                type="revert"
+                text={res.get("loadInitialDict")}
                 disabled={state.busy}
                 onClick={() => this.confirmAndLoadInitialDict("confirmReloadInitialDict")}
-              >
-                {res.get("loadInitialDict")}
-              </button>
+              />
             </BasicSettings>
             <br />
             <div>
@@ -298,17 +296,16 @@ export class Main extends React.Component<MainProps, MainState> {
           </Panel>
 
           <Panel active={state.openedPanelLevel >= 2}>
-            <button
-              type="button"
-              className="button-small button-black"
-              style={{ marginRight: 5, cursor: "pointer" }}
+            <Button
+              type="json"
+              text={res.get("openJsonEditor")}
+              disabled={state.busy}
               onClick={() => {
                 const jsonEditorOpened = !state.jsonEditorOpened;
                 this.updateState({ jsonEditorOpened });
               }}
-            >
-              {res.get("openJsonEditor")}
-            </button>
+            />
+
             <AdvancedSettings
               onUpdate={(statePatch, settingsPatch) => this.updateState(statePatch, settingsPatch)}
               settings={state.settings}

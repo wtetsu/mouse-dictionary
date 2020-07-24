@@ -15,12 +15,10 @@ if (BROWSER === "FIREFOX") {
   // I was not able to make the feature stable on Firefox, so it is disabled for now.
   env.disableKeepingWindowStatus = true;
   env.disableUserSettings = true;
-  env.disableClearDataButton = true;
 } else {
   env.registerRecordsAtOnce = 100000;
   env.disableKeepingWindowStatus = false;
   env.disableUserSettings = false;
-  env.disableClearDataButton = true;
 }
 
 export default env;

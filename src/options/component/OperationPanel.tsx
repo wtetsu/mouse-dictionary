@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+import { Button } from "./Button";
 import { res } from "../logic";
 
 type Props = {
@@ -16,25 +17,19 @@ export const OperationPanel: React.FC<Props> = (props) => {
   return (
     <>
       <div style={{ position: "sticky", top: 4, zIndex: 9999, opacity: 0.95 }}>
-        <button
-          type="button"
+        <Button
+          type="primary"
+          text={res.get("saveSettings")}
           disabled={props.disable}
-          className="button button-large"
-          style={{ position: "relative", bottom: 0 }}
           onClick={() => props.trigger("save")}
-        >
-          {res.get("saveSettings")}
-        </button>
+        />
       </div>
-      <button
-        type="button"
+      <Button
+        type="revert"
+        text={res.get("defaultSettings")}
         disabled={props.disable}
-        className="button-outline button-small"
-        style={{ position: "relative", bottom: 0 }}
         onClick={() => props.trigger("factoryReset")}
-      >
-        {res.get("defaultSettings")}
-      </button>
+      />
     </>
   );
 };

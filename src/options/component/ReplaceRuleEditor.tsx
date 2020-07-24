@@ -6,6 +6,7 @@
 
 import React from "react";
 import immer from "immer";
+import { Button } from "./Button";
 import { res } from "../logic";
 import { Replace } from "../types";
 
@@ -134,9 +135,7 @@ export const ReplaceRuleEditor: React.FC<Props> = (props) => {
           </button>
         </div>
       ))}
-      <button type="button" onClick={() => update({ type: "add" })}>
-        {res.get("add")}
-      </button>
+      <Button type="primary" text={res.get("add")} onClick={() => update({ type: "add" })} />
     </>
   );
 };

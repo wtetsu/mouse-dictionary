@@ -7,6 +7,7 @@
 import React from "react";
 import AceEditor from "react-ace";
 import immer from "immer";
+import { Button } from "./Button";
 import { res, data, message } from "../logic";
 import { MouseDictionarySettings } from "../types";
 
@@ -72,22 +73,8 @@ export const JsonEditor: React.FC<Props> = (props) => {
   return (
     <div style={{ margin: 20 }}>
       <p>{res.get("aboutJsonEditor")}</p>
-      <button
-        type="button"
-        className="button-outline button-black"
-        style={{ marginRight: 5, cursor: "pointer" }}
-        onClick={() => close()}
-      >
-        {res.get("closeJsonEditor")}
-      </button>
-      <button
-        type="button"
-        className="button-black"
-        style={{ marginRight: 5, cursor: "pointer" }}
-        onClick={() => updateAndClose(json)}
-      >
-        {res.get("importJson")}
-      </button>
+      <Button type="cancel" text={res.get("closeJsonEditor")} onClick={() => close()} />
+      <Button type="json" text={res.get("importJson")} onClick={() => updateAndClose(json)} />
 
       <AceEditor
         mode="json"
