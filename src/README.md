@@ -1,24 +1,21 @@
-# Dependency
+# Source code
+
+## Outline
+
+|                | main                | options            |
+| -------------- | ------------------- | ------------------ |
+| Responsibility | Core features       | Options screen     |
+| Priority       | Speed and lightness | Functionality      |
+| Implementation | TypeScript + React  | Pure JavaScript    |
+| Dependency     | Many libraries      | No dependency (\*) |
+| Module         | named               | default            |
+
+(\*) Hogan.js is the only exception.
+
+## Dependency
 
 ```
-main <- options
+main <- (extern) <- options
 ```
 
-## main
-
-Mouse Dictionary's main functions.
-
-- The first priority: speed and lightness
-- Pure Javascript
-- No dependency
-  - Hogan.js is the only exception
-- Module: default exports style (tentative)
-
-## options
-
-Mouse Dictionary's options screen.
-
-- The first priority: functionality
-- TypeScript + React
-- Depends on heavy components
-- Module: named exports style
+Always go through `extern` in order to access `main`.

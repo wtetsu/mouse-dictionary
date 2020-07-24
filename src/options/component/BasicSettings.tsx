@@ -8,7 +8,7 @@ import React from "react";
 import { ChromePicker } from "react-color";
 import immer from "immer";
 import { res } from "../logic";
-import { env } from "../ref";
+import { env } from "../extern";
 import { SimpleSelect } from "./SimpleSelect";
 import { MouseDictionaryBasicSettings, UpdateEventHandler, InitialPosition, Scroll } from "../types";
 

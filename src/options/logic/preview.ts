@@ -5,8 +5,8 @@
  */
 
 import immer from "immer";
-import { debounce, storage } from "../logic";
-import { dom, Generator, view, entry } from "../ref";
+import { debounce } from "../logic";
+import { dom, Generator, view, entry, storage } from "../extern";
 import { MouseDictionarySettings } from "../types";
 
 type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };

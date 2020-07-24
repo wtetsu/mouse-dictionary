@@ -6,8 +6,7 @@
 
 import { LineReader } from "./linereader";
 import { EijiroParser, SimpleDictParser, JsonDictParser } from "./dictparser";
-import { storage } from "../logic";
-import { env } from "../ref";
+import { env, storage } from "../extern";
 
 type ProgressCallback = (wordCount: number, progress: string) => void;
 

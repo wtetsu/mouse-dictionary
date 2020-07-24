@@ -7,7 +7,7 @@
 import React, { useState } from "react";
 import { SimpleSelect } from "./SimpleSelect";
 import { res } from "../logic";
-import { env } from "../ref";
+import { env } from "../extern";
 
 type Encoding = "Shift-JIS" | "UTF-8" | "UTF-16";
 type Format = "EIJIRO" | "TSV" | "PDIC_LINE" | "JSON";
