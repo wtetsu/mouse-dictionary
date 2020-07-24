@@ -31,29 +31,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|ts|tsx)$/,
         use: {
           loader: "babel-loader",
           options: { cacheDirectory: !isProd },
         },
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.ts$/,
-        use: {
-          loader: "babel-loader",
-          options: { cacheDirectory: !isProd },
-        },
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.tsx$/,
-        use: [
-          {
-            loader: "babel-loader",
-            options: { cacheDirectory: !isProd },
-          },
-        ],
         exclude: /node_modules/,
       },
     ],
