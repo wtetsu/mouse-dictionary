@@ -43,7 +43,7 @@
     "@babel/preset-typescript": "^7.10.4",
     "@types/chrome": "0.0.122",
     "@types/hogan.js": "^3.0.0",
-    "@types/jest": "^26.0.5",
+    "@types/jest": "^26.0.7",
     "@types/react": "^16.9.43",
     "@typescript-eslint/eslint-plugin": "^3.7.0",
     "@typescript-eslint/parser": "^3.7.0",
