@@ -16,7 +16,7 @@ type Props = {
 
 const style = { verticalAlign: "bottom", marginRight: 2, transition: "0.5s" };
 const style1 = { ...style, transform: "rotateZ(0deg)" };
-const style2 = { ...style, transform: "rotateZ(250deg)" };
+const style2 = { ...style, transform: "rotateZ(-250deg)" };
 
 export const Toggle: React.FC<Props> = (props) => {
   return (
