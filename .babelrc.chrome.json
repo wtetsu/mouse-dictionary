@@ -3,11 +3,10 @@
     [
       "@babel/env",
       {
-        "targets": ["last 5 chrome version", "last 5 firefox version"]
+        "targets": { "chrome": "79" }
       }
     ],
     ["@babel/react"],
     ["@babel/typescript"]
-  ],
-  "plugins": []
+  ]
 }

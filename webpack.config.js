@@ -34,7 +34,9 @@ module.exports = {
         test: /\.(js|ts|tsx)$/,
         use: {
           loader: "babel-loader",
-          options: { cacheDirectory: !isProd },
+          options: {
+            cacheDirectory: !isProd,
+          },
         },
         exclude: /node_modules/,
       },

@@ -19,4 +19,6 @@ specificConfig.resolve.alias = {
   ponyfill$: path.resolve(__dirname, "src/lib/ponyfill/firefox"),
 };
 
+specificConfig.module.rules[0].use.options.configFile = __dirname + "/.babelrc.firefox.json";
+
 module.exports = specificConfig;

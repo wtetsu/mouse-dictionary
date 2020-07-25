@@ -19,4 +19,6 @@ specificConfig.resolve.alias = {
   ponyfill$: path.resolve(__dirname, "src/lib/ponyfill/chrome"),
 };
 
+specificConfig.module.rules[0].use.options.configFile = __dirname + "/.babelrc.chrome.json";
+
 module.exports = specificConfig;
