@@ -53,6 +53,7 @@
     { search: "ying", new: "ie" },
     { search: "ing", new: "e" },
   ],
+  [{ search: "ing", new: "" }],
   [{ search: "ed", new: "" }],
   [{ search: "ed", new: "e" }],
   [{ search: "ies", new: "y" }],
