@@ -29,7 +29,10 @@ export default class Lookuper {
     const cacheSize = process.env.NODE_ENV === "production" ? 100 : 0;
     this.shortCache = new ShortCache(cacheSize);
 
-    this.reForReferences = /[→＝]([- A-z']+)/g;
+    // String.prototype.matchAll may not exist(#44)
+    if (String.prototype.matchAll) {
+      this.reForReferences = /[→＝]([- A-z']+)/g;
+    }
   }
 
   canUpdate() {
@@ -102,19 +105,24 @@ export default class Lookuper {
 }
 
 const fetchDescriptions = async (entries, reForReferences) => {
-  const baseDescriptions = await storage.local.get(entries);
-  const baseHeads = entries.filter((e) => baseDescriptions[e]);
+  const primaryDescriptions = await storage.local.get(entries);
+  const primaryHeads = entries.filter((e) => primaryDescriptions[e]);
+
+  if (!reForReferences) {
+    return { heads: primaryHeads, descriptions: primaryDescriptions };
+  }
 
   console.time("lookup2");
-  const refHeads = pickOutRefs(baseDescriptions, reForReferences);
+  const refHeads = pickOutRefs(primaryDescriptions, reForReferences);
   const refDescriptions = {};
   if (refHeads.length >= 1) {
     const r = await storage.local.get(refHeads);
     Object.assign(refDescriptions, r);
   }
   console.timeEnd("lookup2");
-  const heads = [...baseHeads, ...refHeads];
-  const descriptions = { ...baseDescriptions, ...refDescriptions };
+
+  const heads = [...primaryHeads, ...refHeads];
+  const descriptions = { ...primaryDescriptions, ...refDescriptions };
   return { heads, descriptions };
 };
 
