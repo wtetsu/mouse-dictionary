@@ -14,3 +14,4 @@ export * from "./LoadDictionary";
 export * from "./OperationPanel";
 export * from "./Overlay";
 export * from "./Panel";
+export * from "./Toggle";

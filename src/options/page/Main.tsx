@@ -18,6 +18,7 @@ import {
   OperationPanel,
   Overlay,
   Panel,
+  Toggle,
 } from "../component";
 import { data, dict, message, Preview, res } from "../logic";
 import { config, defaultSettings, env } from "../extern";
@@ -174,14 +175,6 @@ export class Main extends React.Component<MainProps, MainState> {
     this.updateState(null, data.preProcessSettings(getDefaultSettings()));
   }
 
-  toggleBasicSettings(): void {
-    this.updateState({ panelLevel: this.state.panelLevel !== 0 ? 0 : 1 });
-  }
-
-  toggleAdvancedSettings(): void {
-    this.updateState({ panelLevel: this.state.panelLevel !== 1 ? 1 : 2 });
-  }
-
   switchLanguage(): void {
     const newLang = this.state.lang === "ja" ? "en" : "ja";
     res.setLang(newLang);
@@ -240,12 +233,13 @@ export class Main extends React.Component<MainProps, MainState> {
             <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data">
               {res.get("downloadDictData")}
             </ExternalLink>
-            <div style={{ marginTop: 30, marginBottom: 30 }}>
-              <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-              <a style={{ cursor: "pointer" }} onClick={() => this.toggleBasicSettings()}>
-                {state.panelLevel >= 1 ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
-              </a>
-            </div>
+            <Toggle
+              switch={state.panelLevel >= 1}
+              image="settings1.png"
+              text1={res.get("openBasicSettings")}
+              text2={res.get("closeBasicSettings")}
+              onClick={() => this.updateState({ panelLevel: this.state.panelLevel !== 0 ? 0 : 1 })}
+            />
           </Panel>
 
           <Panel active={state.panelLevel >= 1}>
@@ -284,13 +278,14 @@ export class Main extends React.Component<MainProps, MainState> {
               />
             </BasicSettings>
             <br />
-            <div>
-              <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
-              <a style={{ cursor: "pointer" }} onClick={() => this.toggleAdvancedSettings()}>
-                {state.panelLevel === 2 ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
-              </a>
-            </div>
-            <br />
+
+            <Toggle
+              switch={state.panelLevel >= 2}
+              image="settings2.png"
+              text1={res.get("openAdvancedSettings")}
+              text2={res.get("closeAdvancedSettings")}
+              onClick={() => this.updateState({ panelLevel: this.state.panelLevel !== 1 ? 1 : 2 })}
+            />
           </Panel>
 
           <Panel active={state.panelLevel >= 2}>
