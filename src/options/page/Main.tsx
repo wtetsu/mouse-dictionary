@@ -31,8 +31,7 @@ type MainState = {
   progress: string;
   settings: MouseDictionarySettings;
   trialText: string;
-  openedPanelLevel: 0 | 1 | 2;
-  jsonEditorOpened: boolean;
+  panelLevel: 0 | 1 | 2 | 3;
   lang: string;
   initialized: boolean;
 };
@@ -53,8 +52,7 @@ export class Main extends React.Component<MainProps, MainState> {
       progress: "",
       settings: {} as MouseDictionarySettings,
       trialText: "rained cats and dogs",
-      openedPanelLevel: 0,
-      jsonEditorOpened: false,
+      panelLevel: 0,
       lang: initialLang,
       initialized: false,
     };
@@ -86,7 +84,7 @@ export class Main extends React.Component<MainProps, MainState> {
   async loadInitialDict(): Promise<void> {
     let finalWordCount: number;
     try {
-      this.updateState({ busy: true, openedPanelLevel: 0 });
+      this.updateState({ busy: true, panelLevel: 0 });
       finalWordCount = await dict.registerDefaultDict((count, progress) => {
         const message = res.get("progressRegister", { count, progress });
         this.updateState({ progress: message });
@@ -112,12 +110,12 @@ export class Main extends React.Component<MainProps, MainState> {
       const shouldRefresh = data.hasAny(DIALOG_FIELDS, Object.keys(settingsPatch));
       this.preview.update(newState.settings, newState.trialText, shouldRefresh);
     } else {
-      if (newState.openedPanelLevel === 1 && this.state.openedPanelLevel === 0) {
+      if (newState.panelLevel === 1 && this.state.panelLevel === 0) {
         this.preview.updateText(newState.trialText, newState.settings.lookupWithCapitalized);
       }
     }
 
-    this.preview.setVisible(newState.openedPanelLevel >= 1 && !newState.jsonEditorOpened);
+    this.preview.setVisible(newState.panelLevel >= 1 && newState.panelLevel <= 2);
 
     if (statePatch?.trialText) {
       this.preview.updateText(statePatch.trialText, newState.settings.lookupWithCapitalized);
@@ -160,7 +158,7 @@ export class Main extends React.Component<MainProps, MainState> {
       }
     };
     try {
-      this.updateState({ busy: true, openedPanelLevel: 0 });
+      this.updateState({ busy: true, panelLevel: 0 });
       const count = await dict.load({ file, encoding, format, event });
       message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
       config.setDataReady(true);
@@ -177,11 +175,11 @@ export class Main extends React.Component<MainProps, MainState> {
   }
 
   toggleBasicSettings(): void {
-    this.updateState({ openedPanelLevel: this.state.openedPanelLevel !== 0 ? 0 : 1 });
+    this.updateState({ panelLevel: this.state.panelLevel !== 0 ? 0 : 1 });
   }
 
   toggleAdvancedSettings(): void {
-    this.updateState({ openedPanelLevel: this.state.openedPanelLevel !== 1 ? 1 : 2 });
+    this.updateState({ panelLevel: this.state.panelLevel !== 1 ? 1 : 2 });
   }
 
   switchLanguage(): void {
@@ -245,12 +243,12 @@ export class Main extends React.Component<MainProps, MainState> {
             <div style={{ marginTop: 30, marginBottom: 30 }}>
               <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
               <a style={{ cursor: "pointer" }} onClick={() => this.toggleBasicSettings()}>
-                {state.openedPanelLevel >= 1 ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
+                {state.panelLevel >= 1 ? res.get("closeBasicSettings") : res.get("openBasicSettings")}
               </a>
             </div>
           </Panel>
 
-          <Panel active={state.openedPanelLevel >= 1}>
+          <Panel active={state.panelLevel >= 1}>
             <div>
               <span>{res.get("trialText")}: </span>
               <EditableSpan
@@ -289,21 +287,18 @@ export class Main extends React.Component<MainProps, MainState> {
             <div>
               <img src="settings1.png" style={{ verticalAlign: "bottom" }} />
               <a style={{ cursor: "pointer" }} onClick={() => this.toggleAdvancedSettings()}>
-                {state.openedPanelLevel === 2 ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
+                {state.panelLevel === 2 ? res.get("closeAdvancedSettings") : res.get("openAdvancedSettings")}
               </a>
             </div>
             <br />
           </Panel>
 
-          <Panel active={state.openedPanelLevel >= 2}>
+          <Panel active={state.panelLevel >= 2}>
             <Button
               type="json"
               text={res.get("openJsonEditor")}
               disabled={state.busy}
-              onClick={() => {
-                const jsonEditorOpened = !state.jsonEditorOpened;
-                this.updateState({ jsonEditorOpened });
-              }}
+              onClick={() => this.updateState({ panelLevel: 3 })}
             />
 
             <AdvancedSettings
@@ -312,10 +307,10 @@ export class Main extends React.Component<MainProps, MainState> {
             />
           </Panel>
 
-          <Overlay active={state.jsonEditorOpened}>
+          <Overlay active={state.panelLevel >= 3}>
             <JsonEditor
               initialValue={state.settings}
-              onUpdate={(e) => this.updateState(e.payload.state, e.payload.settings)}
+              onChange={(newSettings) => this.updateState({ panelLevel: 2 }, newSettings)}
             />
           </Overlay>
         </div>

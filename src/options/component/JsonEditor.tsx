@@ -27,7 +27,7 @@ const canReplace = (a: number | string | boolean | [], b: number | string | bool
 
 type Props = {
   initialValue: MouseDictionarySettings;
-  onUpdate: (e: JsonEditorUpdateEvent) => void;
+  onChange: (value: MouseDictionarySettings) => void;
 };
 
 type JsonEditorUpdateEvent = {
@@ -56,18 +56,14 @@ export const JsonEditor: React.FC<Props> = (props) => {
   const updateAndClose = (json: string) => {
     try {
       const settings = createSettings(json);
-      const state = { jsonEditorOpened: false };
-      const payload = { settings, state };
-      props.onUpdate({ payload });
+      props.onChange(settings);
     } catch {
       message.warn(res.get("JsonImportError"));
     }
   };
 
   const close = () => {
-    const state = { jsonEditorOpened: false };
-    const payload = { state };
-    props.onUpdate({ payload });
+    props.onChange(null);
   };
 
   return (
