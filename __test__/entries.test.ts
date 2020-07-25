@@ -421,5 +421,14 @@ test("", () => {
 });
 
 test("", () => {
+  expect(generateEntries("self taught")).toEqual(
+    expect.arrayContaining([
+      "self taught", //
+      "selftaught",
+    ])
+  );
+});
+
+test("", () => {
   expect(generateEntries("")).toEqual(expect.arrayContaining([]));
 });

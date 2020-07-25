@@ -179,6 +179,11 @@ const createLinkedWords = (words, isAllLower) => {
       lookupWords.push(...linkedConvertedWords);
     }
   }
+
+  if (words.length >= 2) {
+    // "self taught" -> "selftaught"
+    lookupWords.push(words[0] + words[1]);
+  }
   return lookupWords;
 };
 
