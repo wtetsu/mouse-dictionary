@@ -15,7 +15,7 @@ test("", () => {
   expect(rule.doBase("run")).toEqual([]);
   expect(rule.doBase("runs")).toEqual(["run"]);
   expect(rule.doBase("ran")).toEqual(["run"]);
-  expect(rule.doBase("running")).toEqual(["run", "runne"]);
+  expect(rule.doBase("running")).toEqual(["run", "runne", "runn"]);
 });
 
 test("", () => {

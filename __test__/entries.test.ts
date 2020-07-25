@@ -167,6 +167,20 @@ test("", () => {
     ])
   );
 
+  expect(generateEntries("yelled at")).toEqual(
+    expect.arrayContaining([
+      "yell at", //
+      "yell",
+    ])
+  );
+
+  expect(generateEntries("yelling at")).toEqual(
+    expect.arrayContaining([
+      "yell at", //
+      "yell",
+    ])
+  );
+
   expect(generateEntries("dealt dealt dealt")).toEqual(
     expect.arrayContaining([
       "dealt dealt dealt",
