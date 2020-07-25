@@ -108,17 +108,13 @@ const fetchDescriptions = async (entries, reForReferences) => {
   const primaryDescriptions = await storage.local.get(entries);
   const primaryHeads = entries.filter((e) => primaryDescriptions[e]);
 
-  if (!reForReferences) {
+  const refHeads = pickOutRefs(primaryDescriptions, reForReferences);
+  if (refHeads.length === 0) {
     return { heads: primaryHeads, descriptions: primaryDescriptions };
   }
 
   console.time("lookup2");
-  const refHeads = pickOutRefs(primaryDescriptions, reForReferences);
-  const refDescriptions = {};
-  if (refHeads.length >= 1) {
-    const r = await storage.local.get(refHeads);
-    Object.assign(refDescriptions, r);
-  }
+  const refDescriptions = await storage.local.get(refHeads);
   console.timeEnd("lookup2");
 
   const heads = [...primaryHeads, ...refHeads];
@@ -128,6 +124,9 @@ const fetchDescriptions = async (entries, reForReferences) => {
 
 const pickOutRefs = (descriptions, reForReferences) => {
   const resultSet = new Set();
+  if (!reForReferences) {
+    return resultSet;
+  }
   const existingKeys = new Set(Object.keys(descriptions));
   const descList = Object.values(descriptions);
 
