@@ -14,87 +14,84 @@ type DictionaryInformation = {
   files: string[];
 };
 
-type LoadCallback = (param: LoadCallbackParam) => void;
+type Callback = (param: CallbackParam) => void;
+type ReadingCallback = (param: ReadingCallbackParam) => void;
+// type LoadingCallback = (param: LoadingCallbackParam) => void;
 
-type LoadCallbackParam =
-  | {
-      name: "reading";
-      loaded: number;
-      total: number;
-    }
-  | {
-      name: "loading";
-      count: number;
-      word: AWord;
-    };
+type CallbackParam = ReadingCallbackParam | LoadingCallbackParam;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const emptyCallback: LoadCallback = () => {};
+type ReadingCallbackParam = {
+  name: "reading";
+  loaded: number;
+  total: number;
+};
+
+type LoadingCallbackParam = {
+  name: "loading";
+  count: number;
+  word: HeadWord;
+};
 
 type LoadParam = {
-  file: File;
+  file: Blob;
   encoding: string;
   format: string;
 };
 
-type AWord = {
+type HeadWord = {
   head: string;
   desc: string;
 };
 
-export const load = async ({ file, encoding, format }: LoadParam, event: LoadCallback): Promise<number> => {
-  const parser = createDictParser(format);
-  const ev = event ?? emptyCallback;
+export const load = async (loadParam: LoadParam, callback: Callback): Promise<number> => {
+  const fileContent = await readAsText(loadParam.file, loadParam.encoding, (e) => {
+    callback({ name: "reading", loaded: e.loaded, total: e.total });
+  });
 
-  return new Promise((resolve, reject) => {
-    let wordCount = 0;
-    const reader = new FileReader();
-    reader.onprogress = (e) => {
-      ev({ name: "reading", loaded: e.loaded, total: e.total });
-    };
-    reader.onload = (e) => {
-      const data = <string>e.target.result;
+  const reader = new LineReader(fileContent);
 
-      let dictData = {};
-      const reader = new LineReader(data);
-      reader.eachLine(
-        (line) => {
-          const hd: AWord = parser.addLine(line);
-          if (hd) {
-            dictData[hd.head] = hd.desc;
-            wordCount += 1;
-            if (wordCount === 1 || (wordCount >= 1 && wordCount % env.registerRecordsAtOnce === 0)) {
-              ev({ name: "loading", count: wordCount, word: hd });
-              const tmp = dictData;
-              dictData = {};
-              return save(tmp);
-            }
-          }
-        },
-        () => {
-          // finished
-          try {
-            const lastData = parser.flush();
-            if (lastData) {
-              Object.assign(dictData, lastData);
-              wordCount += Object.keys(lastData).length;
-            }
-          } catch (e) {
-            reject(e);
-          }
-          save(dictData).then(
-            () => {
-              resolve(wordCount);
-            },
-            (error) => {
-              throw new Error(`Error: ${error}`);
-            }
-          );
-          dictData = null;
-        }
-      );
-    };
-    reader.readAsText(file, encoding);
+  let dictData = {};
+  let wordCount = 0;
+
+  const parser = createDictParser(loadParam.format);
+  while (reader.next()) {
+    const hd: HeadWord = parser.addLine(reader.getLine());
+    if (!hd) {
+      continue;
+    }
+    dictData[hd.head] = hd.desc;
+    wordCount += 1;
+    if (wordCount === 1 || (wordCount > 1 && wordCount % env.registerRecordsAtOnce === 0)) {
+      callback({ name: "loading", count: wordCount, word: hd });
+      const tmp = dictData;
+      dictData = {};
+      await storage.local.set(tmp);
+    }
+  }
+
+  const lastData = parser.flush();
+  if (lastData) {
+    Object.assign(dictData, lastData);
+    wordCount += Object.keys(lastData).length;
+    await storage.local.set(dictData);
+  }
+  return wordCount;
+};
+
+const readAsText = async (file: Blob, encoding: string, callback: ReadingCallback): Promise<string> => {
+  return new Promise((done, reject) => {
+    try {
+      const reader = new FileReader();
+      reader.onprogress = (e) => {
+        callback({ name: "reading", loaded: e.loaded, total: e.total });
+      };
+      reader.onload = (e) => {
+        done(<string>e.target.result);
+      };
+      reader.readAsText(file, encoding);
+    } catch (e) {
+      reject(e);
+    }
   });
 };
 
@@ -133,10 +130,6 @@ const loadJsonFile = async (fname: string): Promise<Record<string, any>> => {
 const registerDict = async (fname: string): Promise<number> => {
   const dictData = await loadJsonFile(fname);
   const wordCount = Object.keys(dictData).length;
-  await save(dictData);
+  await storage.local.set(dictData);
   return wordCount;
-};
-
-const save = (dictData: Record<string, string>): Promise<void> => {
-  return storage.local.set(dictData);
 };

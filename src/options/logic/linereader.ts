@@ -4,17 +4,17 @@
  * Licensed under MIT
  */
 
-type EachLineCallback = (line: string, linenum: number) => void;
-
 export class LineReader {
   data: string;
   lineFeedString: string;
   currentIndex: number;
+  currentLine: string;
 
   constructor(data: string) {
     this.data = data;
     this.lineFeedString = this.detectLineFeedString(data);
     this.currentIndex = 0;
+    this.currentLine = null;
   }
 
   detectLineFeedString(data: string): string {
@@ -28,40 +28,31 @@ export class LineReader {
     return "\n";
   }
 
-  eachLine(fnEachLine: EachLineCallback, fnFinished: () => void): void {
-    this.processNextLine(fnEachLine, fnFinished, 0);
-  }
-
-  processNextLine(fnEachLine: EachLineCallback, fnFinished: () => void, linenum: number): Promise<void> {
-    const line = this.getNextLine();
-    if (line !== null) {
-      return Promise.all([fnEachLine(line, linenum)]).then(() => {
-        return this.processNextLine(fnEachLine, fnFinished, linenum + 1);
-      });
-    } else {
-      if (fnFinished) {
-        fnFinished();
-      }
-    }
-  }
-
-  getNextLine(): string {
+  next(): boolean {
     if (this.currentIndex === -1) {
-      return null;
+      this.currentLine = null;
+      return false;
     }
     if (this.lineFeedString === null) {
       this.currentIndex = -1;
-      return this.data;
+      this.currentLine = this.data;
+      return true;
     }
-    let line = null;
     const nextLfIndex = this.data.indexOf(this.lineFeedString, this.currentIndex);
     if (nextLfIndex >= 0) {
-      line = this.data.substring(this.currentIndex, nextLfIndex);
+      this.currentLine = this.data.substring(this.currentIndex, nextLfIndex);
       this.currentIndex = nextLfIndex + this.lineFeedString.length;
-    } else {
-      line = this.data.substring(this.currentIndex);
-      this.currentIndex = -1;
+      if (this.currentIndex === this.data.length) {
+        this.currentIndex = -1;
+      }
+      return true;
     }
-    return line;
+    this.currentLine = this.data.substring(this.currentIndex);
+    this.currentIndex = -1;
+    return true;
+  }
+
+  getLine(): string {
+    return this.currentLine;
   }
 }

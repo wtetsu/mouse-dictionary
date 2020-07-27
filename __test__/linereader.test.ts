@@ -1,62 +1,117 @@
 import { LineReader } from "../src/options/logic/linereader";
 
-test("", (done) => {
+test("", () => {
+  let reader = new LineReader("");
+
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("");
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+});
+
+test("", () => {
   let reader = new LineReader("aaa\nbbb\nccc");
 
-  let lines = [];
-  reader.eachLine(
-    (line) => {
-      lines.push(line);
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 100);
-      });
-    },
-    () => {
-      expect(["aaa", "bbb", "ccc"]).toEqual(lines);
-      done();
-    }
-  );
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("aaa");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("bbb");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("ccc");
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
 });
 
-test("", (done) => {
+test("", () => {
+  let reader = new LineReader("aaa\nbbb\nccc\n");
+
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("aaa");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("bbb");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("ccc");
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+});
+
+test("", () => {
+  let reader = new LineReader("aaa\nbbb\nccc\n\n");
+
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("aaa");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("bbb");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("ccc");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("");
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+});
+
+test("", () => {
   let reader = new LineReader("aaa\r\nbbb\r\nccc");
 
-  let lines = [];
-  reader.eachLine(
-    (line) => {
-      lines.push(line);
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 100);
-      });
-    },
-    () => {
-      expect(["aaa", "bbb", "ccc"]).toEqual(lines);
-      done();
-    }
-  );
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("aaa");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("bbb");
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("ccc");
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
 });
 
-test("", (done) => {
+test("", () => {
   let reader = new LineReader("aaabbbccc");
 
-  let lines = [];
-  reader.eachLine(
-    (line) => {
-      lines.push(line);
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 100);
-      });
-    },
-    () => {
-      expect(["aaabbbccc"]).toEqual(lines);
-      expect(null).toEqual(reader.getNextLine());
-      done();
-    }
-  );
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("aaabbbccc");
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+});
+
+test("", () => {
+  let reader = new LineReader("aaabbbccc\n");
+
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(true);
+  expect(reader.getLine()).toEqual("aaabbbccc");
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
+  expect(reader.next()).toEqual(false);
+  expect(reader.getLine()).toEqual(null);
 });
