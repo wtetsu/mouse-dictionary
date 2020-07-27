@@ -136,39 +136,32 @@ export class Main extends React.Component<MainProps, MainState> {
         willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
       }
     }
-    if (willContinue) {
-      this.loadDictionaryFile(file, encoding, format);
+    if (!willContinue) {
+      return;
+    }
+    try {
+      await this.loadDictionaryFile(file, encoding, format);
+    } catch (e) {
+      message.error(e.toString());
+    } finally {
+      this.updateState({ busy: false, progress: "", dictDataUsage: -1 });
     }
   }
 
   async loadDictionaryFile(file: File, encoding: string, format: string): Promise<void> {
-    const event = (ev: any) => {
-      switch (ev.name) {
-        case "reading": {
-          const loaded = ev.loaded.toLocaleString();
-          const total = ev.total.toLocaleString();
-          this.updateState({ progress: `${loaded} / ${total} Byte` });
-          break;
-        }
-        case "loading": {
-          this.updateState({
-            progress: res.get("progressRegister", { count: ev.count?.toLocaleString(), progress: ev.word.head }),
-          });
-          break;
-        }
+    this.updateState({ busy: true, panelLevel: 0 });
+    const count = await dict.load({ file, encoding, format }, (ev) => {
+      if (ev.name === "reading") {
+        const progress = `${ev.loaded.toLocaleString()} / ${ev.total.toLocaleString()} Byte`;
+        this.updateState({ progress });
       }
-    };
-    try {
-      this.updateState({ busy: true, panelLevel: 0 });
-      const count = await dict.load({ file, encoding, format, event });
-      message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
-      config.setDataReady(true);
-      this.updateState({ dictDataUsage: -1 });
-    } catch (e) {
-      message.error(e.toString());
-    } finally {
-      this.updateState({ busy: false, progress: "" });
-    }
+      if (ev.name === "loading") {
+        const progress = res.get("progressRegister", { count: ev.count?.toLocaleString(), progress: ev.word.head });
+        this.updateState({ progress });
+      }
+    });
+    message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
+    config.setDataReady(true);
   }
 
   doFactoryReset(): void {

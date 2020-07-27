@@ -35,7 +35,6 @@ type LoadParam = {
   file: File;
   encoding: string;
   format: string;
-  event: LoadCallback;
 };
 
 type AWord = {
@@ -43,26 +42,8 @@ type AWord = {
   desc: string;
 };
 
-export const load = async ({ file, encoding, format, event }: LoadParam): Promise<number> => {
-  let parser = null;
-  switch (format) {
-    case "TSV":
-      parser = new SimpleDictParser("\t");
-      break;
-    case "PDIC_LINE":
-      parser = new SimpleDictParser(" /// ");
-      break;
-    case "EIJIRO":
-      parser = new EijiroParser();
-      break;
-    case "JSON":
-      parser = new JsonDictParser();
-      break;
-  }
-  if (parser === null) {
-    throw new Error("Unknown File Format: " + format);
-  }
-
+export const load = async ({ file, encoding, format }: LoadParam, event: LoadCallback): Promise<number> => {
+  const parser = createDictParser(format);
   const ev = event ?? emptyCallback;
 
   return new Promise((resolve, reject) => {
@@ -82,7 +63,6 @@ export const load = async ({ file, encoding, format, event }: LoadParam): Promis
           if (hd) {
             dictData[hd.head] = hd.desc;
             wordCount += 1;
-
             if (wordCount === 1 || (wordCount >= 1 && wordCount % env.registerRecordsAtOnce === 0)) {
               ev({ name: "loading", count: wordCount, word: hd });
               const tmp = dictData;
@@ -93,17 +73,15 @@ export const load = async ({ file, encoding, format, event }: LoadParam): Promis
         },
         () => {
           // finished
-          let lastData;
           try {
-            lastData = parser.flush();
+            const lastData = parser.flush();
+            if (lastData) {
+              Object.assign(dictData, lastData);
+              wordCount += Object.keys(lastData).length;
+            }
           } catch (e) {
             reject(e);
           }
-          if (lastData) {
-            Object.assign(dictData, lastData);
-            wordCount += Object.keys(lastData).length;
-          }
-
           save(dictData).then(
             () => {
               resolve(wordCount);
@@ -112,13 +90,26 @@ export const load = async ({ file, encoding, format, event }: LoadParam): Promis
               throw new Error(`Error: ${error}`);
             }
           );
-
           dictData = null;
         }
       );
     };
     reader.readAsText(file, encoding);
   });
+};
+
+const createDictParser = (format: string) => {
+  switch (format) {
+    case "TSV":
+      return new SimpleDictParser("\t");
+    case "PDIC_LINE":
+      return new SimpleDictParser(" /// ");
+    case "EIJIRO":
+      return new EijiroParser();
+    case "JSON":
+      return new JsonDictParser();
+  }
+  throw new Error("Unknown File Format: " + format);
 };
 
 export const registerDefaultDict = async (fnProgress: ProgressCallback): Promise<number> => {
