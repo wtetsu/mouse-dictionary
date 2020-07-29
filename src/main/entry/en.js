@@ -15,13 +15,13 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   const replacedSourceStr = rawSourceStr.replace(RE_UNNECESSARY_CHARACTERS, "").replace(RE_SLASH, " / ");
   const sourceStr = text.dealWithHyphens(replacedSourceStr, rule.doLetters);
 
-  const lookupWords = new UniqList();
-
-  if (mustIncludeOriginalText) {
-    lookupWords.push(sourceStr);
-  }
-
   const { firstWords, linkedWords } = processSourceString(sourceStr);
+
+  const lookupWords = new UniqList();
+  if (mustIncludeOriginalText) {
+    lookupWords.push(rawSourceStr);
+  }
+  lookupWords.filer = (s) => s.length >= 2 || s === firstWord;
   lookupWords.merge(linkedWords);
 
   const firstWord = firstWords?.[0];
@@ -41,7 +41,7 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.push(toTitle(firstWord));
   }
 
-  return lookupWords.toArray().filter((s) => s.length >= 2 || s === firstWord);
+  return lookupWords.toArray();
 };
 
 const processSourceString = (sourceStr) => {
