@@ -73,8 +73,8 @@ export const load = async (loadParam: LoadParam, callback: Callback): Promise<nu
   if (lastData) {
     Object.assign(dictData, lastData);
     wordCount += Object.keys(lastData).length;
-    await storage.local.set(dictData);
   }
+  await storage.local.set(dictData);
   return wordCount;
 };
 
