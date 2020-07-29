@@ -1,5 +1,5 @@
 import * as data from "../src/options/logic/data";
-import defaultsettings from "../src/settings/defaultsettings";
+import defaultsettings from "../src/main/settings/defaultsettings";
 import { MouseDictionarySettings } from "../src/options/types";
 
 test("", () => {

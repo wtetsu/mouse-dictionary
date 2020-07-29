@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import orgStorage from "../../lib/storage";
+import orgStorage from "../../main/lib/storage";
 
 type StorageApi = {
   get: (items: string[]) => Promise<Record<string, string>>;

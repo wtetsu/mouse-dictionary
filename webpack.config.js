@@ -23,7 +23,7 @@ module.exports = {
   mode: mode,
   entry: {
     "options/options": "./src/options/app.tsx",
-    main: "./src/main/main.js",
+    main: "./src/main/core/start.js",
   },
   output: {
     path: __dirname + "/dist",

@@ -1,5 +1,5 @@
 module.exports = {
   moduleNameMapper: {
-    "^ponyfill$": "<rootDir>/src/lib/ponyfill/chrome",
+    "^ponyfill$": "<rootDir>/src/main/lib/ponyfill/chrome",
   },
 };

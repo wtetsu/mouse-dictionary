@@ -8,7 +8,7 @@ import swal from "sweetalert";
 import React from "react";
 import { render } from "react-dom";
 import { Main } from "./page/Main";
-import rule from "../main/rule";
+import rule from "../main/core/rule";
 
 import ace from "ace-builds/src-noconflict/ace";
 import "ace-builds/src-noconflict/mode-html";

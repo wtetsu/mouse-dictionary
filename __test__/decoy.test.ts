@@ -1,5 +1,5 @@
-import decoy from "../src/lib/decoy";
-import dom from "../src/lib/dom";
+import decoy from "../src/main/lib/decoy";
+import dom from "../src/main/lib/dom";
 
 test("", () => {
   const d = decoy.create("div");

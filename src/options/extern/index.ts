@@ -6,14 +6,12 @@
 
 // References to "main" functions
 
-import entry from "../../main/entry";
-import Generator from "../../main/generator";
-import view from "../../main/view";
-
-import dom from "../../lib/dom";
-
-import defaultSettings from "../../settings/defaultsettings";
-import env from "../../settings/env";
+import entry from "../../main/core/entry";
+import Generator from "../../main/core/generator";
+import view from "../../main/core/view";
+import dom from "../../main/lib/dom";
+import defaultSettings from "../../main/settings/defaultsettings";
+import env from "../../main/settings/env";
 
 import * as config from "./config";
 import * as storage from "./storage";

@@ -4,8 +4,8 @@
  * Licensed under MIT
  */
 
-import orgConfig from "../../main/config";
-import storage from "../../lib/storage";
+import orgConfig from "../../main/core/config";
+import storage from "../../main/lib/storage";
 import { MouseDictionarySettings } from "../types";
 
 const KEY_USER_CONFIG = "**** config ****";

@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import rule from "../main/rule";
+import rule from "../core/rule";
 
 const text = {};
 
