@@ -50,7 +50,7 @@
     "archiver": "^5.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^26.1.0",
+    "babel-jest": "^26.2.0",
     "babel-loader": "^8.1.0",
     "copy-webpack-plugin": "^6.0.3",
     "cross-env": "^7.0.2",
@@ -58,11 +58,11 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.5",
-    "jest": "^26.1.0",
+    "jest": "^26.2.0",
     "milligram": "^1.4.1",
     "prettier": "^2.0.5",
     "typescript": "^3.9.7",
-    "webpack": "^4.44.0",
+    "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }
 }
