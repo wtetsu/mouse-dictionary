@@ -115,53 +115,42 @@ export class Main extends React.Component<MainProps, MainState> {
         this.preview.updateText(newState.trialText, newState.settings.lookupWithCapitalized);
       }
     }
-
     this.preview.setVisible(newState.panelLevel >= 1 && newState.panelLevel <= 2);
-
     if (statePatch?.trialText) {
       this.preview.updateText(statePatch.trialText, newState.settings.lookupWithCapitalized);
     }
   }
 
-  async loadDictionaryData(encoding: string, format: string): Promise<void> {
-    const input = document.getElementById("dictdata") as HTMLInputElement;
-    const file = input.files[0];
+  async loadDictionaryData(file: File, encoding: string, format: string): Promise<void> {
     if (!file) {
       message.warn(res.get("selectDictFile"));
       return;
     }
-    let willContinue = true;
-    if (encoding === "Shift-JIS") {
-      if (!(await data.fileMayBeShiftJis(file))) {
-        willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
+    if (encoding === "Shift-JIS" && !(await data.fileMayBeShiftJis(file))) {
+      const willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
+      if (!willContinue) {
+        return;
       }
     }
-    if (!willContinue) {
-      return;
-    }
     try {
-      await this.loadDictionaryFile(file, encoding, format);
+      this.updateState({ busy: true, panelLevel: 0 });
+      const count = await dict.load({ file, encoding, format }, (ev) => {
+        if (ev.name === "reading") {
+          const progress = `${ev.loaded.toLocaleString()} / ${ev.total.toLocaleString()} Byte`;
+          this.updateState({ progress });
+        }
+        if (ev.name === "loading") {
+          const progress = res.get("progressRegister", { count: ev.count?.toLocaleString(), progress: ev.word.head });
+          this.updateState({ progress });
+        }
+      });
+      message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
+      config.setDataReady(true);
     } catch (e) {
       message.error(e.toString());
     } finally {
       this.updateState({ busy: false, progress: "", dictDataUsage: -1 });
     }
-  }
-
-  async loadDictionaryFile(file: File, encoding: string, format: string): Promise<void> {
-    this.updateState({ busy: true, panelLevel: 0 });
-    const count = await dict.load({ file, encoding, format }, (ev) => {
-      if (ev.name === "reading") {
-        const progress = `${ev.loaded.toLocaleString()} / ${ev.total.toLocaleString()} Byte`;
-        this.updateState({ progress });
-      }
-      if (ev.name === "loading") {
-        const progress = res.get("progressRegister", { count: ev.count?.toLocaleString(), progress: ev.word.head });
-        this.updateState({ progress });
-      }
-    });
-    message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
-    config.setDataReady(true);
   }
 
   doFactoryReset(): void {
@@ -198,7 +187,7 @@ export class Main extends React.Component<MainProps, MainState> {
             trigger={(e) => {
               switch (e.type) {
                 case "load":
-                  return this.loadDictionaryData(e.payload.encoding, e.payload.format);
+                  return this.loadDictionaryData(e.payload.file, e.payload.encoding, e.payload.format);
                 case "clear":
                   // Not supported for the moment due to instability of chrome.storage.local.clear()
                   return;

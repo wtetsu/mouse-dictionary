@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import React, { useState } from "react";
+import React, { useRef, useState, MutableRefObject } from "react";
 import { Button } from "./Button";
 import { SimpleSelect } from "./SimpleSelect";
 import { res } from "../logic";
@@ -23,6 +23,7 @@ type TriggerEvent =
   | {
       type: "load";
       payload: {
+        file: File;
         encoding: Encoding;
         format: Format;
       };
@@ -32,6 +33,8 @@ type TriggerEvent =
 export const LoadDictionary: React.FC<Props> = (props) => {
   const [encoding, setEncoding] = useState(props.defaultEncoding);
   const [format, setFormat] = useState(props.defaultFormat);
+
+  const fileInput = useRef() as MutableRefObject<HTMLInputElement>;
 
   const ENCODINGS = [
     { value: "Shift-JIS", name: "Shift-JIS" },
@@ -53,12 +56,12 @@ export const LoadDictionary: React.FC<Props> = (props) => {
       <label>{res.get("dictDataFormat")}</label>
       <SimpleSelect value={format} options={FORMATS} onChange={(value) => setFormat(value as Format)} />
       <label>{res.get("readDictData")}</label>
-      <input type="file" id="dictdata" />
+      <input type="file" ref={fileInput} />
       <br />
       <Button
         type="primary"
         text={res.get("loadSelectedFile")}
-        onClick={() => props.trigger({ type: "load", payload: { encoding, format } })}
+        onClick={() => props.trigger({ type: "load", payload: { encoding, format, file: fileInput.current.files[0] } })}
         disabled={props.busy}
       />
       <img
