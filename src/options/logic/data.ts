@@ -67,15 +67,6 @@ export const postProcessSettings = (settings: MouseDictionarySettings): MouseDic
   });
 };
 
-export const hasAny = <T extends unknown>(set: Set<T>, array: T[]): boolean => {
-  for (const name of array) {
-    if (set.has(name)) {
-      return true;
-    }
-  }
-  return false;
-};
-
 const readFile = async (file: Blob): Promise<ProgressEvent<FileReader>> => {
   return new Promise((done, fail) => {
     const reader = new FileReader();

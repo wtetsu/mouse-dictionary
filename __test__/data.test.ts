@@ -61,14 +61,3 @@ test("", async () => {
   expect(false).toEqual(await data.fileMayBeShiftJis(createFile([0xe0, 0x7f])));
   expect(false).toEqual(await data.fileMayBeShiftJis(createFile([0xef, 0xfd])));
 });
-
-test("", async () => {
-  expect(false).toEqual(data.hasAny(new Set([]), []));
-  expect(false).toEqual(data.hasAny(new Set([]), ["aaa"]));
-  expect(false).toEqual(data.hasAny(new Set(["aaa"]), []));
-  expect(false).toEqual(data.hasAny(new Set(["aaa", "bbb", "ccc"]), ["ddd", "eee", "fff"]));
-
-  expect(true).toEqual(data.hasAny(new Set(["aaa"]), ["aaa"]));
-  expect(true).toEqual(data.hasAny(new Set(["aaa", "bbb"]), ["bbb"]));
-  expect(true).toEqual(data.hasAny(new Set(["aaa", "bbb", "ccc"]), ["ccc", "ddd", "eee"]));
-});

@@ -9,6 +9,7 @@ import React from "react";
 import { render } from "react-dom";
 import { Main } from "./page/Main";
 import rule from "../main/core/rule";
+import { res } from "./logic";
 
 import ace from "ace-builds/src-noconflict/ace";
 import "ace-builds/src-noconflict/mode-html";
@@ -17,6 +18,8 @@ import "ace-builds/src-noconflict/theme-xcode";
 import "ace-builds/src-noconflict/theme-tomorrow";
 import "ace-builds/src-noconflict/theme-solarized_light";
 ace.config.set("basePath", "/options");
+
+res.setLang(res.decideInitialLanguage([...navigator.languages]));
 
 window.onerror = (msg) => {
   swal({

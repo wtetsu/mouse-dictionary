@@ -27,7 +27,7 @@ export const setLang = (newLang: string): void => {
   _lang = newLang;
 };
 
-const getLang = () => {
+export const getLang = (): string => {
   if (_lang === "ja" || _lang === "en") {
     return _lang;
   }
@@ -41,4 +41,20 @@ export const get = (key: string, params?: Record<string, any>): string => {
     return key;
   }
   return template.render(params);
+};
+
+export const decideInitialLanguage = (languages: string[]): string => {
+  if (!languages) {
+    return "en";
+  }
+  const validLanguages = ["en", "ja"];
+  let result = "en";
+  for (let i = 0; i < languages.length; i++) {
+    const lang = languages[i].toLowerCase().split("-")[0];
+    if (validLanguages.includes(lang)) {
+      result = lang;
+      break;
+    }
+  }
+  return result;
 };
