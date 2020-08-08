@@ -21,7 +21,7 @@ const style2 = { ...style, transform: "rotateZ(-250deg)" };
 export const Toggle: React.FC<Props> = (props) => {
   return (
     <div style={{ marginTop: 30, marginBottom: 30 }}>
-      <a style={{ cursor: "pointer" }} onClick={(e) => props.onClick(e)}>
+      <a style={{ cursor: "pointer", userSelect: "none" }} onClick={(e) => props.onClick(e)}>
         <img src={props.image} style={props.switch ? style2 : style1} />
         {props.switch ? props.text2 : props.text1}
       </a>
