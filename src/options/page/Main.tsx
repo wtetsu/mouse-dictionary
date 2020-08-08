@@ -75,14 +75,14 @@ const initialState: MainState = {
   settings: {} as MouseDictionarySettings,
   trialText: "rained cats and dogs",
   panelLevel: 0,
-  lang: res.getLang(),
+  lang: "",
   initialized: false,
 };
 
 export const Main: React.FC = () => {
   const refPreview = useRef<Preview>();
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, { ...initialState, lang: res.getLang() });
 
   useEffect(() => {
     const init = async () => {
