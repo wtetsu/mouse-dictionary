@@ -318,7 +318,6 @@ const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void>
   const settings = data.postProcessSettings(rawSettings);
   try {
     await config.saveSettings(settings);
-    message.info(res.get("finishSaving"));
   } catch (e) {
     message.error(e.message);
   }
