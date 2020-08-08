@@ -60,7 +60,9 @@ const reduce = (state: Replace[], action: Action): Replace[] => {
         if (!isValidIndex) {
           return;
         }
+        const [orgKey1, orgKey2] = [d[index1].key, d[index2].key];
         [d[index1], d[index2]] = [d[index2], d[index1]];
+        [d[index1].key, d[index2].key] = [orgKey1, orgKey2];
       });
 
     case "delete":
