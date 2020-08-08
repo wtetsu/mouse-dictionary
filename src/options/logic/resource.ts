@@ -28,10 +28,7 @@ export const setLang = (newLang: string): void => {
 };
 
 export const getLang = (): string => {
-  if (_lang === "ja" || _lang === "en") {
-    return _lang;
-  }
-  return "en";
+  return _lang;
 };
 
 export const get = (key: string, params?: Record<string, any>): string => {

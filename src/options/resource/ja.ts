@@ -41,7 +41,7 @@ export default {
   closeAdvancedSettings: "上級設定を閉じる",
 
   basicSettings: "基本設定",
-  trialText: "お試し用テキスト",
+  previewText: "お試し用テキスト",
   abbreviateShortWordDesc: "短い単語の説明を省略",
   abbreviateShortWordDesc0: " ",
   abbreviateShortWordDesc1: "文字以内の短い単語は、説明を",

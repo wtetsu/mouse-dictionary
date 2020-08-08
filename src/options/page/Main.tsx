@@ -29,7 +29,7 @@ type MainState = {
   busy: boolean;
   progress: string;
   settings: MouseDictionarySettings;
-  trialText: string;
+  previewText: string;
   panelLevel: 0 | 1 | 2 | 3;
   lang: string;
   initialized: boolean;
@@ -73,7 +73,7 @@ const initialState: MainState = {
   busy: false,
   progress: "",
   settings: {} as MouseDictionarySettings,
-  trialText: "rained cats and dogs",
+  previewText: "rained cats and dogs",
   panelLevel: 0,
   lang: "",
   initialized: false,
@@ -102,12 +102,12 @@ export const Main: React.FC = () => {
   }, []);
   const s = state.settings;
   useEffect(() => {
-    refPreview.current?.update(s, state.trialText, true);
+    refPreview.current?.update(s, state.previewText, true);
   }, [s.scroll, s.backgroundColor, s.dialogTemplate, s.contentWrapperTemplate]);
   useEffect(() => {
     refPreview.current?.setVisible(state.panelLevel >= 1 && state.panelLevel <= 2);
-    refPreview.current?.update(state.settings, state.trialText, false);
-  }, [state.panelLevel, state.trialText, s]);
+    refPreview.current?.update(state.settings, state.previewText, false);
+  }, [state.panelLevel, state.previewText, s]);
 
   const updateState = (
     statePatch: Partial<MainState>,
@@ -237,10 +237,11 @@ export const Main: React.FC = () => {
 
         <Panel active={state.panelLevel >= 1}>
           <div>
-            <span>{res.get("trialText")}: </span>
+            <span>{res.get("previewText")}: </span>
             <EditableSpan
-              value={state.trialText}
-              onChange={(e) => updateState({ trialText: e.target.value })}
+              value={state.previewText}
+              style={{ width: 300 }}
+              onChange={(e) => updateState({ previewText: e.target.value })}
             ></EditableSpan>
             <br />
             <br />
@@ -260,7 +261,6 @@ export const Main: React.FC = () => {
             onUpdate={(statePatch, settingsPatch) => updateState(statePatch, settingsPatch)}
             busy={state.busy}
             settings={state.settings}
-            trialText={state.trialText}
           >
             <label>{res.get("dictionaryData")}</label>
             <Button

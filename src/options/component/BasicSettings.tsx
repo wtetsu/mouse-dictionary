@@ -14,7 +14,6 @@ import { MouseDictionaryBasicSettings, UpdateEventHandler, InitialPosition, Scro
 
 type Props = {
   settings: MouseDictionaryBasicSettings;
-  trialText: string;
   busy: boolean;
   onUpdate: UpdateEventHandler;
 };

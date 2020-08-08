@@ -45,7 +45,7 @@ export default {
   closeAdvancedSettings: "Close advanced settings",
 
   basicSettings: "Basic settings",
-  trialText: "Text for trial",
+  previewText: "Text for preview",
   abbreviateShortWordDesc: "Truncate short word descriptions",
   abbreviateShortWordDesc0: "Truncate",
   abbreviateShortWordDesc1: "-letter or less word descriptions into",

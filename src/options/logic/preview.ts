@@ -38,8 +38,8 @@ export class Preview {
     });
   }
 
-  async updateText(trialText: string, lookupWithCapitalized: boolean): Promise<void> {
-    const { entries, lang } = entry.build(trialText, lookupWithCapitalized, false);
+  async updateText(previewText: string, lookupWithCapitalized: boolean): Promise<void> {
+    const { entries, lang } = entry.build(previewText, lookupWithCapitalized, false);
 
     console.time("update");
 

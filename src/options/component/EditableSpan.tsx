@@ -8,19 +8,32 @@ import React, { useState } from "react";
 
 type Props = {
   value: string;
+  style: React.CSSProperties;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export const EditableSpan: React.FC<Props> = (props) => {
-  const [editable, setEditable] = useState(false);
+  const [editable, setEditable] = useState(props.value === "");
 
   if (!editable) {
     return (
-      <span style={{ cursor: "pointer" }} onClick={() => setEditable(true)}>
+      <span style={{ ...props.style, cursor: "pointer" }} onClick={() => setEditable(true)}>
         {props.value}
       </span>
     );
   }
 
-  return <input value={props.value} onChange={(e) => props.onChange(e)}></input>;
+  return (
+    <input
+      value={props.value}
+      style={{ ...props.style }}
+      autoFocus={true}
+      onChange={(e) => props.onChange(e)}
+      onKeyDown={(e) => {
+        if (e.keyCode === 13) {
+          setEditable(false);
+        }
+      }}
+    ></input>
+  );
 };
