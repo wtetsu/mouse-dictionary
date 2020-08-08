@@ -16,10 +16,8 @@ test("", () => {
   expect(res.get("invalidKey")).toEqual("invalidKey");
 
   res.setLang("invalid_language");
-  expect(res.get("selectDictFile")).toEqual("Select dictionary data");
-  expect(res.get("finishRegister", { count: 999 })).toEqual("Loading has finished(999 words)");
-  expect(res.get("progressRegister", { count: 999, progress: "hello" })).toEqual(
-    "999 words have been registered(hello)"
-  );
+  expect(res.get("selectDictFile")).toEqual("selectDictFile");
+  expect(res.get("finishRegister", { count: 999 })).toEqual("finishRegister");
+  expect(res.get("progressRegister", { count: 999, progress: "hello" })).toEqual("progressRegister");
   expect(res.get("invalidKey")).toEqual("invalidKey");
 });

@@ -33,7 +33,7 @@ export const getLang = (): string => {
 
 export const get = (key: string, params?: Record<string, any>): string => {
   const templates = compiledTemplates[getLang()];
-  const template = templates[key];
+  const template = templates?.[key];
   if (!template) {
     return key;
   }
