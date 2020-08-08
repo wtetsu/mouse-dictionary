@@ -5,19 +5,11 @@
  */
 
 import React from "react";
-import AceEditor from "react-ace";
 import immer from "immer";
 import { res } from "../logic";
 import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
+import { HighlightEditor } from "./HighlightEditor";
 import { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../types";
-
-const EDITOR_STYLE = {
-  width: 800,
-  border: "1px solid #d1d1d1",
-  borderRadius: "3px",
-  fontSize: 13,
-  marginBottom: 20,
-};
 
 type AdvancedSettingsProps = {
   settings: MouseDictionaryAdvancedSettings;
@@ -83,82 +75,58 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
         </h3>
 
         <label>{res.get("htmlTemplateWindow")}</label>
-        <AceEditor
+        <HighlightEditor
           mode="html"
           theme="xcode"
           onChange={(value) => update({ dialogTemplate: value })}
-          name="dialogTemplate"
-          editorProps={{ $blockScrolling: true }}
           value={dialogTemplate}
-          showPrintMargin={false}
-          highlightActiveLine={false}
-          style={{ ...EDITOR_STYLE, height: 250 }}
+          style={{ height: 250 }}
         />
 
         <label>{res.get("htmlTemplateDesc")}</label>
-        <AceEditor
+        <HighlightEditor
           mode="html"
           theme="xcode"
           onChange={(value) => update({ contentWrapperTemplate: value })}
-          name="contentWrapperTemplate"
-          editorProps={{ $blockScrolling: true }}
           value={contentWrapperTemplate}
-          showPrintMargin={false}
-          highlightActiveLine={false}
-          style={{ ...EDITOR_STYLE, height: 70 }}
+          style={{ height: 70 }}
         />
 
         <label>{res.get("htmlTemplateDescText")}</label>
-        <AceEditor
+        <HighlightEditor
           mode="html"
           theme="xcode"
           onChange={(value) => update({ contentTemplate: value })}
-          name="contentTemplate"
-          editorProps={{ $blockScrolling: true }}
           value={contentTemplate}
-          showPrintMargin={false}
-          highlightActiveLine={false}
-          style={{ ...EDITOR_STYLE, height: 400 }}
+          style={{ height: 400 }}
         />
 
         <h3>{res.get("styles")}</h3>
         <label>{res.get("stylesActive")}</label>
-        <AceEditor
+        <HighlightEditor
           mode="json"
           theme="tomorrow"
           onChange={(value) => update({ normalDialogStyles: value })}
-          name="normalDialogStyles"
-          editorProps={{ $blockScrolling: true }}
           value={normalDialogStyles}
-          showPrintMargin={false}
-          highlightActiveLine={false}
-          style={{ ...EDITOR_STYLE, height: 85 }}
+          style={{ height: 85 }}
         />
 
         <label>{res.get("stylesMoving")}</label>
-        <AceEditor
+        <HighlightEditor
           mode="json"
           theme="tomorrow"
           onChange={(json) => update({ movingDialogStyles: json })}
-          name="movingDialogStyles"
-          editorProps={{ $blockScrolling: true }}
           value={movingDialogStyles}
-          showPrintMargin={false}
-          highlightActiveLine={false}
-          style={{ ...EDITOR_STYLE, height: 85 }}
+          style={{ height: 85 }}
         />
 
         <label>{res.get("stylesInactive")}</label>
-        <AceEditor
+        <HighlightEditor
           mode="json"
           theme="tomorrow"
           onChange={(value) => update({ hiddenDialogStyles: value })}
-          name="hiddenDialogStyles"
-          editorProps={{ $blockScrolling: true }}
           value={hiddenDialogStyles}
-          showPrintMargin={false}
-          highlightActiveLine={false}
-          style={{ ...EDITOR_STYLE, height: 85 }}
+          style={{ height: 85 }}
         />
         <hr />
         <h3>{res.get("replaceRules")}</h3>
