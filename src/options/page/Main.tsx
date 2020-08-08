@@ -83,7 +83,6 @@ export const Main: React.FC = () => {
   const refPreview = useRef<Preview>();
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const settings = state.settings;
 
   useEffect(() => {
     const init = async () => {
@@ -101,15 +100,14 @@ export const Main: React.FC = () => {
     };
     init();
   }, []);
-
+  const s = state.settings;
   useEffect(() => {
-    refPreview.current?.update(settings, state.trialText, true);
-  }, [settings.scroll, settings.backgroundColor, settings.dialogTemplate, settings.contentWrapperTemplate]);
-
+    refPreview.current?.update(s, state.trialText, true);
+  }, [s.scroll, s.backgroundColor, s.dialogTemplate, s.contentWrapperTemplate]);
   useEffect(() => {
     refPreview.current?.setVisible(state.panelLevel >= 1 && state.panelLevel <= 2);
     refPreview.current?.update(state.settings, state.trialText, false);
-  }, [state.panelLevel, state.trialText, settings]);
+  }, [state.panelLevel, state.trialText, s]);
 
   const updateState = (
     statePatch: Partial<MainState>,
