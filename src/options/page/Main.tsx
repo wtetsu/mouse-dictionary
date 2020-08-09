@@ -13,12 +13,12 @@ import {
   DataUsage,
   EditableSpan,
   ExternalLink,
-  JsonEditor,
   LoadDictionary,
   OperationPanel,
   Overlay,
   Panel,
   Toggle,
+  WholeSettings,
 } from "../component";
 import { data, dict, message, Preview, res } from "../logic";
 import { config, defaultSettings, env } from "../extern";
@@ -296,7 +296,7 @@ export const Main: React.FC = () => {
         </Panel>
 
         <Overlay active={state.panelLevel >= 3}>
-          <JsonEditor
+          <WholeSettings
             initialValue={state.settings}
             onChange={(newSettings) => updateState({ panelLevel: 2 }, newSettings)}
           />

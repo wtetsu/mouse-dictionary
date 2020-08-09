@@ -30,11 +30,7 @@ type Props = {
   onChange: (value: MouseDictionarySettings) => void;
 };
 
-type JsonEditorUpdateEvent = {
-  payload: { settings?: MouseDictionarySettings; state?: Record<string, any> };
-};
-
-export const JsonEditor: React.FC<Props> = (props) => {
+export const WholeSettings: React.FC<Props> = (props) => {
   const [json, setJson] = React.useState(() => {
     const initialValue = data.postProcessSettings(props.initialValue);
     return JSON.stringify(initialValue, null, 2);
