@@ -44,7 +44,7 @@
     "@types/chrome": "0.0.122",
     "@types/hogan.js": "^3.0.0",
     "@types/jest": "^26.0.9",
-    "@types/react": "^16.9.44",
+    "@types/react": "^16.9.45",
     "@typescript-eslint/eslint-plugin": "^3.8.0",
     "@typescript-eslint/parser": "^3.8.0",
     "archiver": "^5.0.0",
