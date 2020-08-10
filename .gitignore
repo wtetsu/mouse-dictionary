@@ -69,5 +69,4 @@ dist-*/
 *.sh
 coverage/
 static_overwrite/
-static_thirdparty/
-
+static_pdf/

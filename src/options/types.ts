@@ -16,6 +16,7 @@ export type MouseDictionaryBasicSettings = {
   descFontSize: string;
   width: number;
   height: number;
+  skipPdfConfirmation: boolean;
 };
 
 export type MouseDictionaryAdvancedSettings = {

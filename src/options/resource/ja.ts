@@ -84,4 +84,5 @@ export default {
   clipboardJson: "クリップボードにコピー",
   aboutJsonEditor:
     "Mouse Dictionary設定全体のJSONデータです。バックアップや共有にご利用ください ※辞書データは含みません",
+  skipPdfConfirmation: "PDFファイルのダウンロード確認を省略する",
 };

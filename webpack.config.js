@@ -12,6 +12,7 @@ const copyWebpackPluginConfigs = {
     { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
     { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-html.js", to: "options/" },
     { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-json.js", to: "options/" },
+    { from: "static_pdf", to: "." },
   ],
 };
 

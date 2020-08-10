@@ -72,6 +72,16 @@ export const BasicSettings: React.FC<Props> = (props) => {
     <form className="settingsForm">
       <fieldset>
         <h2>{res.get("basicSettings")}</h2>
+        <label>
+          {res.get("skipPdfConfirmation")}
+          <input
+            type="checkbox"
+            name="lookupWithCapitalized"
+            onChange={(e) => update({ skipPdfConfirmation: e.target.checked })}
+            checked={settings.skipPdfConfirmation}
+          />
+        </label>
+
         <label>{res.get("abbreviateShortWordDesc")}</label>
         <span> {res.get("abbreviateShortWordDesc0")} </span>
         <input

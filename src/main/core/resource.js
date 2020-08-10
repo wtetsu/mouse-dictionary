@@ -9,10 +9,18 @@
 
 const resources = {
   ja: {
+    continueProcessingPdf:
+      "このPDFファイルをダウンロードし、Mouse Dictionaryの内部ビューアで表示します。よろしいですか？\n(設定画面で、この確認ダイアログを省略するようにすることも出来ます)",
     doesntSupportFrame: "Mouse Dictionaryは、フレームのあるページで使用することはできません。",
+    downloadingPdf: "📘ダウンロード中...",
+    preparingPdf: "📘PDFビューア準備中...",
   },
   en: {
+    continueProcessingPdf:
+      "Are you sure you want Mouse Dictionary download this PDF file and show it with its internal viewer?\n(You can turn off this confirmation permanently by changing settings)",
     doesntSupportFrame: "Mouse Dictionary doesn't support frame pages.",
+    downloadingPdf: "📘Downloading...",
+    preparingPdf: "📘Preparing PDF viewer...",
   },
 };
 

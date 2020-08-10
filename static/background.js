@@ -13,3 +13,13 @@ chrome.runtime.onMessageExternal.addListener((message) => {
     }
   });
 });
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  switch (request.type) {
+    case "open_pdf":
+      chrome.runtime.openOptionsPage(() => {
+        sendResponse();
+      });
+      break;
+  }
+});

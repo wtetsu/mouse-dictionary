@@ -11,6 +11,7 @@ export default {
   lookupWithCapitalized: false,
   initialPosition: "right",
   scroll: "scroll",
+  skipPdfConfirmation: false,
 
   backgroundColor: "#ffffff",
   headFontColor: "#000088",
