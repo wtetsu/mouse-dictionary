@@ -6,9 +6,9 @@
 | -------------- | ------------------- | ------------------ |
 | Responsibility | Core features       | Options screen     |
 | Priority       | Speed and lightness | Functionality      |
-| Implementation | TypeScript + React  | Pure JavaScript    |
-| Dependency     | Many libraries      | No dependency (\*) |
-| Module         | named               | default            |
+| Implementation | Pure JavaScript     | TypeScript + React |
+| Dependency     | No dependency (\*)  | Many libraries     |
+| Module         | default             | named              |
 
 (\*) Hogan.js is the only exception.
 
