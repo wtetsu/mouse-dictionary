@@ -11,7 +11,6 @@ import config from "./config";
 import events from "./events";
 import dom from "../lib/dom";
 import utils from "../lib/utils";
-import storage from "../lib/storage";
 import ribbon from "../lib/ribbon";
 
 const main = async () => {

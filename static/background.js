@@ -18,7 +18,7 @@ const _pdfIdQueue = new Set();
 const _pdfData = new Map();
 
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  switch (request.type) {
+  switch (request?.type) {
     case "open_pdf": {
       const id = generateUniqueId(32);
       _pdfData.set(id, request.payload);
@@ -59,7 +59,7 @@ const ch = () => {
 const generateUniqueId = (digits) => {
   const arr = [];
   for (let i = 0; i < digits; i++) {
-    arr.push("");
+    arr.push(ch());
   }
-  return arr.map(ch).join("");
+  return arr.join("");
 };

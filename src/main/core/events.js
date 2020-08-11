@@ -52,7 +52,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   chrome.runtime.onMessage.addListener((request) => {
     const m = request.message;
-    switch (m.type) {
+    switch (m?.type) {
       case "text":
         lookuper.update(m.text, m.withCapitalized, m.mustIncludeOriginalText, m.enableShortWord);
         break;
