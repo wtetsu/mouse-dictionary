@@ -179,10 +179,9 @@ const invokePdfReader = async () => {
     return;
   }
 
-  const base64data = convertToBase64(arrayBuffer);
-  await storage.local.set({ "**** pdf_data ****": base64data, "**** pdf ****": "1" });
+  const payload = convertToBase64(arrayBuffer);
+  sendMessage({ type: "open_pdf", payload });
 
-  sendMessage({ type: "open_pdf" });
   closeRibbon();
 };
 
@@ -210,10 +209,10 @@ const convertToBase64 = (arrayBuffer) => {
   return result;
 };
 
-const sendMessage = (message) => {
+const sendMessage = async (message) => {
   return new Promise((done) => {
-    chrome.runtime.sendMessage(message, () => {
-      done();
+    chrome.runtime.sendMessage(message, (response) => {
+      done(response);
     });
   });
 };
