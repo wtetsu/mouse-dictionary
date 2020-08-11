@@ -88,4 +88,5 @@ export default {
   aboutJsonEditor:
     "This is JSON data which expresses the whole Mouse Dictionary's settings. Please use it for backup, sharing and so forth.",
   skipPdfConfirmation: "Skip PDF download confirmation",
+  pdfUrlPattern: "PDF URL pattern",
 };

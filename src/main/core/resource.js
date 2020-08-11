@@ -14,6 +14,7 @@ const resources = {
     doesntSupportFrame: "Mouse Dictionaryは、フレームのあるページで使用することはできません。",
     downloadingPdf: "📘ダウンロード中...",
     preparingPdf: "📘PDFビューア準備中...",
+    nonPdf: "PDFファイルではないようです。処理を中断しました。",
   },
   en: {
     continueProcessingPdf:
@@ -21,6 +22,7 @@ const resources = {
     doesntSupportFrame: "Mouse Dictionary doesn't support frame pages.",
     downloadingPdf: "📘Downloading...",
     preparingPdf: "📘Preparing PDF viewer...",
+    nonPdf: "This is not a PDF document.",
   },
 };
 

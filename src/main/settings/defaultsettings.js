@@ -12,7 +12,7 @@ export default {
   initialPosition: "right",
   scroll: "scroll",
   skipPdfConfirmation: false,
-
+  pdfUrlPattern: "\\.(?:pdf|PDF)\\??[\\w-=&~]*$",
   backgroundColor: "#ffffff",
   headFontColor: "#000088",
   descFontColor: "#101010",
