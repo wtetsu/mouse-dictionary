@@ -10,7 +10,6 @@ import { render } from "react-dom";
 import { Main } from "./page/Main";
 import rule from "../main/core/rule";
 import { res } from "./logic";
-import { storage } from "./extern";
 
 import ace from "ace-builds/src-noconflict/ace";
 import "ace-builds/src-noconflict/mode-html";
@@ -29,22 +28,27 @@ window.onerror = (msg) => {
   });
 };
 
-const PDF_KEY = "**** pdf ****";
+const sendMessage = async (message) => {
+  return new Promise((done) => {
+    chrome.runtime.sendMessage(message, (response) => {
+      done(response);
+    });
+  });
+};
 
 const App = () => {
   const [mode, setMode] = useState<"loading" | "options" | "pdf">("loading");
 
-  const showPdfViewer = async () => {
+  const showPdfViewer = async (id: string) => {
     setMode("pdf");
-    storage.local.set({ [PDF_KEY]: "" });
-    location.href = "pdf/web/viewer.html";
+    location.href = `pdf/web/viewer.html?id=${id}`;
   };
 
   useEffect(() => {
     const init = async (): Promise<void> => {
-      const data = await storage.local.pick(PDF_KEY);
-      if (data) {
-        showPdfViewer();
+      const id = (await sendMessage({ type: "shift_pdf_id" })) as string;
+      if (id) {
+        showPdfViewer(id);
       } else {
         setMode("options");
       }
@@ -52,9 +56,9 @@ const App = () => {
     init();
 
     setInterval(async () => {
-      const data = await storage.local.pick(PDF_KEY);
-      if (data) {
-        showPdfViewer();
+      const id = (await sendMessage({ type: "shift_pdf_id" })) as string;
+      if (id) {
+        showPdfViewer(id);
       }
     }, 3000);
   }, []);

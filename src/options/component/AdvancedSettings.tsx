@@ -19,6 +19,7 @@ type AdvancedSettingsProps = {
 export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   const lookupWithCapitalized = props.settings?.lookupWithCapitalized ?? false;
   const parseWordsLimit = props.settings?.parseWordsLimit ?? 8;
+  const pdfUrlPattern = props.settings?.pdfUrlPattern ?? "";
   const contentWrapperTemplate = props.settings?.contentWrapperTemplate ?? "";
   const dialogTemplate = props.settings?.dialogTemplate ?? "";
   const contentTemplate = props.settings?.contentTemplate ?? "";
@@ -46,7 +47,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           {res.get("lookupWithCapitalized")}
           <input
             type="checkbox"
-            name="lookupWithCapitalized"
             onChange={(e) => update({ lookupWithCapitalized: e.target.checked })}
             checked={lookupWithCapitalized}
           />
@@ -56,12 +56,19 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           &nbsp;
           <input
             type="number"
-            name="parseWordsLimit"
             value={parseWordsLimit}
             onChange={(e) => update({ parseWordsLimit: parseInt(e.target.value, 10) })}
             style={{ width: 60 }}
           />
         </label>
+        <label>{res.get("pdfUrlPattern")}</label>
+        &nbsp;
+        <input
+          type="text"
+          value={pdfUrlPattern}
+          onChange={(e) => update({ pdfUrlPattern: e.target.value })}
+          style={{ width: 600 }}
+        />
         <h3>
           {res.get("htmlTemplate")}
           <a
@@ -73,7 +80,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
             ?
           </a>
         </h3>
-
         <label>{res.get("htmlTemplateWindow")}</label>
         <HighlightEditor
           mode="html"
@@ -82,7 +88,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           value={dialogTemplate}
           style={{ height: 250 }}
         />
-
         <label>{res.get("htmlTemplateDesc")}</label>
         <HighlightEditor
           mode="html"
@@ -91,7 +96,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           value={contentWrapperTemplate}
           style={{ height: 70 }}
         />
-
         <label>{res.get("htmlTemplateDescText")}</label>
         <HighlightEditor
           mode="html"
@@ -100,7 +104,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           value={contentTemplate}
           style={{ height: 400 }}
         />
-
         <h3>{res.get("styles")}</h3>
         <label>{res.get("stylesActive")}</label>
         <HighlightEditor
@@ -110,7 +113,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           value={normalDialogStyles}
           style={{ height: 85 }}
         />
-
         <label>{res.get("stylesMoving")}</label>
         <HighlightEditor
           mode="json"
@@ -119,7 +121,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           value={movingDialogStyles}
           style={{ height: 85 }}
         />
-
         <label>{res.get("stylesInactive")}</label>
         <HighlightEditor
           mode="json"

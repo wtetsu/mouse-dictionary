@@ -12,6 +12,7 @@ import events from "./events";
 import dom from "../lib/dom";
 import utils from "../lib/utils";
 import storage from "../lib/storage";
+import ribbon from "../lib/ribbon";
 
 const main = async () => {
   console.time("launch");
@@ -37,12 +38,17 @@ const processFirstLaunch = async () => {
 
   const { settings, position } = await config.loadAll();
 
-  if (location.href.endsWith(".pdf")) {
+  if (onPdfDocument(location.href, settings.pdfUrlPattern)) {
     const toContinue = settings.skipPdfConfirmation || confirm(res("continueProcessingPdf"));
     if (!toContinue) {
       return;
     }
-    invokePdfReader();
+    try {
+      invokePdfReader();
+    } catch (e) {
+      alert(e.message);
+      console.error(e);
+    }
     return;
   }
 
@@ -56,6 +62,19 @@ const processFirstLaunch = async () => {
 
   // Lazy load
   rule.load();
+};
+
+const onPdfDocument = (url, pdfUrlPattern) => {
+  if (!pdfUrlPattern) {
+    return false;
+  }
+  try {
+    const re = new RegExp(pdfUrlPattern);
+    return re.test(url);
+  } catch (error) {
+    console.error(error);
+  }
+  return false;
 };
 
 const processSecondOrLaterLaunch = async (existingElement) => {
@@ -140,53 +159,35 @@ const getInitialPosition = (type, dialogWidth) => {
 };
 
 const invokePdfReader = async () => {
-  const [updateRibbon, closeRibbon] = createRibbon();
+  const [updateRibbon, closeRibbon] = ribbon.create();
 
   updateRibbon(res("downloadingPdf"));
 
   const r = await fetch(location.href);
 
   if (r.status !== 200) {
-    updateRibbon(await r.text());
+    updateRibbon(await r.text(), [""]);
     return;
   }
 
   updateRibbon(res("preparingPdf"));
 
-  const base64data = convertToBase64(await r.arrayBuffer());
-  await storage.local.set({ "**** pdf_data ****": base64data, "**** pdf ****": "1" });
+  const arrayBuffer = await r.arrayBuffer();
 
-  sendMessage({ type: "open_pdf" });
+  if (!isPdf(arrayBuffer)) {
+    updateRibbon(res("nonPdf"), [""]);
+    return;
+  }
+
+  const payload = convertToBase64(arrayBuffer);
+  sendMessage({ type: "open_pdf", payload });
+
   closeRibbon();
 };
 
-const createRibbon = () => {
-  const line = dom.create(
-    '<div style="position:absolute;width:100%;bottom:0;background-color:black;opacity:0.75;color:#FFFFFF;text-align:center;font-size:x-large;"></div>'
-  );
-
-  const progress = dom.create('<span style=""></span>');
-  const indicator = dom.create('<span style="position:absolute;text-align:center;"></span>');
-
-  const indicators = ["⠿", "⠿", "⠿", "⠷", "⠯", "⠟", "⠻", "⠽", "⠾"];
-  let indicatorCount = 0;
-  const intervalId = setInterval(() => {
-    indicator.textContent = indicators[indicatorCount % indicators.length];
-    indicatorCount++;
-  }, 150);
-
-  line.appendChild(progress);
-  line.appendChild(indicator);
-  document.body.appendChild(line);
-
-  const doUpdate = (text) => {
-    progress.textContent = text;
-  };
-  const doClose = () => {
-    line.parentNode.removeChild(line);
-    clearInterval(intervalId);
-  };
-  return [doUpdate, doClose];
+const isPdf = (arrayBuffer) => {
+  const first4 = new Uint8Array(arrayBuffer.slice(0, 4));
+  return first4[0] === 37 && first4[1] === 80 && first4[2] === 68 && first4[3] === 70;
 };
 
 const convertToBase64 = (arrayBuffer) => {
@@ -208,10 +209,10 @@ const convertToBase64 = (arrayBuffer) => {
   return result;
 };
 
-const sendMessage = (message) => {
+const sendMessage = async (message) => {
   return new Promise((done) => {
-    chrome.runtime.sendMessage(message, () => {
-      done();
+    chrome.runtime.sendMessage(message, (response) => {
+      done(response);
     });
   });
 };
