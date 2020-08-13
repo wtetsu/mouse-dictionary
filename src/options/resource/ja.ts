@@ -77,11 +77,11 @@ export default {
   clearLoadedData: "CLEAR",
   loadInitialDict: "デフォルト辞書データの再ロード",
   downloadDictData: "追加辞書データをダウンロードする",
+  launchPdfViewer: "PDFビューアを起動する",
   openJsonEditor: "JSONエディタを開く",
   closeJsonEditor: "キャンセル",
   importJson: "JSONを設定に反映",
   JsonImportError: "正しいJSONデータになっていません",
-  clipboardJson: "クリップボードにコピー",
   aboutJsonEditor:
     "Mouse Dictionary設定全体のJSONデータです。バックアップや共有にご利用ください ※辞書データは含みません",
   skipPdfConfirmation: "PDFファイルのダウンロード確認を省略する",

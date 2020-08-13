@@ -80,11 +80,11 @@ export default {
   clearLoadedData: "CLEAR",
   loadInitialDict: "Reload default dictionary data",
   downloadDictData: "Download additional dictionary data",
+  launchPdfViewer: "Launch PDF viewer",
   openJsonEditor: "Open JSON editor",
   closeJsonEditor: "Cancel",
   importJson: "Apply JSON to settings",
   JsonImportError: "Invalid JSON",
-  clipboardJson: "Copy to clipboard",
   aboutJsonEditor:
     "This is JSON data which expresses the whole Mouse Dictionary's settings. Please use it for backup, sharing and so forth.",
   skipPdfConfirmation: "Skip PDF download confirmation",
