@@ -12,6 +12,7 @@ Features:
 - Super fast (react in 1/60 second)
 - Awesome phrases detection
 - Capable of importing your own text data
+- **Available on PDF documents!**
 - Look up connected words at one
   - camelCase -> "camel", "case"
   - snake_case -> "snake", "case"
