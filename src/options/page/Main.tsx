@@ -227,7 +227,7 @@ export const Main: React.FC = () => {
             {res.get("downloadDictData")}
           </ExternalLink>
           <br />
-          <ExternalLink href="pdf/web/viewer.html">{res.get("launchPdfViewer")}</ExternalLink>
+          <ExternalLink href="pdf/web/viewer.html">{res.get("openPdfViewer")}</ExternalLink>
 
           <Toggle
             switch={state.panelLevel >= 1}

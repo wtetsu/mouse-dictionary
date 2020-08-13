@@ -80,7 +80,7 @@ export default {
   clearLoadedData: "CLEAR",
   loadInitialDict: "Reload default dictionary data",
   downloadDictData: "Download additional dictionary data",
-  launchPdfViewer: "Launch PDF viewer",
+  openPdfViewer: "Open PDF viewer",
   openJsonEditor: "Open JSON editor",
   closeJsonEditor: "Cancel",
   importJson: "Apply JSON to settings",

@@ -77,7 +77,7 @@ export default {
   clearLoadedData: "CLEAR",
   loadInitialDict: "デフォルト辞書データの再ロード",
   downloadDictData: "追加辞書データをダウンロードする",
-  launchPdfViewer: "PDFビューアを起動する",
+  openPdfViewer: "PDFビューアを起動する",
   openJsonEditor: "JSONエディタを開く",
   closeJsonEditor: "キャンセル",
   importJson: "JSONを設定に反映",
