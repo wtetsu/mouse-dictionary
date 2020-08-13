@@ -13,7 +13,7 @@ type Props = {
   trigger: (type: "save" | "factoryReset") => void;
 };
 
-const style = { color: "red", transition: "0.5s" };
+const style = { color: "#FF4500", transition: "0.5s" };
 const style1 = { ...style, opacity: 0.0 };
 const style2 = { ...style, opacity: 1.0 };
 
