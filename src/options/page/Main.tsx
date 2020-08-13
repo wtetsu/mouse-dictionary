@@ -226,6 +226,9 @@ export const Main: React.FC = () => {
           <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data">
             {res.get("downloadDictData")}
           </ExternalLink>
+          <br />
+          <ExternalLink href="pdf/web/viewer.html">PDF viewer</ExternalLink>
+
           <Toggle
             switch={state.panelLevel >= 1}
             image="settings1.png"
