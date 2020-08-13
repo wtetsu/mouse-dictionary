@@ -28,7 +28,7 @@ window.onerror = (msg) => {
   });
 };
 
-const sendMessage = async (message) => {
+const sendMessage = async (message: any) => {
   return new Promise((done) => {
     chrome.runtime.sendMessage(message, (response) => {
       done(response);
