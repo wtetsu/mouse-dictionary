@@ -57,9 +57,9 @@ const ch = () => {
 };
 
 const generateUniqueId = (digits) => {
-  const arr = [];
+  let uniqueId = "";
   for (let i = 0; i < digits; i++) {
-    arr.push(ch());
+    uniqueId += ch();
   }
-  return arr.join("");
+  return uniqueId;
 };
