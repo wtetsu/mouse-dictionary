@@ -3,7 +3,7 @@
   "description": "__MSG_appDesc__",
   "default_locale": "en",
   "author": "wtetsu",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
