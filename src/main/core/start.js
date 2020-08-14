@@ -68,9 +68,15 @@ const launchPdfViewer = (settings) => {
 };
 
 const onPdfDocument = (url, pdfUrlPattern) => {
+  const e = document.body?.children?.[0];
+  if (e?.tagName === "EMBED" && e?.type === "application/pdf") {
+    return true;
+  }
+
   if (!pdfUrlPattern) {
     return false;
   }
+
   try {
     const re = new RegExp(pdfUrlPattern);
     return re.test(url);
