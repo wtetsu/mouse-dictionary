@@ -25,6 +25,7 @@ module.exports = {
   entry: {
     "options/options": "./src/options/app.tsx",
     main: "./src/main/core/start.js",
+    background: "./src/background/background.js",
   },
   output: {
     path: __dirname + "/dist",
