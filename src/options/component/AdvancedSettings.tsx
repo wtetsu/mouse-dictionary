@@ -19,7 +19,7 @@ type AdvancedSettingsProps = {
 export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   const lookupWithCapitalized = props.settings?.lookupWithCapitalized ?? false;
   const parseWordsLimit = props.settings?.parseWordsLimit ?? 8;
-  const pdfUrlPattern = props.settings?.pdfUrlPattern ?? "";
+  const pdfUrl = props.settings?.pdfUrl ?? "";
   const contentWrapperTemplate = props.settings?.contentWrapperTemplate ?? "";
   const dialogTemplate = props.settings?.dialogTemplate ?? "";
   const contentTemplate = props.settings?.contentTemplate ?? "";
@@ -65,9 +65,10 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
         &nbsp;
         <input
           type="text"
-          value={pdfUrlPattern}
-          onChange={(e) => update({ pdfUrlPattern: e.target.value })}
+          value={pdfUrl}
+          onChange={(e) => update({ pdfUrl: e.target.value })}
           style={{ width: 600 }}
+          placeholder="\.pdf$"
         />
         <h3>
           {res.get("htmlTemplate")}

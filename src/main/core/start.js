@@ -37,7 +37,7 @@ const processFirstLaunch = async () => {
 
   const { settings, position } = await config.loadAll();
 
-  if (onPdfDocument(location.href, settings.pdfUrlPattern)) {
+  if (onPdfDocument(location.href, settings.pdfUrl)) {
     launchPdfViewer(settings);
     return;
   }
@@ -68,13 +68,10 @@ const launchPdfViewer = (settings) => {
 };
 
 const onPdfDocument = (url, pdfUrlPattern) => {
-  const e = document.body?.children?.[0];
-  if (e?.tagName === "EMBED" && e?.type === "application/pdf") {
-    return true;
-  }
-
   if (!pdfUrlPattern) {
-    return false;
+    const e = document.body?.children?.[0];
+    const embedPdf = e?.tagName === "EMBED" && e?.type === "application/pdf";
+    return embedPdf;
   }
 
   try {
