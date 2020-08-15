@@ -29,7 +29,7 @@ export type MouseDictionaryAdvancedSettings = {
   contentWrapperTemplate: string;
   dialogTemplate: string;
   contentTemplate: string;
-  pdfUrlPattern: string;
+  pdfUrl: string;
 };
 
 export type InitialPosition = "left" | "right" | "keep";
