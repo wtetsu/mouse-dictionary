@@ -37,33 +37,41 @@ type MainState = {
 
 type Action =
   | {
-      type: "state";
+      type: "patch_state";
       statePatch: Partial<MainState>;
     }
   | {
-      type: "settings";
+      type: "patch_settings";
       settingsPatch: Partial<MouseDictionarySettings>;
     }
   | {
-      type: "state_and_settings";
+      type: "patch_state_and_settings";
       statePatch: Partial<MainState>;
       settingsPatch: Partial<MouseDictionarySettings>;
+    }
+  | {
+      type: "replace_settings";
+      settings: MouseDictionarySettings;
     };
 
 const reducer = (state: MainState, action: Action): MainState => {
   switch (action.type) {
-    case "state":
+    case "patch_state":
       return immer(state, (d) => {
         Object.assign(d, action.statePatch);
       });
-    case "settings":
+    case "patch_settings":
       return immer(state, (d) => {
         Object.assign(d.settings, action.settingsPatch);
       });
-    case "state_and_settings":
+    case "patch_state_and_settings":
       return immer(state, (d) => {
         Object.assign(d, action.statePatch);
         Object.assign(d.settings, action.settingsPatch);
+      });
+    case "replace_settings":
+      return immer(state, (d) => {
+        d.settings = action.settings;
       });
   }
 };
@@ -114,12 +122,16 @@ export const Main: React.FC = () => {
     settingsPatch: Partial<MouseDictionarySettings> = null
   ): void => {
     if (statePatch && settingsPatch) {
-      dispatch({ type: "state_and_settings", statePatch, settingsPatch });
+      dispatch({ type: "patch_state_and_settings", statePatch, settingsPatch });
     } else if (statePatch) {
-      dispatch({ type: "state", statePatch });
+      dispatch({ type: "patch_state", statePatch });
     } else if (settingsPatch) {
-      dispatch({ type: "settings", settingsPatch });
+      dispatch({ type: "patch_settings", settingsPatch });
     }
+  };
+
+  const doFactoryReset = (): void => {
+    dispatch({ type: "replace_settings", settings: data.preProcessSettings(getDefaultSettings()) });
   };
 
   const confirmAndLoadInitialDict = async (messageId: string): Promise<boolean> => {
@@ -175,10 +187,6 @@ export const Main: React.FC = () => {
     } finally {
       updateState({ busy: false, progress: "", dictDataUsage: -1 });
     }
-  };
-
-  const doFactoryReset = (): void => {
-    updateState(null, data.preProcessSettings(getDefaultSettings()));
   };
 
   const switchLanguage = (): void => {
