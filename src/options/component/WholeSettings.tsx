@@ -10,7 +10,7 @@ import immer from "immer";
 import { Button } from "./Button";
 import { res, data, message } from "../logic";
 import { MouseDictionarySettings } from "../types";
-import { dom } from "../extern";
+import { dom, defaultSettings } from "../extern";
 
 const EDITOR_STYLE: React.CSSProperties = {
   width: 800,
@@ -19,7 +19,9 @@ const EDITOR_STYLE: React.CSSProperties = {
   fontSize: 13,
 };
 
-const canReplace = (a: number | string | boolean | [], b: number | string | boolean | []) => {
+type SettingsValue = number | string | boolean | [];
+
+const canReplace = (a: SettingsValue, b: SettingsValue) => {
   if (Array.isArray(a)) {
     return Array.isArray(b);
   }
@@ -57,13 +59,17 @@ export const WholeSettings: React.FC<Props> = (props) => {
 
   const createSettings = (json: string): MouseDictionarySettings => {
     const newSettings = data.preProcessSettings(JSON.parse(json));
-    const orgSettings = data.postProcessSettings(props.initialValue);
+    const orgSettings = data.postProcessSettings(defaultSettings.get());
     return immer(orgSettings, (d) => {
+      const errors = [];
       for (const key of Object.keys(d)) {
         if (!canReplace(d[key], newSettings[key])) {
-          throw new Error();
+          errors.push(`Invalid ${key}`);
         }
         d[key] = newSettings[key];
+      }
+      if (errors.length >= 1) {
+        throw new Error(errors.join("\n"));
       }
     });
   };
@@ -72,8 +78,8 @@ export const WholeSettings: React.FC<Props> = (props) => {
     try {
       const settings = createSettings(json);
       props.onChange(settings);
-    } catch {
-      message.warn(res.get("JsonImportError"));
+    } catch (e) {
+      message.warn(res.get("JsonImportError") + "\n" + e.message);
     }
   };
 

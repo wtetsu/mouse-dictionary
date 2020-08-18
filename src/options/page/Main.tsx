@@ -131,7 +131,7 @@ export const Main: React.FC = () => {
   };
 
   const doFactoryReset = (): void => {
-    dispatch({ type: "replace_settings", settings: data.preProcessSettings(getDefaultSettings()) });
+    dispatch({ type: "replace_settings", settings: data.preProcessSettings(defaultSettings.get()) });
   };
 
   const confirmAndLoadInitialDict = async (messageId: string): Promise<boolean> => {
@@ -315,12 +315,6 @@ export const Main: React.FC = () => {
       </div>
     </>
   );
-};
-
-const defaultSettingsJson = JSON.stringify(defaultSettings);
-
-const getDefaultSettings = () => {
-  return JSON.parse(defaultSettingsJson);
 };
 
 const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void> => {
