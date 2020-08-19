@@ -53,7 +53,7 @@ const isShiftJisSoleChar = (byte: number) => {
 
 export const preProcessSettings = (settings: MouseDictionarySettings): MouseDictionarySettings => {
   return immer(settings, (d) => {
-    for (let i = 0; i < d.replaceRules.length; i++) {
+    for (let i = 0; i < d?.replaceRules?.length; i++) {
       d.replaceRules[i].key = i.toString();
     }
   });

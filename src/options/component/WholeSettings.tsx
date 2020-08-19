@@ -63,6 +63,9 @@ export const WholeSettings: React.FC<Props> = (props) => {
     return immer(orgSettings, (d) => {
       const errors = [];
       for (const key of Object.keys(d)) {
+        if (!(key in newSettings)) {
+          continue;
+        }
         if (!canReplace(d[key], newSettings[key])) {
           errors.push(`Invalid ${key}`);
         }
