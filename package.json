@@ -27,7 +27,7 @@
   "dependencies": {
     "deinja": "0.0.3",
     "hogan.js": "^3.0.2",
-    "immer": "^7.0.7",
+    "immer": "^7.0.8",
     "react": "^16.13.1",
     "react-ace": "^9.1.3",
     "react-color": "^2.18.1",
@@ -44,7 +44,7 @@
     "@types/chrome": "0.0.122",
     "@types/hogan.js": "^3.0.0",
     "@types/jest": "^26.0.10",
-    "@types/react": "^16.9.47",
+    "@types/react": "^16.9.48",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "archiver": "^5.0.0",
@@ -60,7 +60,7 @@
     "eslint-plugin-react": "^7.20.6",
     "jest": "^26.4.2",
     "milligram": "^1.4.1",
-    "prettier": "^2.1.0",
+    "prettier": "^2.1.1",
     "typescript": "^4.0.2",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
