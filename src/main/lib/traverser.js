@@ -97,11 +97,28 @@ class Traverser {
       startIndex = offset;
       endIndex = offset + this.JA_MAX_LENGTH;
     }
-    const text = sourceText.substring(startIndex, endIndex);
+
+    const text = retrieveReasonableRange(sourceText, startIndex);
+    // const rawText = sourceText.substring(startIndex, endIndex);
     const end = endIndex >= sourceText.length;
     return { text, end, isEnglish };
   }
 }
+
+const retrieveReasonableRange = (sourceText, cursorIndex) => {
+  let currentLength = 0;
+  let resultText = "";
+  const tokens = tokenize(sourceText, "ja-JP");
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    currentLength += token.length;
+    if (cursorIndex <= currentLength) {
+      resultText = tokens.slice(i).join();
+      break;
+    }
+  }
+  return resultText;
+};
 
 const searchStartIndex = (text, index, doGetCharacterType) => {
   let startIndex;
@@ -170,5 +187,20 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
 };
 
 const isEnglishLikeCharacter = (code) => 0x20 <= code && code <= 0x7e;
+
+const tokenize = (text, lang) => {
+  const it = Intl.v8BreakIterator([lang], { type: "word" });
+  it.adoptText(text);
+
+  let cur = 0;
+
+  const words = [];
+  while (cur < text.length) {
+    const prev = cur;
+    cur = it.next();
+    words.push(text.substring(prev, cur));
+  }
+  return words;
+};
 
 export default { build };
