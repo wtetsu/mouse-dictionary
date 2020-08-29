@@ -44,8 +44,8 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   const onMouseMoveSecondOrLater = (e) => {
     draggable.onMouseMove(e);
-    const textUnderCursor = traverse(e.target, e.clientX, e.clientY);
-    lookuper.lookup(textUnderCursor);
+    const textList = traverse(e.target, e.clientX, e.clientY);
+    lookuper.lookupAll(textList);
   };
   let onMouseMove = onMouseMoveFirst;
   document.body.addEventListener("mousemove", (e) => onMouseMove(e));

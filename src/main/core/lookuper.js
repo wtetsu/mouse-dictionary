@@ -49,10 +49,14 @@ export default class Lookuper {
   }
 
   async lookup(text) {
+    return this.lookupAll([text]);
+  }
+
+  async lookupAll(textList) {
     if (!this.canUpdate()) {
       return;
     }
-    await this.update(text, this.lookupWithCapitalized, false, true, 0);
+    await this.updateAll(textList, this.lookupWithCapitalized, false, true, 0);
   }
 
   async aimedLookup(text) {
@@ -68,38 +72,59 @@ export default class Lookuper {
     if (!text) {
       return;
     }
-    const textToLookup = text.substring(0, this.textLengthLimit);
-    if (!textToLookup) {
-      return;
+    return this.updateAll([text], withCapitalized, includeOriginalText, enableShortWord, threshold);
+  }
+
+  async updateAll(sourceTextList, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
+    const textList = [];
+    for (let i = 0; i < sourceTextList.length; i++) {
+      const text = sourceTextList[i].substring(0, this.textLengthLimit);
+      if (text) {
+        textList.push(text);
+      }
     }
+    const cacheKey = textList.join("\u0001");
+
     if (!includeOriginalText) {
-      if (this.lastText === textToLookup) {
+      if (this.lastText === cacheKey) {
         return;
       }
-      const cacheData = this.shortCache.get(textToLookup);
+      const cacheData = this.shortCache.get(cacheKey);
       if (cacheData) {
         this.doUpdateContent(cacheData.dom, cacheData.hitCount);
-        this.lastText = textToLookup;
+        this.lastText = cacheKey;
         return;
       }
     }
     console.time("lookup");
-    const { html, hitCount } = await this.run(textToLookup, withCapitalized, includeOriginalText, enableShortWord);
+    const { html, hitCount } = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
     if (hitCount >= threshold) {
       const newDom = dom.create(html);
       this.doUpdateContent(newDom, hitCount);
-      this.shortCache.put(textToLookup, { dom: newDom, hitCount });
-      this.lastText = textToLookup;
+      this.shortCache.put(cacheKey, { dom: newDom, hitCount });
+      this.lastText = cacheKey;
     }
     console.timeEnd("lookup");
   }
 
   async run(textToLookup, withCapitalized, includeOrgText, enableShortWord) {
-    const { entries, lang } = entry.build(textToLookup, withCapitalized, includeOrgText);
-    console.info(`${entries.join(",")}`);
-    console.info(`${entries.length}`);
-    const { heads, descriptions } = await fetchDescriptions(entries, this.reForReferences);
-    const { html, hitCount } = this.generator.generate(heads, descriptions, enableShortWord && lang === "en");
+    return this.runAll([textToLookup], withCapitalized, includeOrgText, enableShortWord);
+  }
+
+  async runAll(textList, withCapitalized, includeOrgText, enableShortWord) {
+    const allEntries = [];
+    const langs = [];
+    for (let i = 0; i < textList.length; i++) {
+      const text = textList[i];
+      const { entries, lang } = entry.build(text, withCapitalized, includeOrgText);
+      console.info(`${entries.join(",")}`);
+      console.info(`${entries.length}`);
+
+      allEntries.push(...entries);
+      langs.push(lang);
+    }
+    const { heads, descriptions } = await fetchDescriptions(allEntries, this.reForReferences);
+    const { html, hitCount } = this.generator.generate(heads, descriptions, enableShortWord && langs[0] === "en");
     return { html, hitCount };
   }
 }

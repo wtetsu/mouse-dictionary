@@ -36,7 +36,7 @@ class Traverser {
   fetchTextUnderCursor(element, clientX, clientY) {
     const range = ponyfill.getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
     if (!range) {
-      return null;
+      return [];
     }
     const { node, offset } = range;
 
@@ -48,15 +48,20 @@ class Traverser {
       return this.fetchTextFromElementNode(element, clientX, clientY);
     }
 
-    return null;
+    return [];
   }
 
   fetchTextFromTextNode(textNode, offset) {
-    const { text, end, isEnglish } = this.getTextFromRange(textNode.data, offset, this.maxWords);
+    const { text, subText, end, isEnglish } = this.getTextFromRange(textNode.data, offset, this.maxWords);
+    const textList = subText ? [text, subText] : [text];
     if (!end) {
-      return text;
+      return textList;
     }
     const followingText = dom.traverse(textNode);
+    return textList.map((t) => this.concatenate(t, followingText, isEnglish));
+  }
+
+  concatenate(text, followingText, isEnglish) {
     const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
     const endIndex = isEnglish
       ? searchEndIndex(concatenatedText, 0, this.maxWords, this.getTargetCharacterType)
@@ -89,35 +94,36 @@ class Traverser {
     const code = sourceText.charCodeAt(offset);
     const isEnglish = isEnglishLikeCharacter(code);
 
-    let startIndex, endIndex;
+    let startIndex, endIndex, text, subText;
     if (isEnglish) {
       startIndex = searchStartIndex(sourceText, offset, this.getTargetCharacterType);
       endIndex = searchEndIndex(sourceText, offset, this.maxWords, this.getTargetCharacterType);
+      text = sourceText.substring(startIndex, endIndex);
     } else {
       startIndex = offset;
       endIndex = offset + this.JA_MAX_LENGTH;
+      text = retrieveReasonableRange(sourceText, startIndex + 1);
+      subText = sourceText.substring(startIndex, endIndex);
     }
-
-    const text = retrieveReasonableRange(sourceText, startIndex);
-    // const rawText = sourceText.substring(startIndex, endIndex);
     const end = endIndex >= sourceText.length;
-    return { text, end, isEnglish };
+    return { text, subText, end, isEnglish };
   }
 }
 
 const retrieveReasonableRange = (sourceText, cursorIndex) => {
   let currentLength = 0;
-  let resultText = "";
   const tokens = tokenize(sourceText, "ja-JP");
+  if (!tokens) {
+    return sourceText;
+  }
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
     currentLength += token.length;
     if (cursorIndex <= currentLength) {
-      resultText = tokens.slice(i).join();
-      break;
+      return tokens.slice(i).join("");
     }
   }
-  return resultText;
+  return sourceText;
 };
 
 const searchStartIndex = (text, index, doGetCharacterType) => {
@@ -189,6 +195,9 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
 const isEnglishLikeCharacter = (code) => 0x20 <= code && code <= 0x7e;
 
 const tokenize = (text, lang) => {
+  if (!Intl?.v8BreakIterator) {
+    return null;
+  }
   const it = Intl.v8BreakIterator([lang], { type: "word" });
   it.adoptText(text);
 
