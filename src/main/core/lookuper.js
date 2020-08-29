@@ -75,7 +75,15 @@ export default class Lookuper {
     return this.updateAll([text], withCapitalized, includeOriginalText, enableShortWord, threshold);
   }
 
-  async updateAll(sourceTextList, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
+  async updateAll(textList, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
+    const { content, hit } = await this.createContent(textList, withCapitalized, includeOriginalText, enableShortWord);
+
+    if (hit >= threshold) {
+      this.doUpdateContent(content, hit);
+    }
+  }
+
+  async createContent(sourceTextList, withCapitalized, includeOriginalText, enableShortWord) {
     const textList = [];
     for (let i = 0; i < sourceTextList.length; i++) {
       const text = sourceTextList[i].substring(0, this.textLengthLimit);
@@ -97,14 +105,12 @@ export default class Lookuper {
       }
     }
     console.time("lookup");
-    const { html, hitCount } = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
-    if (hitCount >= threshold) {
-      const newDom = dom.create(html);
-      this.doUpdateContent(newDom, hitCount);
-      this.shortCache.put(cacheKey, { dom: newDom, hitCount });
-      this.lastText = cacheKey;
-    }
+    const { html, hit } = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
+    const content = dom.create(html);
+    this.lastText = cacheKey;
     console.timeEnd("lookup");
+
+    return { content, hit };
   }
 
   async run(textToLookup, withCapitalized, includeOrgText, enableShortWord) {
@@ -125,7 +131,7 @@ export default class Lookuper {
     }
     const { heads, descriptions } = await fetchDescriptions(allEntries, this.reForReferences);
     const { html, hitCount } = this.generator.generate(heads, descriptions, enableShortWord && langs[0] === "en");
-    return { html, hitCount };
+    return { html, hit: hitCount };
   }
 }
 
