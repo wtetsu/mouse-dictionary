@@ -23,6 +23,7 @@ export default class Lookuper {
     this.suspended = false;
     this.halfLocked = false;
     this.textLengthLimit = TEXT_LENGTH_LIMIT;
+    this.counter = 0;
 
     // Compile templates, regular expressions so that it works fast
     this.generator = new Generator(settings);
@@ -104,11 +105,12 @@ export default class Lookuper {
         return {};
       }
     }
-    console.time("lookup");
+    const counter = ++this.counter;
+    console.time(`lookup-${counter}`);
     const { html, hit } = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
     const content = dom.create(html);
     this.lastText = cacheKey;
-    console.timeEnd("lookup");
+    console.timeEnd(`lookup-${counter}`);
 
     return { content, hit };
   }
@@ -144,10 +146,7 @@ const fetchDescriptions = async (entries, reForReferences) => {
     return { heads: primaryHeads, descriptions: primaryDescriptions };
   }
 
-  console.time("lookup2");
   const refDescriptions = await storage.local.get(refHeads);
-  console.timeEnd("lookup2");
-
   const heads = [...primaryHeads, ...refHeads];
   const descriptions = { ...primaryDescriptions, ...refDescriptions };
   return { heads, descriptions };
