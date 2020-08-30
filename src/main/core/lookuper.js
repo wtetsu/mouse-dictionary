@@ -95,13 +95,13 @@ export default class Lookuper {
 
     if (!includeOriginalText) {
       if (this.lastText === cacheKey) {
-        return;
+        return {};
       }
       const cacheData = this.shortCache.get(cacheKey);
       if (cacheData) {
         this.doUpdateContent(cacheData.dom, cacheData.hitCount);
         this.lastText = cacheKey;
-        return;
+        return {};
       }
     }
     console.time("lookup");

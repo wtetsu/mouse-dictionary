@@ -12,14 +12,13 @@ const build = (doConfirmValidCharacter, maxWords) => {
   const traverser = new Traverser(doConfirmValidCharacter, maxWords);
 
   const getTextUnderCursor = (element, clientX, clientY) => {
-    let textOnCursor = null;
+    let textOnCursor;
     try {
       textOnCursor = traverser.fetchTextUnderCursor(element, clientX, clientY);
     } catch (err) {
       console.error(err);
-      textOnCursor = null;
     }
-    return textOnCursor;
+    return textOnCursor ?? [];
   };
 
   return getTextUnderCursor;
