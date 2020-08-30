@@ -30,6 +30,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     case "open_pdf": {
       const id = uniqueId(32);
       queue.push(id, request.payload);
+      chrome.runtime.sendMessage({ type: "prepare_pdf" });
       chrome.runtime.openOptionsPage(() => {
         sendResponse();
       });

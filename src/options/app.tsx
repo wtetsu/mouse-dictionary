@@ -39,7 +39,7 @@ const sendMessage = async (message: any) => {
 const App = () => {
   const [mode, setMode] = useState<"loading" | "options" | "pdf">("loading");
 
-  const showPdfViewer = async (id: string) => {
+  const showPdfViewer = (id: string) => {
     setMode("pdf");
     location.href = `pdf/web/viewer.html?id=${id}`;
   };
@@ -55,12 +55,17 @@ const App = () => {
     };
     init();
 
-    setInterval(async () => {
-      const id = (await sendMessage({ type: "shift_pdf_id" })) as string;
-      if (id) {
-        showPdfViewer(id);
+    chrome.runtime.onMessage.addListener(async (request) => {
+      switch (request?.type) {
+        case "prepare_pdf": {
+          const id = (await sendMessage({ type: "shift_pdf_id" })) as string;
+          if (id) {
+            showPdfViewer(id);
+          }
+          break;
+        }
       }
-    }, 3000);
+    });
   }, []);
 
   switch (mode) {
