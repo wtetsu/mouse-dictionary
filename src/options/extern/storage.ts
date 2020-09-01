@@ -6,18 +6,6 @@
 
 import orgStorage from "../../main/lib/storage";
 
-type StorageApi = {
-  get: (items: string[]) => Promise<Record<string, string>>;
-  set: (items: Record<string, string>) => Promise<void>;
-  pick: (item: string) => Promise<string>;
-  getBytesInUse: () => Promise<number>;
-};
-
-type Storage = {
-  local: StorageApi;
-  sync: StorageApi;
-};
-
 type ByteInUseCallback = (bytesInUse: number) => void;
 
 const local = {
