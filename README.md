@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wtetsu/mouse-dictionary.svg?branch=master)](https://travis-ci.org/wtetsu/mouse-dictionary)
+![Test](https://github.com/wtetsu/mouse-dictionary/workflows/Test/badge.svg)
 [![Code Climate](https://codeclimate.com/github/wtetsu/mouse-dictionary/badges/gpa.svg)](https://codeclimate.com/github/wtetsu/mouse-dictionary)
 [![codecov](https://codecov.io/gh/wtetsu/mouse-dictionary/branch/master/graph/badge.svg)](https://codecov.io/gh/wtetsu/mouse-dictionary)
 
