@@ -1,4 +1,4 @@
-name: Build fox Chrome
+name: Build for Chrome
 
 on: [push, pull_request]
 

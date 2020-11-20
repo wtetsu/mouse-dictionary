@@ -1,4 +1,4 @@
-name: Build fox Firefox
+name: Build for Firefox
 
 on: [push, pull_request]
 
