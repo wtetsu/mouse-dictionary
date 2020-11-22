@@ -17,7 +17,6 @@
     "build-chrome": "webpack --config webpack.config.chrome.js",
     "watch-chrome": "webpack -w --config webpack.config.chrome.js",
     "release-chrome": "cross-env NODE_ENV=production npm run build-chrome",
-    "release-chrome-beta": "cross-env NODE_ENV=production npm run build-chrome-beta",
     "package-chrome": "npm run release-chrome && node build_tools/archive.js chrome",
     "build-firefox": "webpack --config webpack.config.firefox.js",
     "watch-firefox": "webpack -w --config webpack.config.firefox.js",
