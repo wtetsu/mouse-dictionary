@@ -65,7 +65,7 @@ module.exports = {
       },
     ]),
   ],
-  devtool: isProd ? false : "cheap-module-inline-source-map",
+  devtool: isProd ? false : "inline-cheap-module-source-map",
   performance: {
     maxEntrypointSize: 1000000,
     maxAssetSize: 3000000,
