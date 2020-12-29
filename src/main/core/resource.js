@@ -31,10 +31,15 @@ if (BROWSER === "FIREFOX") {
     "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「拡張機能を管理」→「...」をクリック→「オプション」)";
   resources.en.needToPrepareDict =
     'Please load dictionary data first. Right click on the extension icon, select "Manage Extension", click "…", and select "Options"';
-} else {
+} else if (BROWSER === "CHROME") {
   resources.ja.needToPrepareDict = "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「オプション」)";
   resources.en.needToPrepareDict =
     'Please load dictionary data first. Right click on the extension icon and select "Options"';
+} else {
+  resources.ja.needToPrepareDict =
+    "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「拡張機能」→「設定」)";
+  resources.en.needToPrepareDict =
+    'Please load dictionary data first. Right click on the extension icon, select "Extensions" tab, and select "Preferences"';
 }
 
 const decideLanguage = () => {

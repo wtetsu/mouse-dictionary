@@ -75,6 +75,12 @@ For Firefox:
 npm run build-firefox
 ```
 
+For Safari:
+
+```sh
+npm run build-safari
+```
+
 
 #### Release build
 
@@ -88,6 +94,12 @@ For Firefox:
 
 ```sh
 npm run release-firefox
+```
+
+For Safari:
+
+```sh
+npm run release-safari
 ```
 
 ### Watch
@@ -104,6 +116,12 @@ For Firefox:
 
 ```sh
 npm run watch-firefox
+```
+
+For Safari:
+
+```sh
+npm run watch-safari
 ```
 
 
