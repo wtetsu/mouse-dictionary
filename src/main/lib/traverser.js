@@ -101,28 +101,33 @@ class Traverser {
     } else {
       startIndex = offset;
       endIndex = offset + this.JA_MAX_LENGTH;
-      text = retrieveReasonableRange(sourceText, startIndex + 1);
-      subText = sourceText.substring(startIndex, endIndex);
+
+      const properStartIndex = retrieveProperStartIndex(sourceText, startIndex + 1);
+      text = sourceText.substring(properStartIndex, endIndex);
+
+      if (startIndex !== properStartIndex) {
+        subText = sourceText.substring(startIndex, endIndex);
+      }
     }
     const end = endIndex >= sourceText.length;
     return { text, subText, end, isEnglish };
   }
 }
 
-const retrieveReasonableRange = (sourceText, cursorIndex) => {
+const retrieveProperStartIndex = (sourceText, cursorIndex) => {
   let currentLength = 0;
   const tokens = tokenize(sourceText, "ja-JP");
   if (!tokens) {
-    return sourceText;
+    return 0;
   }
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
-    currentLength += token.length;
-    if (cursorIndex <= currentLength) {
-      return tokens.slice(i).join("");
+    if (cursorIndex <= currentLength + token.length) {
+      return currentLength;
     }
+    currentLength += token.length;
   }
-  return sourceText;
+  return 0;
 };
 
 const searchStartIndex = (text, index, doGetCharacterType) => {
