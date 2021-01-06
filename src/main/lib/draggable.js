@@ -7,6 +7,7 @@
 import dom from "./dom";
 import utils from "./utils";
 import edge from "./edge";
+import snap from "./snap";
 
 const MODE_NONE = 0;
 const MODE_MOVING = 1;
@@ -21,7 +22,9 @@ export default class Draggable {
     this.movingStyles = movingStyles;
     this.mainElement = null;
     this.mainElementStyle = null;
-    this.onchange = null;
+    this.onchange = () => {};
+    this.onmousedown = () => {};
+    this.onmouseup = () => {};
     this.current = { left: null, top: null, width: null, height: null };
     this.last = { left: null, top: null, width: null, height: null };
     this.edge = edge.build({ gripWidth: 20 });
@@ -29,6 +32,8 @@ export default class Draggable {
     this.selectable = false;
     this.initialize();
     this.mouseMoveFunctions = [this.updateEdgeState, this.move, this.resize];
+    this.snap = snap.build();
+    this.guide = null;
   }
 
   initialize() {
@@ -37,20 +42,37 @@ export default class Draggable {
     this.mode = MODE_NONE;
   }
 
-  onMouseMove(e) {
-    this.mouseMoveFunctions[this.mode].call(this, e);
+  onMouseMove(e, fit) {
+    this.mouseMoveFunctions[this.mode].call(this, e, fit);
   }
 
-  onMouseUp() {
+  onMouseUp(e) {
     if (this.mode === MODE_MOVING) {
       this.mainElementStyle.apply(this.normalStyles);
     }
-    this.finishChanging();
+    this.finishChanging(e);
+    this.deactivateSnap();
+    this.onmouseup();
   }
 
   finishChanging() {
+    if (this.snap.isActivated()) {
+      this.snapElement();
+    }
     this.initialize();
     this.callOnChange();
+  }
+
+  snapElement() {
+    const snapRange = this.snap.getRange();
+    if (!snapRange) {
+      return;
+    }
+    this.transform({ left: snapRange.left, top: snapRange.top });
+    for (const prop of SQUARE_FIELDS) {
+      this.applyNewStyle(snapRange, prop);
+    }
+    this.mainElementStyle.apply(this.normalStyles);
   }
 
   updateEdgeState(e) {
@@ -75,6 +97,15 @@ export default class Draggable {
     if (utils.areSame(this.current, latest)) {
       return;
     }
+
+    this.transform(latest);
+
+    // Update auto-snap area
+    const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
+    this.snap.update(e.clientX, e.clientY, square, this.mainElement.clientWidth);
+  }
+
+  transform(latest) {
     Object.assign(this.current, latest);
     this.moveElement(this.current.left, this.current.top);
     this.mainElementStyle.apply(this.movingStyles);
@@ -110,7 +141,7 @@ export default class Draggable {
     if (utils.areSame(this.current, this.last)) {
       return;
     }
-    this.onchange?.({ ...this.current });
+    this.onchange({ ...this.current });
     Object.assign(this.last, this.current);
   }
 
@@ -175,5 +206,16 @@ export default class Draggable {
     const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
     this.changingSquare = edge.createSquare(square, this.edgeState, MIN_ELEMENT_SIZE);
     e.preventDefault();
+    this.onmousedown();
+  }
+
+  activateSnap() {
+    if (this.mode === MODE_MOVING) {
+      this.snap.activate();
+    }
+  }
+
+  deactivateSnap() {
+    this.snap.deactivate();
   }
 }
