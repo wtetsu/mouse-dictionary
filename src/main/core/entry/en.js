@@ -37,11 +37,34 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
     lookupWords.merge(lookupWords.toArray().map((s) => s.toUpperCase()));
   }
 
-  if (firstWord?.length >= 2) {
-    lookupWords.push(toTitle(firstWord));
-  }
+  const titledExpressions = generateTitledExpressions(firstWords);
+  lookupWords.merge(titledExpressions);
 
   return lookupWords.toArray();
+};
+
+// ["united", "kingdom"] -> ["United", "United Kingdom"]
+const generateTitledExpressions = (words) => {
+  if (!(words?.length >= 1)) {
+    return [];
+  }
+  const result = [];
+
+  let str = toTitle(words[0]);
+  if (str.length >= 2) {
+    result.push(str);
+  }
+
+  for (let i = 1; ; i++) {
+    if (i >= words.length || i >= 6) {
+      break;
+    }
+    const w = words[i];
+    str += " " + toTitle(w);
+    result.push(str);
+  }
+
+  return result;
 };
 
 const processSourceString = (sourceStr) => {

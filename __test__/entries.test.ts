@@ -430,5 +430,22 @@ test("", () => {
 });
 
 test("", () => {
+  expect(generateEntries("united kingdom")).toEqual(
+    expect.arrayContaining([
+      "United", //
+      "United Kingdom",
+    ])
+  );
+
+  expect(generateEntries("canadian broadcasting corporation")).toEqual(
+    expect.arrayContaining([
+      "Canadian", //
+      "Canadian Broadcasting",
+      "Canadian Broadcasting Corporation",
+    ])
+  );
+});
+
+test("", () => {
   expect(generateEntries("")).toEqual(expect.arrayContaining([]));
 });
