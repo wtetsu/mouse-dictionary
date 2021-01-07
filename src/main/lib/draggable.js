@@ -72,7 +72,7 @@ export default class Draggable {
     if (!snapRange) {
       return;
     }
-    this.transform({ left: snapRange.left, top: snapRange.top });
+    this.transform(snapRange);
     this.mainElementStyle.apply(this.normalStyles);
   }
 
