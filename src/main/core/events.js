@@ -19,7 +19,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
   const lookuper = new Lookuper(settings, doUpdateContent);
 
   const draggable = new Draggable(settings.normalDialogStyles, settings.movingDialogStyles);
-  draggable.onchange = (e) => config.savePosition(e);
+  draggable.events.change = (e) => config.savePosition(e);
   draggable.add(dialog);
 
   document.body.addEventListener("mousedown", () => {
@@ -39,6 +39,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
   const onMouseMoveFirst = async (e) => {
     // Wait until rule loading finish
     await rule.load();
+
     onMouseMove = onMouseMoveSecondOrLater;
     onMouseMove(e);
   };
@@ -88,14 +89,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   // Guide handling
   let snapGuide = null;
-  draggable.onmousedown = () => {
+  draggable.events.move = () => {
     if (snapGuide) {
       return;
     }
     snapGuide = createSnapGuideElement();
     dialog.appendChild(snapGuide);
   };
-  draggable.onmouseup = () => {
+  draggable.events.finish = () => {
     if (!snapGuide) {
       return;
     }

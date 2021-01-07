@@ -22,9 +22,6 @@ export default class Draggable {
     this.movingStyles = movingStyles;
     this.mainElement = null;
     this.mainElementStyle = null;
-    this.onchange = () => {};
-    this.onmousedown = () => {};
-    this.onmouseup = () => {};
     this.current = { left: null, top: null, width: null, height: null };
     this.last = { left: null, top: null, width: null, height: null };
     this.edge = edge.build({ gripWidth: 20 });
@@ -34,6 +31,13 @@ export default class Draggable {
     this.mouseMoveFunctions = [this.updateEdgeState, this.move, this.resize];
     this.snap = snap.build();
     this.guide = null;
+
+    this.events = {
+      change: () => {},
+      move: () => {},
+      resize: () => {},
+      finish: () => {},
+    };
   }
 
   initialize() {
@@ -52,7 +56,7 @@ export default class Draggable {
     }
     this.finishChanging(e);
     this.deactivateSnap();
-    this.onmouseup();
+    this.events.mouseup();
   }
 
   finishChanging() {
@@ -61,6 +65,7 @@ export default class Draggable {
     }
     this.initialize();
     this.callOnChange();
+    this.events.finish();
   }
 
   snapElement() {
@@ -99,6 +104,7 @@ export default class Draggable {
     }
 
     this.transform(latest);
+    this.events.move();
 
     // Update auto-snap area
     const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
@@ -122,6 +128,7 @@ export default class Draggable {
     for (const prop of SQUARE_FIELDS) {
       this.applyNewStyle(latest, prop);
     }
+    this.events.resize();
   }
 
   moved(e) {
@@ -141,7 +148,7 @@ export default class Draggable {
     if (utils.areSame(this.current, this.last)) {
       return;
     }
-    this.onchange({ ...this.current });
+    this.events.change({ ...this.current });
     Object.assign(this.last, this.current);
   }
 
@@ -206,7 +213,13 @@ export default class Draggable {
     const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
     this.changingSquare = edge.createSquare(square, this.edgeState, MIN_ELEMENT_SIZE);
     e.preventDefault();
-    this.onmousedown();
+
+    if (this.mode === MODE_RESIZING) {
+      this.events.resize();
+    }
+    if (this.mode === MODE_MOVING) {
+      this.events.move();
+    }
   }
 
   activateSnap() {
