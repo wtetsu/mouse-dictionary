@@ -56,7 +56,6 @@ export default class Draggable {
     }
     this.finishChanging(e);
     this.deactivateSnap();
-    this.events.mouseup();
   }
 
   finishChanging() {
@@ -74,9 +73,6 @@ export default class Draggable {
       return;
     }
     this.transform({ left: snapRange.left, top: snapRange.top });
-    for (const prop of SQUARE_FIELDS) {
-      this.applyNewStyle(snapRange, prop);
-    }
     this.mainElementStyle.apply(this.normalStyles);
   }
 
@@ -109,25 +105,19 @@ export default class Draggable {
     // Update auto-snap area
     const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
     this.snap.update(e.clientX, e.clientY, square, this.mainElement.clientWidth);
-  }
-
-  transform(latest) {
-    Object.assign(this.current, latest);
-    this.moveElement(this.current.left, this.current.top);
     this.mainElementStyle.apply(this.movingStyles);
   }
 
-  moveElement(left, top) {
-    this.mainElement.style.left = `${left}px`;
-    this.mainElement.style.top = `${top}px`;
+  transform(latest) {
+    for (let field of Object.keys(latest)) {
+      this.applyNewStyle(latest, field);
+    }
   }
 
   resize(e) {
     const [movedX, movedY] = this.moved(e);
     const latest = this.changingSquare.resize(movedX, movedY);
-    for (const prop of SQUARE_FIELDS) {
-      this.applyNewStyle(latest, prop);
-    }
+    this.transform(latest);
     this.events.resize();
   }
 
@@ -138,7 +128,7 @@ export default class Draggable {
   applyNewStyle(latest, prop) {
     const cval = this.current[prop];
     const lval = latest[prop];
-    if (lval !== null && lval !== cval) {
+    if (Number.isFinite(lval) && lval !== cval) {
       this.current[prop] = lval;
       this.mainElement.style[prop] = `${lval}px`;
     }
@@ -189,17 +179,18 @@ export default class Draggable {
   }
 
   jump(edgeState) {
+    const newRange = {};
     if (edgeState & edge.LEFT) {
-      this.current.left = JUMP_SPACE;
+      newRange.left = JUMP_SPACE;
     } else if (edgeState & edge.RIGHT) {
-      this.current.left = document.documentElement.clientWidth - this.mainElement.clientWidth - JUMP_SPACE;
+      newRange.left = document.documentElement.clientWidth - this.mainElement.clientWidth - JUMP_SPACE;
     }
     if (edgeState & edge.TOP) {
-      this.current.top = JUMP_SPACE;
+      newRange.top = JUMP_SPACE;
     } else if (edgeState & edge.BOTTOM) {
-      this.current.top = window.innerHeight - this.mainElement.clientHeight - JUMP_SPACE;
+      newRange.top = window.innerHeight - this.mainElement.clientHeight - JUMP_SPACE;
     }
-    this.moveElement(this.current.left, this.current.top);
+    this.transform(newRange);
   }
 
   handleMouseDown(e) {
