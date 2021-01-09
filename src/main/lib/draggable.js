@@ -56,7 +56,9 @@ export default class Draggable {
       this.mainElementStyle.apply(this.normalStyles);
     }
     this.finishChanging(e);
-    this.deactivateSnap();
+
+    // Note: keep this.enableSnap
+    this.snap.deactivate();
   }
 
   finishChanging() {
