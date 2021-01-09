@@ -18,7 +18,11 @@ class Snap {
   }
 
   initialize() {
+    if (this.initialized) {
+      return;
+    }
     this.snapElement = dom.create(`<div style="${DEFAULT_STYLE};"></div>`);
+    this.initialized = true;
   }
 
   appendElement() {
@@ -43,7 +47,7 @@ class Snap {
     }
     this.lastRange = range;
 
-    if (this.activated) {
+    if (this.initialized) {
       this.transform(range);
     }
   }
@@ -59,10 +63,7 @@ class Snap {
   }
 
   activate() {
-    if (!this.initialized) {
-      this.initialize();
-      this.initialized = true;
-    }
+    this.initialize();
     this.appendElement();
     this.activated = true;
   }
@@ -100,7 +101,7 @@ class Snap {
   selectSnapElementRange(elements) {
     for (let i = 1; i < elements.length; i++) {
       const e = elements[i];
-      if (e === this.snapElement || e.tagName === "BODY" || e.tagName === "HTML") {
+      if (this.isExceptionalElement(e)) {
         continue;
       }
       const range = adjustRange(e.getBoundingClientRect());
@@ -109,6 +110,17 @@ class Snap {
       }
     }
     return null;
+  }
+
+  isExceptionalElement(element) {
+    if (element === this.snapElement) {
+      return true;
+    }
+    const tagName = element.tagName;
+    if (tagName === "BODY" || tagName === "HTML") {
+      return true;
+    }
+    return false;
   }
 
   isEligibleElement(range) {

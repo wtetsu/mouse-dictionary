@@ -30,6 +30,7 @@ export default class Draggable {
     this.initialize();
     this.mouseMoveFunctions = [this.updateEdgeState, this.move, this.resize];
     this.snap = snap.build();
+    this.enableSnap = false;
     this.guide = null;
 
     this.events = {
@@ -103,8 +104,12 @@ export default class Draggable {
     this.events.move();
 
     // Update auto-snap area
+    if (this.enableSnap) {
+      this.snap.activate();
+    }
     const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
     this.snap.update(e.clientX, e.clientY, square, this.mainElement.clientWidth);
+
     this.mainElementStyle.apply(this.movingStyles);
   }
 
@@ -217,9 +222,11 @@ export default class Draggable {
     if (this.mode === MODE_MOVING) {
       this.snap.activate();
     }
+    this.enableSnap = true;
   }
 
   deactivateSnap() {
     this.snap.deactivate();
+    this.enableSnap = false;
   }
 }
