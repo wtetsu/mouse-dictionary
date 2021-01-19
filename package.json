@@ -21,7 +21,11 @@
     "build-firefox": "webpack --config webpack.config.firefox.js",
     "watch-firefox": "webpack -w --config webpack.config.firefox.js",
     "release-firefox": "cross-env NODE_ENV=production npm run build-firefox",
-    "package-firefox": "npm run release-firefox && node build_tools/archive.js firefox"
+    "package-firefox": "npm run release-firefox && node build_tools/archive.js firefox",
+    "build-safari": "webpack --config webpack.config.safari.js",
+    "watch-safari": "webpack -w --config webpack.config.safari.js",
+    "release-safari": "cross-env NODE_ENV=production npm run build-safari && yes | xcrun safari-web-extension-converter --force --no-open dist-safari --project-location dist-safari",
+    "package-safari": "npm run release-safari && node build_tools/archive.js safari"
   },
   "dependencies": {
     "deinja": "0.0.3",
