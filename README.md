@@ -28,6 +28,7 @@ Download it.
 
 - [For Chrome](https://chrome.google.com/webstore/detail/mouse-dictionary/dnclbikcihnpjohihfcmmldgkjnebgnj)
 - [For Firefox](https://addons.mozilla.org/ja/firefox/addon/mousedictionary/)
+- For Safari (See [#53](https://github.com/wtetsu/mouse-dictionary/pull/53))
 
 Use it:
 
