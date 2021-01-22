@@ -4,6 +4,10 @@
  * Licensed under MIT
  */
 
+export type InitialPosition = "left" | "right" | "keep";
+
+export type Scroll = "scroll" | "hidden";
+
 export type MouseDictionaryBasicSettings = {
   shortWordLength: number;
   cutShortWordDescription: number;
@@ -31,10 +35,6 @@ export type MouseDictionaryAdvancedSettings = {
   contentTemplate: string;
   pdfUrl: string;
 };
-
-export type InitialPosition = "left" | "right" | "keep";
-
-export type Scroll = "scroll" | "hidden";
 
 export type MouseDictionarySettings = MouseDictionaryBasicSettings & MouseDictionaryAdvancedSettings;
 
