@@ -61,20 +61,7 @@ export class Preview {
       d.hiddenDialogStyles = null;
       d.movingDialogStyles = null;
     });
-    const trialWindow = view.create(tmpSettings) as PreviewWindow;
-    dom.applyStyles(trialWindow.dialog, {
-      cursor: "zoom-out",
-      top: "30px",
-      left: "5px",
-    });
-
-    trialWindow.dialog.addEventListener("click", () => {
-      dom.applyStyles(trialWindow.dialog, {
-        width: "100px",
-        height: "100px",
-      });
-    });
-    return trialWindow;
+    return view.create(tmpSettings) as PreviewWindow;
   }
 
   refreshGenerator(settings: MouseDictionarySettings): void {
