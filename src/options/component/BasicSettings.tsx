@@ -40,7 +40,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
     { name: res.get("positionLeft"), value: "left" },
     { name: res.get("positionRight"), value: "right" },
   ];
-  if (!env.disableKeepingWindowStatus) {
+  if (env.get().enableWindowStatusSave) {
     positions.push({
       name: res.get("positionKeep"),
       value: "keep",
@@ -122,7 +122,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
           value={settings.initialPosition}
           options={positions}
           style={{ width: 250 }}
-          onChange={(value: InitialPosition) => update({ initialPosition: value })}
+          onChange={(value) => update({ initialPosition: value as InitialPosition })}
         />
 
         <label>{res.get("scrollBar")}</label>
@@ -130,7 +130,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
           value={settings.scroll}
           options={scrolls}
           style={{ width: 250 }}
-          onChange={(value: Scroll) => update({ scroll: value })}
+          onChange={(value) => update({ scroll: value as Scroll })}
         />
 
         <br />

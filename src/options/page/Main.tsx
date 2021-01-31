@@ -220,7 +220,7 @@ export const Main: React.FC = () => {
           }}
         />
 
-        <Panel active={!env.disableUserSettings && !state.busy}>
+        <Panel active={env.get().enableUserSettings && !state.busy}>
           <DataUsage byteSize={state.dictDataUsage} onUpdate={(byteSize) => updateState({ dictDataUsage: byteSize })} />
         </Panel>
         <div style={{ fontSize: "75%" }}>
@@ -229,7 +229,7 @@ export const Main: React.FC = () => {
 
         <div style={{ cursor: "pointer", fontSize: "75%" }} onClick={() => updateState({ dictDataUsage: -1 })}></div>
 
-        <Panel active={!state.busy && !env.disableUserSettings && state.initialized}>
+        <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
           <hr style={{ marginTop: 15 }} />
           <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data">
             {res.get("downloadDictData")}

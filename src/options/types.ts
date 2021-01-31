@@ -48,3 +48,14 @@ export type UpdateEventHandler = (
   statePatch: Record<string, any>,
   settingsPatch: Partial<MouseDictionarySettings>
 ) => void;
+
+type EnvForMain = {
+  enableWindowStatusSave: boolean;
+  enableUserSettings: boolean;
+};
+
+type EnvForOptions = {
+  registerRecordsAtOnce: number;
+};
+
+export type Env = EnvForMain & EnvForOptions;

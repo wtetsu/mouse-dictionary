@@ -10,9 +10,9 @@ import entry from "../../main/core/entry";
 import Generator from "../../main/core/generator";
 import view from "../../main/core/view";
 import dom from "../../main/lib/dom";
-import env from "../../main/settings/env";
 
 import * as config from "./config";
+import * as env from "./env";
 import * as storage from "./storage";
 import * as defaultSettings from "./defaultsettings";
 

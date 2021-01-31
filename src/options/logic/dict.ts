@@ -61,7 +61,7 @@ export const load = async (loadParam: LoadParam, callback: Callback): Promise<nu
     }
     dictData[hd.head] = hd.desc;
     wordCount += 1;
-    if (wordCount === 1 || (wordCount > 1 && wordCount % env.registerRecordsAtOnce === 0)) {
+    if (wordCount === 1 || (wordCount > 1 && wordCount % env.get().registerRecordsAtOnce === 0)) {
       callback({ name: "loading", count: wordCount, word: hd });
       const tmp = dictData;
       dictData = {};

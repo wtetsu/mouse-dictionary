@@ -6,7 +6,7 @@
 
 import storage from "../lib/storage";
 import defaultSettings from "../settings/defaultsettings";
-import env from "../settings/env";
+import env from "../env";
 
 const KEY_USER_CONFIG = "**** config ****";
 const KEY_LAST_POSITION = "**** last_position ****";
@@ -15,7 +15,7 @@ const KEY_LOADED = "**** loaded ****";
 const JSON_FIELDS = new Set(["normalDialogStyles", "movingDialogStyles", "hiddenDialogStyles"]);
 
 const loadAll = async () => {
-  if (env.disableUserSettings) {
+  if (!env.enableUserSettings) {
     return { settings: parseSettings(defaultSettings), position: {} };
   }
   const data = await getStoredData([KEY_USER_CONFIG, KEY_LAST_POSITION]);
@@ -32,7 +32,7 @@ const loadSettings = async () => {
 };
 
 const loadRawSettings = async () => {
-  if (env.disableUserSettings) {
+  if (!env.enableUserSettings) {
     return { ...defaultSettings };
   }
 
@@ -52,7 +52,7 @@ const parseSettings = (settings) => {
     }
     result[field] = JSON_FIELDS.has(field) ? parseJson(value) : value;
   }
-  if (env.disableKeepingWindowStatus && settings.initialPosition === "keep") {
+  if (!env.enableWindowStatusSave && settings.initialPosition === "keep") {
     result.initialPosition = "right";
   }
   return result;
@@ -74,7 +74,7 @@ const parseJson = (json) => {
 };
 
 const savePosition = async (e) => {
-  if (env.disableUserSettings || env.disableKeepingWindowStatus) {
+  if (!env.enableUserSettings || !env.enableWindowStatusSave) {
     return;
   }
   return storage.sync.set({
