@@ -16,8 +16,8 @@ const load = () => {
   });
 };
 
-const readJson = (fileName) => {
-  const json = fs.readFileSync(`rule/${fileName}`, "utf8");
+const readJson = (fileName: string) => {
+  const json = fs.readFileSync(`data/rule/${fileName}`, "utf8");
   return json5.parse(json);
 };
 
