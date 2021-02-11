@@ -1,3 +1,4 @@
+const DefinePlugin = require("webpack/lib/DefinePlugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const UniteJsonPlugin = require("./build_tools/webpack_plugins/UniteJsonPlugin");
@@ -6,6 +7,8 @@ const jaRule = require("deinja/src/data");
 
 const mode = process.env.NODE_ENV || "development";
 const isProd = mode === "production";
+
+const version = require("./package.json").version;
 
 const copyWebpackPluginConfigs = {
   patterns: [
@@ -66,6 +69,9 @@ module.exports = {
     ],
   },
   plugins: [
+    new DefinePlugin({
+      DIALOG_ID: JSON.stringify(`____MOUSE_DICTIONARY_6FQSXRIXUKBSIBEF_${version}`),
+    }),
     new CopyPlugin(copyWebpackPluginConfigs),
     new UniteJsonPlugin([
       {

@@ -13,7 +13,6 @@ specificConfig.output = {
 specificConfig.plugins.push(
   new DefinePlugin({
     BROWSER: JSON.stringify("SAFARI"),
-    DIALOG_ID: JSON.stringify("____MOUSE_DICTIONARY_cf744bd007850b04601dc865815ec0f5e60c6970"),
   })
 );
 
