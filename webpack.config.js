@@ -1,6 +1,7 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const UniteJsonPlugin = require("./build_tools/webpack_plugins/UniteJsonPlugin");
+const GenerateDictionaryPlugin = require("./build_tools/webpack_plugins/GenerateDictionaryPlugin");
 const jaRule = require("deinja/src/data");
 
 const mode = process.env.NODE_ENV || "development";
@@ -47,24 +48,6 @@ module.exports = {
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
   },
-  plugins: [
-    new CopyPlugin(copyWebpackPluginConfigs),
-    new UniteJsonPlugin([
-      {
-        from: [
-          { name: "letters", file: "data/rule/letters.json5" },
-          { name: "noun", file: "data/rule/noun.json5" },
-          { name: "phrase", file: "data/rule/phrase.json5" },
-          { name: "pronoun", file: "data/rule/pronoun.json5" },
-          { name: "spelling", file: "data/rule/spelling.json5" },
-          { name: "trailing", file: "data/rule/trailing.json5" },
-          { name: "verb", file: "data/rule/verb.json5" },
-          { name: "ja", data: jaRule },
-        ],
-        to: "data/rule.json",
-      },
-    ]),
-  ],
   devtool: isProd ? false : "inline-cheap-module-source-map",
   performance: {
     maxEntrypointSize: 1000000,
@@ -82,4 +65,55 @@ module.exports = {
       }),
     ],
   },
+  plugins: [
+    new CopyPlugin(copyWebpackPluginConfigs),
+    new UniteJsonPlugin([
+      {
+        from: [
+          { name: "letters", file: "data/rule/letters.json5" },
+          { name: "noun", file: "data/rule/noun.json5" },
+          { name: "phrase", file: "data/rule/phrase.json5" },
+          { name: "pronoun", file: "data/rule/pronoun.json5" },
+          { name: "spelling", file: "data/rule/spelling.json5" },
+          { name: "trailing", file: "data/rule/trailing.json5" },
+          { name: "verb", file: "data/rule/verb.json5" },
+          { name: "ja", data: jaRule },
+        ],
+        to: "data/rule.json",
+      },
+    ]),
+    new GenerateDictionaryPlugin({
+      from: [
+        "data/dict/_.json5",
+        "data/dict/a.json5",
+        "data/dict/b.json5",
+        "data/dict/c.json5",
+        "data/dict/d.json5",
+        "data/dict/e.json5",
+        "data/dict/f.json5",
+        "data/dict/g.json5",
+        "data/dict/h.json5",
+        "data/dict/i.json5",
+        "data/dict/j.json5",
+        "data/dict/k.json5",
+        "data/dict/l.json5",
+        "data/dict/m.json5",
+        "data/dict/n.json5",
+        "data/dict/o.json5",
+        "data/dict/p.json5",
+        "data/dict/q.json5",
+        "data/dict/r.json5",
+        "data/dict/s.json5",
+        "data/dict/t.json5",
+        "data/dict/u.json5",
+        "data/dict/v.json5",
+        "data/dict/w.json5",
+        "data/dict/x.json5",
+        "data/dict/y.json5",
+        "data/dict/z.json5",
+      ],
+      to: "data/dict",
+      split: 10,
+    }),
+  ],
 };

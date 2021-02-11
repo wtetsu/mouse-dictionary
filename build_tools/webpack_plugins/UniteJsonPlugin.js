@@ -35,7 +35,7 @@ const applyOption = (option, outputDirPath) => {
   fs.writeFileSync(outputFilePath, unitedJson, "utf-8");
 };
 
-const uniteJsonFiles = options => {
+const uniteJsonFiles = (options) => {
   const resultData = {};
   for (let i = 0; i < options.length; i++) {
     const option = options[i];

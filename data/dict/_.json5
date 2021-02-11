@@ -1,0 +1,35 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
+ *
+ * This data is based on ejdict-hand
+ * https://github.com/kujirahand/EJDict
+ */
+{
+  "$": "dollar[s] ドル記号(通貨単位)",
+  "'em": "=them",
+  "'ll": "will, shallの短縮形",
+  "'m": "amの短縮形",
+  "'mid": "=amid",
+  "'neath": "《詞》=beneath",
+  "'re": "areの短縮形",
+  "'s": "has, is, us,(疑問詞のあとの) doesの短縮形",
+  "'t": "itの短縮形",
+  "'tis": "it is の短縮形",
+  "'twas": "=it was",
+  "'tween": "=between",
+  "'twixt": "《古詩》betwixtの短縮形(=between)",
+  "'un": "=one",
+  "'ve": "haveの短縮形",
+  "-ford": "(川などの)浅瀬 / 〈川〉‘の'浅瀬を渡る",
+  "104": "通信で用いられる『了解』の意を表す語",
+  "@": "単価…で / …につき",
+  "éclair": "エクレア(クリームの入った細長いケーキ)",
+  "éclat": "=eclat",
+  "élite": "《the ~》《複数扱い》えり扱きの人々,エリート,精鋭 / 〈U〉エリート活字",
+  "élitist": "エリート[の一人]",
+  "émigré": "(特に政治的な)亡命者",
+  "épée": "エペ(フェンシングで使う切っ先にたんぽのついた細身の剣)",
+  "￡sd": "ポンド シリング ペンス / 金銭(money)",
+}
