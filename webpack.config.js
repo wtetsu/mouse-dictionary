@@ -52,13 +52,13 @@ module.exports = {
     new UniteJsonPlugin([
       {
         from: [
-          { name: "letters", file: "rule/letters.json5" },
-          { name: "noun", file: "rule/noun.json5" },
-          { name: "phrase", file: "rule/phrase.json5" },
-          { name: "pronoun", file: "rule/pronoun.json5" },
-          { name: "spelling", file: "rule/spelling.json5" },
-          { name: "trailing", file: "rule/trailing.json5" },
-          { name: "verb", file: "rule/verb.json5" },
+          { name: "letters", file: "data/rule/letters.json5" },
+          { name: "noun", file: "data/rule/noun.json5" },
+          { name: "phrase", file: "data/rule/phrase.json5" },
+          { name: "pronoun", file: "data/rule/pronoun.json5" },
+          { name: "spelling", file: "data/rule/spelling.json5" },
+          { name: "trailing", file: "data/rule/trailing.json5" },
+          { name: "verb", file: "data/rule/verb.json5" },
           { name: "ja", data: jaRule },
         ],
         to: "data/rule.json",
