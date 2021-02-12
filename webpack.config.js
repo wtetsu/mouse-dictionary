@@ -90,7 +90,6 @@ module.exports = {
     ]),
     new GenerateDictionaryPlugin({
       from: [
-        "data/dict/_.json5",
         "data/dict/a.json5",
         "data/dict/b.json5",
         "data/dict/c.json5",
