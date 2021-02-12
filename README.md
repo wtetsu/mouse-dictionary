@@ -55,7 +55,7 @@ Want to use for the German language? Take a look these great articles!
 
 ### Preparation
 
-Use npm 6+.
+Use npm 7+.
 
 ```sh
 npm install
