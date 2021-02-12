@@ -13,15 +13,18 @@ Features:
 - Awesome phrases detection
 - Capable of importing your own text data
 - **Available on PDF documents!**
-- Look up connected words at one
+- Look up connected words nicely
   - camelCase -> "camel", "case"
   - snake_case -> "snake", "case"
   - splitinto  -> "split into"
 - Customizable view
-- Available not only on very normal document:
+- Available for various documents:
+  - Normal HTML documents
+    - input elements
+    - textarea
+  - PDF documents
+  - Google Docs
   - YouTube captions
-  - input elements
-  - textarea
   - ...
 
 Download it.
