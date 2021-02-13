@@ -6,9 +6,9 @@
 
 import React from "react";
 import immer from "immer";
-import { Button } from "./Button";
-import { res } from "../logic";
-import { Replace } from "../types";
+import { Button } from "../atom/Button";
+import { res } from "../../logic";
+import { Replace } from "../../types";
 
 type Props = {
   replaceRules: Replace[];

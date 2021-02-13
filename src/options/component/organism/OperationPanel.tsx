@@ -5,8 +5,8 @@
  */
 
 import React, { useState } from "react";
-import { Button } from "./Button";
-import { res } from "../logic";
+import { Button } from "../atom/Button";
+import { res } from "../../logic";
 
 type Props = {
   disable: boolean;

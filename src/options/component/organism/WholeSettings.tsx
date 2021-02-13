@@ -7,10 +7,10 @@
 import React, { useEffect, useRef, MutableRefObject } from "react";
 import AceEditor from "react-ace";
 import immer from "immer";
-import { Button } from "./Button";
-import { res, data, message } from "../logic";
-import { MouseDictionarySettings } from "../types";
-import { dom, defaultSettings } from "../extern";
+import { Button } from "../atom/Button";
+import { res, data, message } from "../../logic";
+import { MouseDictionarySettings } from "../../types";
+import { dom, defaultSettings } from "../../extern";
 
 const EDITOR_STYLE: React.CSSProperties = {
   width: 800,

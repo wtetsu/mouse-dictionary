@@ -6,10 +6,10 @@
 
 import React from "react";
 import immer from "immer";
-import { res } from "../logic";
+import { res } from "../../logic";
 import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
-import { HighlightEditor } from "./HighlightEditor";
-import { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../types";
+import { HighlightEditor } from "../atom/HighlightEditor";
+import { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../../types";
 
 type AdvancedSettingsProps = {
   settings: MouseDictionaryAdvancedSettings;

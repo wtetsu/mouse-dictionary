@@ -5,9 +5,9 @@
  */
 
 import React, { useRef, useState, MutableRefObject } from "react";
-import { Button } from "./Button";
-import { SimpleSelect } from "./SimpleSelect";
-import { res } from "../logic";
+import { Button } from "../atom/Button";
+import { SimpleSelect } from "../atom/SimpleSelect";
+import { res } from "../../logic";
 
 type Encoding = "Shift-JIS" | "UTF-8" | "UTF-16";
 type Format = "EIJIRO" | "TSV" | "PDIC_LINE" | "JSON";

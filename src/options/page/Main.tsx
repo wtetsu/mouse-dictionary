@@ -6,20 +6,8 @@
 
 import React, { useReducer, useEffect, useRef } from "react";
 import immer from "immer";
-import {
-  AdvancedSettings,
-  BasicSettings,
-  Button,
-  DataUsage,
-  EditableSpan,
-  ExternalLink,
-  LoadDictionary,
-  OperationPanel,
-  Overlay,
-  Panel,
-  Toggle,
-  WholeSettings,
-} from "../component";
+import { Button, DataUsage, EditableSpan, ExternalLink, Overlay, Panel, Toggle } from "../component/atom";
+import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, WholeSettings } from "../component/organism";
 import { data, dict, message, Preview, res } from "../logic";
 import { config, defaultSettings, env } from "../extern";
 import { MouseDictionarySettings } from "../types";
