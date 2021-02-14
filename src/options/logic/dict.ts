@@ -7,6 +7,7 @@
 import { LineReader } from "./linereader";
 import { EijiroParser, SimpleDictParser, JsonDictParser } from "./dictparser";
 import { env, storage } from "../extern";
+import { DictionaryFileEncoding, DictionaryFileFormat } from "../types";
 
 type ProgressCallback = (wordCount: number, progress: string) => void;
 
@@ -34,8 +35,8 @@ type LoadingCallbackParam = {
 
 type LoadParam = {
   file: Blob;
-  encoding: string;
-  format: string;
+  encoding: DictionaryFileEncoding;
+  format: DictionaryFileFormat;
 };
 
 type HeadWord = {
@@ -95,7 +96,7 @@ const readAsText = async (file: Blob, encoding: string, callback: ReadingCallbac
   });
 };
 
-const createDictParser = (format: string) => {
+const createDictParser = (format: DictionaryFileFormat) => {
   switch (format) {
     case "TSV":
       return new SimpleDictParser("\t");

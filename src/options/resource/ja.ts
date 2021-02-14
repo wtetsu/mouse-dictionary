@@ -4,7 +4,9 @@
  * Licensed under MIT
  */
 
-export default {
+import { TextResource } from "./types";
+
+const JapaneseTextResource: TextResource = {
   dictDataEncoding: "辞書データの文字コード：",
   dictDataFormat: "辞書データの形式：",
   readDictData: "辞書データの読み込み：",
@@ -57,7 +59,6 @@ export default {
   background: "背景",
   headFont: "見出し",
   descFont: "説明",
-  backgroundColor: "背景色",
   replaceRules: "文字列置換ルール",
   replaceRule1: "を",
   replaceRule2: "に置換",
@@ -87,3 +88,5 @@ export default {
   skipPdfConfirmation: "PDFファイルのダウンロード確認を省略する",
   pdfUrlPattern: "PDFドキュメント判定の上書き(URLに対する正規表現)",
 };
+
+export { JapaneseTextResource };

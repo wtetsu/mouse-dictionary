@@ -5,8 +5,7 @@
  */
 
 import Hogan, { Template } from "hogan.js";
-import ja from "../resource/ja";
-import en from "../resource/en";
+import { JapaneseTextResource, EnglishTextResource } from "../resource";
 
 let _lang: string = null;
 
@@ -19,8 +18,8 @@ const compile = (res: Record<string, string>): Record<string, Template> => {
 };
 
 const compiledTemplates = {
-  ja: compile(ja),
-  en: compile(en),
+  ja: compile(JapaneseTextResource),
+  en: compile(EnglishTextResource),
 };
 
 export const setLang = (newLang: string): void => {

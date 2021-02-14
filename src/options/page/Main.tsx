@@ -10,7 +10,7 @@ import { Button, DataUsage, EditableSpan, ExternalLink, Overlay, Panel, Toggle }
 import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, WholeSettings } from "../component/organism";
 import { data, dict, message, Preview, res } from "../logic";
 import { config, defaultSettings, env } from "../extern";
-import { MouseDictionarySettings } from "../types";
+import { MouseDictionarySettings, DictionaryFile } from "../types";
 
 type MainState = {
   dictDataUsage?: number;
@@ -75,6 +75,8 @@ const initialState: MainState = {
   initialized: false,
 };
 
+type UpdateState = (state: Partial<MainState>) => void;
+
 export const Main: React.FC = () => {
   const refPreview = useRef<Preview>();
 
@@ -88,7 +90,7 @@ export const Main: React.FC = () => {
 
       const isLoaded = await config.isDataReady();
       if (!isLoaded) {
-        const ok = await confirmAndLoadInitialDict("confirmLoadInitialDict");
+        const ok = await confirmAndLoadInitialDict("confirmLoadInitialDict", updateState);
         updateState({ initialized: ok, dictDataUsage: -1 });
         return;
       }
@@ -122,61 +124,6 @@ export const Main: React.FC = () => {
     dispatch({ type: "replace_settings", settings: data.preProcessSettings(defaultSettings.get()) });
   };
 
-  const confirmAndLoadInitialDict = async (messageId: string): Promise<boolean> => {
-    const willLoad = await message.notice(res.get(messageId), "okCancel");
-    if (!willLoad) {
-      return false;
-    }
-
-    let finalWordCount: number;
-    try {
-      updateState({ busy: true, panelLevel: 0 });
-      finalWordCount = await dict.registerDefaultDict((count, progress) => {
-        const message = res.get("progressRegister", { count, progress });
-        updateState({ progress: message });
-      });
-      updateState({ dictDataUsage: -1 });
-    } finally {
-      updateState({ busy: false, progress: "" });
-    }
-    await config.setDataReady(true);
-    await message.success(res.get("finishRegister", { count: finalWordCount }));
-
-    return true;
-  };
-
-  const loadDictionaryData = async (file: File, encoding: string, format: string): Promise<void> => {
-    if (!file) {
-      message.warn(res.get("selectDictFile"));
-      return;
-    }
-    if (encoding === "Shift-JIS" && !(await data.fileMayBeShiftJis(file))) {
-      const willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
-      if (!willContinue) {
-        return;
-      }
-    }
-    try {
-      updateState({ busy: true, panelLevel: 0 });
-      const count = await dict.load({ file, encoding, format }, (ev) => {
-        if (ev.name === "reading") {
-          const progress = `${ev.loaded.toLocaleString()} / ${ev.total.toLocaleString()} Byte`;
-          updateState({ progress });
-        }
-        if (ev.name === "loading") {
-          const progress = res.get("progressRegister", { count: ev.count?.toLocaleString(), progress: ev.word.head });
-          updateState({ progress });
-        }
-      });
-      message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
-      config.setDataReady(true);
-    } catch (e) {
-      message.error(e.toString());
-    } finally {
-      updateState({ busy: false, progress: "", dictDataUsage: -1 });
-    }
-  };
-
   const switchLanguage = (): void => {
     const newLang = state.lang === "ja" ? "en" : "ja";
     res.setLang(newLang);
@@ -200,7 +147,7 @@ export const Main: React.FC = () => {
           trigger={(e) => {
             switch (e.type) {
               case "load":
-                return loadDictionaryData(e.payload.file, e.payload.encoding, e.payload.format);
+                return loadDictionaryData(e.payload, updateState);
               case "clear":
                 // Not supported for the moment due to instability of chrome.storage.local.clear()
                 return;
@@ -266,7 +213,7 @@ export const Main: React.FC = () => {
               type="revert"
               text={res.get("loadInitialDict")}
               disabled={state.busy}
-              onClick={() => confirmAndLoadInitialDict("confirmReloadInitialDict")}
+              onClick={() => confirmAndLoadInitialDict("confirmReloadInitialDict", updateState)}
             />
           </BasicSettings>
           <br />
@@ -311,5 +258,61 @@ const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void>
     await config.saveSettings(settings);
   } catch (e) {
     message.error(e.message);
+  }
+};
+
+const confirmAndLoadInitialDict = async (messageId: string, updateState: UpdateState): Promise<boolean> => {
+  const willLoad = await message.notice(res.get(messageId), "okCancel");
+  if (!willLoad) {
+    return false;
+  }
+
+  let finalWordCount: number;
+  try {
+    updateState({ busy: true, panelLevel: 0 });
+    finalWordCount = await dict.registerDefaultDict((count, progress) => {
+      const message = res.get("progressRegister", { count, progress });
+      updateState({ progress: message });
+    });
+    updateState({ dictDataUsage: -1 });
+  } finally {
+    updateState({ busy: false, progress: "" });
+  }
+  await config.setDataReady(true);
+  await message.success(res.get("finishRegister", { count: finalWordCount }));
+
+  return true;
+};
+
+const loadDictionaryData = async (dictionaryFile: DictionaryFile, updateState: UpdateState): Promise<void> => {
+  const { file, encoding, format } = dictionaryFile;
+  if (!file) {
+    message.warn(res.get("selectDictFile"));
+    return;
+  }
+  if (encoding === "Shift-JIS" && !(await data.fileMayBeShiftJis(file))) {
+    const willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
+    if (!willContinue) {
+      return;
+    }
+  }
+  try {
+    updateState({ busy: true, panelLevel: 0 });
+    const count = await dict.load({ file, encoding, format }, (ev) => {
+      if (ev.name === "reading") {
+        const progress = `${ev.loaded.toLocaleString()} / ${ev.total.toLocaleString()} Byte`;
+        updateState({ progress });
+      }
+      if (ev.name === "loading") {
+        const progress = res.get("progressRegister", { count: ev.count?.toLocaleString(), progress: ev.word.head });
+        updateState({ progress });
+      }
+    });
+    message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
+    config.setDataReady(true);
+  } catch (e) {
+    message.error(e.toString());
+  } finally {
+    updateState({ busy: false, progress: "", dictDataUsage: -1 });
   }
 };

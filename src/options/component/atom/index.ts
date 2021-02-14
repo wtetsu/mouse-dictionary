@@ -11,5 +11,5 @@ export * from "./ExternalLink";
 export * from "./HighlightEditor";
 export * from "./Overlay";
 export * from "./Panel";
-export * from "./SimpleSelect";
+export * from "./Select";
 export * from "./Toggle";

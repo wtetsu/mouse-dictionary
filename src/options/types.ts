@@ -59,3 +59,12 @@ type EnvForOptions = {
 };
 
 export type Env = EnvForMain & EnvForOptions;
+
+export type DictionaryFileEncoding = "Shift-JIS" | "UTF-8" | "UTF-16";
+export type DictionaryFileFormat = "EIJIRO" | "TSV" | "PDIC_LINE" | "JSON";
+
+export type DictionaryFile = {
+  file: File;
+  encoding: DictionaryFileEncoding;
+  format: DictionaryFileFormat;
+};

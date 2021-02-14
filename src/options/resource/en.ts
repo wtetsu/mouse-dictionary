@@ -8,7 +8,10 @@
  * Author: wtetsu
  * Corrector: David, Macropyre, Akarumbra
  */
-export default {
+
+import { TextResource } from "./types";
+
+const EnglishTextResource: TextResource = {
   dictDataEncoding: "Character set of dictionary data:",
   dictDataFormat: "Format of dictionary data:",
   readDictData: "Load dictionary data:",
@@ -90,3 +93,5 @@ export default {
   skipPdfConfirmation: "Skip PDF download confirmation",
   pdfUrlPattern: "Override PDF document judgment (regular expressions for URL)",
 };
+
+export { EnglishTextResource };

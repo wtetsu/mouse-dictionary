@@ -9,7 +9,7 @@ import { ChromePicker } from "react-color";
 import immer from "immer";
 import { res } from "../../logic";
 import { env } from "../../extern";
-import { SimpleSelect } from "../atom/SimpleSelect";
+import { Select } from "../atom/Select";
 import { MouseDictionaryBasicSettings, UpdateEventHandler, InitialPosition, Scroll } from "../../types";
 
 type Props = {
@@ -118,7 +118,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
           onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
         />
         <label>{res.get("initialPosition")}</label>
-        <SimpleSelect
+        <Select
           value={settings.initialPosition}
           options={positions}
           style={{ width: 250 }}
@@ -126,7 +126,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
         />
 
         <label>{res.get("scrollBar")}</label>
-        <SimpleSelect
+        <Select
           value={settings.scroll}
           options={scrolls}
           style={{ width: 250 }}
@@ -147,7 +147,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
                 onChange={(e: ColorPickerChangeEvent) => update({ headFontColor: e.hex })}
               />
               <br />
-              <SimpleSelect
+              <Select
                 value={settings.headFontSize}
                 options={FONT_SIZES}
                 style={{ width: 200 }}
@@ -163,7 +163,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
                 onChange={(e: ColorPickerChangeEvent) => update({ descFontColor: e.hex })}
               />
               <br />
-              <SimpleSelect
+              <Select
                 value={settings.descFontSize}
                 options={FONT_SIZES}
                 style={{ width: 200 }}

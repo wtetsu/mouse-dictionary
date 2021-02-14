@@ -6,15 +6,13 @@
 
 import React, { useRef, useState, MutableRefObject } from "react";
 import { Button } from "../atom/Button";
-import { SimpleSelect } from "../atom/SimpleSelect";
+import { Select } from "../atom/Select";
 import { res } from "../../logic";
-
-type Encoding = "Shift-JIS" | "UTF-8" | "UTF-16";
-type Format = "EIJIRO" | "TSV" | "PDIC_LINE" | "JSON";
+import { DictionaryFileEncoding, DictionaryFileFormat } from "../../types";
 
 type Props = {
-  defaultEncoding?: Encoding;
-  defaultFormat?: Format;
+  defaultEncoding?: DictionaryFileEncoding;
+  defaultFormat?: DictionaryFileFormat;
   busy: boolean;
   trigger: (e: TriggerEvent) => void;
 };
@@ -24,8 +22,8 @@ type TriggerEvent =
       type: "load";
       payload: {
         file: File;
-        encoding: Encoding;
-        format: Format;
+        encoding: DictionaryFileEncoding;
+        format: DictionaryFileFormat;
       };
     }
   | { type: "clear" };
@@ -52,9 +50,9 @@ export const LoadDictionary: React.FC<Props> = (props) => {
   return (
     <div>
       <label>{res.get("dictDataEncoding")}</label>
-      <SimpleSelect value={encoding} options={ENCODINGS} onChange={(value) => setEncoding(value as Encoding)} />
+      <Select value={encoding} options={ENCODINGS} onChange={(value) => setEncoding(value as DictionaryFileEncoding)} />
       <label>{res.get("dictDataFormat")}</label>
-      <SimpleSelect value={format} options={FORMATS} onChange={(value) => setFormat(value as Format)} />
+      <Select value={format} options={FORMATS} onChange={(value) => setFormat(value as DictionaryFileFormat)} />
       <label>{res.get("readDictData")}</label>
       <input type="file" ref={fileInput} />
       <br />
