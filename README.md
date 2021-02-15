@@ -140,7 +140,7 @@ Some guides:
 
 ## Cross-extension messaging
 
-Mouse Dictionary supports receiving [cross-extension messages](https://developer.chrome.com/extensions/messaging). One example of an extension that implements sending message to this extension is [Mouse Dictionary iframe support](https://github.com/wtetsu/mouse-dictionary-iframe).
+Mouse Dictionary supports receiving [cross-extension messages](https://developer.chrome.com/extensions/messaging). [Mouse Dictionary iframe support](https://github.com/wtetsu/mouse-dictionary-iframe) is a good example that implements message sending to this extension.
 
 Here is a code example for sending a message to Mouse Dictionary. You can make Mouse Dictionary look up words/expressions from other extensions.
 
@@ -170,25 +170,20 @@ This project includes some third-party data:
 
 ### Dictionary data
 
-ejdic-hand
-
-- https://github.com/kujirahand/EJDict
-- License: Public domain
+* [ejdic-hand](https://github.com/kujirahand/EJDict) (Public Domain)
 
 ### Images
 
-bookmark icon, gear icon
-
-- https://www.iconfinder.com/iconsets/wpzoom-developer-icon-set
-- License: [Creative Commons (Attribution-Share Alike 3.0 Unported)](https://creativecommons.org/licenses/by-sa/3.0/)
+- [bookmark icon, gear icon](https://www.iconfinder.com/iconsets/wpzoom-developer-icon-set) ([CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/))
+- [External, link icon](https://www.iconfinder.com/iconsets/heroicons-ui) ([MIT](https://opensource.org/licenses/MIT))
 
 ### Build-in PDF viewer
 
-[A build-in PDF viewer](https://github.com/wtetsu/pdf.js) based on [PDF.js](https://github.com/mozilla/pdf.js).
+* [Mouse Dictionary's build-in PDF viewer](https://github.com/wtetsu/pdf.js) is based on [PDF.js](https://github.com/mozilla/pdf.js) ([Apache-2.0](https://github.com/mozilla/pdf.js/blob/master/LICENSE))
 
 ### Great JavaScript libraries
 
-See [package.json](https://github.com/wtetsu/mouse-dictionary/blob/master/package.json)
+* See [package.json](https://github.com/wtetsu/mouse-dictionary/blob/master/package.json)
 
 ## See also
 
