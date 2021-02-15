@@ -166,7 +166,7 @@ export const Main: React.FC = () => {
 
         <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
           <hr style={{ marginTop: 15 }} />
-          <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data">
+          <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data" icon={true}>
             {res.get("downloadDictData")}
           </ExternalLink>
           <br />
