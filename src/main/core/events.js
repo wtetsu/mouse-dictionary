@@ -14,6 +14,16 @@ import Draggable from "../lib/draggable";
 
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
+const EVENTS_START = ["mousedown", "touchstart"];
+const EVENTS_END = ["mouseup", "touchend"];
+const EVENTS_MOVE = ["mousemove", "touchmove"];
+
+const attachEvent = (events, listener) => {
+  for (const ev of events) {
+    document.body.addEventListener(ev, listener);
+  }
+};
+
 const attach = async (settings, dialog, doUpdateContent) => {
   const traverse = traverser.build(rule.doLetters, settings.parseWordsLimit);
   const lookuper = new Lookuper(settings, doUpdateContent);
@@ -22,11 +32,11 @@ const attach = async (settings, dialog, doUpdateContent) => {
   draggable.events.change = (e) => config.savePosition(e);
   draggable.add(dialog);
 
-  document.body.addEventListener("mousedown", () => {
+  attachEvent(EVENTS_START, () => {
     lookuper.suspended = true;
   });
 
-  document.body.addEventListener("mouseup", (e) => {
+  attachEvent(EVENTS_END, (e) => {
     draggable.onMouseUp(e);
     lookuper.suspended = false;
     lookuper.aimedLookup(utils.getSelection());
@@ -50,15 +60,15 @@ const attach = async (settings, dialog, doUpdateContent) => {
     lookuper.lookupAll(textList);
   };
   let onMouseMove = onMouseMoveFirst;
-  document.body.addEventListener("mousemove", (e) => onMouseMove(e));
+  attachEvent(EVENTS_MOVE, (e) => onMouseMove(e));
 
-  document.body.addEventListener("keydown", (e) => {
+  attachEvent(["keydown"], (e) => {
     if (e.key === "Shift") {
       draggable.activateSnap(e);
     }
   });
 
-  document.body.addEventListener("keyup", (e) => {
+  attachEvent(["keyup"], (e) => {
     if (e.key === "Shift") {
       draggable.deactivateSnap(e);
     }

@@ -48,14 +48,15 @@ export default class Draggable {
   }
 
   onMouseMove(e, fit) {
-    this.mouseMoveFunctions[this.mode].call(this, e, fit);
+    const position = getPosition(e);
+    this.mouseMoveFunctions[this.mode].call(this, position, fit);
   }
 
-  onMouseUp(e) {
+  onMouseUp() {
     if (this.mode === MODE_MOVING) {
       this.mainElementStyle.apply(this.normalStyles);
     }
-    this.finishChanging(e);
+    this.finishChanging();
 
     // Note: keep this.enableSnap
     this.snap.deactivate();
@@ -79,8 +80,8 @@ export default class Draggable {
     this.mainElementStyle.apply(this.normalStyles);
   }
 
-  updateEdgeState(e) {
-    const edgeState = this.edge.getEdgeState(this.current, e.x, e.y);
+  updateEdgeState(position) {
+    const edgeState = this.edge.getEdgeState(this.current, position.x, position.y);
     if (!this.selectable) {
       this.edgeState = edgeState;
       this.mainElementStyle.set("cursor", this.edge.getCursorStyle(this.edgeState));
@@ -95,8 +96,8 @@ export default class Draggable {
     }
   }
 
-  move(e) {
-    const [movedX, movedY] = this.moved(e);
+  move(position) {
+    const [movedX, movedY] = this.moved(position);
     const latest = this.changingSquare.move(movedX, movedY);
     if (utils.areSame(this.current, latest)) {
       return;
@@ -110,7 +111,7 @@ export default class Draggable {
       this.snap.activate();
     }
     const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
-    this.snap.update(e.clientX, e.clientY, square, this.mainElement.clientWidth);
+    this.snap.update(position.clientX, position.clientY, square, this.mainElement.clientWidth);
 
     this.mainElementStyle.apply(this.movingStyles);
   }
@@ -121,15 +122,15 @@ export default class Draggable {
     }
   }
 
-  resize(e) {
-    const [movedX, movedY] = this.moved(e);
+  resize(position) {
+    const [movedX, movedY] = this.moved(position);
     const latest = this.changingSquare.resize(movedX, movedY);
     this.transform(latest);
     this.events.resize();
   }
 
-  moved(e) {
-    return [utils.convertToInt(e.pageX) - this.starting.x, utils.convertToInt(e.pageY) - this.starting.y];
+  moved(position) {
+    return [utils.convertToInt(position.pageX) - this.starting.x, utils.convertToInt(position.pageY) - this.starting.y];
   }
 
   applyNewStyle(latest, prop) {
@@ -166,6 +167,7 @@ export default class Draggable {
   makeElementDraggable(mainElement) {
     mainElement.addEventListener("dblclick", (e) => this.handleDoubleClick(e));
     mainElement.addEventListener("mousedown", (e) => this.handleMouseDown(e));
+    mainElement.addEventListener("touchstart", (e) => this.handleMouseDown(e));
     this.mainElementStyle.set("cursor", "move");
     this.current.left = utils.convertToInt(mainElement.style.left);
     this.current.top = utils.convertToInt(mainElement.style.top);
@@ -204,9 +206,11 @@ export default class Draggable {
     if (this.selectable) {
       return;
     }
+    const position = getPosition(e);
+    this.updateEdgeState(position);
     this.mode = this.edgeState & edge.EDGE ? MODE_RESIZING : MODE_MOVING;
-    this.starting.x = utils.convertToInt(e.pageX);
-    this.starting.y = utils.convertToInt(e.pageY);
+    this.starting.x = utils.convertToInt(position.pageX);
+    this.starting.y = utils.convertToInt(position.pageY);
 
     const square = utils.omap(this.mainElement.style, utils.convertToInt, SQUARE_FIELDS);
     this.changingSquare = edge.createSquare(square, this.edgeState, MIN_ELEMENT_SIZE);
@@ -232,3 +236,20 @@ export default class Draggable {
     this.enableSnap = false;
   }
 }
+
+const getPosition = (e) => {
+  const touch = e?.touches?.[0];
+  if (touch) {
+    return {
+      clientX: touch?.clientX,
+      clientY: touch?.clientY,
+      pageX: touch?.pageX,
+      pageY: touch?.pageY,
+      screenX: touch?.screenX,
+      screenY: touch?.screenY,
+      x: touch?.pageX,
+      y: touch?.pageY,
+    };
+  }
+  return e;
+};

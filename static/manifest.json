@@ -1,9 +1,9 @@
 {
-  "name": "Mouse Dictionary",
+  "name": "Mouse Dictionary(Beta)",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
   "author": "wtetsu",
-  "version": "1.5.1",
+  "version": "1.5.1.1",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
