@@ -32,6 +32,8 @@ const applyOption = (option, outputDirPath) => {
   const unitedJson = JSON.stringify(data);
 
   const outputFilePath = path.join(outputDirPath, option.to);
+
+  fs.mkdirSync(path.dirname(outputFilePath), true);
   fs.writeFileSync(outputFilePath, unitedJson, "utf-8");
 };
 
