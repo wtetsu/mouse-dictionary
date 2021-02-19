@@ -251,5 +251,14 @@ const getPosition = (e) => {
       y: touch?.pageY,
     };
   }
-  return e;
+  return {
+    clientX: e.clientX,
+    clientY: e.clientY,
+    pageX: e.pageX,
+    pageY: e.pageY,
+    screenX: e.screenX,
+    screenY: e.screenY,
+    x: e.x,
+    y: e.y,
+  };
 };
