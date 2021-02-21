@@ -66,67 +66,31 @@ npm install
 
 ### Build
 
-#### Debug build
 For Chrome:
 
 ```sh
-npm run build-chrome
+npm run build-chrome   # Debug build
+npm run release-chrome # Release build
 ```
 
 For Firefox:
 
 ```sh
-npm run build-firefox
+npm run build-firefox   # Debug build
+npm run release-firefox # Release build
 ```
 
 For Safari:
 
 ```sh
-npm run build-safari
+npm run build-safari   # Debug build
+npm run release-safari # Release build
 ```
 
 
-#### Release build
+see [package.json](./package.json) for other commands.
 
-For Chrome:
 
-```sh
-npm run release-chrome
-```
-
-For Firefox:
-
-```sh
-npm run release-firefox
-```
-
-For Safari:
-
-```sh
-npm run release-safari
-```
-
-### Watch
-
-If you want to keep building every time after you edit source code, watch would be quite useful.
-
-For Chrome:
-
-```sh
-npm run watch-chrome
-```
-
-For Firefox:
-
-```sh
-npm run watch-firefox
-```
-
-For Safari:
-
-```sh
-npm run watch-safari
-```
 
 
 ## Contribution
@@ -183,7 +147,7 @@ This project includes some third-party data:
 
 ### Great JavaScript libraries
 
-* See [package.json](https://github.com/wtetsu/mouse-dictionary/blob/master/package.json)
+* See [package.json](./package.json)
 
 ## See also
 
