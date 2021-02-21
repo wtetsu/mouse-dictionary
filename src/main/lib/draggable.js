@@ -49,6 +49,9 @@ export default class Draggable {
 
   onMouseMove(e, fit) {
     const position = getPosition(e);
+    if (!position) {
+      return;
+    }
     this.mouseMoveFunctions[this.mode].call(this, position, fit);
   }
 
@@ -207,6 +210,9 @@ export default class Draggable {
       return;
     }
     const position = getPosition(e);
+    if (!position) {
+      return;
+    }
     this.updateEdgeState(position);
     this.mode = this.edgeState & edge.EDGE ? MODE_RESIZING : MODE_MOVING;
     this.starting.x = utils.convertToInt(position.pageX);
@@ -238,6 +244,9 @@ export default class Draggable {
 }
 
 const getPosition = (e) => {
+  if (e?.touches?.length >= 2) {
+    return null;
+  }
   const touch = e?.touches?.[0];
   if (touch) {
     return {
