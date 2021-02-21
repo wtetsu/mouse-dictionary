@@ -118,3 +118,8 @@ hr {
 .token.entity {
   cursor: help;
 }
+
+/* For React Color */
+input:not([type]) {
+  padding: initial;
+}
