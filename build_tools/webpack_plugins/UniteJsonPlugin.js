@@ -33,7 +33,7 @@ const applyOption = (option, outputDirPath) => {
 
   const outputFilePath = path.join(outputDirPath, option.to);
 
-  fs.mkdirSync(path.dirname(outputFilePath), true);
+  mkdir(path.dirname(outputFilePath));
   fs.writeFileSync(outputFilePath, unitedJson, "utf-8");
 };
 
@@ -54,6 +54,13 @@ const uniteJsonFiles = (options) => {
     }
   }
   return resultData;
+};
+
+const mkdir = (path) => {
+  if (fs.existsSync(path)) {
+    return;
+  }
+  fs.mkdirSync(path, true);
 };
 
 module.exports = UniteJsonPlugin;
