@@ -50,6 +50,7 @@ export default class Draggable {
   onMouseMove(e, fit) {
     const position = getPosition(e);
     if (!position) {
+      this.mode = MODE_NONE;
       return;
     }
     this.mouseMoveFunctions[this.mode].call(this, position, fit);
@@ -211,6 +212,7 @@ export default class Draggable {
     }
     const position = getPosition(e);
     if (!position) {
+      this.mode = MODE_NONE;
       return;
     }
     this.updateEdgeState(position);
