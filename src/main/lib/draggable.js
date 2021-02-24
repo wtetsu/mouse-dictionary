@@ -171,7 +171,7 @@ export default class Draggable {
   makeElementDraggable(mainElement) {
     mainElement.addEventListener("dblclick", (e) => this.handleDoubleClick(e));
     mainElement.addEventListener("mousedown", (e) => this.handleMouseDown(e));
-    mainElement.addEventListener("touchstart", (e) => this.handleMouseDown(e));
+    mainElement.addEventListener("touchstart", (e) => this.handleTouchStart(e));
     this.mainElementStyle.set("cursor", "move");
     this.current.left = utils.convertToInt(mainElement.style.left);
     this.current.top = utils.convertToInt(mainElement.style.top);
@@ -206,15 +206,21 @@ export default class Draggable {
     this.transform(newRange);
   }
 
+  handleTouchStart(e) {
+    const position = getPosition(e);
+    if (!position) {
+      this.selectable = true;
+      return;
+    }
+
+    this.handleMouseDown(e);
+  }
+
   handleMouseDown(e) {
     if (this.selectable) {
       return;
     }
     const position = getPosition(e);
-    if (!position) {
-      this.mode = MODE_NONE;
-      return;
-    }
     this.updateEdgeState(position);
     this.mode = this.edgeState & edge.EDGE ? MODE_RESIZING : MODE_MOVING;
     this.starting.x = utils.convertToInt(position.pageX);
