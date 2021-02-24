@@ -130,7 +130,6 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           value={hiddenDialogStyles}
           style={{ height: 85 }}
         />
-        <hr />
         <h3>{res.get("replaceRules")}</h3>
         <ReplaceRuleEditor
           replaceRules={props.settings.replaceRules}

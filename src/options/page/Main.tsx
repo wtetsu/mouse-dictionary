@@ -134,7 +134,7 @@ export const Main: React.FC = () => {
     <>
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
         <ExternalLink href={`https://mouse-dictionary.netlify.app/${state.lang}/`}>
-          <img src="logo.png" width="250" />
+          <img src="logo.png" width="250" className="hover_zoom" />
         </ExternalLink>
       </div>
 

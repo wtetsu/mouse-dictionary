@@ -6,6 +6,14 @@ body {
   font-family: "hiragino kaku gothic pro", meiryo, sans-serif;
 }
 
+h2 {
+  margin-top: 40px;
+}
+
+h3 {
+  margin-top: 40px;
+}
+
 #mainForm {
   max-width: 60rem;
 }
@@ -122,4 +130,12 @@ hr {
 /* For React Color */
 input:not([type]) {
   padding: initial;
+}
+
+.hover_zoom {
+  transition: transform 0.25s;
+}
+
+.hover_zoom:hover {
+  transform: scale(1.1);
 }
