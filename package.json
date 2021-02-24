@@ -41,7 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.13.1",
     "@babel/plugin-transform-modules-commonjs": "^7.13.0",
-    "@babel/preset-env": "^7.13.0",
+    "@babel/preset-env": "^7.13.5",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
     "@types/chrome": "0.0.133",
@@ -60,8 +60,8 @@
     "jest": "^26.6.3",
     "milligram": "^1.4.1",
     "prettier": "^2.2.1",
-    "typescript": "^4.1.5",
-    "webpack": "^5.24.0",
+    "typescript": "^4.2.2",
+    "webpack": "^5.24.1",
     "webpack-cli": "^4.5.0"
   }
 }
