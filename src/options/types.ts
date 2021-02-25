@@ -44,10 +44,7 @@ export type Replace = {
   replace: string;
 };
 
-export type UpdateEventHandler = (
-  statePatch: Record<string, any>,
-  settingsPatch: Partial<MouseDictionarySettings>
-) => void;
+export type UpdateEventHandler = (statePatch: Record<string, any>, settingsPatch: Partial<MouseDictionarySettings>) => void;
 
 type EnvForMain = {
   enableWindowStatusSave: boolean;

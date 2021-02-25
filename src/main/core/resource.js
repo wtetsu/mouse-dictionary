@@ -41,8 +41,7 @@ if (BROWSER === "FIREFOX") {
 }
 
 if (BROWSER === "SAFARI") {
-  resources.ja.needToPrepareDict =
-    "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「拡張機能」→「設定」)";
+  resources.ja.needToPrepareDict = "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「拡張機能」→「設定」)";
   resources.en.needToPrepareDict =
     'Please load dictionary data first. Right click on the extension icon, select "Extensions" tab, and select "Preferences"';
 }
