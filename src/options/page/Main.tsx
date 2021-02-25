@@ -7,7 +7,7 @@
 import React, { useReducer, useEffect, useRef } from "react";
 import immer from "immer";
 import { Button, DataUsage, EditableSpan, ExternalLink, Overlay, Panel, Toggle } from "../component/atom";
-import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, WholeSettings } from "../component/organism";
+import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, Tips, WholeSettings } from "../component/organism";
 import { data, dict, message, Preview, res } from "../logic";
 import { config, defaultSettings, env } from "../extern";
 import { MouseDictionarySettings, DictionaryFile } from "../types";
@@ -107,10 +107,7 @@ export const Main: React.FC = () => {
     refPreview.current?.update(state.settings, state.previewText, false);
   }, [state.panelLevel, state.previewText, s]);
 
-  const updateState = (
-    statePatch: Partial<MainState>,
-    settingsPatch: Partial<MouseDictionarySettings> = null
-  ): void => {
+  const updateState = (statePatch: Partial<MainState>, settingsPatch: Partial<MouseDictionarySettings> = null): void => {
     if (statePatch && settingsPatch) {
       dispatch({ type: "patch_state_and_settings", statePatch, settingsPatch });
     } else if (statePatch) {
@@ -166,12 +163,7 @@ export const Main: React.FC = () => {
 
         <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
           <hr style={{ marginTop: 15 }} />
-          <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data" icon={true}>
-            {res.get("downloadDictData")}
-          </ExternalLink>
-          <br />
-          <ExternalLink href="pdf/web/viewer.html">{res.get("openPdfViewer")}</ExternalLink>
-
+          <Tips />
           <Toggle
             switch={state.panelLevel >= 1}
             image="settings1.png"

@@ -68,6 +68,7 @@ export type TextResource = {
   clearLoadedData: string;
   loadInitialDict: string;
   downloadDictData: string;
+  setKeyboardShortcuts: string;
   openPdfViewer: string;
   openJsonEditor: string;
   closeJsonEditor: string;

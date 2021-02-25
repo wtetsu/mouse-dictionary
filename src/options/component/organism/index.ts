@@ -9,4 +9,5 @@ export * from "./BasicSettings";
 export * from "./LoadDictionary";
 export * from "./OperationPanel";
 export * from "./ReplaceRuleEditor";
+export * from "./Tips";
 export * from "./WholeSettings";

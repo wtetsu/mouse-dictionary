@@ -83,6 +83,7 @@ const EnglishTextResource: TextResource = {
   clearLoadedData: "CLEAR",
   loadInitialDict: "Reload default dictionary data",
   downloadDictData: "Download additional dictionary data",
+  setKeyboardShortcuts: "Set keyboard shortcuts",
   openPdfViewer: "Open PDF viewer",
   openJsonEditor: "Open JSON editor",
   closeJsonEditor: "Cancel",
