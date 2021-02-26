@@ -9,6 +9,7 @@ export * from "./DataUsage";
 export * from "./EditableSpan";
 export * from "./ExternalLink";
 export * from "./HighlightEditor";
+export * from "./Launch";
 export * from "./Overlay";
 export * from "./Panel";
 export * from "./Select";

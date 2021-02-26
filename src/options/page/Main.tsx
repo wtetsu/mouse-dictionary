@@ -6,7 +6,7 @@
 
 import React, { useReducer, useEffect, useRef } from "react";
 import immer from "immer";
-import { Button, DataUsage, EditableSpan, ExternalLink, Overlay, Panel, Toggle } from "../component/atom";
+import { Button, DataUsage, EditableSpan, ExternalLink, Launch, Overlay, Panel, Toggle } from "../component/atom";
 import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, Tips, WholeSettings } from "../component/organism";
 import { data, dict, message, Preview, res } from "../logic";
 import { config, defaultSettings, env } from "../extern";
@@ -161,9 +161,18 @@ export const Main: React.FC = () => {
 
         <div style={{ cursor: "pointer", fontSize: "75%" }} onClick={() => updateState({ dictDataUsage: -1 })}></div>
 
+        <Tips visible={state.initialized} />
+
         <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
           <hr style={{ marginTop: 15 }} />
-          <Tips />
+
+          <Launch
+            href="pdf/web/viewer.html"
+            text={res.get("openPdfViewer")}
+            image="pdf.png"
+            style={{ position: "absolute", right: 25 }}
+          />
+
           <Toggle
             switch={state.panelLevel >= 1}
             image="settings1.png"
@@ -174,15 +183,13 @@ export const Main: React.FC = () => {
         </Panel>
 
         <Panel active={state.panelLevel >= 1}>
-          <div>
+          <div style={{ marginBottom: 20 }}>
             <span>{res.get("previewText")}: </span>
             <EditableSpan
               value={state.previewText}
               style={{ width: 300 }}
               onChange={(e) => updateState({ previewText: e.target.value })}
             ></EditableSpan>
-            <br />
-            <br />
           </div>
           <OperationPanel
             disable={state.busy}

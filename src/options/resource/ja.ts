@@ -79,7 +79,7 @@ const JapaneseTextResource: TextResource = {
   loadInitialDict: "デフォルト辞書データの再ロード",
   downloadDictData: "追加辞書データをダウンロードする",
   setKeyboardShortcuts: "キーボードショートカットを設定する",
-  openPdfViewer: "PDFビューアを起動する",
+  openPdfViewer: "PDFビューア",
   openJsonEditor: "JSONエディタを開く",
   closeJsonEditor: "キャンセル",
   importJson: "JSONを設定に反映",
