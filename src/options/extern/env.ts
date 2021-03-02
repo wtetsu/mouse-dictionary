@@ -5,8 +5,18 @@
  */
 
 import env from "../../main/env";
-import { Env } from "../types";
+import { BROWSER, Env } from "../types";
+
+const optionsEnv = { ...env } as Env;
+
+if (BROWSER === "FIREFOX") {
+  // Larger registerRecordsAtOnce causes memory hog
+  // when loading large dictionary data in Firefox.
+  optionsEnv.registerRecordsAtOnce = 1000;
+} else {
+  optionsEnv.registerRecordsAtOnce = 100000;
+}
 
 export const get = (): Env => {
-  return env;
+  return optionsEnv;
 };

@@ -65,3 +65,5 @@ export type DictionaryFile = {
   encoding: DictionaryFileEncoding;
   format: DictionaryFileFormat;
 };
+
+export declare const BROWSER: "CHROME" | "FIREFOX" | "SAFARI";

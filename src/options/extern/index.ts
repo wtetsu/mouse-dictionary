@@ -14,6 +14,6 @@ import dom from "../../main/lib/dom";
 import * as config from "./config";
 import * as env from "./env";
 import * as storage from "./storage";
-import * as defaultSettings from "./defaultsettings";
+import * as defaultSettings from "./settings";
 
 export { entry, Generator, view, dom, defaultSettings, env, config, storage };

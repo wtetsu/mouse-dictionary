@@ -4,10 +4,10 @@
  * Licensed under MIT
  */
 
-import defaultSettings from "../../main/settings/defaultsettings";
+import settings from "../../main/settings";
 import { MouseDictionarySettings } from "../types";
 
-const defaultSettingsJson = JSON.stringify(defaultSettings);
+const defaultSettingsJson = JSON.stringify(settings);
 
 export const get = (): MouseDictionarySettings => {
   return JSON.parse(defaultSettingsJson) as MouseDictionarySettings;
