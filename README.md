@@ -13,29 +13,27 @@ Features:
 - Awesome phrases detection
 - Capable of importing your own text data
 - **Available on PDF documents!**
-- Look up connected words nicely
-  - camelCase -> "camel", "case"
-  - snake_case -> "snake", "case"
-  - splitinto  -> "split into"
+- Look up connected words nicely (e.g. camelCase -> camel case)
 - Customizable view
-- Available for various documents:
-  - Normal HTML documents
-    - input elements
-    - textarea
-  - PDF documents
-  - Google Docs
-  - YouTube captions
-  - ...
 
-Download it.
+Available for various documents:
+- Web documents in HTML
+  - normal text
+  - input elements
+  - textarea
+- PDF documents
+- Google Docs
+- YouTube captions
+- Local files (HTML, text, PDF)
+- ...
+
+## Install
 
 - [For Chrome](https://chrome.google.com/webstore/detail/mouse-dictionary/dnclbikcihnpjohihfcmmldgkjnebgnj)
 - [For Firefox](https://addons.mozilla.org/ja/firefox/addon/mousedictionary/)
 - For Safari (See [#53](https://github.com/wtetsu/mouse-dictionary/pull/53))
 
-Use it:
-
-- [Getting started](https://github.com/wtetsu/mouse-dictionary/wiki/Getting-started)
+See also [Getting started](https://github.com/wtetsu/mouse-dictionary/wiki/Getting-started)
 
 ## Screenshots
 
