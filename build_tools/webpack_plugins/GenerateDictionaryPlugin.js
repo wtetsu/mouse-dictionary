@@ -7,6 +7,7 @@
 const fs = require("fs");
 const path = require("path");
 const json5 = require("json5");
+const glob = require("fast-glob");
 
 class GenerateDictionaryPlugin {
   constructor(options = []) {
@@ -53,12 +54,14 @@ const applyOption = (options, outputDirPath) => {
   fs.writeFileSync(outputFilePath, JSON.stringify(distInformation), "utf-8");
 };
 
-const uniteJsonFiles = (fileList) => {
+const uniteJsonFiles = (fileGlobList) => {
   const resultData = {};
-  for (let i = 0; i < fileList.length; i++) {
-    const json = fs.readFileSync(fileList[i], "utf-8");
-    const data = json5.parse(json);
-    Object.assign(resultData, data);
+  for (const fileGlob of fileGlobList) {
+    for (const entry of glob.sync(fileGlob)) {
+      const json = fs.readFileSync(entry, "utf-8");
+      const data = json5.parse(json);
+      Object.assign(resultData, data);
+    }
   }
   return resultData;
 };
