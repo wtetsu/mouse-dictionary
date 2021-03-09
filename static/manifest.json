@@ -14,7 +14,7 @@
     "persistent": false
   },
   "browser_action": {
-    "default_icon": "icon19.png",
+    "default_icon": "icons/icon19.png",
     "default_title": "Mouse Dictionary"
   },
   "commands": {
@@ -24,9 +24,9 @@
   },
   "manifest_version": 2,
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "web_accessible_resources": ["data/*.json"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
