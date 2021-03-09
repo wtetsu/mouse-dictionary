@@ -63,7 +63,7 @@ export const LoadDictionary: React.FC<Props> = (props) => {
         disabled={props.busy}
       />
       <img
-        src="loading.gif"
+        src="img/loading.gif"
         width="32"
         height="32"
         style={{ verticalAlign: "middle", display: props.busy ? "inline" : "none" }}

@@ -28,12 +28,12 @@ export const Tips: React.FC<TipsProps> = (props) => {
     <div style={{ ...STYLE_OUTER, display }}>
       <div style={STYLE_INNER}>
         <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data" icon={true}>
-          <img src="hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
+          <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
           {res.get("downloadDictData")}
         </ExternalLink>
         <br />
         <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Keyboard-shortcuts" icon={true}>
-          <img src="hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
+          <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
           {res.get("setKeyboardShortcuts")}
         </ExternalLink>
       </div>

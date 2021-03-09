@@ -20,7 +20,7 @@ export const ExternalLink: React.FC<Props> = (props) => {
       style={{ textDecoration: "underline", fontSize: "small" }}
     >
       {props.children}
-      {props.icon && <img src="external.png" width="12" height="12" style={{ marginLeft: 2 }} />}
+      {props.icon && <img src="img/external.png" width="12" height="12" style={{ marginLeft: 2 }} />}
     </a>
   );
 };

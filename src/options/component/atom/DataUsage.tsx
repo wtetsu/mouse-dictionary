@@ -35,7 +35,7 @@ export const DataUsage: React.FC<Props> = (props) => {
   if (props.byteSize === null || props.byteSize === -1) {
     return (
       <div style={{ height: 24 }}>
-        <img src="loading.gif" width="16" height="16" style={{ verticalAlign: "middle" }} />
+        <img src="img/loading.gif" width="16" height="16" style={{ verticalAlign: "middle" }} />
       </div>
     );
   }

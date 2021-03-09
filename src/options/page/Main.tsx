@@ -131,7 +131,7 @@ export const Main: React.FC = () => {
     <>
       <div style={{ textAlign: "center", marginBottom: "10px" }}>
         <ExternalLink href={`https://mouse-dictionary.netlify.app/${state.lang}/`}>
-          <img src="logo.png" width="250" className="hover_zoom" />
+          <img src="img/logo.png" width="250" className="hover_zoom" />
         </ExternalLink>
       </div>
 
@@ -169,13 +169,13 @@ export const Main: React.FC = () => {
           <Launch
             href="pdf/web/viewer.html"
             text={res.get("openPdfViewer")}
-            image="pdf.png"
+            image="img/pdf.png"
             style={{ position: "absolute", right: 25 }}
           />
 
           <Toggle
             switch={state.panelLevel >= 1}
-            image="settings1.png"
+            image="img/settings1.png"
             text1={res.get("openBasicSettings")}
             text2={res.get("closeBasicSettings")}
             onClick={() => updateState({ panelLevel: state.panelLevel !== 0 ? 0 : 1 })}
@@ -219,7 +219,7 @@ export const Main: React.FC = () => {
 
           <Toggle
             switch={state.panelLevel >= 2}
-            image="settings2.png"
+            image="img/settings2.png"
             text1={res.get("openAdvancedSettings")}
             text2={res.get("closeAdvancedSettings")}
             onClick={() => updateState({ panelLevel: state.panelLevel !== 1 ? 1 : 2 })}
