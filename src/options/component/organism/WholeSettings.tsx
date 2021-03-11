@@ -12,6 +12,15 @@ import { res, data, message } from "../../logic";
 import { MouseDictionarySettings } from "../../types";
 import { dom, defaultSettings } from "../../extern";
 
+const WRAPPER_DIV_STYLE = {
+  margin: 20,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "1ch",
+};
+
 const EDITOR_STYLE: React.CSSProperties = {
   width: 800,
   border: "1px solid #d1d1d1",
@@ -101,23 +110,25 @@ export const WholeSettings: React.FC<Props> = (props) => {
   }, []);
 
   return (
-    <div style={{ margin: 20 }}>
+    <div style={WRAPPER_DIV_STYLE}>
       <p>{res.get("aboutJsonEditor")}</p>
-      <Button type="cancel" text={res.get("closeJsonEditor")} onClick={() => close()} />
-      <Button type="json" text={res.get("importJson")} onClick={() => updateAndClose(json)} />
+      <div>
+        <Button type="cancel" text={res.get("closeJsonEditor")} onClick={() => close()} />
+        <Button type="json" text={res.get("importJson")} onClick={() => updateAndClose(json)} />
 
-      <AceEditor
-        mode="json"
-        theme="solarized_light"
-        onChange={(value) => setJson(value)}
-        name="dialogTemplate"
-        editorProps={{ $blockScrolling: true }}
-        value={json}
-        showPrintMargin={false}
-        highlightActiveLine={false}
-        style={{ ...EDITOR_STYLE, height: 700 }}
-        ref={editor}
-      />
+        <AceEditor
+          mode="json"
+          theme="solarized_light"
+          onChange={(value) => setJson(value)}
+          name="dialogTemplate"
+          editorProps={{ $blockScrolling: true }}
+          value={json}
+          showPrintMargin={false}
+          highlightActiveLine={false}
+          style={{ ...EDITOR_STYLE, height: 700 }}
+          ref={editor}
+        />
+      </div>
     </div>
   );
 };
