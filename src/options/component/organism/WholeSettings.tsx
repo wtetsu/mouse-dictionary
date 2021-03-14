@@ -12,7 +12,7 @@ import { res, data, message } from "../../logic";
 import { MouseDictionarySettings } from "../../types";
 import { dom, defaultSettings } from "../../extern";
 
-const WRAPPER_DIV_STYLE = {
+const WRAPPER_DIV_STYLE: React.CSSProperties = {
   margin: 20,
   display: "flex",
   flexDirection: "column",
