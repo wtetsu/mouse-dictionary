@@ -18,6 +18,8 @@ export default (allRules, words) => {
   return result;
 };
 
+const VOWELS = new Set(["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]);
+
 // ["provide", "him", "with", "money"], [0, 1, 0, 1]
 //   -> [["provide", "A", "with", "B"]]
 //
@@ -27,41 +29,59 @@ const normalizeByRule = (words, ruleData) => {
   const processedWords = [];
   let wordIndex = 0;
   const replaceIndices = [];
+  let lastIsA = false;
   for (let i = 0; i < ruleData.length; i++) {
     if (wordIndex >= words.length) {
       break;
     }
-    const code = ruleData[i];
-    if (code === 0) {
-      processedWords.push(words[wordIndex]);
-      wordIndex += 1;
-    } else if (code === 102) {
-      processedWords.push("a");
-      wordIndex += 1;
-    } else if (code === 103) {
-      processedWords.push("a");
-    } else if (code === 104 && words[wordIndex] === "/") {
-      processedWords.push("and");
-      wordIndex += 1;
-    } else if (code === 105 && words[wordIndex] === "/") {
-      processedWords.push("or");
-      wordIndex += 1;
-    } else if (code > 0) {
+    const ruleCode = ruleData[i];
+    const { newWord, indexPlus } = processRuleCode(ruleCode, words[wordIndex]);
+
+    wordIndex += indexPlus;
+    if (ruleCode > 0 && ruleCode < 100) {
       replaceIndices.push(processedWords.length);
-      processedWords.push(null);
-      wordIndex += code;
-    } else {
-      wordIndex += -code;
+    }
+    if (newWord !== undefined) {
+      if (lastIsA && VOWELS.has(newWord?.[0])) {
+        processedWords[processedWords.length - 1] = "an";
+      }
+      processedWords.push(newWord);
+      lastIsA = newWord === "a";
     }
   }
   if (replaceIndices.length === 0) {
     return [processedWords];
   }
 
-  return r(processedWords, replaceIndices);
+  return completePhraseProcess(processedWords, replaceIndices);
 };
 
-const r = (processedWords, replaceIndices) => {
+const processRuleCode = (ruleCode, word) => {
+  if (ruleCode === 0) {
+    return { newWord: word, indexPlus: 1 };
+  }
+  if (ruleCode === 102) {
+    return { newWord: "a", indexPlus: 1 };
+  }
+  if (ruleCode === 103) {
+    return { newWord: "a", indexPlus: 0 };
+  }
+  if (ruleCode === 104 && word === "/") {
+    return { newWord: "and", indexPlus: 1 };
+  }
+  if (ruleCode === 105 && word === "/") {
+    return { newWord: "or", indexPlus: 1 };
+  }
+  if (ruleCode > 0 && ruleCode < 100) {
+    return { newWord: null, indexPlus: ruleCode };
+  }
+  if (ruleCode < 0) {
+    return { indexPlus: -ruleCode };
+  }
+  return { indexPlus: 0 };
+};
+
+const completePhraseProcess = (processedWords, replaceIndices) => {
   if (replaceIndices.length === 1) {
     const processedWords2 = [...processedWords];
 

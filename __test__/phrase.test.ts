@@ -99,4 +99,16 @@ test("", () => {
   expect(rule.doPhrase(["make", "a", "lot", "of", "careful", "selections"])).toEqual(
     expect.arrayContaining([["make", "a", "careful", "selections"]])
   );
+
+  expect(rule.doPhrase(["make", "some", "announcement"])).toEqual(
+    expect.arrayContaining([
+      ["make", "an", "announcement"], //
+    ])
+  );
+  expect(rule.doPhrase(["make", "thousands", "of", "announcement"])).toEqual(
+    expect.arrayContaining([["make", "an", "announcement"]])
+  );
+  expect(rule.doPhrase(["make", "a", "lot", "of", "announcement"])).toEqual(
+    expect.arrayContaining([["make", "an", "announcement"]])
+  );
 });
