@@ -13,13 +13,7 @@ import pdf from "./pdf";
 import dom from "../lib/dom";
 import utils from "../lib/utils";
 
-const main = async () => {
-  console.time("launch");
-  await invoke();
-  console.timeEnd("launch");
-};
-
-const invoke = async () => {
+export default async () => {
   const existingElement = document.getElementById(DIALOG_ID);
   if (!existingElement) {
     await processFirstLaunch();
@@ -163,5 +157,3 @@ const getInitialPosition = (type, dialogWidth) => {
   }
   return position;
 };
-
-main();

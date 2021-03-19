@@ -28,7 +28,7 @@ module.exports = {
   mode: mode,
   entry: {
     "options/options": "./src/options/app.tsx",
-    main: "./src/main/core/start.js",
+    main: "./src/main/start.js",
     background: "./src/background/background.js",
   },
   output: {
