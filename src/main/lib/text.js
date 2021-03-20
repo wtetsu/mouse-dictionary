@@ -180,7 +180,7 @@ text.linkWords = (words, minWordNum = 1, enablePhrasing = true) => {
 
   const result1 = [];
   const result2 = [];
-  for (let wordList of firstWordsList) {
+  for (const wordList of firstWordsList) {
     wordList.push(...wordsWithoutFirstWord);
     const { linkedWords, phraseProcessedWords } = makeLinkedWords(wordList, minWordNum, enablePhrasing);
     result1.push(...linkedWords.reverse());

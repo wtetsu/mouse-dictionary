@@ -116,7 +116,7 @@ export default class Draggable {
   }
 
   transform(latest) {
-    for (let field of Object.keys(latest)) {
+    for (const field of Object.keys(latest)) {
       this.applyNewStyle(latest, field);
     }
   }

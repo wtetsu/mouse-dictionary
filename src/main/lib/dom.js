@@ -17,7 +17,7 @@ const applyStyles = (element, styles) => {
     return;
   }
   try {
-    for (let key of Object.keys(styles)) {
+    for (const key of Object.keys(styles)) {
       element.style[key] = styles[key];
     }
   } catch (e) {
