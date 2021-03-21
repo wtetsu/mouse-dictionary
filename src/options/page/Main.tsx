@@ -25,39 +25,23 @@ type MainState = {
 
 type Action =
   | {
-      type: "patch_state";
-      statePatch: Partial<MainState>;
-    }
-  | {
-      type: "patch_settings";
-      settingsPatch: Partial<MouseDictionarySettings>;
-    }
-  | {
-      type: "patch_state_and_settings";
+      type: "patch";
       statePatch: Partial<MainState>;
       settingsPatch: Partial<MouseDictionarySettings>;
     }
   | {
-      type: "replace_settings";
+      type: "replace";
       settings: MouseDictionarySettings;
     };
 
 const reducer = (state: MainState, action: Action): MainState => {
   switch (action.type) {
-    case "patch_state":
-      return immer(state, (d) => {
-        Object.assign(d, action.statePatch);
-      });
-    case "patch_settings":
-      return immer(state, (d) => {
-        Object.assign(d.settings, action.settingsPatch);
-      });
-    case "patch_state_and_settings":
+    case "patch":
       return immer(state, (d) => {
         Object.assign(d, action.statePatch);
         Object.assign(d.settings, action.settingsPatch);
       });
-    case "replace_settings":
+    case "replace":
       return immer(state, (d) => {
         d.settings = action.settings;
       });
@@ -108,17 +92,11 @@ export const Main: React.FC = () => {
   }, [state.panelLevel, state.previewText, s]);
 
   const updateState = (statePatch: Partial<MainState>, settingsPatch: Partial<MouseDictionarySettings> = null): void => {
-    if (statePatch && settingsPatch) {
-      dispatch({ type: "patch_state_and_settings", statePatch, settingsPatch });
-    } else if (statePatch) {
-      dispatch({ type: "patch_state", statePatch });
-    } else if (settingsPatch) {
-      dispatch({ type: "patch_settings", settingsPatch });
-    }
+    dispatch({ type: "patch", statePatch, settingsPatch });
   };
 
   const doFactoryReset = (): void => {
-    dispatch({ type: "replace_settings", settings: data.preProcessSettings(defaultSettings.get()) });
+    dispatch({ type: "replace", settings: data.preProcessSettings(defaultSettings.get()) });
   };
 
   const switchLanguage = (): void => {
