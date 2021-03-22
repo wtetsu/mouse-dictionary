@@ -24,8 +24,8 @@ plugins:
           count_threshold: 3
           patterns:
             - "*.js"
-exclude_paths:
+exclude_patterns:
   - "__test__/"
-  - "static/data/"
+  - "build_tools/"
   - "webpack.*.js"
-  - "archive.js"
+  - "**/*.css"
