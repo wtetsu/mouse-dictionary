@@ -84,14 +84,14 @@ const optimizeInitialPosition = (position, minWindowSize = 50, edgeSpace = 5) =>
   const windowHeight = window.innerHeight;
 
   return {
-    left: range(edgeSpace, position.left, windowWidth - position.width - edgeSpace),
-    top: range(edgeSpace, position.top, windowHeight - position.height - edgeSpace),
-    width: range(minWindowSize, position.width, windowWidth - edgeSpace * 2),
-    height: range(minWindowSize, position.height, windowHeight - edgeSpace * 2),
+    left: clamp(position.left, edgeSpace, windowWidth - position.width - edgeSpace),
+    top: clamp(position.top, edgeSpace, windowHeight - position.height - edgeSpace),
+    width: clamp(position.width, minWindowSize, windowWidth - edgeSpace * 2),
+    height: clamp(position.height, minWindowSize, windowHeight - edgeSpace * 2),
   };
 };
 
-const range = (minValue, value, maxValue) => {
+const clamp = (value, minValue, maxValue) => {
   let r = value;
   r = min(r, maxValue);
   r = max(r, minValue);
