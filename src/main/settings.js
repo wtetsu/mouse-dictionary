@@ -58,7 +58,8 @@ export default {
   contentWrapperTemplate: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;text-align:left;">
 </div>`,
 
-  dialogTemplate: `<div style="all:initial;
+  dialogTemplate: `<div class="notranslate"
+     style="all:initial;
             {{systemStyles}}
             width: {{width}}px;
             height: {{height}}px;
