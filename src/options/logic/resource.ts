@@ -5,7 +5,7 @@
  */
 
 import Hogan, { Template } from "hogan.js";
-import { JapaneseTextResource, EnglishTextResource } from "../resource";
+import { JapaneseTextResource, EnglishTextResource, TextResourceKeys } from "../resource";
 
 let _lang: string = null;
 
@@ -30,7 +30,7 @@ export const getLang = (): string => {
   return _lang;
 };
 
-export const get = (key: string, params?: Record<string, any>): string => {
+export const get = (key: TextResourceKeys, params?: Record<string, any>): string => {
   const templates = compiledTemplates[getLang()];
   const template = templates?.[key];
   if (!template) {

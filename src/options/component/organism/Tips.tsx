@@ -14,7 +14,9 @@ type TipsProps = {
 
 const STYLE_OUTER: React.CSSProperties = {
   position: "relative",
-  bottom: 40,
+  bottom: -100,
+  right: -310,
+  width: 300,
 };
 
 const STYLE_INNER: React.CSSProperties = {
@@ -27,6 +29,11 @@ export const Tips: React.FC<TipsProps> = (props) => {
   return (
     <div style={{ ...STYLE_OUTER, display }}>
       <div style={STYLE_INNER}>
+        <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Window-manipulation" icon={true}>
+          <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
+          {res.get("windowManipulation")}
+        </ExternalLink>
+        <br />
         <ExternalLink href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data" icon={true}>
           <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
           {res.get("downloadDictData")}

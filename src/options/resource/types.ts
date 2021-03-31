@@ -69,6 +69,7 @@ export type TextResource = {
   loadInitialDict: string;
   downloadDictData: string;
   setKeyboardShortcuts: string;
+  windowManipulation: string;
   openPdfViewer: string;
   openJsonEditor: string;
   closeJsonEditor: string;
@@ -78,3 +79,5 @@ export type TextResource = {
   skipPdfConfirmation: string;
   pdfUrlPattern: string;
 };
+
+export type TextResourceKeys = keyof TextResource;
