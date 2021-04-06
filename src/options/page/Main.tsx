@@ -11,6 +11,7 @@ import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, Tips, 
 import { data, dict, message, Preview, res } from "../logic";
 import { config, defaultSettings, env } from "../extern";
 import { MouseDictionarySettings, DictionaryFile } from "../types";
+import { TextResourceKeys } from "../resource";
 
 type MainState = {
   dictDataUsage?: number;
@@ -238,7 +239,7 @@ const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void>
   }
 };
 
-const confirmAndLoadInitialDict = async (messageId: string, updateState: UpdateState): Promise<boolean> => {
+const confirmAndLoadInitialDict = async (messageId: TextResourceKeys, updateState: UpdateState): Promise<boolean> => {
   const willLoad = await message.notice(res.get(messageId), "okCancel");
   if (!willLoad) {
     return false;
