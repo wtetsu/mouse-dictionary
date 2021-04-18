@@ -101,7 +101,11 @@ const processSourceString = (sourceStr) => {
   }
   return { firstWords, linkedWords };
 };
-const processFirstWord = (firstWord) => [...dealWithFirstWordHyphen(firstWord), ...divideIntoTwoWords(firstWord)];
+const processFirstWord = (firstWord) => [
+  ...dealWithFirstWordHyphen(firstWord),
+  ...divideIntoTwoWords(firstWord),
+  ...cutDuplicatedLetters(firstWord),
+];
 
 const createSlashWord = (wordList) => {
   if (!wordList) {
@@ -152,6 +156,48 @@ const divideIntoTwoWords = (str) => {
     result.push(former + "-" + latter);
   }
   return result;
+};
+
+// craaaaaaaaaaaaazy -> crazy
+// snoooooooze -> snoze
+
+const cutDuplicatedLetters = (str) => {
+  let prevCode = 0;
+  let count = 0;
+
+  let startIndex = -1;
+  let endIndex = -1;
+
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    if (code === prevCode) {
+      count++;
+    } else {
+      if (count < 3) {
+        prevCode = code;
+        count = 1;
+        startIndex = i;
+      } else {
+        endIndex = i;
+        count = 0;
+        break;
+      }
+    }
+  }
+
+  if (count >= 3) {
+    endIndex = str.length;
+  }
+
+  if (startIndex === -1 || endIndex === -1) {
+    return [];
+  }
+
+  const prefix = str.substring(0, startIndex);
+  const middle = String.fromCharCode(prevCode);
+  const postfix = str.substring(endIndex);
+
+  return [prefix + middle + postfix, prefix + middle + middle + postfix];
 };
 
 const isValidCharacter = (ch) => rule.doLetters(ch);

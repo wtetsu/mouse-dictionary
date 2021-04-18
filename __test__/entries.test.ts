@@ -447,5 +447,20 @@ test("", () => {
 });
 
 test("", () => {
+  expect(generateEntries("craaaaaaaaaaaaaaazy")).toEqual(
+    expect.arrayContaining([
+      "crazy", //
+      "craazy",
+    ])
+  );
+  expect(generateEntries("craaazy")).toEqual(
+    expect.arrayContaining([
+      "crazy", //
+      "craazy",
+    ])
+  );
+});
+
+test("", () => {
   expect(generateEntries("")).toEqual(expect.arrayContaining([]));
 });
