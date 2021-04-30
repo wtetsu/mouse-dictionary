@@ -140,7 +140,7 @@ export const Main: React.FC = () => {
 
         <div style={{ cursor: "pointer", fontSize: "75%" }} onClick={() => updateState({ dictDataUsage: -1 })}></div>
 
-        <Tips visible={state.initialized} />
+        <Tips visible={state.initialized} style={{ position: "relative", bottom: -100, right: -310, width: 300 }} />
 
         <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
           <hr style={{ marginTop: 15 }} />
