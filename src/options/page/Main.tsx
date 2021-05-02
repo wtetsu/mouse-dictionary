@@ -6,7 +6,7 @@
 
 import React, { useReducer, useEffect, useRef } from "react";
 import immer from "immer";
-import { Button, DataUsage, EditableSpan, ExternalLink, Launch, Overlay, Panel, Toggle } from "../component/atom";
+import { Button, DataUsage, EditableSpan, ExternalLink, Launch, Overlay, Panel, Switch, Toggle } from "../component/atom";
 import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, Tips, WholeSettings } from "../component/organism";
 import { data, dict, message, Preview, res } from "../logic";
 import { config, defaultSettings, env } from "../extern";
@@ -140,17 +140,18 @@ export const Main: React.FC = () => {
 
         <div style={{ cursor: "pointer", fontSize: "75%" }} onClick={() => updateState({ dictDataUsage: -1 })}></div>
 
-        <Tips visible={state.initialized} style={{ position: "relative", bottom: -100, right: -310, width: 300 }} />
-
-        <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
-          <hr style={{ marginTop: 15 }} />
-
+        <Switch visible={state.initialized && state.panelLevel === 0}>
+          <Tips style={{ position: "absolute", bottom: -10, left: 315, width: 300 }} />
           <Launch
             href="pdf/web/viewer.html"
             text={res.get("openPdfViewer")}
             image="img/pdf.png"
-            style={{ position: "absolute", right: 25 }}
+            style={{ position: "absolute", bottom: 0, left: 380 }}
           />
+        </Switch>
+
+        <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
+          <hr style={{ marginTop: 15 }} />
 
           <Toggle
             switch={state.panelLevel >= 1}

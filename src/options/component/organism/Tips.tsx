@@ -9,7 +9,6 @@ import { res } from "../../logic";
 import { ExternalLink } from "../atom/ExternalLink";
 
 type TipsProps = {
-  visible: boolean;
   style: React.CSSProperties;
 };
 
@@ -23,9 +22,8 @@ const LINK_STYLE: React.CSSProperties = {
 };
 
 export const Tips: React.FC<TipsProps> = (props) => {
-  const display = props.visible ? "block" : "none";
   return (
-    <div style={{ ...props.style, display }}>
+    <div style={{ ...props.style }}>
       <div style={STYLE_INNER}>
         <ExternalLink
           href="https://github.com/wtetsu/mouse-dictionary/wiki/Window-manipulation"
