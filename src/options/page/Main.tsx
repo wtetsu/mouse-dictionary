@@ -85,9 +85,18 @@ export const Main: React.FC = () => {
   }, []);
   const s = state.settings;
   useEffect(() => {
+    if (!state.initialized) {
+      return;
+    }
+    if (!refPreview.current) {
+      refPreview.current = new Preview(s);
+    }
     refPreview.current?.update(s, state.previewText, true);
   }, [s.scroll, s.backgroundColor, s.dialogTemplate, s.contentWrapperTemplate]);
   useEffect(() => {
+    if (!state.initialized) {
+      return;
+    }
     refPreview.current?.setVisible(state.panelLevel >= 1 && state.panelLevel <= 2);
     refPreview.current?.update(state.settings, state.previewText, false);
   }, [state.panelLevel, state.previewText, s]);

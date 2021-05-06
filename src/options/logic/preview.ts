@@ -32,7 +32,11 @@ export class Preview {
     }
     this.refreshGenerator(settings);
     this.updateText(text, settings.lookupWithCapitalized);
-    dom.applyStyles(this.previewWindow.dialog, {
+    const dialog = this.previewWindow?.dialog;
+    if (!dialog) {
+      return;
+    }
+    dom.applyStyles(dialog, {
       width: `${settings.width}px`,
       height: `${settings.height}px`,
     });
