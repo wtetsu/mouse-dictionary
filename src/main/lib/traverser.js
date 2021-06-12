@@ -40,7 +40,7 @@ class Traverser {
     const { node, offset } = range;
 
     if (node.nodeType === Node.TEXT_NODE) {
-      return this.fetchTextFromTextNode(node, offset, this.maxWords);
+      return this.fetchTextFromTextNode(node, offset);
     }
 
     if (node.nodeType === Node.ELEMENT_NODE) {
@@ -51,7 +51,7 @@ class Traverser {
   }
 
   fetchTextFromTextNode(textNode, offset) {
-    const { text, subText, end, isEnglish } = this.getTextFromRange(textNode.data, offset, this.maxWords);
+    const { text, subText, end, isEnglish } = this.getTextFromRange(textNode.data, offset);
     const textList = subText ? [text, subText] : [text];
     if (!end) {
       return textList;
