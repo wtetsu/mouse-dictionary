@@ -13,7 +13,7 @@
     "format": "prettier --write src/**/*.{js,ts,tsx}",
     "test": "jest --maxWorkers=50%",
     "test-watch": "jest --maxWorkers=25% --watch",
-    "test-cov": "npm test --maxWorkers=50% -- --coverage ",
+    "test-cov": "npm test --maxWorkers=50% -- --coverage",
     "build-chrome": "webpack --config webpack.config.chrome.js",
     "watch-chrome": "webpack -w --config webpack.config.chrome.js",
     "release-chrome": "cross-env NODE_ENV=production npm run build-chrome",
