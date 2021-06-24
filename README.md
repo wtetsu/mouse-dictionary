@@ -9,6 +9,7 @@
 [Mouse Dictionary](https://mouse-dictionary.netlify.app/en/) is a super fast dictionary for Chrome and Firefox.
 
 Features:
+
 - Super fast (react in 1/60 second)
 - Awesome phrases detection
 - Capable of importing your own text data
@@ -17,6 +18,7 @@ Features:
 - Customizable view
 
 Available for various documents:
+
 - Web documents in HTML
   - normal text
   - input elements
@@ -85,11 +87,7 @@ npm run build-safari   # Debug build
 npm run release-safari # Release build
 ```
 
-
 see [package.json](./package.json) for other commands.
-
-
-
 
 ## Contribution
 
@@ -97,8 +95,8 @@ For the moment, Mouse Dictionary project doesn't have any strict rule about cont
 
 Some guides:
 
-* Editor: the main developer uses VSCode
-* Before you commit: try running `npm run test` and `npm run lint`
+- Editor: the main developer uses VSCode
+- Before you commit: try running `npm run test` and `npm run lint`
 
 ## Cross-extension messaging
 
@@ -111,7 +109,7 @@ const MD_EXTENSION_ID = "dnclbikcihnpjohihfcmmldgkjnebgnj";
 
 chrome.runtime.sendMessage(MD_EXTENSION_ID, {
   type: "text",
-  text: "rained cats and dogs"
+  text: "rained cats and dogs",
 });
 ```
 
@@ -132,7 +130,7 @@ This project includes some third-party data:
 
 ### Dictionary data
 
-* [ejdic-hand](https://github.com/kujirahand/EJDict) (Public Domain)
+- [ejdic-hand](https://github.com/kujirahand/EJDict) (Public Domain)
 
 ### Images
 
@@ -141,11 +139,11 @@ This project includes some third-party data:
 
 ### Build-in PDF viewer
 
-* [Mouse Dictionary's build-in PDF viewer](https://github.com/wtetsu/pdf.js) is based on [PDF.js](https://github.com/mozilla/pdf.js) ([Apache-2.0](https://github.com/mozilla/pdf.js/blob/master/LICENSE))
+- [Mouse Dictionary's build-in PDF viewer](https://github.com/wtetsu/pdf.js) is based on [PDF.js](https://github.com/mozilla/pdf.js) ([Apache-2.0](https://github.com/mozilla/pdf.js/blob/master/LICENSE))
 
 ### Great JavaScript libraries
 
-* See [package.json](./package.json)
+- See [package.json](./package.json)
 
 ## See also
 
