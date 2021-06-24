@@ -1,17 +1,12 @@
 {
   "extends": ["eslint:recommended"],
-  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
     "es6": true
   },
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 2020,
-    "ecmaFeatures": {
-      "jsx": true,
-      "modules": true
-    }
+    "ecmaVersion": 2020
   },
   "globals": {
     "chrome": true,
@@ -24,22 +19,26 @@
     "semi": ["error", "always"],
     "eqeqeq": 2
   },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  },
   "overrides": [
     {
       "files": ["src/options/**/*.ts", "src/options/**/*.tsx"],
       "extends": [
-        "eslint:recommended",
         "plugin:react/recommended",
         "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
         "react/prop-types": 0,
         "@typescript-eslint/no-explicit-any": 0
+      },
+      "parserOptions": {
+        "ecmaFeatures": {
+          "jsx": true
+        }
+      },
+      "settings": {
+        "react": {
+          "version": "detect"
+        }
       }
     }
   ],
