@@ -12,7 +12,7 @@ type Props = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export const EditableSpan: React.FC<Props> = (props) => {
+export const EditableSpan: React.VFC<Props> = (props) => {
   const [editable, setEditable] = useState(props.value === "");
 
   if (!editable) {
@@ -30,7 +30,7 @@ export const EditableSpan: React.FC<Props> = (props) => {
       autoFocus={true}
       onChange={(e) => props.onChange(e)}
       onKeyDown={(e) => {
-        if (e.keyCode === 13) {
+        if (e.key === "Enter") {
           setEditable(false);
         }
       }}

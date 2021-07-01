@@ -8,9 +8,10 @@ import React from "react";
 
 type Props = {
   active: boolean;
+  children?: React.ReactNode;
 };
 
-export const Overlay: React.FC<Props> = (props) => {
+export const Overlay: React.VFC<Props> = (props) => {
   if (!props.active) {
     return <></>;
   }

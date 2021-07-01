@@ -8,9 +8,10 @@ import React from "react";
 
 type Props = {
   visible: boolean;
+  children?: React.ReactNode;
 };
 
-export const Switch: React.FC<Props> = (props) => {
+export const Switch: React.VFC<Props> = (props) => {
   if (!props.visible) {
     return <></>;
   }

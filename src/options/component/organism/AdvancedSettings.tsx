@@ -16,7 +16,7 @@ type AdvancedSettingsProps = {
   onUpdate: UpdateEventHandler;
 };
 
-export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
+export const AdvancedSettings: React.VFC<AdvancedSettingsProps> = (props) => {
   const lookupWithCapitalized = props.settings?.lookupWithCapitalized ?? false;
   const parseWordsLimit = props.settings?.parseWordsLimit ?? 8;
   const pdfUrl = props.settings?.pdfUrl ?? "";

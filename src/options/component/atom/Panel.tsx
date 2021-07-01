@@ -8,9 +8,10 @@ import React from "react";
 
 type Props = {
   active: boolean;
+  children?: React.ReactNode;
 };
 
-export const Panel: React.FC<Props> = (props) => {
+export const Panel: React.VFC<Props> = (props) => {
   if (!props.active) {
     return <></>;
   }
