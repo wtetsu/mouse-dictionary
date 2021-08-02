@@ -15,6 +15,8 @@ import Draggable from "../lib/draggable";
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
 const attach = async (settings, dialog, doUpdateContent) => {
+  let enableDefault = true;
+
   const traverse = traverser.build(rule.doLetters, settings.parseWordsLimit);
   const lookuper = new Lookuper(settings, doUpdateContent);
 
@@ -46,8 +48,10 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   const onMouseMoveSecondOrLater = (e) => {
     draggable.onMouseMove(e);
-    const textList = traverse(e.target, e.clientX, e.clientY);
-    lookuper.lookupAll(textList);
+    if (enableDefault) {
+      const textList = traverse(e.target, e.clientX, e.clientY);
+      lookuper.lookupAll(textList);
+    }
   };
   let onMouseMove = onMouseMoveFirst;
   document.body.addEventListener("mousemove", (e) => onMouseMove(e));
@@ -75,6 +79,12 @@ const attach = async (settings, dialog, doUpdateContent) => {
         break;
       case "mouseup":
         draggable.onMouseUp();
+        break;
+      case "enable_default":
+        enableDefault = true;
+        break;
+      case "disable_default":
+        enableDefault = false;
         break;
     }
   });
