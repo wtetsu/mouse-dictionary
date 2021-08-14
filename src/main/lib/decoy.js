@@ -18,12 +18,23 @@ const DEFAULT_STYLES = {
   opacity: 0,
 };
 
-const STYLES = {
+const INPUT_STYLES = {
   INPUT: { overflow: "hidden", whiteSpace: "nowrap" },
   TEXTAREA: { overflow: "hidden" },
   SELECT: { overflow: "hidden", whiteSpace: "nowrap" },
   OPTION: { overflow: "hidden", whiteSpace: "nowrap" },
 };
+
+const COPY_STYLE_PROPERTIES = [
+  "fontSize",
+  "fontWeight",
+  "fontFamily",
+  "lineHeight",
+  "paddingTop",
+  "paddingRight",
+  "paddingBottom",
+  "paddingLeft",
+];
 
 class Decoy {
   constructor(tag) {
@@ -48,15 +59,16 @@ class Decoy {
     decoy.scrollLeft = underlay.scrollLeft;
     const correctionWidth = underlay.clientWidth - decoy.clientWidth;
     const correctionHeight = underlay.clientHeight - decoy.clientHeight;
-    const width = `${underlay.clientWidth + correctionWidth}px`;
-    const height = `${underlay.clientHeight + correctionHeight}px`;
 
     const computedStyle = getComputedStyle(underlay);
-    const fontSize = computedStyle.fontSize;
-    const fontWeight = computedStyle.fontWeight;
-    const lineHeight = computedStyle.lineHeight;
+    const decoyAdditionStyles = {};
+    for (const prop of COPY_STYLE_PROPERTIES) {
+      decoyAdditionStyles[prop] = computedStyle[prop];
+    }
+    decoyAdditionStyles.width = `${underlay.clientWidth + correctionWidth}px`;
+    decoyAdditionStyles.height = `${underlay.clientHeight + correctionHeight}px`;
 
-    dom.applyStyles(decoy, { width, height, fontSize, fontWeight, lineHeight });
+    dom.applyStyles(decoy, decoyAdditionStyles);
   }
 
   deactivate() {
@@ -115,7 +127,7 @@ const createDecoyStyle = (decoy, underlay) => {
     left: `${left}px`,
   };
 
-  return { ...dynamicStyles, ...DEFAULT_STYLES, ...STYLES[underlay.tagName] };
+  return { ...dynamicStyles, ...DEFAULT_STYLES, ...INPUT_STYLES[underlay.tagName] };
 };
 
 const getOffset = (element) => {
