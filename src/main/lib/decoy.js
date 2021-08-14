@@ -50,7 +50,13 @@ class Decoy {
     const correctionHeight = underlay.clientHeight - decoy.clientHeight;
     const width = `${underlay.clientWidth + correctionWidth}px`;
     const height = `${underlay.clientHeight + correctionHeight}px`;
-    dom.applyStyles(decoy, { width, height });
+
+    const computedStyle = getComputedStyle(underlay);
+    const fontSize = computedStyle.fontSize;
+    const fontWeight = computedStyle.fontWeight;
+    const lineHeight = computedStyle.lineHeight;
+
+    dom.applyStyles(decoy, { width, height, fontSize, fontWeight, lineHeight });
   }
 
   deactivate() {
