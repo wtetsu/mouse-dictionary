@@ -51,8 +51,13 @@ type EnvForMain = {
   enableUserSettings: boolean;
 };
 
+type EnvSupport = {
+  localGetBytesInUse: boolean;
+};
+
 type EnvForOptions = {
   registerRecordsAtOnce: number;
+  support: EnvSupport;
 };
 
 export type Env = EnvForMain & EnvForOptions;

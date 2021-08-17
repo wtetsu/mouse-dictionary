@@ -140,7 +140,7 @@ export const Main: React.VFC = () => {
           }}
         />
 
-        <Panel active={env.get().enableUserSettings && !state.busy}>
+        <Panel active={env.get().support.localGetBytesInUse && !state.busy}>
           <DataUsage byteSize={state.dictDataUsage} onUpdate={(byteSize) => updateState({ dictDataUsage: byteSize })} />
         </Panel>
         <div style={{ fontSize: "75%" }}>
