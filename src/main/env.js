@@ -7,9 +7,8 @@
 const env = {};
 
 if (BROWSER === "FIREFOX") {
-  // Unstable in Firefox
-  env.enableWindowStatusSave = false;
-  env.enableUserSettings = false;
+  env.enableWindowStatusSave = true;
+  env.enableUserSettings = true;
 } else {
   env.enableWindowStatusSave = true;
   env.enableUserSettings = true;
