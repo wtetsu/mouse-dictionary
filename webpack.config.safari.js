@@ -1,6 +1,11 @@
 const path = require("path");
 const DefinePlugin = require("webpack/lib/DefinePlugin");
+const GenerateManifestPlugin = require("./build_tools/webpack_plugins/GenerateManifestPlugin");
 const commonConfig = require("./webpack.config");
+
+const mode = process.env.NODE_ENV || "development";
+const isProd = mode === "production";
+const version = require("./package.json").version;
 
 const specificConfig = Object.assign({}, commonConfig);
 
@@ -10,9 +15,21 @@ specificConfig.output = {
   path: __dirname + "/dist-safari",
 };
 
+const overwrite = { version };
+if (!isProd) {
+  overwrite.name = "Mouse Dictionary (Debug)";
+}
+
 specificConfig.plugins.push(
   new DefinePlugin({
     BROWSER: JSON.stringify("SAFARI"),
+  })
+);
+specificConfig.plugins.push(
+  new GenerateManifestPlugin({
+    from: "src/manifest-chrome.json",
+    to: "manifest.json",
+    overwrite,
   })
 );
 
