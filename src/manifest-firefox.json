@@ -1,17 +1,16 @@
 {
   "name": "Mouse Dictionary",
+  "version": "",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
   "author": "wtetsu",
-  "version": "1.5.4",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
   },
   "permissions": ["storage", "unlimitedStorage", "activeTab"],
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "scripts": ["background.js"]
   },
   "browser_action": {
     "default_icon": "icons/icon19.png",
