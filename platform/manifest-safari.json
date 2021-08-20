@@ -1,0 +1,33 @@
+{
+  "name": "Mouse Dictionary",
+  "version": "",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
+  "author": "wtetsu",
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "permissions": ["storage", "unlimitedStorage", "activeTab"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_icon": "icons/icon19.png",
+    "default_title": "Mouse Dictionary"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "description": "Activate the extension"
+    }
+  },
+  "manifest_version": 2,
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": ["data/*.json"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
