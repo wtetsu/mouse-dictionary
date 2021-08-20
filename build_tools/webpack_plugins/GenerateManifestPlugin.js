@@ -21,7 +21,10 @@ class GenerateManifestPlugin {
 }
 
 const applyOption = (options, outputDirPath) => {
-  const manifest = readJsonFile(options.from);
+  const manifest = {};
+  for (const sourceFile of options.from) {
+    Object.assign(manifest, readJsonFile(sourceFile));
+  }
 
   if (options.overwrite) {
     Object.assign(manifest, options.overwrite);

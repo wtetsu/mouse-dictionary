@@ -1,0 +1,8 @@
+{
+  "name": "Mouse Dictionary (Debug)",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "dummy@example.com"
+    }
+  }
+}

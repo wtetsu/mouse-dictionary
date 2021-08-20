@@ -26,16 +26,6 @@ if (!isProd) {
   copyWebpackPluginConfigs.patterns.push({ from: "static_overwrite", to: "." });
 }
 
-const overwrite = { version };
-if (!isProd) {
-  overwrite.name = "Mouse Dictionary (Debug)";
-  overwrite.browser_specific_settings = {
-    gecko: {
-      id: "dummy@example.com",
-    },
-  };
-}
-
 module.exports = (env) => {
   if (!env.platform) {
     throw Error("env.platform is empty");
@@ -58,7 +48,7 @@ module.exports = (env) => {
             loader: "babel-loader",
             options: {
               cacheDirectory: !isProd,
-              configFile: __dirname + `/platform/.babelrc.${env.platform}.json`,
+              configFile: __dirname + `/platform/.babelrc-${env.platform}.json`,
             },
           },
           exclude: /node_modules/,
@@ -67,7 +57,7 @@ module.exports = (env) => {
     },
     resolve: {
       extensions: [".js", ".ts", ".tsx"],
-      alias: { ponyfill$: path.resolve(__dirname, `src/main/lib/ponyfill/chrome`) },
+      alias: { ponyfill$: path.resolve(__dirname, `src/main/lib/ponyfill/${env.platform}`) },
     },
     devtool: isProd ? false : "inline-cheap-module-source-map",
     performance: {
@@ -89,8 +79,6 @@ module.exports = (env) => {
     plugins: [
       new DefinePlugin({
         DIALOG_ID: JSON.stringify(`____MOUSE_DICTIONARY_6FQSXRIXUKBSIBEF_${version}`),
-      }),
-      new DefinePlugin({
         BROWSER: JSON.stringify(env.platform.toUpperCase()),
       }),
       new CopyPlugin(copyWebpackPluginConfigs),
@@ -115,9 +103,11 @@ module.exports = (env) => {
         split: 10,
       }),
       new GenerateManifestPlugin({
-        from: `platform/manifest-${env.platform}.json`,
+        from: isProd
+          ? [`platform/manifest-${env.platform}.json`]
+          : [`platform/manifest-${env.platform}.json`, `platform/manifest-${env.platform}-debug.json`],
         to: "manifest.json",
-        overwrite,
+        overwrite: { version },
       }),
     ],
   };
