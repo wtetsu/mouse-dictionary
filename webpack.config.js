@@ -12,20 +12,6 @@ const isProd = mode === "production";
 
 const version = require("./package.json").version;
 
-const copyWebpackPluginConfigs = {
-  patterns: [
-    { from: "static", to: "." },
-    { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
-    { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-html.js", to: "options/" },
-    { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-json.js", to: "options/" },
-    { from: "static_pdf/options", to: "options/" },
-  ],
-};
-
-if (!isProd) {
-  copyWebpackPluginConfigs.patterns.push({ from: "static_overwrite", to: "." });
-}
-
 module.exports = (env) => {
   if (!env.platform) {
     throw Error("env.platform is empty");
@@ -81,7 +67,16 @@ module.exports = (env) => {
         DIALOG_ID: JSON.stringify(`____MOUSE_DICTIONARY_6FQSXRIXUKBSIBEF_${version}`),
         BROWSER: JSON.stringify(env.platform.toUpperCase()),
       }),
-      new CopyPlugin(copyWebpackPluginConfigs),
+      new CopyPlugin({
+        patterns: [
+          { from: "static", to: "." },
+          { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
+          { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-html.js", to: "options/" },
+          { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-json.js", to: "options/" },
+          { from: "static_pdf/options", to: "options/" },
+          ...(isProd ? [] : [{ from: "static_overwrite", to: "." }]),
+        ],
+      }),
       new UniteJsonPlugin([
         {
           from: [
@@ -103,11 +98,10 @@ module.exports = (env) => {
         split: 10,
       }),
       new GenerateManifestPlugin({
-        from: isProd
-          ? [`platform/manifest-${env.platform}.json`]
-          : [`platform/manifest-${env.platform}.json`, `platform/manifest-${env.platform}-debug.json`],
+        from: `platform/manifest-${env.platform}.json`,
         to: "manifest.json",
         overwrite: { version },
+        debug: !isProd,
       }),
     ],
   };

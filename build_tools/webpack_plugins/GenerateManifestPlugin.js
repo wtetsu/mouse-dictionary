@@ -21,9 +21,14 @@ class GenerateManifestPlugin {
 }
 
 const applyOption = (options, outputDirPath) => {
-  const manifest = {};
-  for (const sourceFile of options.from) {
-    Object.assign(manifest, readJsonFile(sourceFile));
+  const manifest = readJsonFile(options.from);
+
+  if (options.debug) {
+    manifest.name += " (Debug)";
+    const debugConfig = getDebugConfigFileName(options.from);
+    if (fs.existsSync(debugConfig)) {
+      Object.assign(manifest, readJsonFile(debugConfig));
+    }
   }
 
   if (options.overwrite) {
@@ -37,6 +42,17 @@ const applyOption = (options, outputDirPath) => {
 const readJsonFile = (sourceJsonFile) => {
   const json = fs.readFileSync(sourceJsonFile, "utf-8");
   return JSON.parse(json);
+};
+
+const getDebugConfigFileName = (fileName) => {
+  const index = fileName.lastIndexOf(".");
+  if (index === -1) {
+    return null;
+  }
+
+  const baseName = fileName.substring(0, index);
+  const ext = fileName.substring(index + 1);
+  return `${baseName}-debug.${ext}`;
 };
 
 module.exports = GenerateManifestPlugin;
