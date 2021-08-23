@@ -3,7 +3,7 @@
     [
       "@babel/env",
       {
-        "targets": { "chrome": "79" }
+        "targets": { "safari": "14" }
       }
     ],
     ["@babel/react"],
