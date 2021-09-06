@@ -11,7 +11,7 @@ export default class Generator {
     this.shortWordLength = settings.shortWordLength;
     this.cutShortWordDescription = settings.cutShortWordDescription;
 
-    const cssReset = "margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;";
+    const cssReset = "margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;";
 
     this.baseParameters = {
       headFontColor: settings.headFontColor,
