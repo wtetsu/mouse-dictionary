@@ -63,10 +63,11 @@ export default class Generator {
       if (typeof desc !== "string") {
         continue;
       }
+      const wordWithoutSuffix = word.split(/_\d+/)[0];
       data.push({
-        head: escapeHtml(word),
+        head: escapeHtml(wordWithoutSuffix),
         desc: this.createDescriptionHtml(desc),
-        isShort: word.length <= shortWordLength,
+        isShort: wordWithoutSuffix.length <= shortWordLength,
         shortDesc: desc.substring(0, this.cutShortWordDescription),
         isFirst: false,
         isLast: false,
