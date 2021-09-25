@@ -13,6 +13,7 @@ export default {
   scroll: "scroll",
   skipPdfConfirmation: false,
   pdfUrl: "",
+  useMultipleDictionaries: false,
   backgroundColor: "#ffffff",
   headFontColor: "#000088",
   descFontColor: "#101010",

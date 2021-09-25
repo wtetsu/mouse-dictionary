@@ -88,6 +88,8 @@ const JapaneseTextResource: TextResource = {
   aboutJsonEditor: "Mouse Dictionary設定全体のJSONデータです。バックアップや共有にご利用ください ※辞書データは含みません",
   skipPdfConfirmation: "PDFファイルのダウンロード確認を省略する",
   pdfUrlPattern: "PDFドキュメント判定の上書き(URLに対する正規表現)",
+  useMultipleDictionaries: "英和・英英辞書を同時に表示する",
+  useMultipleDictionariesDescription: "すべての辞書データの再読み込みが必要となります",
 };
 
 export { JapaneseTextResource };

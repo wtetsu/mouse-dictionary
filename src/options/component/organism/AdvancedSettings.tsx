@@ -20,6 +20,7 @@ export const AdvancedSettings: React.VFC<AdvancedSettingsProps> = (props) => {
   const lookupWithCapitalized = props.settings?.lookupWithCapitalized ?? false;
   const parseWordsLimit = props.settings?.parseWordsLimit ?? 8;
   const pdfUrl = props.settings?.pdfUrl ?? "";
+  const useMultipleDictionaries = props.settings?.useMultipleDictionaries ?? false;
   const contentWrapperTemplate = props.settings?.contentWrapperTemplate ?? "";
   const dialogTemplate = props.settings?.dialogTemplate ?? "";
   const contentTemplate = props.settings?.contentTemplate ?? "";
@@ -70,6 +71,15 @@ export const AdvancedSettings: React.VFC<AdvancedSettingsProps> = (props) => {
           style={{ width: 600 }}
           placeholder="\.pdf$"
         />
+        <label>
+          {res.get("useMultipleDictionaries")}
+          <input
+            type="checkbox"
+            onChange={(e) => update({ useMultipleDictionaries: e.target.checked })}
+            checked={useMultipleDictionaries}
+          />
+        </label>
+        <span>{res.get("useMultipleDictionariesDescription")}</span>
         <h3>
           {res.get("htmlTemplate")}
           <a

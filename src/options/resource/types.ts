@@ -78,6 +78,8 @@ export type TextResource = {
   aboutJsonEditor: string;
   skipPdfConfirmation: string;
   pdfUrlPattern: string;
+  useMultipleDictionaries: string;
+  useMultipleDictionariesDescription: string;
 };
 
 export type TextResourceKeys = keyof TextResource;

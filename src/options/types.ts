@@ -34,6 +34,7 @@ export type MouseDictionaryAdvancedSettings = {
   dialogTemplate: string;
   contentTemplate: string;
   pdfUrl: string;
+  useMultipleDictionaries: boolean;
 };
 
 export type MouseDictionarySettings = MouseDictionaryBasicSettings & MouseDictionaryAdvancedSettings;
