@@ -44,10 +44,7 @@ type HeadWord = {
   desc: string;
 };
 
-const KEY_DICTIONARY_ID = "**** dictionary_id ****";
-
 export const load = async (loadParam: LoadParam, callback: Callback): Promise<number> => {
-  const dictionaryId = (await storage.sync.get({ [KEY_DICTIONARY_ID]: 0 }))[KEY_DICTIONARY_ID];
   const fileContent = await readAsText(loadParam.file, loadParam.encoding, (e) => {
     callback({ name: "reading", loaded: e.loaded, total: e.total });
   });
@@ -63,8 +60,7 @@ export const load = async (loadParam: LoadParam, callback: Callback): Promise<nu
     if (!hd) {
       continue;
     }
-    const headWithSuffix = `${hd.head}_${dictionaryId}`;
-    dictData[headWithSuffix] = hd.desc;
+    dictData[hd.head] = hd.desc;
     wordCount += 1;
     if (wordCount === 1 || (wordCount > 1 && wordCount % env.get().registerRecordsAtOnce === 0)) {
       callback({ name: "loading", count: wordCount, word: hd });
@@ -76,13 +72,10 @@ export const load = async (loadParam: LoadParam, callback: Callback): Promise<nu
 
   const lastData = parser.flush();
   if (lastData) {
-    for (const [head, desc] of Object.entries(lastData)) {
-      dictData[`${head}_${dictionaryId}`] = desc;
-    }
+    Object.assign(dictData, lastData);
     wordCount += Object.keys(lastData).length;
   }
   await storage.local.set(dictData);
-  await storage.sync.set({ [KEY_DICTIONARY_ID]: dictionaryId + 1 });
   return wordCount;
 };
 
@@ -118,16 +111,14 @@ const createDictParser = (format: DictionaryFileFormat) => {
 };
 
 export const registerDefaultDict = async (fnProgress: ProgressCallback): Promise<number> => {
-  const dictionaryId = (await storage.sync.get({ [KEY_DICTIONARY_ID]: 0 }))[KEY_DICTIONARY_ID];
   const dict = (await loadJsonFile("/data/dict.json")) as DictionaryInformation;
   fnProgress(0, "0");
   let wordCount = 0;
   for (let i = 0; i < dict.files.length; i++) {
-    wordCount += await registerDict(dict.files[i], dictionaryId);
+    wordCount += await registerDict(dict.files[i]);
     const progress = `${i + 1}/${dict.files.length}`;
     fnProgress(wordCount, progress);
   }
-  await storage.sync.set({ [KEY_DICTIONARY_ID]: dictionaryId + 1 });
   return wordCount;
 };
 
@@ -137,13 +128,9 @@ const loadJsonFile = async (fname: string): Promise<Record<string, any>> => {
   return response.json();
 };
 
-const registerDict = async (fname: string, dictionaryId: number): Promise<number> => {
+const registerDict = async (fname: string): Promise<number> => {
   const dictData = await loadJsonFile(fname);
-  const dictDataWithSuffix = {};
-  for (const [head, desc] of Object.entries(dictData)) {
-    dictDataWithSuffix[`${head}_${dictionaryId}`] = desc;
-  }
-  const wordCount = Object.keys(dictDataWithSuffix).length;
-  await storage.local.set(dictDataWithSuffix);
+  const wordCount = Object.keys(dictData).length;
+  await storage.local.set(dictData);
   return wordCount;
 };

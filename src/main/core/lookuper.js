@@ -13,8 +13,6 @@ import utils from "../lib/utils";
 
 const TEXT_LENGTH_LIMIT = 128;
 
-const KEY_DICTIONARY_ID = "**** dictionary_id ****";
-
 export default class Lookuper {
   constructor(settings, doUpdateContent) {
     this.lookupWithCapitalized = settings.lookupWithCapitalized;
@@ -140,13 +138,8 @@ export default class Lookuper {
 }
 
 const fetchDescriptions = async (entries, reForReferences) => {
-  const dictionaryId = (await storage.sync.get(KEY_DICTIONARY_ID))[KEY_DICTIONARY_ID];
-  let entriesWithSuffix = [];
-  for (let suffix = 0; suffix < dictionaryId; suffix++) {
-    entriesWithSuffix = entriesWithSuffix.concat(entries.map((entry) => `${entry}_${suffix}`));
-  }
-  const primaryDescriptions = await storage.local.get(entriesWithSuffix);
-  const primaryHeads = entriesWithSuffix.filter((e) => primaryDescriptions[e]);
+  const primaryDescriptions = await storage.local.get(entries);
+  const primaryHeads = entries.filter((e) => primaryDescriptions[e]);
 
   const refHeads = pickOutRefs(primaryDescriptions, reForReferences);
   if (refHeads.length === 0) {
