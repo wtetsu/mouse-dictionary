@@ -18,9 +18,6 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   const { firstWords, linkedWords } = processSourceString(sourceStr);
 
   const lookupWords = new UniqList();
-  if (mustIncludeOriginalText) {
-    lookupWords.push(rawSourceStr);
-  }
   lookupWords.filer = (s) => s.length >= 2 || s === firstWord;
   lookupWords.merge(linkedWords);
 
@@ -39,6 +36,10 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
 
   const titledExpressions = generateTitledExpressions(firstWords);
   lookupWords.merge(titledExpressions);
+
+  if (mustIncludeOriginalText) {
+    return [rawSourceStr, ...lookupWords.toArray()];
+  }
 
   return lookupWords.toArray();
 };
