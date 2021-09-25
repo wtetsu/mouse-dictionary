@@ -11,6 +11,9 @@ checks:
   file-lines:
     config:
       threshold: 2000
+  return-statements:
+    config:
+      threshold: 10
 plugins:
   eslint:
     enabled: true
