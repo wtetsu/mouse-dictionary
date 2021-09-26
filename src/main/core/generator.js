@@ -28,6 +28,8 @@ export default class Generator {
     // Since contentTemplate is executed fairly frequently,
     // Generator uses this compiled result repeatedly.
     this.compiledContentTemplate = Hogan.compile(settings.contentTemplate);
+
+    this.useMultipleDictionaries = settings.useMultipleDictionaries;
   }
 
   generate(words, descriptions, enableShortWordLength = true) {
@@ -46,7 +48,15 @@ export default class Generator {
   }
 
   createDescriptionHtml(sourceText) {
-    let result = sourceText;
+    let result;
+    if (this.useMultipleDictionaries && sourceText.slice(0, 2) === '{"') {
+      const descriptions = JSON.parse(sourceText);
+      result = Object.entries(descriptions)
+        .map(([lang, desc]) => `[${lang}]\n${desc}`)
+        .join("\n\n");
+    } else {
+      result = sourceText;
+    }
     for (let i = 0; i < this.compiledReplaceRules.length; i++) {
       const rule = this.compiledReplaceRules[i];
       result = result.replace(rule.search, rule.replace);
