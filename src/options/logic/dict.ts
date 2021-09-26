@@ -6,7 +6,7 @@
 
 import { LineReader } from "./linereader";
 import { EijiroParser, SimpleDictParser, JsonDictParser } from "./dictparser";
-import { env, storage } from "../extern";
+import { config, env, storage } from "../extern";
 import { DictionaryFileEncoding, DictionaryFileFormat } from "../types";
 
 type ProgressCallback = (wordCount: number, progress: string) => void;
@@ -45,12 +45,16 @@ type HeadWord = {
 };
 
 export const load = async (loadParam: LoadParam, callback: Callback): Promise<number> => {
+  const setting = await config.loadRawSettings();
+  const multiDict = setting.useMultipleDictionaries;
+
   const fileContent = await readAsText(loadParam.file, loadParam.encoding, (e) => {
     callback({ name: "reading", loaded: e.loaded, total: e.total });
   });
 
   const reader = new LineReader(fileContent);
 
+  const prevDictData: Record<string, string> = await storage.local.get(null);
   let dictData = {};
   let wordCount = 0;
 
@@ -60,7 +64,21 @@ export const load = async (loadParam: LoadParam, callback: Callback): Promise<nu
     if (!hd) {
       continue;
     }
-    dictData[hd.head] = hd.desc;
+
+    const lang = isJapaneseText(hd.desc) ? "ja" : "en";
+    if (multiDict) {
+      const prevDesc = prevDictData[hd.head];
+      if (typeof prevDesc === "string" && prevDesc.slice(0, 2) === '{"') {
+        const parsedData = JSON.parse(prevDesc);
+        parsedData[`en-${lang}`] = hd.desc;
+        dictData[hd.head] = JSON.stringify(parsedData);
+      } else {
+        dictData[hd.head] = JSON.stringify({ [`en-${lang}`]: hd.desc });
+      }
+    } else {
+      dictData[hd.head] = hd.desc;
+    }
+
     wordCount += 1;
     if (wordCount === 1 || (wordCount > 1 && wordCount % env.get().registerRecordsAtOnce === 0)) {
       callback({ name: "loading", count: wordCount, word: hd });
@@ -72,7 +90,21 @@ export const load = async (loadParam: LoadParam, callback: Callback): Promise<nu
 
   const lastData = parser.flush();
   if (lastData) {
-    Object.assign(dictData, lastData);
+    if (multiDict) {
+      for (const [head, desc] of Object.entries(lastData)) {
+        const lang = isJapaneseText(desc) ? "ja" : "en";
+        const prevDesc = prevDictData[head];
+        if (typeof prevDesc === "string" && prevDesc.slice(0, 2) === '{"') {
+          const parsedData = JSON.parse(prevDesc);
+          parsedData[`en-${lang}`] = desc;
+          dictData[head] = JSON.stringify(parsedData);
+        } else {
+          dictData[head] = JSON.stringify({ [`en-${lang}`]: desc });
+        }
+      }
+    } else {
+      Object.assign(dictData, lastData);
+    }
     wordCount += Object.keys(lastData).length;
   }
   await storage.local.set(dictData);
@@ -110,12 +142,27 @@ const createDictParser = (format: DictionaryFileFormat) => {
   throw new Error("Unknown File Format: " + format);
 };
 
+const isJapaneseText = (str) => {
+  let result = false;
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    const isJapaneseLike = 0x3041 <= code && code <= 0x30ff;
+    if (isJapaneseLike) {
+      result = true;
+      break;
+    }
+  }
+  return result;
+};
+
 export const registerDefaultDict = async (fnProgress: ProgressCallback): Promise<number> => {
+  const setting = await config.loadRawSettings();
+  const multiDict = setting.useMultipleDictionaries;
   const dict = (await loadJsonFile("/data/dict.json")) as DictionaryInformation;
   fnProgress(0, "0");
   let wordCount = 0;
   for (let i = 0; i < dict.files.length; i++) {
-    wordCount += await registerDict(dict.files[i]);
+    wordCount += await registerDict(dict.files[i], multiDict);
     const progress = `${i + 1}/${dict.files.length}`;
     fnProgress(wordCount, progress);
   }
@@ -128,8 +175,23 @@ const loadJsonFile = async (fname: string): Promise<Record<string, any>> => {
   return response.json();
 };
 
-const registerDict = async (fname: string): Promise<number> => {
+const registerDict = async (fname: string, multiDict: boolean): Promise<number> => {
   const dictData = await loadJsonFile(fname);
+
+  if (multiDict) {
+    const prevDictData: Record<string, string> = await storage.local.get(Object.keys(dictData));
+    for (const [head, desc] of Object.entries(dictData)) {
+      const prevDesc = prevDictData[head];
+      if (typeof prevDesc === "string" && prevDesc.slice(0, 2) === '{"') {
+        const parsedData = JSON.parse(prevDesc);
+        parsedData["en-ja"] = desc;
+        dictData[head] = JSON.stringify(parsedData);
+      } else {
+        dictData[head] = JSON.stringify({ "en-ja": desc });
+      }
+    }
+  }
+
   const wordCount = Object.keys(dictData).length;
   await storage.local.set(dictData);
   return wordCount;
