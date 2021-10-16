@@ -71,4 +71,10 @@ export type DictionaryFile = {
   format: DictionaryFileFormat;
 };
 
+export type ExternalLinks = {
+  windowManipulation: string;
+  downloadDictData: string;
+  setKeyboardShortcuts: string;
+};
+
 export declare const BROWSER: "CHROME" | "FIREFOX" | "SAFARI";

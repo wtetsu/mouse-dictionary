@@ -7,6 +7,7 @@
 import React from "react";
 import { res } from "../../logic";
 import { ExternalLink } from "../atom/ExternalLink";
+import { Links } from "../../resource/links";
 
 type TipsProps = {
   style: React.CSSProperties;
@@ -22,35 +23,24 @@ const LINK_STYLE: React.CSSProperties = {
 };
 
 export const Tips: React.VFC<TipsProps> = (props) => {
+  const tips = [
+    { text: res.get("windowManipulation"), href: Links.windowManipulation },
+    { text: res.get("downloadDictData"), href: Links.downloadDictData },
+    { text: res.get("setKeyboardShortcuts"), href: Links.setKeyboardShortcuts },
+  ];
+
   return (
     <div style={{ ...props.style }}>
       <div style={STYLE_INNER}>
-        <ExternalLink
-          href="https://github.com/wtetsu/mouse-dictionary/wiki/Window-manipulation"
-          icon={true}
-          style={LINK_STYLE}
-        >
-          <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
-          {res.get("windowManipulation")}
-        </ExternalLink>
-        <br />
-        <ExternalLink
-          href="https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data"
-          icon={true}
-          style={LINK_STYLE}
-        >
-          <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
-          {res.get("downloadDictData")}
-        </ExternalLink>
-        <br />
-        <ExternalLink
-          href="https://github.com/wtetsu/mouse-dictionary/wiki/Keyboard-shortcuts"
-          icon={true}
-          style={LINK_STYLE}
-        >
-          <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
-          {res.get("setKeyboardShortcuts")}
-        </ExternalLink>
+        {tips.map((e, i) => (
+          <>
+            <ExternalLink key={i} href={e.href} icon={true} style={LINK_STYLE}>
+              <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
+              {e.text}
+            </ExternalLink>
+            <br />
+          </>
+        ))}
       </div>
     </div>
   );

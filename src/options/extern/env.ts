@@ -12,7 +12,7 @@ const optionsEnv = { ...env } as Env;
 if (BROWSER === "FIREFOX") {
   // Larger registerRecordsAtOnce causes memory hog
   // when loading large dictionary data in Firefox.
-  optionsEnv.registerRecordsAtOnce = 1000;
+  optionsEnv.registerRecordsAtOnce = 10000;
   optionsEnv.support = { localGetBytesInUse: false };
 } else {
   optionsEnv.registerRecordsAtOnce = 100000;
