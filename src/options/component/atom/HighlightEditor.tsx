@@ -35,6 +35,7 @@ export const HighlightEditor: React.VFC<Props> = (props) => {
       showGutter={false}
       highlightActiveLine={false}
       style={{ ...DEFAULT_STYLE, ...props.style }}
+      setOptions={{ useWorker: false }}
     />
   );
 };

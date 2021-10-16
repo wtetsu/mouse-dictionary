@@ -127,6 +127,7 @@ export const WholeSettings: React.VFC<Props> = (props) => {
           highlightActiveLine={false}
           style={{ ...EDITOR_STYLE, height: 700 }}
           ref={editor}
+          setOptions={{ useWorker: false }}
         />
       </div>
     </div>
