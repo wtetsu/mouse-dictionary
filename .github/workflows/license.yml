@@ -1,0 +1,29 @@
+name: License
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [17.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install NPM License Checker
+        run: npm install -g license-checker
+      - name: Install Packages
+        run: npm install
+      - name: License
+        run: license-checker --json --out license.json
+      - name: Upload Build as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: license.json
+          path: license.json

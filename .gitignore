@@ -63,6 +63,8 @@ typings/
 tags
 
 .*/
+!.github
+
 dist/
 dist-*/
 *.zip
