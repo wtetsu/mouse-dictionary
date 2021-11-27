@@ -58,7 +58,7 @@ Want to use for the German language? Take a look these great articles!
 
 ### Preparation
 
-Use npm 7+.
+Use [Node.js](https://nodejs.org/en/download/) 16+.
 
 ```sh
 npm install
