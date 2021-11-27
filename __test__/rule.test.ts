@@ -27,7 +27,7 @@ const define = (path, data) => {
     current = current[n];
   }
 
-  const lastIndex = names[names.length - 1];
+  const lastIndex = names.at(-1);
   if (current[lastIndex] === undefined) {
     current[lastIndex] = data;
   }

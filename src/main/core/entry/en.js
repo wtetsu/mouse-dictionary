@@ -333,7 +333,7 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
         wordList.push(first + "-");
       }
       // Add a postfix
-      const last = arr[arr.length - 1];
+      const last = arr.at(-1);
       if (isHyphenLikeCharacter(sourceStr, sourceStr.length - last.length - 1)) {
         wordList.push("-" + last);
       }

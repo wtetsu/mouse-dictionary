@@ -72,7 +72,7 @@ const joinWords = (words) => {
         const nextWord = words[i + 1];
         newWords.push("-" + nextWord);
       } else {
-        const prevWord = newWords[newWords.length - 1];
+        const prevWord = newWords.at(-1);
         const nextWord = words[i + 1];
         newWords[newWords.length - 1] = prevWord + "-" + nextWord;
       }
