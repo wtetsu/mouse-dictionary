@@ -47,8 +47,8 @@ module.exports = (env) => {
     },
     devtool: isProd ? false : "inline-cheap-module-source-map",
     performance: {
-      maxEntrypointSize: 1000000,
-      maxAssetSize: 3000000,
+      maxEntrypointSize: 1_000_000,
+      maxAssetSize: 3_000_000,
     },
     optimization: {
       minimize: isProd,
@@ -71,8 +71,6 @@ module.exports = (env) => {
         patterns: [
           { from: "static", to: "." },
           { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
-          { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-html.js", to: "options/" },
-          { from: __dirname + "/node_modules/ace-builds/src-min-noconflict/worker-json.js", to: "options/" },
           { from: "static_pdf/options", to: "options/" },
           ...(isProd ? [] : [{ from: "static_overwrite", to: "." }]),
         ],
