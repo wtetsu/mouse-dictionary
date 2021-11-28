@@ -34,7 +34,8 @@ module.exports = (env) => {
             loader: "babel-loader",
             options: {
               cacheDirectory: !isProd,
-              configFile: __dirname + `/platform/.babelrc-${env.platform}.json`,
+              configFile: __dirname + `/platform/babelrc-${env.platform}.json`,
+              babelrc: false,
             },
           },
           exclude: /node_modules/,
