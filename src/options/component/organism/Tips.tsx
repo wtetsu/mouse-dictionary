@@ -13,9 +13,14 @@ type TipsProps = {
   style: React.CSSProperties;
 };
 
-const STYLE_INNER: React.CSSProperties = {
+const INNER_STYLE: React.CSSProperties = {
   position: "absolute",
   right: 0,
+  listStyle: "none",
+};
+
+const LI_STYLE: React.CSSProperties = {
+  marginBottom: 0,
 };
 
 const LINK_STYLE: React.CSSProperties = {
@@ -31,17 +36,16 @@ export const Tips: React.VFC<TipsProps> = (props) => {
 
   return (
     <div style={{ ...props.style }}>
-      <div style={STYLE_INNER}>
+      <ul style={INNER_STYLE}>
         {tips.map((e, i) => (
-          <>
-            <ExternalLink key={i} href={e.href} icon={true} style={LINK_STYLE}>
+          <li style={LI_STYLE} key={i}>
+            <ExternalLink href={e.href} icon={true} style={LINK_STYLE}>
               <img src="img/hint.png" width="16" height="16" style={{ position: "relative", top: 3, marginRight: 3 }} />
               {e.text}
             </ExternalLink>
-            <br />
-          </>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };
