@@ -4,22 +4,15 @@
  * Licensed under MIT
  */
 
-import Hogan, { Template } from "hogan.js";
+import { template } from "../extern";
+
 import { JapaneseTextResource, EnglishTextResource, TextResourceKeys } from "../resource";
 
 let _lang: string = null;
 
-const compile = (res: Record<string, string>): Record<string, Template> => {
-  const result: Record<string, Template> = {};
-  for (const key of Object.keys(res)) {
-    result[key] = Hogan.compile(res[key]);
-  }
-  return result;
-};
-
-const compiledTemplates = {
-  ja: compile(JapaneseTextResource),
-  en: compile(EnglishTextResource),
+const resources = {
+  ja: JapaneseTextResource,
+  en: EnglishTextResource,
 };
 
 export const setLang = (newLang: string): void => {
@@ -31,12 +24,11 @@ export const getLang = (): string => {
 };
 
 export const get = (key: TextResourceKeys, params?: Record<string, any>): string => {
-  const templates = compiledTemplates[getLang()];
-  const template = templates?.[key];
-  if (!template) {
+  const resourceText = resources[getLang()]?.[key];
+  if (!resourceText) {
     return key;
   }
-  return template.render(params);
+  return template.render(resourceText, params);
 };
 
 export const decideInitialLanguage = (languages: string[]): string => {

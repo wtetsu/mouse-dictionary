@@ -4,17 +4,16 @@
  * Licensed under MIT
  */
 
-import Hogan from "hogan.js";
 import dom from "../lib/dom";
+import template from "../lib/template";
 
 const STYLES_SCROLL = "border-radius: 5px 0px 0px 5px;";
 const STYLES_NORMAL = "border-radius: 5px 5px 5px 5px;";
 
 const createDialogElement = (settings) => {
-  const compiledTemplate = Hogan.compile(settings.dialogTemplate);
   const systemStyles = settings.scroll === "scroll" ? STYLES_SCROLL : STYLES_NORMAL;
 
-  const html = compiledTemplate.render({
+  const html = template.render(settings.dialogTemplate, {
     systemStyles,
     backgroundColor: settings.backgroundColor,
     width: settings.width,

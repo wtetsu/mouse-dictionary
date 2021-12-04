@@ -126,7 +126,12 @@ const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
 const setEvents = async (area, userSettings) => {
   let doUpdate = (newDom) => dom.replace(area.content, newDom);
 
-  events.attach(userSettings, area.dialog, (newDom) => doUpdate(newDom));
+  events
+    .attach(userSettings, area.dialog, (newDom) => doUpdate(newDom))
+    .catch((e) => {
+      console.error(e);
+      alert(e.message);
+    });
 
   const isDataReady = await config.isDataReady();
   if (isDataReady) {

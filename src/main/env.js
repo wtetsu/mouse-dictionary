@@ -4,14 +4,9 @@
  * Licensed under MIT
  */
 
-const env = {};
-
-if (BROWSER === "FIREFOX") {
-  env.enableWindowStatusSave = true;
-  env.enableUserSettings = true;
-} else {
-  env.enableWindowStatusSave = true;
-  env.enableUserSettings = true;
-}
+const env = {
+  enableWindowStatusSave: true,
+  enableUserSettings: true,
+};
 
 export default env;

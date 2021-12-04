@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import Hogan from "hogan.js";
+import template from "../lib/template";
 
 export default class Generator {
   constructor(settings) {
@@ -25,24 +25,24 @@ export default class Generator {
 
     this.compiledReplaceRules = compileReplaceRules(settings.replaceRules, { cssReset });
 
-    // Since contentTemplate is executed fairly frequently,
-    // Generator uses this compiled result repeatedly.
-    this.compiledContentTemplate = Hogan.compile(settings.contentTemplate);
+    this.contentTemplate = settings.contentTemplate;
+
+    // Pre-parse and cache template
+    template.parse(settings.contentTemplate);
   }
 
   generate(words, descriptions, enableShortWordLength = true) {
-    const html = this.createContentHtml(words, descriptions, this.compiledContentTemplate, enableShortWordLength);
+    const html = this.createContentHtml(words, descriptions, enableShortWordLength);
     const hitCount = Object.keys(descriptions).length;
     return { html, hitCount };
   }
 
-  createContentHtml(words, descriptions, compiledContentTemplate, enableShortWordLength) {
+  createContentHtml(words, descriptions, enableShortWordLength) {
     const parameters = {
       ...this.baseParameters,
       words: this.createWordsParameter(words, descriptions, enableShortWordLength),
     };
-    const html = compiledContentTemplate.render(parameters);
-    return html;
+    return template.render(this.contentTemplate, parameters);
   }
 
   createDescriptionHtml(sourceText) {
@@ -105,8 +105,7 @@ const compileReplaceRule = (rule, renderParameters) => {
     return null;
   }
 
-  const template = Hogan.compile(rule.replace);
-  const replace = template.render(renderParameters);
+  const replace = template.render(rule.replace, renderParameters);
 
   return {
     search: re,
