@@ -7,9 +7,10 @@
 import ExpiringQueue from "./queue";
 import uniqueId from "./unique";
 
-chrome.browserAction.onClicked.addListener(() => {
-  chrome.tabs.executeScript({
-    file: "./main.js",
+chrome.action.onClicked.addListener((tab) => {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ["main.js"],
   });
 });
 

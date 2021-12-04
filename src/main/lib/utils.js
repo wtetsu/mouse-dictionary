@@ -5,7 +5,7 @@
  */
 
 const loadJson = async (fname) => {
-  const url = chrome.extension.getURL(fname);
+  const url = chrome.runtime.getURL(fname);
   return fetch(url).then((r) => r.json());
 };
 
