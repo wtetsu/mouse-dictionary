@@ -10,7 +10,7 @@
 | Dependency     | No dependency (\*)  | Many libraries     |
 | Module         | default             | named              |
 
-(\*) Hogan.js is the only exception.
+(\*) mustache.js is the only exception.
 
 ## Dependency
 
