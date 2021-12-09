@@ -1,4 +1,4 @@
-import rule from "../src/main/core/rule";
+import rule from "../../../src/main/core/rule";
 
 import fs from "fs";
 

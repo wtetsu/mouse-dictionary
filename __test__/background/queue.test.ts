@@ -1,4 +1,4 @@
-import ExpiringQueue from "../src/background/queue";
+import ExpiringQueue from "../../src/background/queue";
 
 test("", async () => {
   const queue = new ExpiringQueue(5);

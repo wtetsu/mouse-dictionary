@@ -1,4 +1,4 @@
-import dom from "../src/main/lib/dom";
+import dom from "../../../src/main/lib/dom";
 
 const createDom = (html: string): HTMLElement => dom.create(html) as HTMLElement;
 

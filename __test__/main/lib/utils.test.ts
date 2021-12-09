@@ -1,4 +1,4 @@
-import utils from "../src/main/lib/utils";
+import utils from "../../../src/main/lib/utils";
 
 const setWindowInnerSize = (width: number, height: number) => {
   //@ts-ignore

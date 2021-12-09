@@ -1,4 +1,4 @@
-import { EijiroParser, SimpleDictParser, JsonDictParser } from "../src/options/logic/dictparser";
+import { EijiroParser, SimpleDictParser, JsonDictParser } from "../../../src/options/logic/dictparser";
 
 test("", () => {
   const parser = new EijiroParser();

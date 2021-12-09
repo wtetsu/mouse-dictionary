@@ -1,6 +1,6 @@
-import testdata from "./testdata";
-import text from "../src/main/lib/text";
-import rule from "../src/main/core/rule";
+import testdata from "../../testdata";
+import text from "../../../src/main/lib/text";
+import rule from "../../../src/main/core/rule";
 
 beforeAll(() => {
   testdata.load();

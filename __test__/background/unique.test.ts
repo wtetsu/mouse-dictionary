@@ -1,4 +1,4 @@
-import unique from "../src/background/unique";
+import unique from "../../src/background/unique";
 
 test("", () => {
   expect(unique(1).length).toEqual(1);

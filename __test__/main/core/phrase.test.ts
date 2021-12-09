@@ -1,5 +1,5 @@
-import testdata from "./testdata";
-import rule from "../src/main/core/rule";
+import testdata from "../../testdata";
+import rule from "../../../src/main/core/rule";
 
 beforeAll(() => {
   testdata.load();

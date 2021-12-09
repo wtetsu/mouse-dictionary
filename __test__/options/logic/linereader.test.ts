@@ -1,4 +1,4 @@
-import { LineReader } from "../src/options/logic/linereader";
+import { LineReader } from "../../../src/options/logic/linereader";
 
 test("", () => {
   let reader = new LineReader("");

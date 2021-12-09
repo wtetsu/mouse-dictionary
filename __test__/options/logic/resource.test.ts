@@ -1,4 +1,4 @@
-import * as res from "../src/options/logic/resource";
+import * as res from "../../../src/options/logic/resource";
 
 test("", () => {
   expect(res.decideInitialLanguage([])).toEqual("en");
@@ -18,9 +18,7 @@ test("", () => {
   res.setLang("en");
   expect(res.get("selectDictFile")).toEqual("Select dictionary data");
   expect(res.get("finishRegister", { count: 999 })).toEqual("Loading has finished(999 words)");
-  expect(res.get("progressRegister", { count: 999, progress: "hello" })).toEqual(
-    "999 words have been registered(hello)"
-  );
+  expect(res.get("progressRegister", { count: 999, progress: "hello" })).toEqual("999 words have been registered(hello)");
   expect(res.get("invalidKey")).toEqual("invalidKey");
 
   res.setLang("invalid_language");

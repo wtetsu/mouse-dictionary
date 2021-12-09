@@ -1,6 +1,6 @@
-import * as data from "../src/options/logic/data";
-import defaultsettings from "../src/main/settings";
-import { MouseDictionarySettings } from "../src/options/types";
+import * as data from "../../../src/options/logic/data";
+import defaultsettings from "../../../src/main/settings";
+import { MouseDictionarySettings } from "../../../src/options/types";
 
 test("", () => {
   expect(true).toEqual(data.byteArrayMayBeShiftJis([]));
