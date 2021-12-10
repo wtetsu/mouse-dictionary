@@ -1,27 +1,28 @@
 import testdata from "../../testdata";
-import generateEntries from "../../../src/main/core/entry/en";
+import createLookupWordsEn from "../../../src/main/core/entry/en";
+import createLookupWordsJa from "../../../src/main/core/entry/ja";
 
 beforeAll(() => {
   testdata.load();
 });
 
 test("", () => {
-  expect(generateEntries("Test")).toEqual(expect.arrayContaining(["Test", "test"]));
+  expect(createLookupWordsEn("Test")).toEqual(expect.arrayContaining(["Test", "test"]));
 });
 
 test("", () => {
   let r;
-  r = generateEntries("ladies-in-waiting");
+  r = createLookupWordsEn("ladies-in-waiting");
   expect(r.includes("ladies-in-waiting")).toBeTruthy();
   expect(r.includes("lady-in-waiting")).toBeTruthy();
 
-  r = generateEntries("stands-by");
+  r = createLookupWordsEn("stands-by");
   expect(r.includes("stands-by")).toBeTruthy();
   expect(r.includes("stand-by")).toBeTruthy();
 });
 
 test("", () => {
-  expect(generateEntries("thousand miles down")).toEqual(
+  expect(createLookupWordsEn("thousand miles down")).toEqual(
     expect.arrayContaining([
       "thousand miles down",
       "thousand miles",
@@ -32,12 +33,12 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("american english")).toEqual(expect.arrayContaining(["american english", "american"]));
-  expect(generateEntries("American English")).toEqual(
+  expect(createLookupWordsEn("american english")).toEqual(expect.arrayContaining(["american english", "american"]));
+  expect(createLookupWordsEn("American English")).toEqual(
     expect.arrayContaining(["American English", "American", "american english", "american"])
   );
 
-  expect(generateEntries("Announcement of Hoge")).toEqual(
+  expect(createLookupWordsEn("Announcement of Hoge")).toEqual(
     expect.arrayContaining([
       "Announcement of Hoge",
       "Announcement of",
@@ -52,7 +53,7 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("wonder if I shall")).toEqual(
+  expect(createLookupWordsEn("wonder if I shall")).toEqual(
     expect.arrayContaining([
       "wonder if i shall",
       "wonder if i",
@@ -78,22 +79,22 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("in my favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
+  expect(createLookupWordsEn("in my favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
 
-  expect(generateEntries("in my best favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
+  expect(createLookupWordsEn("in my best favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
 });
 
 test("", () => {
-  expect(generateEntries("blue-gray")).toEqual(
+  expect(createLookupWordsEn("blue-gray")).toEqual(
     expect.arrayContaining(["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"])
   );
 
-  expect(generateEntries("third-party")).toEqual(
+  expect(createLookupWordsEn("third-party")).toEqual(
     expect.arrayContaining(["third-party", "third party", "third", "party", "third-", "-party", "thirdparty"])
   );
 
   // non-breaking hyphen(U+2011)
-  expect(generateEntries("blue‑gray")).toEqual(
+  expect(createLookupWordsEn("blue‑gray")).toEqual(
     expect.arrayContaining([
       "blue-gray", //
       "blue gray",
@@ -105,13 +106,13 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("third‑party")).toEqual(
+  expect(createLookupWordsEn("third‑party")).toEqual(
     expect.arrayContaining(["third-party", "third party", "third", "party", "third-", "-party", "thirdparty"])
   );
 });
 
 test("", () => {
-  expect(generateEntries("folk tales")).toEqual(
+  expect(createLookupWordsEn("folk tales")).toEqual(
     expect.arrayContaining([
       "folk tales", //
       "folk",
@@ -121,13 +122,13 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("deal with")).toEqual(
+  expect(createLookupWordsEn("deal with")).toEqual(
     expect.arrayContaining([
       "deal with", //
       "deal",
     ])
   );
-  expect(generateEntries("dealt with")).toEqual(
+  expect(createLookupWordsEn("dealt with")).toEqual(
     expect.arrayContaining([
       "dealt with", //
       "dealt",
@@ -135,7 +136,7 @@ test("", () => {
       "deal",
     ])
   );
-  expect(generateEntries("dealing with")).toEqual(
+  expect(createLookupWordsEn("dealing with")).toEqual(
     expect.arrayContaining([
       "dealing with", //
       "dealing",
@@ -144,13 +145,13 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("run with")).toEqual(
+  expect(createLookupWordsEn("run with")).toEqual(
     expect.arrayContaining([
       "run with", //
       "run",
     ])
   );
-  expect(generateEntries("ran with")).toEqual(
+  expect(createLookupWordsEn("ran with")).toEqual(
     expect.arrayContaining([
       "ran with", //
       "ran",
@@ -158,7 +159,7 @@ test("", () => {
       "run",
     ])
   );
-  expect(generateEntries("running with")).toEqual(
+  expect(createLookupWordsEn("running with")).toEqual(
     expect.arrayContaining([
       "running with", //
       "running",
@@ -167,21 +168,21 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("yelled at")).toEqual(
+  expect(createLookupWordsEn("yelled at")).toEqual(
     expect.arrayContaining([
       "yell at", //
       "yell",
     ])
   );
 
-  expect(generateEntries("yelling at")).toEqual(
+  expect(createLookupWordsEn("yelling at")).toEqual(
     expect.arrayContaining([
       "yell at", //
       "yell",
     ])
   );
 
-  expect(generateEntries("dealt dealt dealt")).toEqual(
+  expect(createLookupWordsEn("dealt dealt dealt")).toEqual(
     expect.arrayContaining([
       "dealt dealt dealt",
       "dealt dealt",
@@ -196,13 +197,13 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("cut back")).toEqual(
+  expect(createLookupWordsEn("cut back")).toEqual(
     expect.arrayContaining([
       "cut back", //
       "cut",
     ])
   );
-  expect(generateEntries("cutting back")).toEqual(
+  expect(createLookupWordsEn("cutting back")).toEqual(
     expect.arrayContaining([
       "cutting back", //
       "cutting",
@@ -211,13 +212,13 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("die out")).toEqual(
+  expect(createLookupWordsEn("die out")).toEqual(
     expect.arrayContaining([
       "die out", //
       "die",
     ])
   );
-  expect(generateEntries("dying out")).toEqual(
+  expect(createLookupWordsEn("dying out")).toEqual(
     expect.arrayContaining([
       "dying out", //
       "dying",
@@ -226,13 +227,13 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("play with")).toEqual(
+  expect(createLookupWordsEn("play with")).toEqual(
     expect.arrayContaining([
       "play with", //
       "play",
     ])
   );
-  expect(generateEntries("played with")).toEqual(
+  expect(createLookupWordsEn("played with")).toEqual(
     expect.arrayContaining([
       "played with", //
       "played",
@@ -241,13 +242,13 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("pop up")).toEqual(
+  expect(createLookupWordsEn("pop up")).toEqual(
     expect.arrayContaining([
       "pop up", //
       "pop",
     ])
   );
-  expect(generateEntries("popped up")).toEqual(
+  expect(createLookupWordsEn("popped up")).toEqual(
     expect.arrayContaining([
       "popped up", //
       "popped",
@@ -258,8 +259,8 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("aaa_bbb")).toEqual(expect.arrayContaining(["aaa_bbb", "aaa bbb", "aaa", "bbb"]));
-  expect(generateEntries("worker_processes")).toEqual(
+  expect(createLookupWordsEn("aaa_bbb")).toEqual(expect.arrayContaining(["aaa_bbb", "aaa bbb", "aaa", "bbb"]));
+  expect(createLookupWordsEn("worker_processes")).toEqual(
     expect.arrayContaining([
       "worker_processes",
       "worker_process",
@@ -273,7 +274,7 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("on one's own")).toEqual(
+  expect(createLookupWordsEn("on one's own")).toEqual(
     expect.arrayContaining([
       "on one's own", //
       "on one's",
@@ -284,7 +285,7 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("on his own")).toEqual(
+  expect(createLookupWordsEn("on his own")).toEqual(
     expect.arrayContaining([
       "on his own",
       "on his",
@@ -300,7 +301,7 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("his only son")).toEqual(
+  expect(createLookupWordsEn("his only son")).toEqual(
     expect.arrayContaining([
       "his only son",
       "his only",
@@ -326,7 +327,7 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("Senete's")).toEqual(
+  expect(createLookupWordsEn("Senete's")).toEqual(
     expect.arrayContaining([
       "Senete's", //
       "Senete'",
@@ -337,13 +338,13 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("by oneself")).toEqual(
+  expect(createLookupWordsEn("by oneself")).toEqual(
     expect.arrayContaining([
       "by oneself", //
       "by",
     ])
   );
-  expect(generateEntries("by myself")).toEqual(
+  expect(createLookupWordsEn("by myself")).toEqual(
     expect.arrayContaining([
       "by myself", //
       "by",
@@ -351,10 +352,10 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("brush one's dog")).toEqual(
+  expect(createLookupWordsEn("brush one's dog")).toEqual(
     expect.arrayContaining(["brush one's dog", "brush one's", "brush", "brush ~ dog", "brush dog", "brush one"])
   );
-  expect(generateEntries("brush Taro's dog")).toEqual(
+  expect(createLookupWordsEn("brush Taro's dog")).toEqual(
     expect.arrayContaining([
       "brush Taro's dog",
       "brush Taro's",
@@ -376,19 +377,19 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("colour")).toEqual(expect.arrayContaining(["colour", "color"]));
-  expect(generateEntries("women")).toEqual(expect.arrayContaining(["women", "woman"]));
+  expect(createLookupWordsEn("colour")).toEqual(expect.arrayContaining(["colour", "color"]));
+  expect(createLookupWordsEn("women")).toEqual(expect.arrayContaining(["women", "woman"]));
 });
 
 test("", () => {
-  expect(generateEntries("abc.")).toEqual(expect.arrayContaining(["abc"]));
-  expect(generateEntries("abc.", true)).toEqual(expect.arrayContaining(["abc", "ABC"]));
-  expect(generateEntries("abc.", false, true)).toEqual(expect.arrayContaining(["abc"]));
-  expect(generateEntries("abc.", true, true)).toEqual(expect.arrayContaining(["abc", "ABC"]));
+  expect(createLookupWordsEn("abc.")).toEqual(expect.arrayContaining(["abc"]));
+  expect(createLookupWordsEn("abc.", true)).toEqual(expect.arrayContaining(["abc", "ABC"]));
+  expect(createLookupWordsEn("abc.", false, true)).toEqual(expect.arrayContaining(["abc"]));
+  expect(createLookupWordsEn("abc.", true, true)).toEqual(expect.arrayContaining(["abc", "ABC"]));
 });
 
 test("", () => {
-  expect(generateEntries("pros / cons")).toEqual(
+  expect(createLookupWordsEn("pros / cons")).toEqual(
     expect.arrayContaining([
       "pros / cons", //
       "pros and cons",
@@ -396,7 +397,7 @@ test("", () => {
     ])
   );
 
-  expect(generateEntries("pros/cons")).toEqual(
+  expect(createLookupWordsEn("pros/cons")).toEqual(
     expect.arrayContaining([
       "pros/cons", //
       "pros / cons",
@@ -407,13 +408,13 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("in the wild. That is a pen.")).toEqual(
+  expect(createLookupWordsEn("in the wild. That is a pen.")).toEqual(
     expect.arrayContaining([
       "in the wild", //
     ])
   );
 
-  expect(generateEntries("in the wild, That is a pen.")).toEqual(
+  expect(createLookupWordsEn("in the wild, That is a pen.")).toEqual(
     expect.arrayContaining([
       "in the wild", //
     ])
@@ -421,7 +422,7 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("self taught")).toEqual(
+  expect(createLookupWordsEn("self taught")).toEqual(
     expect.arrayContaining([
       "self taught", //
       "selftaught",
@@ -430,14 +431,14 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("united kingdom")).toEqual(
+  expect(createLookupWordsEn("united kingdom")).toEqual(
     expect.arrayContaining([
       "United", //
       "United Kingdom",
     ])
   );
 
-  expect(generateEntries("canadian broadcasting corporation")).toEqual(
+  expect(createLookupWordsEn("canadian broadcasting corporation")).toEqual(
     expect.arrayContaining([
       "Canadian", //
       "Canadian Broadcasting",
@@ -447,13 +448,13 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("craaaaaaaaaaaaaaazy")).toEqual(
+  expect(createLookupWordsEn("craaaaaaaaaaaaaaazy")).toEqual(
     expect.arrayContaining([
       "crazy", //
       "craazy",
     ])
   );
-  expect(generateEntries("craaazy")).toEqual(
+  expect(createLookupWordsEn("craaazy")).toEqual(
     expect.arrayContaining([
       "crazy", //
       "craazy",
@@ -462,5 +463,12 @@ test("", () => {
 });
 
 test("", () => {
-  expect(generateEntries("")).toEqual(expect.arrayContaining([]));
+  expect(createLookupWordsEn("")).toEqual(expect.arrayContaining([]));
+});
+
+test("", () => {
+  expect(createLookupWordsJa("動いた")).toEqual(expect.arrayContaining(["動く"]));
+  expect(createLookupWordsJa("走った")).toEqual(expect.arrayContaining(["走る"]));
+  expect(createLookupWordsJa("おいた")).toEqual(expect.arrayContaining(["おく", "おいる"]));
+  expect(createLookupWordsJa("19az")).toEqual(expect.arrayContaining(["１９ａｚ"]));
 });
