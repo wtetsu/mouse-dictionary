@@ -14,6 +14,7 @@
     "test": "jest --maxWorkers=50%",
     "test-watch": "jest --maxWorkers=25% --watch",
     "test-cov": "npm test --maxWorkers=50% -- --coverage",
+    "test-cov-watch": "npm test --maxWorkers=50% -- --coverage --watch",
     "build-chrome": "webpack --env platform=chrome",
     "watch-chrome": "webpack -w --env platform=chrome",
     "release-chrome": "webpack --env platform=chrome --node-env=production",
