@@ -101,6 +101,7 @@ export default {
   loadAll,
   loadSettings,
   loadRawSettings,
+  parseSettings,
   savePosition,
   isDataReady,
 };
