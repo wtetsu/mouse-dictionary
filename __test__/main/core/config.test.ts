@@ -1,6 +1,6 @@
 import config from "../../../src/main/core/config";
 import env from "../../../src/main/env";
-import Chrome from "./chrome";
+import Chrome from "../chrome";
 
 beforeEach(() => {
   global.chrome = new Chrome() as any;

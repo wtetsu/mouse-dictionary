@@ -18,7 +18,7 @@ const sync = {
   get: async (args) => doAsync(syncs.get, args),
   set: async (args) => doAsync(syncs.set, args),
   async pick(key) {
-    const data = await sync.get(key);
+    const data = await sync.get([key]);
     return data?.[key];
   },
 };
@@ -27,7 +27,7 @@ const local = {
   get: async (args) => doAsync(locals.get, args),
   set: async (args) => doAsync(locals.set, args),
   async pick(key) {
-    const data = await local.get(key);
+    const data = await local.get([key]);
     return data?.[key];
   },
 };
