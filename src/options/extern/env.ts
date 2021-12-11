@@ -3,6 +3,7 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
+/* istanbul ignore file */
 
 import env from "../../main/env";
 import { BROWSER, Env } from "../types";

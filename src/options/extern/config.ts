@@ -3,6 +3,7 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
+/* istanbul ignore file */
 
 import orgConfig from "../../main/core/config";
 import storage from "../../main/lib/storage";

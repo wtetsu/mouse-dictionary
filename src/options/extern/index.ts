@@ -3,6 +3,7 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
+/* istanbul ignore file */
 
 // References to "main" functions
 
