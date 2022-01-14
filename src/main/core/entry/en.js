@@ -37,7 +37,7 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   const titledExpressions = generateTitledExpressions(firstWords);
   lookupWords.merge(titledExpressions);
 
-  if (mustIncludeOriginalText) {
+  if (mustIncludeOriginalText && !lookupWords.keys.has(rawSourceStr)) {
     return [rawSourceStr, ...lookupWords.toArray()];
   }
 
