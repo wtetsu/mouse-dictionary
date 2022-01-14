@@ -19,13 +19,11 @@ Features:
 
 Available for various documents:
 
-- Web documents in HTML
-  - normal text
-  - input elements
-  - textarea
+- HTML documents
 - PDF documents
-- Google Docs
 - YouTube captions
+- Notion
+- Evernote (Use with [Mouse Dictionary iframe support](https://chrome.google.com/webstore/detail/mouse-dictionary-iframe-s/nigglogmamjbcnljijokibobpcfgmdfn))
 - Local files (HTML, text, PDF)
 - ...
 
