@@ -19,7 +19,7 @@ test("", () => {
   expect(generator.generate(["test"], { test: "テスト" }, false)).toEqual({
     hitCount: 1,
     html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
-      <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:small;color:#000088;font-weight:bold;\">
+      <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:medium;color:#000088;font-weight:bold;\">
         test
       </span>
       <br/>
@@ -32,7 +32,7 @@ test("", () => {
   expect(generator.generate(["test"], { test: "テスト ■TEST" }, false)).toEqual({
     hitCount: 1,
     html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
-      <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:small;color:#000088;font-weight:bold;\">
+      <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:medium;color:#000088;font-weight:bold;\">
         test
       </span>
       <br/>
