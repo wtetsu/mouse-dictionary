@@ -16,7 +16,7 @@ export default {
   backgroundColor: "#ffffff",
   headFontColor: "#000088",
   descFontColor: "#101010",
-  headFontSize: "small",
+  headFontSize: "medium",
   descFontSize: "small",
 
   width: 350,
