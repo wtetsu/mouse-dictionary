@@ -109,6 +109,11 @@ export default class Lookuper {
     console.time(`lookup-${counter}`);
     const { html, hit } = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
     const content = dom.create(html);
+
+    content.querySelectorAll("[data-pronunciation]").forEach((elem) => {
+      elem.addEventListener("click", () => pronounce(elem.dataset.pronunciation));
+    });
+
     this.lastText = cacheKey;
     console.timeEnd(`lookup-${counter}`);
 
@@ -183,3 +188,17 @@ const capture = (str, re) => {
   }
   return capturedStrings;
 };
+
+const pronounce = (text) => {
+  if (!text) {
+    return;
+  }
+  const ssu = new SpeechSynthesisUtterance(text);
+  if (!isEnglishLikeCharacter(text.charCodeAt(0))) {
+    ssu.lang = "ja-JP";
+  }
+  speechSynthesis.speak(ssu);
+};
+
+// Temporary
+const isEnglishLikeCharacter = (code) => 0x20 <= code && code <= 0x7e;

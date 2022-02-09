@@ -79,6 +79,7 @@ export default {
       <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;">
         {{head}}
       </span>
+      <span style="cursor:pointer;" data-pronunciation="{{head}}">🔊</span>
       <br/>
       <span style="{{cssReset}};font-size:{{descFontSize}};color:{{descFontColor}};">
         {{{desc}}}
