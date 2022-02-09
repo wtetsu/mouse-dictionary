@@ -22,6 +22,7 @@ test("", () => {
       <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:medium;color:#000088;font-weight:bold;\">
         test
       </span>
+      <span style=\"cursor:pointer;\" data-pronunciation=\"test\">🔊</span>
       <br/>
       <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:small;color:#101010;\">
         テスト
@@ -35,6 +36,7 @@ test("", () => {
       <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:medium;color:#000088;font-weight:bold;\">
         test
       </span>
+      <span style=\"cursor:pointer;\" data-pronunciation=\"test\">🔊</span>
       <br/>
       <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:small;color:#101010;\">
         テスト <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;color:#008000;font-size:100%;\">■TEST</span>
