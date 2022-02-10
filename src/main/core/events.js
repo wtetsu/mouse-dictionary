@@ -11,6 +11,7 @@ import dom from "../lib/dom";
 import traverser from "../lib/traverser";
 import utils from "../lib/utils";
 import Draggable from "../lib/draggable";
+import sound from "../lib/sound";
 
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
@@ -23,6 +24,8 @@ const attach = async (settings, dialog, doUpdateContent) => {
   const draggable = new Draggable(settings.normalDialogStyles, settings.movingDialogStyles);
   draggable.events.change = (e) => config.savePosition(e);
   draggable.add(dialog);
+
+  setDialogEvents(dialog);
 
   document.body.addEventListener("mousedown", () => {
     lookuper.suspended = true;
@@ -113,6 +116,26 @@ const attach = async (settings, dialog, doUpdateContent) => {
     snapGuide.remove();
     snapGuide = null;
   };
+};
+
+const setDialogEvents = (dialog) => {
+  dialog.addEventListener("mouseenter", (e) => {
+    e.target.querySelectorAll("[data-md-pronunciation]").forEach((elem) => {
+      if (elem.dataset.mdPronunciationSet) {
+        return;
+      }
+      elem.dataset.mdPronunciationSet = "true";
+      elem.addEventListener("click", () => sound.pronounce(elem.dataset.mdPronunciation));
+    });
+    e.target.querySelectorAll("[data-md-hovervisible]").forEach((elem) => {
+      elem.style.visibility = "visible";
+    });
+  });
+  dialog.addEventListener("mouseleave", (e) => {
+    e.target.querySelectorAll("[data-md-hovervisible]").forEach((elem) => {
+      elem.style.visibility = "hidden";
+    });
+  });
 };
 
 const createSnapGuideElement = () => {
