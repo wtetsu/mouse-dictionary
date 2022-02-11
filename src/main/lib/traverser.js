@@ -198,6 +198,8 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
 
 const isEnglishLikeCharacter = (code) => 0x20 <= code && code <= 0x7e;
 
+// Intl.v8BreakIterator will be replaced with Intl.Segmenter in the future.
+// https://github.com/tc39/proposal-intl-segmenter
 const tokenize = (text, lang) => {
   if (!Intl?.v8BreakIterator) {
     return null;
