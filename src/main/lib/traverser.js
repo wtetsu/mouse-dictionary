@@ -118,7 +118,7 @@ const retrieveProperStartIndex = (sourceText, cursorIndex) => {
   let currentLength = 0;
   const tokens = tokenize(sourceText, "ja-JP");
   if (!tokens) {
-    return 0;
+    return cursorIndex;
   }
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
