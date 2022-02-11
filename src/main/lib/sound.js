@@ -9,7 +9,9 @@ const pronounce = (text) => {
     return;
   }
   const ssu = new SpeechSynthesisUtterance(text);
-  if (!isEnglishLikeCharacter(text.charCodeAt(0))) {
+  if (isEnglishLikeCharacter(text.charCodeAt(0))) {
+    ssu.lang = "en-US";
+  } else {
     ssu.lang = "ja-JP";
   }
   speechSynthesis.speak(ssu);
