@@ -37,7 +37,7 @@ export default class Generator {
     return { html, hitCount };
   }
 
-  createContentHtml(words, descriptions, enableShortWordLength) {
+  #createContentHtml(words, descriptions, enableShortWordLength) {
     const parameters = {
       ...this.baseParameters,
       words: this.createWordsParameter(words, descriptions, enableShortWordLength),
@@ -45,7 +45,7 @@ export default class Generator {
     return template.render(this.contentTemplate, parameters);
   }
 
-  createDescriptionHtml(sourceText) {
+  #createDescriptionHtml(sourceText) {
     let result = sourceText;
     for (let i = 0; i < this.compiledReplaceRules.length; i++) {
       const rule = this.compiledReplaceRules[i];
@@ -54,7 +54,7 @@ export default class Generator {
     return result;
   }
 
-  createWordsParameter(words, descriptions, enableShortWordLength) {
+  #createWordsParameter(words, descriptions, enableShortWordLength) {
     const data = [];
     const shortWordLength = enableShortWordLength ? this.shortWordLength : 0;
     for (let i = 0; i < words.length; i++) {

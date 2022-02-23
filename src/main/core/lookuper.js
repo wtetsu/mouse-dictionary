@@ -36,7 +36,7 @@ export default class Lookuper {
     }
   }
 
-  canUpdate() {
+  #canUpdate() {
     if (this.suspended) {
       return false;
     }
@@ -76,7 +76,7 @@ export default class Lookuper {
     return this.updateAll([text], withCapitalized, includeOriginalText, enableShortWord, threshold);
   }
 
-  async updateAll(textList, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
+  async #updateAll(textList, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
     const { content, hit } = await this.createContent(textList, withCapitalized, includeOriginalText, enableShortWord);
 
     if (hit >= threshold) {
@@ -84,7 +84,7 @@ export default class Lookuper {
     }
   }
 
-  async createContent(sourceTextList, withCapitalized, includeOriginalText, enableShortWord) {
+  async #createContent(sourceTextList, withCapitalized, includeOriginalText, enableShortWord) {
     const textList = [];
     for (let i = 0; i < sourceTextList.length; i++) {
       const text = sourceTextList[i].substring(0, this.textLengthLimit);
