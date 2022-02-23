@@ -32,7 +32,7 @@ export default class Generator {
   }
 
   generate(words, descriptions, enableShortWordLength = true) {
-    const html = this.createContentHtml(words, descriptions, enableShortWordLength);
+    const html = this.#createContentHtml(words, descriptions, enableShortWordLength);
     const hitCount = Object.keys(descriptions).length;
     return { html, hitCount };
   }
@@ -40,7 +40,7 @@ export default class Generator {
   #createContentHtml(words, descriptions, enableShortWordLength) {
     const parameters = {
       ...this.baseParameters,
-      words: this.createWordsParameter(words, descriptions, enableShortWordLength),
+      words: this.#createWordsParameter(words, descriptions, enableShortWordLength),
     };
     return template.render(this.contentTemplate, parameters);
   }
@@ -65,7 +65,7 @@ export default class Generator {
       }
       data.push({
         head: escapeHtml(word),
-        desc: this.createDescriptionHtml(desc),
+        desc: this.#createDescriptionHtml(desc),
         isShort: word.length <= shortWordLength,
         shortDesc: desc.substring(0, this.cutShortWordDescription),
         isFirst: false,

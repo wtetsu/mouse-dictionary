@@ -54,10 +54,10 @@ export default class Lookuper {
   }
 
   async lookupAll(textList) {
-    if (!this.canUpdate()) {
+    if (!this.#canUpdate()) {
       return;
     }
-    await this.updateAll(textList, this.lookupWithCapitalized, false, true, 0);
+    await this.#updateAll(textList, this.lookupWithCapitalized, false, true, 0);
   }
 
   async aimedLookup(text) {
@@ -73,11 +73,11 @@ export default class Lookuper {
     if (!text) {
       return;
     }
-    return this.updateAll([text], withCapitalized, includeOriginalText, enableShortWord, threshold);
+    return this.#updateAll([text], withCapitalized, includeOriginalText, enableShortWord, threshold);
   }
 
   async #updateAll(textList, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
-    const { content, hit } = await this.createContent(textList, withCapitalized, includeOriginalText, enableShortWord);
+    const { content, hit } = await this.#createContent(textList, withCapitalized, includeOriginalText, enableShortWord);
 
     if (hit >= threshold) {
       this.doUpdateContent(content, hit);
