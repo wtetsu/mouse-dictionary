@@ -72,3 +72,5 @@ dist-*/
 coverage/
 static_overwrite/
 static_pdf/
+
+keys.json

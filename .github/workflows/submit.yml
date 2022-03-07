@@ -1,0 +1,29 @@
+name: Submit Chrome and Firefox
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        market: [chrome, firefox]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - name: Install Packages
+        run: npm install
+      - name: Build
+        run: |
+          npm run package-${{ matrix.market }}
+      - name: Submit artifact
+        uses: plasmo-corp/bpp@v1
+        with:
+          artifact: mouse-dictionary-${{ matrix.market }}-{version}.zip
+          keys: ${{ secrets.SUBMIT_KEYS }}
