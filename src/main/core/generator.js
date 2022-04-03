@@ -63,10 +63,12 @@ export default class Generator {
       if (typeof desc !== "string") {
         continue;
       }
+      const isShort = word.length <= shortWordLength;
       data.push({
         head: escapeHtml(word),
         desc: this.#createDescriptionHtml(desc),
-        isShort: word.length <= shortWordLength,
+        isShort,
+        isShortWord: isShort,
         shortDesc: desc.substring(0, this.cutShortWordDescription),
         isFirst: false,
         isLast: false,
@@ -74,6 +76,7 @@ export default class Generator {
     }
     if (data.length >= 1) {
       data[0].isFirst = true;
+      data[0].isShort = false;
       data[data.length - 1].isLast = true;
     }
     return data;
