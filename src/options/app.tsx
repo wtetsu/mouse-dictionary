@@ -6,7 +6,7 @@
 
 import swal from "sweetalert";
 import React, { useEffect, useState } from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Main } from "./page/Main";
 import rule from "../main/core/rule";
 import { res } from "./logic";
@@ -78,7 +78,9 @@ const App = () => {
   }
 };
 
-render(<App />, document.getElementById("app"));
+const root = createRoot(document.getElementById("app"));
+
+root.render(<App />);
 
 // Lazy load
 rule.load();
