@@ -64,11 +64,12 @@ export default class Generator {
         continue;
       }
       const isShort = word.length <= shortWordLength;
+      const isShortWord = word.length <= this.shortWordLength;
       data.push({
         head: escapeHtml(word),
         desc: this.#createDescriptionHtml(desc),
         isShort,
-        isShortWord: isShort,
+        isShortWord,
         shortDesc: desc.substring(0, this.cutShortWordDescription),
         isFirst: false,
         isLast: false,
