@@ -21,6 +21,12 @@
   "commands": {
     "_execute_browser_action": {
       "description": "Activate the extension"
+    },
+    "scroll_down": {
+      "description": "Scroll down"
+    },
+    "scroll_up": {
+      "description": "Scroll up"
     }
   },
   "icons": {

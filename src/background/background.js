@@ -15,12 +15,21 @@ chrome.browserAction.onClicked.addListener(() => {
 
 // cross-extension messaging
 chrome.runtime.onMessageExternal.addListener((message) => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    for (let i = 0; i < tabs.length; i++) {
-      const tab = tabs[i];
-      chrome.tabs.sendMessage(tab.id, { message: message });
-    }
+  sendToActiveTab((tabId) => {
+    chrome.tabs.sendMessage(tabId, { message: message });
   });
+});
+
+// Shortcut key handling
+chrome.commands.onCommand.addListener((command) => {
+  switch (command) {
+    case "scroll_up":
+      sendToActiveTab((tabId) => chrome.tabs.sendMessage(tabId, { message: { type: "scroll_up" } }));
+      break;
+    case "scroll_down":
+      sendToActiveTab((tabId) => chrome.tabs.sendMessage(tabId, { message: { type: "scroll_down" } }));
+      break;
+  }
 });
 
 // PDF handling
@@ -48,3 +57,11 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     }
   }
 });
+
+const sendToActiveTab = (callback) => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    for (let i = 0; i < tabs.length; i++) {
+      callback(tabs[i].id);
+    }
+  });
+};

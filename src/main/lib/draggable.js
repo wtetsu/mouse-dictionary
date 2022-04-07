@@ -231,4 +231,12 @@ export default class Draggable {
     this.snap.deactivate();
     this.enableSnap = false;
   }
+
+  scroll(length) {
+    this.mainElement.scrollTop += length;
+  }
+
+  resetScroll() {
+    this.mainElement.scrollTop = 0;
+  }
 }

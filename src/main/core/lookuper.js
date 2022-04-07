@@ -55,25 +55,25 @@ export default class Lookuper {
 
   async lookupAll(textList) {
     if (!this.#canUpdate()) {
-      return;
+      return false;
     }
-    await this.#updateAll(textList, this.lookupWithCapitalized, false, true, 0);
+    return await this.#updateAll(textList, this.lookupWithCapitalized, false, true, 0);
   }
 
   async aimedLookup(text) {
     if (!text) {
       this.aimed = false;
-      return;
+      return false;
     }
     this.aimed = true;
-    await this.update(text, true, true, false, 1);
+    return await this.update(text, true, true, false, 1);
   }
 
   async update(text, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
     if (!text) {
-      return;
+      return false;
     }
-    return this.#updateAll([text], withCapitalized, includeOriginalText, enableShortWord, threshold);
+    return await this.#updateAll([text], withCapitalized, includeOriginalText, enableShortWord, threshold);
   }
 
   async #updateAll(textList, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
@@ -81,7 +81,9 @@ export default class Lookuper {
 
     if (hit >= threshold) {
       this.doUpdateContent(content, hit);
+      return true;
     }
+    return false;
   }
 
   async #createContent(sourceTextList, withCapitalized, includeOriginalText, enableShortWord) {

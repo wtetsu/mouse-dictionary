@@ -31,10 +31,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
     lookuper.suspended = true;
   });
 
-  document.body.addEventListener("mouseup", (e) => {
+  document.body.addEventListener("mouseup", async (e) => {
     draggable.onMouseUp(e);
     lookuper.suspended = false;
-    lookuper.aimedLookup(utils.getSelection());
+
+    const updated = await lookuper.aimedLookup(utils.getSelection());
+    if (updated) {
+      draggable.resetScroll();
+    }
 
     const range = utils.omap(dialog.style, utils.convertToInt, POSITION_FIELDS);
     const didMouseUpOnTheWindow = utils.isInsideRange(range, { x: e.clientX, y: e.clientY });
@@ -49,11 +53,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
     onMouseMove(e);
   };
 
-  const onMouseMoveSecondOrLater = (e) => {
+  const onMouseMoveSecondOrLater = async (e) => {
     draggable.onMouseMove(e);
     if (enableDefault) {
       const textList = traverse(e.target, e.clientX, e.clientY);
-      lookuper.lookupAll(textList);
+      const updated = await lookuper.lookupAll(textList);
+      if (updated) {
+        draggable.resetScroll();
+      }
     }
   };
   let onMouseMove = onMouseMoveFirst;
@@ -88,6 +95,12 @@ const attach = async (settings, dialog, doUpdateContent) => {
         break;
       case "disable_default":
         enableDefault = false;
+        break;
+      case "scroll_up":
+        draggable.scroll(-50);
+        break;
+      case "scroll_down":
+        draggable.scroll(50);
         break;
     }
   });
