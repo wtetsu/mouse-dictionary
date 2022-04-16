@@ -105,22 +105,23 @@ test("", () => {
 });
 
 test("", () => {
-  expect(text.splitString("camelCase")).toEqual([
+  expect(text.splitString("word", 2)).toEqual([]);
+  expect(text.splitString("camelCase", 2)).toEqual([
     "camel", //
     "Case",
     "case",
   ]);
-  expect(text.splitString("PascalCase")).toEqual([
+  expect(text.splitString("PascalCase", 2)).toEqual([
     "Pascal", //
     "pascal",
     "Case",
     "case",
   ]);
-  expect(text.splitString("snake_case")).toEqual([
+  expect(text.splitString("snake_case", 2)).toEqual([
     "snake", //
     "case",
   ]);
-  expect(text.splitString("UPPER_SNAKE_CASE")).toEqual([
+  expect(text.splitString("UPPER_SNAKE_CASE", 2)).toEqual([
     "UPPER", //
     "upper",
     "SNAKE",
@@ -129,20 +130,33 @@ test("", () => {
     "case",
   ]);
 
-  expect(text.splitString("Material-UI")).toEqual([
+  expect(text.splitString("Material-UI", 2)).toEqual([
     "Material", //
     "material",
     "UI",
     "ui",
   ]);
 
-  expect(text.splitString("Super_HTML-MASTER")).toEqual([
+  expect(text.splitString("Super_HTML-MASTER", 2)).toEqual([
     "Super", //
     "super",
     "HTML",
     "html",
     "MASTER",
     "master",
+  ]);
+
+  expect(text.splitString("this_is_a_pen", 2)).toEqual([
+    "this", //
+    "is",
+    "pen",
+  ]);
+
+  expect(text.splitString("this_is_a_pen", 1)).toEqual([
+    "this", //
+    "is",
+    "a",
+    "pen",
   ]);
 });
 

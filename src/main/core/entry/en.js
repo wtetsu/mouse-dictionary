@@ -316,7 +316,7 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
     }
     wordList.merge(text.tryToReplaceTrailingStrings(str, TRAILING_RULES));
 
-    const arr = text.splitString(str);
+    const arr = text.splitString(str, 2);
     if (arr.length >= 2) {
       wordList.push(arr.join(" "));
     }
