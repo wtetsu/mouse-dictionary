@@ -128,6 +128,22 @@ test("", () => {
     "CASE",
     "case",
   ]);
+
+  expect(text.splitString("Material-UI")).toEqual([
+    "Material", //
+    "material",
+    "UI",
+    "ui",
+  ]);
+
+  expect(text.splitString("Super_HTML-MASTER")).toEqual([
+    "Super", //
+    "super",
+    "HTML",
+    "html",
+    "MASTER",
+    "master",
+  ]);
 });
 
 test("", () => {

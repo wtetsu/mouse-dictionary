@@ -98,17 +98,15 @@ const makeArrayIncludingLoweredString = (str) => {
 };
 
 /**
- * "camelCase" -> ["camel", "case"]
+ * "camelCase" -> ["camel", "Case", "case"]
+ * "Material-UI" -> ["Material", "material", "UI", "ui"]
  */
 text.splitString = (str) => {
   const arr = [];
   let startIndex = 0;
   let i = 0;
   let isLastCapital = true;
-  for (;;) {
-    if (i >= str.length) {
-      break;
-    }
+  while (i < str.length) {
     const chCode = str.charCodeAt(i);
     const isCapital = chCode >= 65 && chCode <= 90;
     let wordToAdd = null;
@@ -116,9 +114,11 @@ text.splitString = (str) => {
     if (chCode === 35 || chCode === 45 || chCode === 46 || chCode === 95) {
       wordToAdd = str.substring(startIndex, i);
       startIndex = i + 1;
-    } else if (isCapital && !isLastCapital) {
+      isLastCapital = false;
+    } else if (isCapital && !isLastCapital && startIndex - i !== 0) {
       wordToAdd = str.substring(startIndex, i);
       startIndex = i;
+      isLastCapital = false;
     } else {
       isLastCapital = isCapital;
     }
