@@ -29,6 +29,10 @@ chrome.commands.onCommand.addListener((command) => {
     case "scroll_down":
       sendToActiveTab((tabId) => chrome.tabs.sendMessage(tabId, { message: { type: "scroll_down" } }));
       break;
+    case "lookup_pause":
+      sendToActiveTab((tabId) => chrome.tabs.sendMessage(tabId, { message: { type: "lookup_pause" } }));
+    break;
+
   }
 });
 

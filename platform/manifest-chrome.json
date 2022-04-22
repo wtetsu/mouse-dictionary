@@ -27,6 +27,9 @@
     },
     "scroll_up": {
       "description": "Scroll up"
+    },
+    "lookup_pause": {
+      "description": "単語検索の一時停止"
     }
   },
   "icons": {

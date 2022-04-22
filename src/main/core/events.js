@@ -102,6 +102,9 @@ const attach = async (settings, dialog, doUpdateContent) => {
       case "scroll_down":
         draggable.scroll(50);
         break;
+      case "lookup_pause":
+        lookuper.suspended = !lookuper.suspended;
+        break;
     }
   });
 
