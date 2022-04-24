@@ -23,10 +23,10 @@
       "description": "Activate the extension"
     },
     "scroll_down": {
-      "description": "Scroll down"
+      "description": "__MSG_scrollDown__"
     },
     "scroll_up": {
-      "description": "Scroll up"
+      "description": "__MSG_scrollUp__"
     }
   },
   "icons": {

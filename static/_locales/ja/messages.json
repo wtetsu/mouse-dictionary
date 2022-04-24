@@ -1,5 +1,11 @@
 {
   "appDesc": {
     "message": "英語学習者のための超高速辞書ツール"
+  },
+  "scrollDown": {
+    "message": "下スクロール"
+  },
+  "scrollUp": {
+    "message": "上スクロール"
   }
 }

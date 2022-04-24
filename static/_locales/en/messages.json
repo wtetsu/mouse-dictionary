@@ -1,5 +1,11 @@
 {
   "appDesc": {
     "message": "A super fast dictionary for language learners"
+  },
+  "scrollDown": {
+    "message": "Scroll down"
+  },
+  "scrollUp": {
+    "message": "Scroll up"
   }
 }
