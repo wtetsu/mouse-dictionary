@@ -39,7 +39,7 @@ const STYLE2: React.CSSProperties = {
   backgroundColor: "#fff4ff",
 };
 
-export const Launch: React.VFC<Props> = (props) => {
+export const Launch: React.FC<Props> = (props) => {
   const [hover, setHover] = useState(false);
 
   const enter = () => {

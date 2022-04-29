@@ -12,7 +12,7 @@ type Props = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export const EditableSpan: React.VFC<Props> = (props) => {
+export const EditableSpan: React.FC<Props> = (props) => {
   const [editable, setEditable] = useState(props.value === "");
 
   if (!editable) {

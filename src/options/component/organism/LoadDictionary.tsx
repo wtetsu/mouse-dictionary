@@ -28,7 +28,7 @@ type TriggerEvent =
     }
   | { type: "clear" };
 
-export const LoadDictionary: React.VFC<Props> = (props) => {
+export const LoadDictionary: React.FC<Props> = (props) => {
   const [encoding, setEncoding] = useState(props.defaultEncoding);
   const [format, setFormat] = useState(props.defaultFormat);
 

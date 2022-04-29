@@ -23,7 +23,7 @@ const DEFAULT_STYLE = {
   marginBottom: 20,
 };
 
-export const HighlightEditor: React.VFC<Props> = (props) => {
+export const HighlightEditor: React.FC<Props> = (props) => {
   return (
     <AceEditor
       mode={props.mode}

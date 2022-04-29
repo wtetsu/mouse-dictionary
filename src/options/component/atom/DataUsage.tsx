@@ -13,7 +13,7 @@ type Props = {
   onUpdate: (byteSize: number) => void;
 };
 
-export const DataUsage: React.VFC<Props> = (props) => {
+export const DataUsage: React.FC<Props> = (props) => {
   useEffect(() => {
     const updateSize = async () => {
       if (props.byteSize === null) {

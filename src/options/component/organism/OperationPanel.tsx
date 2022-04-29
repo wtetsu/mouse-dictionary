@@ -17,7 +17,7 @@ const style = { backgroundColor: "#FFFFFF", color: "#FF4500", transition: "0.5s"
 const style1 = { ...style, opacity: 0.0 };
 const style2 = { ...style, opacity: 1.0 };
 
-export const OperationPanel: React.VFC<Props> = (props) => {
+export const OperationPanel: React.FC<Props> = (props) => {
   const [mode, setMode] = useState<1 | 2>(1);
 
   return (

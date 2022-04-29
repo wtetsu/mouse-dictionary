@@ -31,7 +31,7 @@ const FONT_SIZES = [
   { name: "xx-large", value: "xx-large" },
 ];
 
-export const BasicSettings: React.VFC<Props> = (props) => {
+export const BasicSettings: React.FC<Props> = (props) => {
   const settings = props.settings;
   if (!settings) {
     return <div></div>;

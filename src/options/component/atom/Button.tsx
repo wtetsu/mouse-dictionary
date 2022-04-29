@@ -20,7 +20,7 @@ const CLASS = {
   json: "button-black",
 };
 
-export const Button: React.VFC<Props> = (props) => {
+export const Button: React.FC<Props> = (props) => {
   return (
     <button
       type="button"

@@ -72,7 +72,7 @@ const reduce = (state: Replace[], action: Action): Replace[] => {
   }
 };
 
-export const ReplaceRuleEditor: React.VFC<Props> = (props) => {
+export const ReplaceRuleEditor: React.FC<Props> = (props) => {
   const update = (action: Action) => {
     const newRules = reduce(props.replaceRules, action);
     props.onUpdate(newRules);

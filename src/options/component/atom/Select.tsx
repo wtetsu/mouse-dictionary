@@ -13,7 +13,7 @@ type Props = {
   style?: React.CSSProperties;
 };
 
-export const Select: React.VFC<Props> = (props) => {
+export const Select: React.FC<Props> = (props) => {
   return (
     <select value={props.value} style={props.style} onChange={(e) => props.onChange(e.target.value)}>
       {props.options.map((e) => (

@@ -27,7 +27,7 @@ const LINK_STYLE: React.CSSProperties = {
   fontSize: "small",
 };
 
-export const Tips: React.VFC<TipsProps> = (props) => {
+export const Tips: React.FC<TipsProps> = (props) => {
   const tips = [
     { text: res.get("windowManipulation"), href: Links.windowManipulation },
     { text: res.get("downloadDictData"), href: Links.downloadDictData },

@@ -60,7 +60,7 @@ const COPY_BUTTON_STYLES: React.CSSProperties = {
 const COPY_BUTTON_STYLES1 = { ...COPY_BUTTON_STYLES, color: "#808080" } as React.CSSProperties;
 const COPY_BUTTON_STYLES2 = { ...COPY_BUTTON_STYLES, color: "#FF4500" } as React.CSSProperties;
 
-export const WholeSettings: React.VFC<Props> = (props) => {
+export const WholeSettings: React.FC<Props> = (props) => {
   const [json, setJson] = React.useState(() => {
     const initialValue = data.postProcessSettings(props.initialValue);
     return JSON.stringify(initialValue, null, 2);
