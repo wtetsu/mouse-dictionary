@@ -13,7 +13,7 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export const ExternalLink: React.VFC<Props> = (props) => {
+export const ExternalLink: React.FC<Props> = (props) => {
   return (
     <a href={props.href} target="_blank" rel="noopener noreferrer" style={{ ...props.style, textDecoration: "underline" }}>
       {props.children}

@@ -11,7 +11,7 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export const Panel: React.VFC<Props> = (props) => {
+export const Panel: React.FC<Props> = (props) => {
   if (!props.active) {
     return <></>;
   }

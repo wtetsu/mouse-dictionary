@@ -62,7 +62,7 @@ const initialState: MainState = {
 
 type UpdateState = (state: Partial<MainState>) => void;
 
-export const Main: React.VFC = () => {
+export const Main: React.FC = () => {
   const refPreview = useRef<Preview>();
 
   const [state, dispatch] = useReducer(reducer, { ...initialState, lang: res.getLang() });

@@ -9,8 +9,6 @@ export type InitialPosition = "left" | "right" | "keep";
 export type Scroll = "scroll" | "hidden";
 
 export type MouseDictionaryBasicSettings = {
-  shortWordLength: number;
-  cutShortWordDescription: number;
   initialPosition: InitialPosition;
   scroll: Scroll;
   backgroundColor: string;
@@ -24,6 +22,8 @@ export type MouseDictionaryBasicSettings = {
 };
 
 export type MouseDictionaryAdvancedSettings = {
+  shortWordLength: number;
+  cutShortWordDescription: number;
   lookupWithCapitalized: boolean;
   parseWordsLimit: number;
   replaceRules: Replace[];

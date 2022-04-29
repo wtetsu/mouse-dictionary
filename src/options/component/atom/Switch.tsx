@@ -11,7 +11,7 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export const Switch: React.VFC<Props> = (props) => {
+export const Switch: React.FC<Props> = (props) => {
   if (!props.visible) {
     return <></>;
   }

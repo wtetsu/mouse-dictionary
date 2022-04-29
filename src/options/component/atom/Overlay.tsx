@@ -11,7 +11,7 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export const Overlay: React.VFC<Props> = (props) => {
+export const Overlay: React.FC<Props> = (props) => {
   if (!props.active) {
     return <></>;
   }
