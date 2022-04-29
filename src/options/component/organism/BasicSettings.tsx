@@ -83,24 +83,6 @@ export const BasicSettings: React.VFC<Props> = (props) => {
           />
         </label>
 
-        <label>{res.get("abbreviateShortWordDesc")}</label>
-        <span> {res.get("abbreviateShortWordDesc0")} </span>
-        <input
-          type="number"
-          name="shortWordLength"
-          value={settings.shortWordLength}
-          style={{ width: 60 }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
-        />
-        <span> {res.get("abbreviateShortWordDesc1")} </span>
-        <input
-          type="number"
-          name="cutShortWordDescription"
-          value={settings.cutShortWordDescription}
-          style={{ width: 60 }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
-        />
-        <span> {res.get("abbreviateShortWordDesc2")}</span>
         <label>{res.get("initialSize")}</label>
         <span>{res.get("width")}</span>
         <input

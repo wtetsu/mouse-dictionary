@@ -43,6 +43,24 @@ export const AdvancedSettings: React.VFC<AdvancedSettingsProps> = (props) => {
     <form className="settingsForm">
       <fieldset>
         <h2>{res.get("advancedSettings")}</h2>
+        <label>{res.get("abbreviateShortWordDesc")}</label>
+        <span> {res.get("abbreviateShortWordDesc0")} </span>
+        <input
+          type="number"
+          name="shortWordLength"
+          value={props.settings.shortWordLength}
+          style={{ width: 60 }}
+          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
+        />
+        <span> {res.get("abbreviateShortWordDesc1")} </span>
+        <input
+          type="number"
+          name="cutShortWordDescription"
+          value={props.settings.cutShortWordDescription}
+          style={{ width: 60 }}
+          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
+        />
+        <span> {res.get("abbreviateShortWordDesc2")}</span>
         <label>
           {res.get("lookupWithCapitalized")}
           <input
