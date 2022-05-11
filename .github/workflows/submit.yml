@@ -23,7 +23,7 @@ jobs:
         run: |
           npm run package-${{ matrix.market }}
       - name: Submit artifact
-        uses: plasmo-corp/bpp@v1
+        uses: PlasmoHQ/bpp@v2
         with:
           artifact: mouse-dictionary-${{ matrix.market }}-{version}.zip
           keys: ${{ secrets.SUBMIT_KEYS }}
