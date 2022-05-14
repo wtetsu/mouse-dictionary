@@ -7,11 +7,20 @@
 import ExpiringQueue from "./queue";
 import uniqueId from "./unique";
 
-chrome.browserAction.onClicked.addListener(() => {
-  chrome.tabs.executeScript({
-    file: "./main.js",
+if (BROWSER === "CHROME") {
+  chrome.action.onClicked.addListener((tab) => {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ["main.js"],
+    });
   });
-});
+} else {
+  chrome.browserAction.onClicked.addListener(() => {
+    chrome.tabs.executeScript({
+      file: "./main.js",
+    });
+  });
+}
 
 // cross-extension messaging
 chrome.runtime.onMessageExternal.addListener((message) => {

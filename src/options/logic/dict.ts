@@ -123,7 +123,7 @@ export const registerDefaultDict = async (fnProgress: ProgressCallback): Promise
 };
 
 const loadJsonFile = async (fname: string): Promise<Record<string, any>> => {
-  const url = chrome.extension.getURL(fname);
+  const url = chrome.runtime.getURL(fname);
   const response = await fetch(url);
   return response.json();
 };

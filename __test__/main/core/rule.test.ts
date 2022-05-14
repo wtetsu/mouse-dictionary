@@ -3,7 +3,7 @@ import rule from "../../../src/main/core/rule";
 import fs from "fs";
 
 beforeAll(() => {
-  define("chrome.extension.getURL", (name) => name);
+  define("chrome.runtime.getURL", (name) => name);
   define("fetch", async (file) => {
     const data = fs.readFileSync(file);
     return {
