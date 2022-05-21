@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import entry from "./entry";
 import Generator from "./generator";
 import dom from "../lib/dom";
 import storage from "../lib/storage";
@@ -14,9 +13,10 @@ import utils from "../lib/utils";
 const TEXT_LENGTH_LIMIT = 128;
 
 export default class Lookuper {
-  constructor(settings, doUpdateContent) {
+  constructor(settings, doBuildEntry, doUpdateContent) {
     this.lookupWithCapitalized = settings.lookupWithCapitalized;
     this.doUpdateContent = doUpdateContent;
+    this.doBuildEntry = doBuildEntry;
 
     this.lastText = null;
     this.aimed = false;
@@ -127,7 +127,7 @@ export default class Lookuper {
     const langs = [];
     for (let i = 0; i < textList.length; i++) {
       const text = textList[i];
-      const { entries, lang } = entry.build(text, withCapitalized, includeOrgText);
+      const { entries, lang } = this.doBuildEntry(text, withCapitalized, includeOrgText);
       console.info(`${entries.join(",")}`);
       console.info(`${entries.length}`);
 

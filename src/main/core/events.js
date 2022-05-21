@@ -6,6 +6,7 @@
 
 import config from "./config";
 import rule from "./rule";
+import entryDefault from "./entry/default";
 import Lookuper from "./lookuper";
 import dom from "../lib/dom";
 import traverser from "../lib/traverser";
@@ -19,7 +20,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
   let enableDefault = true;
 
   const traverse = traverser.build(rule.doLetters, settings.parseWordsLimit);
-  const lookuper = new Lookuper(settings, doUpdateContent);
+  const lookuper = new Lookuper(settings, entryDefault(), doUpdateContent);
 
   const draggable = new Draggable(settings.normalDialogStyles, settings.movingDialogStyles);
   draggable.events.change = (e) => config.savePosition(e);
