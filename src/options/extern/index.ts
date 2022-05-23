@@ -8,6 +8,7 @@
 // References to "main" functions
 
 import entry from "../../main/core/entry";
+import entryDefault from "../../main/core/entry/default";
 import Generator from "../../main/core/generator";
 import view from "../../main/core/view";
 import dom from "../../main/lib/dom";
@@ -18,4 +19,4 @@ import * as env from "./env";
 import * as storage from "./storage";
 import * as defaultSettings from "./settings";
 
-export { entry, Generator, view, dom, template, defaultSettings, env, config, storage };
+export { entry, entryDefault, Generator, view, dom, template, defaultSettings, env, config, storage };

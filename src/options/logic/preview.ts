@@ -6,7 +6,7 @@
 
 import immer from "immer";
 import { debounce } from "../logic";
-import { dom, Generator, view, entry, storage } from "../extern";
+import { dom, Generator, view, entryDefault, storage } from "../extern";
 import { MouseDictionarySettings } from "../types";
 
 type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };
@@ -16,6 +16,7 @@ export class Preview {
   update: (settings: MouseDictionarySettings, text: string, refresh: boolean) => void;
   previewWindow: PreviewWindow;
   generator: Generator;
+  buildEntries: (text: string, withCapitalized: boolean, includeOrgText: boolean) => { entries: string[]; lang: string };
 
   constructor(settings: MouseDictionarySettings) {
     this.update = debounce(this.updateBody.bind(this), 64);
@@ -24,6 +25,7 @@ export class Preview {
     document.body.appendChild(this.element);
     this.refreshGenerator(settings);
     this.refreshElement(settings);
+    this.buildEntries = entryDefault();
   }
 
   updateBody(settings: MouseDictionarySettings, text: string, refresh: boolean): void {
@@ -43,7 +45,7 @@ export class Preview {
   }
 
   async updateText(previewText: string, lookupWithCapitalized: boolean): Promise<void> {
-    const { entries, lang } = entry.build(previewText, lookupWithCapitalized, false);
+    const { entries, lang } = this.buildEntries(previewText, lookupWithCapitalized, false);
 
     console.time("update");
 
