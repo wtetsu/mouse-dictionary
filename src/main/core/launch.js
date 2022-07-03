@@ -116,7 +116,7 @@ const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
   if (userSettings.initialPosition === "keep") {
     newPosition = utils.optimizeInitialPosition(storedPosition);
   } else {
-    newPosition = getInitialPosition(userSettings.initialPosition, dialogWidth);
+    newPosition = utils.optimizePosition(userSettings.initialPosition, dialogWidth);
   }
   const positionStyles = utils.convertToStyles(newPosition);
   const newStyles = Object.assign(positionStyles, userSettings.normalDialogStyles);
@@ -146,19 +146,4 @@ const setEvents = async (area, userSettings) => {
     }
     doUpdate = (newDom) => dom.replace(area.content, newDom);
   };
-};
-
-const EDGE_SPACE = 5;
-
-const getInitialPosition = (type, dialogWidth) => {
-  const position = {};
-  switch (type) {
-    case "right":
-      position.left = document.documentElement.clientWidth - dialogWidth - EDGE_SPACE;
-      break;
-    case "left":
-      position.left = EDGE_SPACE;
-      break;
-  }
-  return position;
 };

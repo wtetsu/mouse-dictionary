@@ -91,6 +91,21 @@ const optimizeInitialPosition = (position, minWindowSize = 50, edgeSpace = 5) =>
   };
 };
 
+const EDGE_SPACE = 5;
+
+const optimizePosition = (type, dialogWidth) => {
+  const position = {};
+  switch (type) {
+    case "right":
+      position.left = document.documentElement.clientWidth - dialogWidth - EDGE_SPACE;
+      break;
+    case "left":
+      position.left = EDGE_SPACE;
+      break;
+  }
+  return position;
+};
+
 const clamp = (value, minValue, maxValue) => {
   let r = value;
   r = min(r, maxValue);
@@ -128,5 +143,6 @@ export default {
   convertToInt,
   convertToStyles,
   optimizeInitialPosition,
+  optimizePosition,
   getSelection,
 };

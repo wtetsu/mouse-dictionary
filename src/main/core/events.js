@@ -28,6 +28,17 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   setDialogEvents(dialog);
 
+  window.addEventListener("resize", () => {
+    if (settings.initialPosition === "keep") {
+      return;
+    }
+
+    const newPosition = utils.optimizePosition(settings.initialPosition, dialog.clientWidth);
+    const positionStyles = utils.convertToStyles(newPosition);
+    const newStyles = Object.assign(positionStyles, settings.normalDialogStyles);
+    dom.applyStyles(dialog, newStyles);
+  });
+
   document.body.addEventListener("mousedown", () => {
     lookuper.suspended = true;
   });
