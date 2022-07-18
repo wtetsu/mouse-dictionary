@@ -1,10 +1,18 @@
-[![Test](https://github.com/wtetsu/mouse-dictionary/workflows/Test/badge.svg)](https://github.com/wtetsu/mouse-dictionary/actions?query=workflow%3ATest)
-[![Code Climate](https://codeclimate.com/github/wtetsu/mouse-dictionary/badges/gpa.svg)](https://codeclimate.com/github/wtetsu/mouse-dictionary)
-[![codecov](https://codecov.io/gh/wtetsu/mouse-dictionary/branch/master/graph/badge.svg)](https://codecov.io/gh/wtetsu/mouse-dictionary)
+<p align="center">
+  <img width="400" src="https://github.com/wtetsu/mouse-dictionary/blob/images/logo.png" alt="Mouse Dictionary logo" />
+  <br/>
+</p>
+
+<p align="center">
+  <a href="https://github.com/wtetsu/mouse-dictionary/actions?query=workflow%3ATest"><img src="https://github.com/wtetsu/mouse-dictionary/workflows/Test/badge.svg" alt="Test" /></a>
+  <a href="https://codeclimate.com/github/wtetsu/mouse-dictionary"><img src="https://codeclimate.com/github/wtetsu/mouse-dictionary/badges/gpa.svg" alt="Code Climate" /></a>
+  <a href="https://codecov.io/gh/wtetsu/mouse-dictionary"><img src="https://codecov.io/gh/wtetsu/mouse-dictionary/branch/master/graph/badge.svg" alt="codecov" /></a>
+</p>
+
+
+
 
 # Mouse Dictionary: Super Fast Dictionary
-
-<img src="https://github.com/wtetsu/mouse-dictionary/blob/images/logo.png" title="Mouse Dictionary" width="400" height="229">
 
 [Mouse Dictionary](https://mouse-dictionary.netlify.app/en/) is a super fast dictionary for Chrome and Firefox.
 
