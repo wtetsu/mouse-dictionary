@@ -149,7 +149,7 @@ This project includes some third-party data:
 
 ### Great JavaScript libraries
 
-- See [package.json](./package.json) and [license.json](https://github.com/wtetsu/mouse-dictionary/actions/workflows/license.yml)
+- See [package.json](./package.json) and [license.html](https://github.com/wtetsu/mouse-dictionary/releases)
 
 ## See also
 
