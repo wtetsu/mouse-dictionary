@@ -1,6 +1,9 @@
 name: License
 
-on: [push, pull_request]
+on:
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
@@ -22,8 +25,9 @@ jobs:
         run: npm install
       - name: License
         run: license-checker --json --out license.json
-      - name: Upload Build as Artifact
-        uses: actions/upload-artifact@v2
+      - name: Make HTML
+        run: node build_tools/make_license_html.js license.json
+      - name: Upload
+        uses: softprops/action-gh-release@v1
         with:
-          name: license.json
-          path: license.json
+          files: license.html
