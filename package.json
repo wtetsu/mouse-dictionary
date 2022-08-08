@@ -1,9 +1,9 @@
 {
-  "name": "mouse-dictionary",
-  "version": "1.5.14",
-  "repository": "https://github.com/wtetsu/mouse-dictionary.git",
-  "author": "wtetsu",
+  "name": "tsunagaru-word-picker",
+  "version": "1.0",
+  "author": "Tomonori Takeuchi",
   "license": "MIT",
+  "copyright": "wtetsu",
   "scripts": {
     "build": "npm run build-chrome && npm run build-firefox",
     "watch": "webpack -w --env platform=chrome",

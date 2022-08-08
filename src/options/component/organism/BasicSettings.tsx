@@ -53,6 +53,9 @@ export const BasicSettings: React.VFC<Props> = (props) => {
     { name: res.get("scrollOff"), value: "hidden" },
   ];
 
+  const eitangoEmail = props.settings?.eitangoEmail ?? "";
+  const eitangoPassword = props.settings?.eitangoPassword ?? "";
+
   const update = (patch: Partial<MouseDictionaryBasicSettings>) => {
     const newPatch = immer(patch, (d) => {
       for (const name of Object.keys(patch)) {
@@ -72,52 +75,27 @@ export const BasicSettings: React.VFC<Props> = (props) => {
   return (
     <form className="settingsForm">
       <fieldset>
-        <h2>{res.get("basicSettings")}</h2>
-        <label>
-          {res.get("skipPdfConfirmation")}
-          <input
-            type="checkbox"
-            name="lookupWithCapitalized"
-            onChange={(e) => update({ skipPdfConfirmation: e.target.checked })}
-            checked={settings.skipPdfConfirmation}
-          />
-        </label>
 
-        <label>{res.get("abbreviateShortWordDesc")}</label>
-        <span> {res.get("abbreviateShortWordDesc0")} </span>
+        <label>{res.get("eitangoEmail")}</label>
         <input
-          type="number"
-          name="shortWordLength"
-          value={settings.shortWordLength}
-          style={{ width: 60 }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
+          type="text"
+          name="eitangoEmail"
+          value={settings.eitangoEmail}
+          style={{ width: 200 }}
+          onChange={(e) => update({ [e.target.name]: e.target.value })}
         />
-        <span> {res.get("abbreviateShortWordDesc1")} </span>
+
+        <label>{res.get("eitangoPassword")}</label>
         <input
-          type="number"
-          name="cutShortWordDescription"
-          value={settings.cutShortWordDescription}
-          style={{ width: 60 }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
+          type="text"
+          name="eitangoPassword"
+          value={settings.eitangoPassword}
+          style={{ width: 200 }}
+          onChange={(e) => update({ [e.target.name]: e.target.value })}
         />
-        <span> {res.get("abbreviateShortWordDesc2")}</span>
-        <label>{res.get("initialSize")}</label>
-        <span>{res.get("width")}</span>
-        <input
-          type="number"
-          name="width"
-          value={settings.width}
-          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : null }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
-        />
-        <span> {res.get("height")}</span>
-        <input
-          type="number"
-          name="height"
-          value={settings.height}
-          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : null }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
-        />
+
+        <hr style={{ marginBottom: 15 }} />
+
         <label>{res.get("initialPosition")}</label>
         <Select
           value={settings.initialPosition}
@@ -126,21 +104,11 @@ export const BasicSettings: React.VFC<Props> = (props) => {
           onChange={(value) => update({ initialPosition: value as InitialPosition })}
         />
 
-        <label>{res.get("scrollBar")}</label>
-        <Select
-          value={settings.scroll}
-          options={scrolls}
-          style={{ width: 250 }}
-          onChange={(value) => update({ scroll: value as Scroll })}
-        />
-
-        <br />
-
         <h3>{res.get("colorAndFont")}</h3>
         <div className="container">
           <div className="row" style={{ width: 690 }}>
             <div className="column">
-              <h4>{res.get("headFont")}</h4>
+              <label>{res.get("headFont")}</label>
               <ChromePicker
                 width={200}
                 color={settings.headFontColor}
@@ -156,7 +124,7 @@ export const BasicSettings: React.VFC<Props> = (props) => {
               />
             </div>
             <div className="column">
-              <h4>{res.get("descFont")}</h4>
+              <label>{res.get("descFont")}</label>
               <ChromePicker
                 width={200}
                 color={settings.descFontColor}
@@ -164,6 +132,7 @@ export const BasicSettings: React.VFC<Props> = (props) => {
                 onChange={(e: ColorPickerChangeEvent) => update({ descFontColor: e.hex })}
               />
               <br />
+
               <Select
                 value={settings.descFontSize}
                 options={FONT_SIZES}
@@ -172,7 +141,7 @@ export const BasicSettings: React.VFC<Props> = (props) => {
               />
             </div>
             <div className="column">
-              <h4>{res.get("background")}</h4>
+              <label>{res.get("background")}</label>
               <ChromePicker
                 width={200}
                 color={settings.backgroundColor}
@@ -182,6 +151,7 @@ export const BasicSettings: React.VFC<Props> = (props) => {
             </div>
           </div>
         </div>
+
         {props.children}
       </fieldset>
     </form>

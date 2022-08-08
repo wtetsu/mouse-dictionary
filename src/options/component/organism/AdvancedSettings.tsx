@@ -43,60 +43,7 @@ export const AdvancedSettings: React.VFC<AdvancedSettingsProps> = (props) => {
     <form className="settingsForm">
       <fieldset>
         <h2>{res.get("advancedSettings")}</h2>
-        <label>
-          {res.get("lookupWithCapitalized")}
-          <input
-            type="checkbox"
-            onChange={(e) => update({ lookupWithCapitalized: e.target.checked })}
-            checked={lookupWithCapitalized}
-          />
-        </label>
-        <label>
-          {res.get("parseWordsLimit")}
-          &nbsp;
-          <input
-            type="number"
-            value={parseWordsLimit}
-            onChange={(e) => update({ parseWordsLimit: parseInt(e.target.value, 10) })}
-            style={{ width: 60 }}
-          />
-        </label>
-        <label>{res.get("pdfUrlPattern")}</label>
-        &nbsp;
-        <input
-          type="text"
-          value={pdfUrl}
-          onChange={(e) => update({ pdfUrl: e.target.value })}
-          style={{ width: 600 }}
-          placeholder="\.pdf$"
-        />
-        <h3>
-          {res.get("htmlTemplate")}
-          <a
-            href="https://github.com/wtetsu/mouse-dictionary/wiki/HTML-templates"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ textDecoration: "underline", fontSize: "medium" }}
-          >
-            ?
-          </a>
-        </h3>
-        <label>{res.get("htmlTemplateWindow")}</label>
-        <HighlightEditor
-          mode="html"
-          theme="xcode"
-          onChange={(value) => update({ dialogTemplate: value })}
-          value={dialogTemplate}
-          style={{ height: 250 }}
-        />
-        <label>{res.get("htmlTemplateDesc")}</label>
-        <HighlightEditor
-          mode="html"
-          theme="xcode"
-          onChange={(value) => update({ contentWrapperTemplate: value })}
-          value={contentWrapperTemplate}
-          style={{ height: 70 }}
-        />
+
         <label>{res.get("htmlTemplateDescText")}</label>
         <HighlightEditor
           mode="html"
@@ -105,36 +52,6 @@ export const AdvancedSettings: React.VFC<AdvancedSettingsProps> = (props) => {
           value={contentTemplate}
           style={{ height: 400 }}
         />
-        <h3>{res.get("styles")}</h3>
-        <label>{res.get("stylesActive")}</label>
-        <HighlightEditor
-          mode="json"
-          theme="tomorrow"
-          onChange={(value) => update({ normalDialogStyles: value })}
-          value={normalDialogStyles}
-          style={{ height: 85 }}
-        />
-        <label>{res.get("stylesMoving")}</label>
-        <HighlightEditor
-          mode="json"
-          theme="tomorrow"
-          onChange={(json) => update({ movingDialogStyles: json })}
-          value={movingDialogStyles}
-          style={{ height: 85 }}
-        />
-        <label>{res.get("stylesInactive")}</label>
-        <HighlightEditor
-          mode="json"
-          theme="tomorrow"
-          onChange={(value) => update({ hiddenDialogStyles: value })}
-          value={hiddenDialogStyles}
-          style={{ height: 85 }}
-        />
-        <h3>{res.get("replaceRules")}</h3>
-        <ReplaceRuleEditor
-          replaceRules={props.settings.replaceRules}
-          onUpdate={(rules) => update({ replaceRules: rules })}
-        ></ReplaceRuleEditor>
       </fieldset>
     </form>
   );

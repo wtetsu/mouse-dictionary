@@ -7,10 +7,14 @@ body {
 }
 
 h2 {
+  font-size: 24px;
+  font-weight: bold;
   margin-top: 40px;
 }
 
 h3 {
+  font-size: 20px;
+  font-weight: bold;
   margin-top: 40px;
 }
 
@@ -30,6 +34,22 @@ h3 {
 }
 
 /* https://milligram.io/#buttons */
+
+/* Overwrap Primary Color */
+a {
+  color: #2C65B8;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.button, button, input[type='button'], input[type='reset'], input[type='submit'] {
+  background-color: #2C65B8;
+  border-color: #2C65B8;
+}
+
+.button.button-outline, button.button-outline, input[type='button'].button-outline, input[type='reset'].button-outline, input[type='submit'].button-outline {
+  color: #2C65B8;
+}
 
 /* Custom color */
 .button-black {

@@ -22,6 +22,9 @@ export default {
   width: 350,
   height: 500,
 
+  eitangoEmail: "",
+  eitangoPassword: "",
+
   replaceRules: [
     {
       search: "(■.+|◆.+)",

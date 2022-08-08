@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "Mouse Dictionary",
+  "name": "つながる英単語 Picker",
   "version": "",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
-  "author": "wtetsu",
+  "author": "Tomonori Takeuchi",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true

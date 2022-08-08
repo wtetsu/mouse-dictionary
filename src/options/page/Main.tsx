@@ -2,6 +2,7 @@
  * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
  * Copyright 2018-present wtetsu
  * Licensed under MIT
+ *
  */
 
 import React, { useReducer, useEffect, useRef } from "react";
@@ -54,7 +55,7 @@ const initialState: MainState = {
   busy: false,
   progress: "",
   settings: {} as MouseDictionarySettings,
-  previewText: "rained cats and dogs",
+  previewText: "give someone a hand",
   panelLevel: 0,
   lang: "",
   initialized: false,
@@ -117,14 +118,14 @@ export const Main: React.VFC = () => {
 
   return (
     <>
-      <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        <ExternalLink href={`https://mouse-dictionary.netlify.app/${state.lang}/`}>
-          <img src="img/logo.png" width="250" className="hover_zoom" />
+      <div style={{ textAlign: "center", marginBottom: "50px", marginTop: "50px" }}>
+        <ExternalLink href={`https://urbanmeetup.tokyo/mouse-dic/${state.lang}/`}>
+          <img src="img/eitango_logo.png" width="250" className="hover_zoom" />
         </ExternalLink>
       </div>
 
-      <div>
-        <div style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }} onClick={() => switchLanguage()}>
+      <div style={{ marginBottom: 20 }} >
+        <div style={{ position: "fixed", top: 5, right: 30, cursor: "pointer" }} onClick={() => switchLanguage()}>
           {state.lang}
         </div>
         <LoadDictionary
@@ -149,22 +150,12 @@ export const Main: React.VFC = () => {
 
         <div style={{ cursor: "pointer", fontSize: "75%" }} onClick={() => updateState({ dictDataUsage: -1 })}></div>
 
-        <Switch visible={state.initialized && state.panelLevel === 0}>
-          <Tips style={{ position: "absolute", bottom: -10, left: 315, width: 300 }} />
-          <Launch
-            href="pdf/web/viewer.html"
-            text={res.get("openPdfViewer")}
-            image="img/pdf.png"
-            style={{ position: "absolute", bottom: 0, left: 380 }}
-          />
-        </Switch>
-
         <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
           <hr style={{ marginTop: 15 }} />
 
           <Toggle
             switch={state.panelLevel >= 1}
-            image="img/settings1.png"
+            image="img/icon_setting.png"
             text1={res.get("openBasicSettings")}
             text2={res.get("closeBasicSettings")}
             onClick={() => updateState({ panelLevel: state.panelLevel !== 0 ? 0 : 1 })}
@@ -172,14 +163,7 @@ export const Main: React.VFC = () => {
         </Panel>
 
         <Panel active={state.panelLevel >= 1}>
-          <div style={{ marginBottom: 20 }}>
-            <span>{res.get("previewText")}: </span>
-            <EditableSpan
-              value={state.previewText}
-              style={{ width: 300 }}
-              onChange={(e) => updateState({ previewText: e.target.value })}
-            ></EditableSpan>
-          </div>
+
           <OperationPanel
             disable={state.busy}
             trigger={(type) => {
@@ -191,24 +175,29 @@ export const Main: React.VFC = () => {
               }
             }}
           />
+
+          <br />
+          <br />
+
+          <div style={{ position: "fixed", bottom: 10, left: 10, zIndex: 10, fontSize: 14}}>
+            <span>{res.get("previewText")}: </span>
+            <EditableSpan
+              value={state.previewText}
+              style={{ width: 300 }}
+              onChange={(e) => updateState({ previewText: e.target.value })}
+            ></EditableSpan>
+          </div>
+
           <BasicSettings
             onUpdate={(statePatch, settingsPatch) => updateState(statePatch, settingsPatch)}
             busy={state.busy}
             settings={state.settings}
           >
-            <label>{res.get("dictionaryData")}</label>
-            <Button
-              type="revert"
-              text={res.get("loadInitialDict")}
-              disabled={state.busy}
-              onClick={() => confirmAndLoadInitialDict("confirmReloadInitialDict", updateState)}
-            />
           </BasicSettings>
-          <br />
 
           <Toggle
             switch={state.panelLevel >= 2}
-            image="img/settings2.png"
+            image="img/icon_setting.png"
             text1={res.get("openAdvancedSettings")}
             text2={res.get("closeAdvancedSettings")}
             onClick={() => updateState({ panelLevel: state.panelLevel !== 1 ? 1 : 2 })}
@@ -216,25 +205,21 @@ export const Main: React.VFC = () => {
         </Panel>
 
         <Panel active={state.panelLevel >= 2}>
-          <Button
-            type="json"
-            text={res.get("openJsonEditor")}
-            disabled={state.busy}
-            onClick={() => updateState({ panelLevel: 3 })}
-          />
 
           <AdvancedSettings
             onUpdate={(statePatch, settingsPatch) => updateState(statePatch, settingsPatch)}
             settings={state.settings}
           />
-        </Panel>
 
-        <Overlay active={state.panelLevel >= 3}>
-          <WholeSettings
-            initialValue={state.settings}
-            onChange={(newSettings) => updateState({ panelLevel: 2 }, newSettings)}
+          <label>{res.get("dictionaryData")}</label>
+          <Button
+            type="revert"
+            text={res.get("loadInitialDict")}
+            disabled={state.busy}
+            onClick={() => confirmAndLoadInitialDict("confirmReloadInitialDict", updateState)}
           />
-        </Overlay>
+
+        </Panel>
       </div>
     </>
   );

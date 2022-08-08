@@ -14,7 +14,7 @@ type Props = {
   onClick: MouseEventHandler<HTMLAnchorElement>;
 };
 
-const style = { verticalAlign: "bottom", marginRight: 2, transition: "0.5s" };
+const style = { verticalAlign: "bottom", width: 26, marginRight: 4, transition: "0.5s" };
 const style1 = { ...style, transform: "rotateZ(0deg)" };
 const style2 = { ...style, transform: "rotateZ(-250deg)" };
 
