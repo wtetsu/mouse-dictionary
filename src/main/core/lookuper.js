@@ -4,6 +4,7 @@
  * Licensed under MIT
  */
 
+import ajax from "../lib/ajax";
 import entry from "./entry";
 import Generator from "./generator";
 import dom from "../lib/dom";
@@ -24,6 +25,9 @@ export default class Lookuper {
     this.halfLocked = false;
     this.textLengthLimit = TEXT_LENGTH_LIMIT;
     this.counter = 0;
+
+    this.eitangoEmail = settings.eitangoEmail;
+    this.eitangoPassword = settings.eitangoPassword;
 
     // Compile templates, regular expressions so that it works fast
     this.generator = new Generator(settings);
@@ -81,6 +85,48 @@ export default class Lookuper {
 
     if (hit >= threshold) {
       this.doUpdateContent(content, hit);
+
+      // 単語登録イベントの追加
+      const eitango_buttons = document.querySelectorAll('.eitango_word_register');
+
+      eitango_buttons.forEach((button) => {
+        // 値を設定
+        const word = button.querySelector('.word').defaultValue;
+        const definition = button.querySelector('.definition').defaultValue;
+        const email = this.eitangoEmail;
+        const password = this.eitangoPassword;
+
+        // イベントを設定
+        button.onclick = () => {
+          console.log("クリック");
+
+          // チェック
+          if (word == "") {
+            alert("単語がありません。");
+
+          } else if (email == "" | password == "") {
+            const str = "単語を登録するには、メールアドレス等の入力が必要です。拡張機能のオプション画面から連携設定を行ってください。";
+
+            const error_message_box = document.getElementById('eitango_error_message_box');
+            const message = document.getElementById('eitango_error_message');
+
+            message.innerHTML = str;
+            error_message_box.style.display = "flex";
+            setTimeout(() => {
+              error_message_box.style.display = "none";
+            }, 2000);
+
+          } else { // 実行
+            eitangoAjax(word, definition, email, password);
+          }
+        };
+      });
+
+      const eitango_picker = document.getElementById('eitango_picker');
+      eitango_picker.onclick = () => {
+        this.suspended = true;
+      };
+
       return true;
     }
     return false;
@@ -185,4 +231,21 @@ const capture = (str, re) => {
     capturedStrings.push(m[1]);
   }
   return capturedStrings;
+};
+
+// つながる連携用の Ajax
+const eitangoAjax = (word, definition, email, password) => {
+  // ロードの表示
+  const loading = document.getElementById('eitango_api_load');
+  loading.style.display = "flex";
+  loading.innerHTML = '<img src="https://urbanmeetup.tokyo/img/loading_white.svg" style="width: 40px;">';
+
+  const data = {
+    word: word,
+    definition: definition,
+    from: "eitango_picker",
+    email: email,
+    password: password,
+  }
+  ajax.post("https://school.urbanmeetup.tokyo/api/dic/register/favorite", data, loading);
 };

@@ -45,7 +45,7 @@ export default {
   ],
 
   normalDialogStyles: `{
-  "opacity": 0.95,
+  "opacity": 0.96,
   "zIndex": 2147483647
 }`,
 
@@ -58,10 +58,11 @@ export default {
   "zIndex": -1
 }`,
 
-  contentWrapperTemplate: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;text-align:left;">
+  contentWrapperTemplate: `<div id="eitango_picker" style="margin: 0; padding: 0; border: 0; vertical-align: baseline; text-align: left; position: relative;">
 </div>`,
 
-  dialogTemplate: `<div class="notranslate"
+  dialogTemplate:
+  `<div class="notranslate"
      style="all:initial;
             {{systemStyles}}
             width: {{width}}px;
@@ -73,21 +74,36 @@ export default {
             background-color: {{backgroundColor}};
             z-index: 2147483646;
             padding: 2px 4px 2px 4px;
-            border: 1px solid #A0A0A0;">
+            border: 1px solid #2F6BC3;">
+            <div id="eitango_api_load" style="display: none; align-items: center; justify-content: center; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 1000; margin: auto; background-color: rgba(0, 0, 0, 0.76); color: white; width: 72px; height: 72px; border-radius: 6px;">
+            </div>
+            <div id="eitango_error_message_box" style="display: none; align-items: center; justify-content: center; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 2000; margin: auto; color: black; width: 100%; height: 100%;">
+              <div id="eitango_error_message" style="display: flex; align-items: center; justify-content: center; max-width: 80%; background-color: #F5E8D7; padding: 10px; border-radius: 4px; font-size: 14px; line-height: 1.6; font-family: monospace, serif;"></div>
+            </div>
 </div>`,
 
   contentTemplate: `<div style="{{cssReset}};font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
   {{#words}}
     {{^isShort}}
-      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;">
-        {{head}}
-      </span>
-      <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="{{head}}" data-md-hovervisible>🔊</span>
-      <br/>
+      <div>
+        <span style="{{cssReset}}; margin-bottom: 10px; font-size:{{headFontSize}}; color:{{headFontColor}}; font-weight:bold;">
+          {{head}}
+        </span>
+
+        <img src="https://urbanmeetup.tokyo/img/i_play_blue.png" style="display: inline-block; cursor: pointer; width: 12px; height: 12px; vertical-align: baseline;" data-md-pronunciation="{{head}}" data-md-hovervisible>
+
+        <div class="eitango_word_register" style="display: inline-block;">
+          <input class="word" type="hidden" value="{{head}}">
+          <input class="definition" type="hidden" value="{{shortDesc}}">
+          <img alt="つながる英単語に登録" src="https://urbanmeetup.tokyo/img/i_plus_blue.png" style="width: 12px; height: 12px; border: none; cursor: pointer; vertical-align: baseline;">
+        </div>
+      </div>
+
       <span style="{{cssReset}};font-size:{{descFontSize}};color:{{descFontColor}};">
         {{{desc}}}
       </span>
     {{/isShort}}
+
     {{#isShort}}
       <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;">
         {{head}}
@@ -96,6 +112,7 @@ export default {
         {{shortDesc}}
       </span>
     {{/isShort}}
+
     {{^isLast}}
       <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:0;height:1px;width:100%;" />
     {{/isLast}}
