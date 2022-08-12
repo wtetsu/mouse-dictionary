@@ -79,7 +79,7 @@ export default {
       <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;">
         {{head}}
       </span>
-      <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="{{head}}" data-md-hovervisible>🔊</span>
+      <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="{{head}}" data-md-hovervisible="true">🔊</span>
       <br/>
       <span style="{{cssReset}};font-size:{{descFontSize}};color:{{descFontColor}};">
         {{{desc}}}
