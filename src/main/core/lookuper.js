@@ -238,7 +238,8 @@ const eitangoAjax = (word, definition, email, password) => {
   // ロードの表示
   const loading = document.getElementById('eitango_api_load');
   loading.style.display = "flex";
-  loading.innerHTML = '<img src="https://urbanmeetup.tokyo/img/loading_white.svg" style="width: 40px;">';
+  const loading_message = document.getElementById('eitango_load_message');
+  loading_message.innerHTML = '<img src="https://urbanmeetup.tokyo/img/loading_white.svg" style="width: 40px;">';
 
   const data = {
     word: word,
@@ -247,5 +248,5 @@ const eitangoAjax = (word, definition, email, password) => {
     email: email,
     password: password,
   }
-  ajax.post("https://school.urbanmeetup.tokyo/api/dic/register/favorite", data, loading);
+  ajax.post("https://school.urbanmeetup.tokyo/api/dic/register/favorite", data);
 };

@@ -59,7 +59,8 @@ export default {
 }`,
 
   contentWrapperTemplate: `<div id="eitango_picker" style="margin: 0; padding: 0; border: 0; vertical-align: baseline; text-align: left; position: relative;">
-</div>`,
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  </div>`,
 
   dialogTemplate:
   `<div class="notranslate"
@@ -75,10 +76,11 @@ export default {
             z-index: 2147483646;
             padding: 2px 4px 2px 4px;
             border: 1px solid #2F6BC3;">
-            <div id="eitango_api_load" style="display: none; align-items: center; justify-content: center; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 1000; margin: auto; background-color: rgba(0, 0, 0, 0.76); color: white; width: 72px; height: 72px; border-radius: 6px;">
+            <div id="eitango_api_load" style="display: none; align-items: center; justify-content: center; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 1000; margin: auto; width: 100%; height: 100%;">
+              <div id="eitango_load_message" style="position: fixed; display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.76); color: white; width: 72px; height: 72px; border-radius: 6px;"></div>
             </div>
             <div id="eitango_error_message_box" style="display: none; align-items: center; justify-content: center; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 2000; margin: auto; color: black; width: 100%; height: 100%;">
-              <div id="eitango_error_message" style="display: flex; align-items: center; justify-content: center; max-width: 80%; background-color: #F5E8D7; padding: 10px; border-radius: 4px; font-size: 14px; line-height: 1.6; font-family: monospace, serif;"></div>
+              <div id="eitango_error_message" style="position: fixed; max-width: 80%; background-color: #F5E8D7; padding: 10px; border-radius: 4px; font-size: 14px; line-height: 1.6; font-family: monospace, serif;"></div>
             </div>
 </div>`,
 
