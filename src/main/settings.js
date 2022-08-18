@@ -88,9 +88,9 @@ export default {
   {{#words}}
     {{^isShort}}
       <div>
-        <span style="{{cssReset}}; margin-bottom: 10px; font-size:{{headFontSize}}; color:{{headFontColor}}; font-weight:bold;">
+        <a href="https://www.ldoceonline.com/dictionary/{{head}}" style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;" target="_blank">
           {{head}}
-        </span>
+        </a>
 
         <img src="https://urbanmeetup.tokyo/img/i_play_blue.png" style="display: inline-block; cursor: pointer; width: 12px; height: 12px; vertical-align: baseline;" data-md-pronunciation="{{head}}" data-md-hovervisible>
 
