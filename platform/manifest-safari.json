@@ -16,7 +16,7 @@
   },
   "browser_action": {
     "default_icon": "icons/icon19.png",
-    "default_title": "Mouse Dictionary"
+    "default_title": "つながる英単語 Picker"
   },
   "commands": {
     "_execute_browser_action": {

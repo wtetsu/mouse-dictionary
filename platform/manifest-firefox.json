@@ -3,7 +3,7 @@
   "name": "つながる英単語 Picker",
   "version": "",
   "description": "__MSG_appDesc__",
-  "default_locale": "en",
+  "default_locale": "ja",
   "author": "Tomonori Takeuchi",
   "options_ui": {
     "page": "options/options.html",
@@ -15,11 +15,11 @@
   },
   "browser_action": {
     "default_icon": "icons/icon19.png",
-    "default_title": "Mouse Dictionary"
+    "default_title": "つながる英単語 Picker"
   },
   "commands": {
     "_execute_browser_action": {
-      "description": "Activate the extension"
+      "description": "拡張機能を起動"
     },
     "scroll_down": {
       "description": "Scroll down"
