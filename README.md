@@ -19,20 +19,18 @@
 Features:
 
 - Super fast (react in 1/60 second)
-- Awesome phrases detection
-- Capable of importing your own text data
-- **Available on PDF documents!**
-- Look up connected words nicely (e.g. camelCase -> camel case)
+- Smart phrase detection
+- Can import your own data
+- Auto-split words with no space (e.g. camelCase -> camel case)
 - Customizable view
 
 Available for various documents:
 
-- HTML documents
-- PDF documents
+- HTML
+- PDF
 - YouTube captions
 - Notion
 - Evernote (Use with [Mouse Dictionary iframe support](https://chrome.google.com/webstore/detail/mouse-dictionary-iframe-s/nigglogmamjbcnljijokibobpcfgmdfn))
-- Local files (HTML, text, PDF)
 - ...
 
 ## Install
