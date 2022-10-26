@@ -2,10 +2,8 @@ const path = require("path");
 const DefinePlugin = require("webpack/lib/DefinePlugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const UniteJsonPlugin = require("./build_tools/webpack_plugins/UniteJsonPlugin");
 const GenerateDictionaryPlugin = require("./build_tools/webpack_plugins/GenerateDictionaryPlugin");
 const GenerateManifestPlugin = require("./build_tools/webpack_plugins/GenerateManifestPlugin");
-const jaRule = require("deinja/src/data");
 
 const mode = process.env.NODE_ENV || "development";
 const isProd = mode === "production";
@@ -73,24 +71,10 @@ module.exports = (env) => {
           { from: "static", to: "." },
           { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
           { from: "static_pdf/options", to: "options/" },
+          { from: "static_dist/data", to: "data/" },
           ...(isProd ? [] : [{ from: "static_overwrite", to: "." }]),
         ],
       }),
-      new UniteJsonPlugin([
-        {
-          from: [
-            { name: "letters", file: "data/rule/letters.json5" },
-            { name: "noun", file: "data/rule/noun.json5" },
-            { name: "phrase", file: "data/rule/phrase.json5" },
-            { name: "pronoun", file: "data/rule/pronoun.json5" },
-            { name: "spelling", file: "data/rule/spelling.json5" },
-            { name: "trailing", file: "data/rule/trailing.json5" },
-            { name: "verb", file: "data/rule/verb.json5" },
-            { name: "ja", data: jaRule },
-          ],
-          to: "data/rule.json",
-        },
-      ]),
       new GenerateDictionaryPlugin({
         from: ["data/dict/[a-z].json5"],
         to: "data/dict",
