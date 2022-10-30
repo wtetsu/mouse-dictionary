@@ -7,9 +7,9 @@
 import launch from "./core/launch";
 
 const main = async () => {
-  console.time("launch");
+  DEBUG && console.time("launch");
   await launch();
-  console.timeEnd("launch");
+  DEBUG && console.timeEnd("launch");
 };
 
 main();

@@ -6,21 +6,10 @@
 
 const fs = require("fs");
 const path = require("path");
+const version = require("../package.json").version;
 
-class GenerateManifestPlugin {
-  constructor(options = []) {
-    this.options = options;
-  }
-
-  apply(compiler) {
-    const outputPath = compiler.options.output.path;
-    compiler.hooks.afterEmit.tap("GenerateManifestPlugin", () => {
-      applyOption(this.options, outputPath);
-    });
-  }
-}
-
-const applyOption = (options, outputDirPath) => {
+const main = (options, outputDirPath) => {
+  fs.mkdirSync(outputDirPath, { recursive: true });
   const manifest = readJsonFile(options.from);
 
   if (options.debug) {
@@ -37,6 +26,7 @@ const applyOption = (options, outputDirPath) => {
 
   const outputFilePath = path.join(outputDirPath, `${options.to}`);
   fs.writeFileSync(outputFilePath, JSON.stringify(manifest, null, 2), "utf-8");
+  console.info(`Generated: ${outputFilePath}`);
 };
 
 const readJsonFile = (sourceJsonFile) => {
@@ -55,4 +45,26 @@ const getDebugConfigFileName = (fileName) => {
   return `${baseName}-debug.${ext}`;
 };
 
-module.exports = GenerateManifestPlugin;
+if (require.main === module) {
+  if (process.argv.length <= 3) {
+    console.error(`Usage: node make_manifest.js browser mode`);
+    process.exit(1);
+  }
+
+  const browser = process.argv[2];
+  const mode = process.argv[3];
+
+  if (mode !== "development" && mode !== "production") {
+    throw new Error(`Invalid mode: ${mode}`);
+  }
+
+  main(
+    {
+      from: `platform/manifest-${browser}.json`,
+      to: "manifest.json",
+      overwrite: { version },
+      debug: mode !== "production",
+    },
+    `static/gen-${browser}/`
+  );
+}

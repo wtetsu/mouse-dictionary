@@ -71,6 +71,7 @@ dist-*/
 *.sh
 coverage/
 static/gen/
+static/gen-*/
 static/overwrite/
 static/pdf/
 

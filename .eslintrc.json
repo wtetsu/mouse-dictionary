@@ -11,6 +11,8 @@
   "globals": {
     "chrome": true,
     "BROWSER": true,
+    "MODE": true,
+    "DEBUG": true,
     "DIALOG_ID": true,
     "process": true
   },

@@ -30,5 +30,4 @@ plugins:
 exclude_patterns:
   - "__test__/"
   - "build_tools/"
-  - "webpack.*.js"
   - "**/*.css"

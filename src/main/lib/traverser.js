@@ -6,7 +6,7 @@
 
 import dom from "./dom";
 import decoy from "./decoy";
-import ponyfill from "ponyfill";
+import ponyfill from "./ponyfill/ponyfill";
 
 const build = (doConfirmValidCharacter, maxWords) => {
   const traverser = new Traverser(doConfirmValidCharacter, maxWords);

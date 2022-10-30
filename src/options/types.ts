@@ -76,5 +76,3 @@ export type ExternalLinks = {
   downloadDictData: string;
   setKeyboardShortcuts: string;
 };
-
-export declare const BROWSER: "CHROME" | "FIREFOX" | "SAFARI";

@@ -6,11 +6,13 @@
 /* istanbul ignore file */
 
 import env from "../../main/env";
-import { BROWSER, Env } from "../types";
+import { Env } from "../types";
+
+declare const BROWSER: "chrome" | "firefox" | "safari";
 
 const optionsEnv = { ...env } as Env;
 
-if (BROWSER === "FIREFOX") {
+if (BROWSER === "firefox") {
   // Larger registerRecordsAtOnce causes memory hog
   // when loading large dictionary data in Firefox.
   optionsEnv.registerRecordsAtOnce = 10000;

@@ -4,7 +4,9 @@
  * Licensed under MIT
  */
 
-import { BROWSER, ExternalLinks } from "../types";
+import { ExternalLinks } from "../types";
+
+declare const BROWSER: "chrome" | "firefox" | "safari";
 
 const Links: ExternalLinks = {
   windowManipulation: "https://github.com/wtetsu/mouse-dictionary/wiki/Window-manipulation",
@@ -12,7 +14,7 @@ const Links: ExternalLinks = {
   setKeyboardShortcuts: "",
 };
 
-if (BROWSER === "FIREFOX") {
+if (BROWSER === "firefox") {
   Links.setKeyboardShortcuts = "https://github.com/wtetsu/mouse-dictionary/wiki/Keyboard-shortcuts-(Firefox)";
 } else {
   Links.setKeyboardShortcuts = "https://github.com/wtetsu/mouse-dictionary/wiki/Keyboard-shortcuts";

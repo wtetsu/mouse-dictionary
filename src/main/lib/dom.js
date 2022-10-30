@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import ponyfill from "ponyfill";
+import ponyfill from "./ponyfill/ponyfill";
 
 const create = (html) => {
   const template = document.createElement("template");

@@ -7,7 +7,7 @@
 import ExpiringQueue from "./queue";
 import uniqueId from "./unique";
 
-if (BROWSER === "CHROME") {
+if (BROWSER === "chrome") {
   chrome.action.onClicked.addListener((tab) => {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },

@@ -108,12 +108,12 @@ export default class Lookuper {
       }
     }
     const counter = ++this.counter;
-    console.time(`lookup-${counter}`);
+    DEBUG && console.time(`lookup-${counter}`);
     const { html, hit } = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
     const content = dom.create(html);
 
     this.lastText = cacheKey;
-    console.timeEnd(`lookup-${counter}`);
+    DEBUG && console.timeEnd(`lookup-${counter}`);
 
     return { content, hit };
   }
@@ -128,8 +128,8 @@ export default class Lookuper {
     for (let i = 0; i < textList.length; i++) {
       const text = textList[i];
       const { entries, lang } = this.doBuildEntry(text, withCapitalized, includeOrgText);
-      console.info(`${entries.join(",")}`);
-      console.info(`${entries.length}`);
+      DEBUG && console.info(`${entries.join(",")}`);
+      DEBUG && console.info(`${entries.length}`);
 
       allEntries.push(...entries);
       langs.push(lang);
