@@ -70,8 +70,8 @@ dist-*/
 *.zip
 *.sh
 coverage/
-static_dist/
-static_overwrite/
-static_pdf/
+static/gen/
+static/overwrite/
+static/pdf/
 
 keys.json

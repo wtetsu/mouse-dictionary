@@ -67,11 +67,11 @@ module.exports = (env) => {
       }),
       new CopyPlugin({
         patterns: [
-          { from: "static", to: "." },
           { from: __dirname + "/node_modules/milligram/dist/milligram.min.css", to: "options/" },
-          { from: "static_pdf/options", to: "options/" },
-          { from: "static_dist/data", to: "data/" },
-          ...(isProd ? [] : [{ from: "static_overwrite", to: "." }]),
+          { from: "static/base", to: "." },
+          { from: "static/pdf//options", to: "options/" },
+          { from: "static/gen/data", to: "data/" },
+          ...(isProd ? [] : [{ from: "static/overwrite", to: "." }]),
         ],
       }),
       new GenerateManifestPlugin({

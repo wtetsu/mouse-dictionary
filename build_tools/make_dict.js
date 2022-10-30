@@ -63,8 +63,8 @@ const uniteJsonFiles = (fileGlobList) => {
 main(
   {
     from: ["data/dict/[a-z].json5"],
-    to: "dict",
+    to: "data/dict",
     split: 10,
   },
-  "static_dist/data/"
+  "static/gen/"
 );

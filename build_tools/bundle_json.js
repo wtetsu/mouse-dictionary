@@ -48,5 +48,5 @@ main(
     { name: "verb", file: "data/rule/verb.json5" },
     { name: "ja", data: jaRule },
   ],
-  "static_dist/data/rule.json"
+  "static/gen/data/rule.json"
 );
