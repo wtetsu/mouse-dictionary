@@ -2,7 +2,6 @@ const path = require("path");
 const DefinePlugin = require("webpack/lib/DefinePlugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const GenerateDictionaryPlugin = require("./build_tools/webpack_plugins/GenerateDictionaryPlugin");
 const GenerateManifestPlugin = require("./build_tools/webpack_plugins/GenerateManifestPlugin");
 
 const mode = process.env.NODE_ENV || "development";
@@ -74,11 +73,6 @@ module.exports = (env) => {
           { from: "static_dist/data", to: "data/" },
           ...(isProd ? [] : [{ from: "static_overwrite", to: "." }]),
         ],
-      }),
-      new GenerateDictionaryPlugin({
-        from: ["data/dict/[a-z].json5"],
-        to: "data/dict",
-        split: 10,
       }),
       new GenerateManifestPlugin({
         from: `platform/manifest-${env.platform}.json`,

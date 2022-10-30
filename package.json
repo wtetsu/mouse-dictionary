@@ -5,7 +5,7 @@
   "author": "wtetsu",
   "license": "MIT",
   "scripts": {
-    "res": "node build_tools/bundle_json.js",
+    "res": "node build_tools/bundle_json.js && node build_tools/make_dict.js",
     "build": "npm run build-chrome && npm run build-firefox",
     "watch": "webpack -w --env platform=chrome",
     "release": "npm run release-chrome && npm run release-firefox",
@@ -18,15 +18,15 @@
     "test-cov-watch": "npm test --maxWorkers=50% -- --coverage --watch --silent",
     "build-chrome": "webpack --env platform=chrome",
     "watch-chrome": "webpack -w --env platform=chrome",
-    "release-chrome": "npm run && webpack --env platform=chrome --node-env=production",
+    "release-chrome": "npm run res && webpack --env platform=chrome --node-env=production",
     "package-chrome": "npm run release-chrome && node build_tools/archive.js chrome",
     "build-firefox": "webpack --env platform=firefox",
     "watch-firefox": "webpack -w --env platform=firefox",
-    "release-firefox": "npm run && webpack --env platform=firefox --node-env=production",
+    "release-firefox": "npm run res && webpack --env platform=firefox --node-env=production",
     "package-firefox": "npm run release-firefox && node build_tools/archive.js firefox",
     "build-safari": "webpack --env platform=safari",
     "watch-safari": "webpack -w --env platform=safari",
-    "release-safari": "npm run && webpack --env platform=safari --node-env=production && yes | xcrun safari-web-extension-converter --force --no-open dist-safari --project-location dist-safari",
+    "release-safari": "npm run res && webpack --env platform=safari --node-env=production && yes | xcrun safari-web-extension-converter --force --no-open dist-safari --project-location dist-safari",
     "package-safari": "npm run release-safari && node build_tools/archive.js safari"
   },
   "dependencies": {

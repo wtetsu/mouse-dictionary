@@ -9,29 +9,24 @@ const path = require("path");
 const json5 = require("json5");
 const glob = require("fast-glob");
 
-class GenerateDictionaryPlugin {
-  constructor(options = []) {
-    this.options = options;
-  }
+const main = (options, outputDirPath) => {
+  fs.mkdirSync(outputDirPath, { recursive: true });
 
-  apply(compiler) {
-    const outputPath = compiler.options.output.path;
-
-    compiler.hooks.afterEmit.tap("GenerateDictionaryPlugin", () => {
-      applyOption(this.options, outputPath);
-    });
-  }
-}
-
-const applyOption = (options, outputDirPath) => {
   const data = uniteJsonFiles(options.from);
+  const outFilePaths = splitDataAndWrite(data, options.split, options.to, outputDirPath);
 
+  const distInformation = { files: outFilePaths };
+  const outputFilePath = path.join(outputDirPath, `${options.to}.json`);
+  fs.writeFileSync(outputFilePath, JSON.stringify(distInformation), "utf-8");
+  console.info(`Generated: ${outputFilePath}`);
+};
+
+const splitDataAndWrite = (data, split, to, outputDirPath) => {
   const keys = Object.keys(data);
   keys.sort();
+  const unit = (keys.length * 1.0) / split;
 
-  const unit = (keys.length * 1.0) / options.split;
   let nextThreshold = unit;
-
   let outData = {};
 
   const outFiles = [];
@@ -40,18 +35,17 @@ const applyOption = (options, outputDirPath) => {
     outData[key] = data[key];
     if (i >= nextThreshold || i == keys.length) {
       const outJson = JSON.stringify(outData);
-      const outFileName = `/${options.to}${outFiles.length}.json`;
-      fs.writeFileSync(path.join(outputDirPath, outFileName), outJson, "utf-8");
+      const outFileName = `/${to}${outFiles.length}.json`;
+      const outPath = path.join(outputDirPath, outFileName);
+      fs.writeFileSync(outPath, outJson, "utf-8");
+      console.info(`Generated: ${outPath}`);
 
       outData = {};
       outFiles.push(outFileName);
       nextThreshold += unit;
     }
   }
-
-  const distInformation = { files: outFiles };
-  const outputFilePath = path.join(outputDirPath, `${options.to}.json`);
-  fs.writeFileSync(outputFilePath, JSON.stringify(distInformation), "utf-8");
+  return outFiles;
 };
 
 const uniteJsonFiles = (fileGlobList) => {
@@ -66,4 +60,11 @@ const uniteJsonFiles = (fileGlobList) => {
   return resultData;
 };
 
-module.exports = GenerateDictionaryPlugin;
+main(
+  {
+    from: ["data/dict/[a-z].json5"],
+    to: "dict",
+    split: 10,
+  },
+  "static_dist/data/"
+);

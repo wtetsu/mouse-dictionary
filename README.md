@@ -68,6 +68,13 @@ Use [Node.js](https://nodejs.org/en/download/) 16+.
 npm install
 ```
 
+Generate static resources.
+
+```sh
+npm run res
+```
+
+
 ### Build
 
 For Chrome:
