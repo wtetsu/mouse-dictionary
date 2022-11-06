@@ -16,6 +16,8 @@
 
 [Mouse Dictionary](https://mouse-dictionary.netlify.app/en/) is a super fast dictionary for Chrome and Firefox.
 
+<img src="https://user-images.githubusercontent.com/515948/200157867-400b7090-159c-471a-82b2-c4769df318e4.gif" />
+
 Features:
 
 - Super fast (react in 1/60 second)
