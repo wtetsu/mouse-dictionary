@@ -62,7 +62,7 @@ if (require.main === module) {
 
   main(
     {
-      from: `platform/manifest-${browser}.json`,
+      from: `data/manifest/manifest-${browser}.json`,
       to: "manifest.json",
       overwrite: { version },
       debug: mode !== "production",
