@@ -29,5 +29,5 @@ plugins:
             - "*.js"
 exclude_patterns:
   - "__test__/"
-  - "build_tools/"
+  - "tools/"
   - "**/*.css"

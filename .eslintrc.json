@@ -47,7 +47,7 @@
   "ignorePatterns": [
     "node_modules/",
     "__test__/",
-    "build_tools/",
+    "tools/",
     "*.config.js",
     "*.config.*.js"
   ]
