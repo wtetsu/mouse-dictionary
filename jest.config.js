@@ -4,4 +4,7 @@ module.exports = {
     BROWSER: "chrome",
     DEBUG: true,
   },
+  transform: {
+    "^.+\\.(t|j)sx?$": "@swc/jest",
+  },
 };
