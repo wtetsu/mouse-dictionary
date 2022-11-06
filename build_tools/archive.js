@@ -1,3 +1,11 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
+ */
+
+// Package a browser extension.
+
 const fs = require("fs");
 const archiver = require("archiver");
 const path = require("path");

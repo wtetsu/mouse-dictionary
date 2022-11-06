@@ -1,6 +1,11 @@
 /**
- * Convert license.json to a simple html file.
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
  */
+
+// Convert license.json to a simple html file.
+
 const fs = require("fs");
 
 const main = (licenseJsonPath) => {

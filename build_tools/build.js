@@ -1,3 +1,11 @@
+/**
+ * Mouse Dictionary (https://github.com/wtetsu/mouse-dictionary/)
+ * Copyright 2018-present wtetsu
+ * Licensed under MIT
+ */
+
+// Build with esbuild.
+
 const esbuild = require("esbuild");
 const fse = require("fs-extra");
 const version = require("../package.json").version;

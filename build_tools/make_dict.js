@@ -4,6 +4,8 @@
  * Licensed under MIT
  */
 
+// Make dictionary data and metadata.
+
 const fs = require("fs");
 const path = require("path");
 const json5 = require("json5");

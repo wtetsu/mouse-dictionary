@@ -4,6 +4,8 @@
  * Licensed under MIT
  */
 
+// Bundle multiple JSON files into a single file.
+
 const fs = require("fs");
 const path = require("path");
 const json5 = require("json5");

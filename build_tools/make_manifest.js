@@ -4,6 +4,8 @@
  * Licensed under MIT
  */
 
+// Make manifest.json.
+
 const fs = require("fs");
 const path = require("path");
 const version = require("../package.json").version;
