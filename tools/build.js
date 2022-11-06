@@ -27,7 +27,10 @@ const copyStaticFiles = (browser, mode) => {
     sourceDirs.push("overwrite");
   }
   for (const sourceDir of sourceDirs) {
-    fse.copySync(`static/${sourceDir}`, `dist-${browser}`, { overwrite: true });
+    fse.copySync(`static/${sourceDir}`, `dist-${browser}`, {
+      overwrite: true,
+      filter: (f) => !f.startsWith("."),
+    });
   }
   fse.copyFileSync("node_modules/milligram/dist/milligram.min.css", `dist-${browser}/options/milligram.min.css`);
 };
