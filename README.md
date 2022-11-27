@@ -10,11 +10,7 @@
 </p>
 
 
-
-
-# Mouse Dictionary: Super Fast Dictionary
-
-[Mouse Dictionary](https://mouse-dictionary.netlify.app/en/) is a super fast dictionary for Chrome and Firefox.
+Mouse Dictionary is a super fast browser dictionary.
 
 <img src="https://user-images.githubusercontent.com/515948/200157867-400b7090-159c-471a-82b2-c4769df318e4.gif" />
 
