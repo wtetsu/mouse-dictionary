@@ -23,7 +23,7 @@ Features:
 - Super fast (react in 1/60 second)
 - Smart phrase detection
 - Can import your own data
-- Auto-split words with no space (e.g. camelCase -> camel case)
+- Split no-space collocation (e.g. camelCase -> camel case)
 - Customizable view
 
 Available for various documents:
