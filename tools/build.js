@@ -43,7 +43,7 @@ const build = (browser, mode, watch) => {
       BROWSER: JSON.stringify(browser),
       DIALOG_ID: JSON.stringify(`____MOUSE_DICTIONARY_6FQSXRIXUKBSIBEF_${version}`),
       MODE: JSON.stringify(mode),
-      DEBUG: !isProd,
+      DEBUG: isProd ? JSON.stringify("") : JSON.stringify("true"),
     },
     minify: isProd,
     sourcemap: isProd ? undefined : "inline",
