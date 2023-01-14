@@ -16,10 +16,10 @@ Mouse Dictionary is a super fast browser dictionary.
 
 Features:
 
-- Super fast (react in 1/60 second)
+- Super quick response time (1/60 second)
 - Smart phrase detection
-- Can import your own data
-- Split no-space collocation (e.g. camelCase -> camel case)
+- Automatic word separation (e.g. camelCase -> camel case)
+- Option to add your own data
 - Customizable view
 
 Available for various documents:
