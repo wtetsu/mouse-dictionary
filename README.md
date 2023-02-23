@@ -139,7 +139,7 @@ This project includes some third-party data:
 
 ### Dictionary data
 
-- [ejdic-hand](https://github.com/kujirahand/EJDict) (Public Domain)
+- [ejdict-hand](https://github.com/kujirahand/EJDict) (Public Domain)
 
 ### Images
 
