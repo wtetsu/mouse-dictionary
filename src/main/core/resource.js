@@ -28,20 +28,20 @@ const resources = {
 
 // Build process removes unrelated messages
 if (BROWSER === "chrome") {
-  resources.ja.needToPrepareDict = "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「オプション」)";
+  resources.ja.needToPrepareDict = "辞書データをロードしてください(拡張のアイコンを右クリック→「オプション」)";
   resources.en.needToPrepareDict =
     'Please load dictionary data first. Right click on the extension icon and select "Options"';
 }
 
 if (BROWSER === "firefox") {
   resources.ja.needToPrepareDict =
-    "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「拡張機能を管理」→「...」をクリック→「オプション」)";
+    "辞書データをロードしてください(拡張のアイコンを右クリック→「拡張機能を管理」→「...」をクリック→「オプション」)";
   resources.en.needToPrepareDict =
     'Please load dictionary data first. Right click on the extension icon, select "Manage Extension", click "…", and select "Options"';
 }
 
 if (BROWSER === "safari") {
-  resources.ja.needToPrepareDict = "初めに辞書データをロードしてください(拡張のアイコンを右クリック→「拡張機能」→「設定」)";
+  resources.ja.needToPrepareDict = "辞書データをロードしてください(拡張のアイコンを右クリック→「拡張機能」→「設定」)";
   resources.en.needToPrepareDict =
     'Please load dictionary data first. Right click on the extension icon, select "Extensions" tab, and select "Preferences"';
 }
