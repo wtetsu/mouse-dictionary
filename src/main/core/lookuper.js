@@ -65,6 +65,9 @@ export default class Lookuper {
       this.aimed = false;
       return false;
     }
+    if (this.lastText === text) {
+      return false;
+    }
     this.aimed = true;
     return await this.update(text, true, true, false, 1);
   }
