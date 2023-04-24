@@ -18,7 +18,7 @@ const resources = {
   },
   en: {
     continueProcessingPdf:
-      "Are you sure you want to download this PDF file and show it with Mouse Dictionary's internal viewer?\n(You can turn off this confirmation permanently by changing settings)",
+      "Are you sure you want to download this PDF file and view it using Mouse Dictionary's internal viewer?\n(You can disable this confirmation by changing settings)",
     doesntSupportFrame: "Mouse Dictionary doesn't support frame pages.",
     downloadingPdf: "📘Downloading...",
     preparingPdf: "📘Preparing PDF viewer...",
