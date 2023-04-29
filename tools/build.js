@@ -16,9 +16,14 @@ const TARGETS = {
   safari: ["safari14"],
 };
 
-const main = (browser, mode, watch) => {
+const main = async (browser, mode, watchMode) => {
   copyStaticFiles(browser, mode);
-  build(browser, mode, watch);
+
+  if (watchMode) {
+    watch(browser, mode);
+  } else {
+    build(browser, mode);
+  }
 };
 
 const copyStaticFiles = (browser, mode) => {
@@ -35,52 +40,87 @@ const copyStaticFiles = (browser, mode) => {
   fse.copyFileSync("node_modules/milligram/dist/milligram.min.css", `dist-${browser}/options/milligram.min.css`);
 };
 
-const build = (browser, mode, watch) => {
+const build = (browser, mode) => {
+  const ioList = createIoList(browser);
+  const options = createOptions(browser, mode);
+
+  for (const io of ioList) {
+    esbuild
+      .build({
+        ...options,
+        ...io,
+      })
+      .catch(() => process.exit(1));
+    console.info(`✅ Generated: ${io.outfile}`);
+  }
+};
+
+const watch = async (browser, mode) => {
+  asyncs = [];
+  const ioList = createIoList(browser);
+  const options = createOptions(browser, mode);
+
+  for (const io of ioList) {
+    const ctx = await esbuild
+      .context({
+        bundle: true,
+        ...options,
+        ...io,
+        plugins: [
+          {
+            name: "on-end",
+            setup(build) {
+              build.onEnd((result) => {
+                if (result.errors.length == 0) {
+                  console.info(`[${getTime()}]✅ Generated: ${io.outfile}`);
+                }
+              });
+            },
+          },
+        ],
+      })
+      .catch(() => process.exit(1));
+
+    asyncs.push(ctx.watch());
+  }
+
+  return asyncs;
+};
+
+const createIoList = (browser) => {
+  return [
+    { entryPoints: ["src/main/start.js"], outfile: `dist-${browser}/main.js` },
+    { entryPoints: ["src/options/app.tsx"], outfile: `dist-${browser}/options/options.js` },
+    { entryPoints: ["src/background/background.js"], outfile: `dist-${browser}/background.js` },
+  ];
+};
+
+const createOptions = (browser, mode) => {
   const isProd = mode === "production";
-  const options = {
+  return {
     bundle: true,
     define: {
       BROWSER: JSON.stringify(browser),
       DIALOG_ID: JSON.stringify(`____MOUSE_DICTIONARY_6FQSXRIXUKBSIBEF_${version}`),
       MODE: JSON.stringify(mode),
-      DEBUG: isProd ? JSON.stringify("") : JSON.stringify("true"),
+      DEBUG: JSON.stringify(isProd ? "" : "true"),
     },
     minify: isProd,
     sourcemap: isProd ? undefined : "inline",
     target: TARGETS[browser],
   };
-
-  const inOutList = [
-    { entryPoints: ["src/main/start.js"], outfile: `dist-${browser}/main.js` },
-    { entryPoints: ["src/options/app.tsx"], outfile: `dist-${browser}/options/options.js` },
-    { entryPoints: ["src/background/background.js"], outfile: `dist-${browser}/background.js` },
-  ];
-
-  for (const io of inOutList) {
-    esbuild
-      .build({
-        ...options,
-        watch: watchConfig(watch, io),
-        ...io,
-      })
-      .catch(() => process.exit(1));
-    console.info(`Generated: ${io.outfile}`);
-  }
 };
 
-const watchConfig = (watch, io) => {
-  if (watch !== "watch") {
-    return false;
-  }
-  return {
-    onRebuild(error) {
-      if (error) {
-        console.error("`watch build failed: ${io.outfile}`");
-      } else {
-        console.log(`watch build succeeded: ${io.outfile}`);
-      }
-    },
-  };
+const getTime = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, "0");
+  const day = now.getDate().toString().padStart(2, "0");
+  const hours = now.getHours().toString().padStart(2, "0");
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+  const seconds = now.getSeconds().toString().padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
 if (require.main === module) {
