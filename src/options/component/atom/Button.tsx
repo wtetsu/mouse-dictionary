@@ -8,7 +8,7 @@ import React, { MouseEventHandler } from "react";
 
 type Props = {
   text: string;
-  onClick: MouseEventHandler<HTMLInputElement>;
+  onClick: MouseEventHandler<HTMLButtonElement>;
   type: "primary" | "cancel" | "revert" | "json";
   disabled?: boolean;
 };
