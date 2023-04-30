@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import immer from "immer";
+import { produce } from "immer";
 import { res } from "../../logic";
 import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
 import { HighlightEditor } from "../atom/HighlightEditor";
@@ -28,7 +28,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   const hiddenDialogStyles = props.settings?.hiddenDialogStyles ?? "";
 
   const update = (patch: Partial<MouseDictionaryAdvancedSettings>) => {
-    const newPatch = immer(patch, (d) => {
+    const newPatch = produce(patch, (d) => {
       for (const name of Object.keys(patch)) {
         const value = patch[name];
         if (Number.isNaN(value) || (Number.isInteger(value) && value < 0)) {

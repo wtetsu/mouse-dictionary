@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import immer from "immer";
+import { produce } from "immer";
 import { Button } from "../atom/Button";
 import { res } from "../../logic";
 import { Replace } from "../../types";
@@ -44,17 +44,17 @@ type Action =
 const reduce = (state: Replace[], action: Action): Replace[] => {
   switch (action.type) {
     case "add":
-      return immer(state, (d) => {
+      return produce(state, (d) => {
         const newKey = new Date().getTime().toString();
         d.push({ key: newKey, search: "", replace: "" });
       });
     case "change":
-      return immer(state, (d) => {
+      return produce(state, (d) => {
         const p = action.payload;
         d[p.index][p.target] = p.value;
       });
     case "move":
-      return immer(state, (d) => {
+      return produce(state, (d) => {
         const { index1, index2 } = action.payload;
         const isValidIndex = (index1 >= 0 && index1 < d.length) || (index2 >= 0 && index2 < d.length);
         if (!isValidIndex) {

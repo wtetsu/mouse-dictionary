@@ -5,7 +5,7 @@
  */
 
 import React, { useReducer, useEffect, useRef } from "react";
-import immer from "immer";
+import { produce } from "immer";
 import { Button, DataUsage, EditableSpan, ExternalLink, Launch, Overlay, Panel, Switch, Toggle } from "../component/atom";
 import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, Tips, WholeSettings } from "../component/organism";
 import { data, dict, message, Preview, res } from "../logic";
@@ -38,12 +38,12 @@ type Action =
 const reducer = (state: MainState, action: Action): MainState => {
   switch (action.type) {
     case "patch":
-      return immer(state, (d) => {
+      return produce(state, (d) => {
         Object.assign(d, action.statePatch);
         Object.assign(d.settings, action.settingsPatch);
       });
     case "replace":
-      return immer(state, (d) => {
+      return produce(state, (d) => {
         d.settings = action.settings;
       });
   }

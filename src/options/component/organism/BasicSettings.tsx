@@ -6,7 +6,7 @@
 
 import React from "react";
 import { ChromePicker } from "react-color";
-import immer from "immer";
+import { produce } from "immer";
 import { res } from "../../logic";
 import { env } from "../../extern";
 import { Select } from "../atom/Select";
@@ -54,7 +54,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
   ];
 
   const update = (patch: Partial<MouseDictionaryBasicSettings>) => {
-    const newPatch = immer(patch, (d) => {
+    const newPatch = produce(patch, (d) => {
       for (const name of Object.keys(patch)) {
         const value = patch[name];
         if (Number.isNaN(value) || (Number.isInteger(value) && value < 0)) {

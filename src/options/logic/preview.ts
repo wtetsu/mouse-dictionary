@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import immer from "immer";
+import { produce } from "immer";
 import { debounce } from "../logic";
 import { dom, Generator, view, entryDefault, storage } from "../extern";
 import { MouseDictionarySettings } from "../types";
@@ -64,7 +64,7 @@ export class Preview {
   }
 
   createWindow(settings: MouseDictionarySettings): PreviewWindow {
-    const tmpSettings = immer(settings, (d) => {
+    const tmpSettings = produce(settings, (d) => {
       d.normalDialogStyles = null;
       d.hiddenDialogStyles = null;
       d.movingDialogStyles = null;

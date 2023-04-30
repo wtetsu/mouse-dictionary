@@ -6,7 +6,7 @@
 
 import React, { useEffect, useRef, MutableRefObject } from "react";
 import AceEditor from "react-ace";
-import immer from "immer";
+import { produce } from "immer";
 import { Button } from "../atom/Button";
 import { res, data, message } from "../../logic";
 import { MouseDictionarySettings } from "../../types";
@@ -69,7 +69,7 @@ export const WholeSettings: React.FC<Props> = (props) => {
   const createSettings = (json: string): MouseDictionarySettings => {
     const newSettings = data.preProcessSettings(JSON.parse(json));
     const orgSettings = data.postProcessSettings(defaultSettings.get());
-    return immer(orgSettings, (d) => {
+    return produce(orgSettings, (d) => {
       const errors = [];
       for (const key of Object.keys(d)) {
         if (!(key in newSettings)) {

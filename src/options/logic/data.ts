@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import immer from "immer";
+import { produce } from "immer";
 import { MouseDictionarySettings } from "../types";
 
 export const fileMayBeShiftJis = async (file: Blob): Promise<boolean> => {
@@ -52,7 +52,7 @@ const isShiftJisSoleChar = (byte: number) => {
 };
 
 export const preProcessSettings = (settings: MouseDictionarySettings): MouseDictionarySettings => {
-  return immer(settings, (d) => {
+  return produce(settings, (d) => {
     for (let i = 0; i < d?.replaceRules?.length; i++) {
       d.replaceRules[i].key = i.toString();
     }
@@ -60,7 +60,7 @@ export const preProcessSettings = (settings: MouseDictionarySettings): MouseDict
 };
 
 export const postProcessSettings = (settings: MouseDictionarySettings): MouseDictionarySettings => {
-  return immer(settings, (d) => {
+  return produce(settings, (d) => {
     for (const replaceRule of d.replaceRules) {
       delete replaceRule.key;
     }
