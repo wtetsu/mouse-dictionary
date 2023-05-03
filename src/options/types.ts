@@ -39,12 +39,15 @@ export type MouseDictionaryAdvancedSettings = {
 export type MouseDictionarySettings = MouseDictionaryBasicSettings & MouseDictionaryAdvancedSettings;
 
 export type Replace = {
-  key: string;
+  key?: string;
   search: string;
   replace: string;
 };
 
-export type UpdateEventHandler = (statePatch: Record<string, any>, settingsPatch: Partial<MouseDictionarySettings>) => void;
+export type UpdateEventHandler = (
+  statePatch: Record<string, any> | undefined,
+  settingsPatch: Partial<MouseDictionarySettings> | undefined
+) => void;
 
 type EnvForMain = {
   enableWindowStatusSave: boolean;
@@ -66,7 +69,7 @@ export type DictionaryFileEncoding = "Shift-JIS" | "UTF-8" | "UTF-16";
 export type DictionaryFileFormat = "EIJIRO" | "TSV" | "PDIC_LINE" | "JSON";
 
 export type DictionaryFile = {
-  file: File;
+  file: File | undefined;
   encoding: DictionaryFileEncoding;
   format: DictionaryFileFormat;
 };

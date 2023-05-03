@@ -16,7 +16,7 @@ declare const DEBUG: boolean;
 export class Preview {
   element: HTMLElement;
   update: (settings: MouseDictionarySettings, text: string, refresh: boolean) => void;
-  previewWindow: PreviewWindow;
+  previewWindow: PreviewWindow | undefined;
   generator: Generator;
   buildEntries: (text: string, withCapitalized: boolean, includeOrgText: boolean) => { entries: string[]; lang: string };
 
@@ -64,10 +64,10 @@ export class Preview {
   }
 
   createWindow(settings: MouseDictionarySettings): PreviewWindow {
-    const tmpSettings = produce(settings, (d) => {
-      d.normalDialogStyles = null;
-      d.hiddenDialogStyles = null;
-      d.movingDialogStyles = null;
+    const tmpSettings = produce(settings as Partial<MouseDictionarySettings>, (d) => {
+      d.normalDialogStyles = undefined;
+      d.hiddenDialogStyles = undefined;
+      d.movingDialogStyles = undefined;
     });
     return view.create(tmpSettings) as PreviewWindow;
   }
@@ -85,7 +85,7 @@ export class Preview {
 
   refreshElement(settings: MouseDictionarySettings): void {
     const orgPreviewWindow = this.previewWindow;
-    this.previewWindow = null;
+    this.previewWindow = undefined;
 
     try {
       this.previewWindow = this.createWindow(settings);

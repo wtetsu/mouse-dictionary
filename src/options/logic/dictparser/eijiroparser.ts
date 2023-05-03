@@ -13,22 +13,22 @@ const NEW_LINE = "\n";
 
 export class EijiroParser implements DictParser {
   lines: string[];
-  currentHead: string;
+  currentHead: string | undefined;
 
   constructor() {
     this.lines = [];
-    this.currentHead = null;
+    this.currentHead = undefined;
   }
 
-  addLine(line: string): DictEntry {
-    const hd = this.parseLine(line);
-    if (hd === null) {
-      return null;
+  addLine(line: string): DictEntry | undefined {
+    const hd = this.#parseLine(line);
+    if (hd === undefined) {
+      return undefined;
     }
 
     if (hd.head === this.currentHead) {
       this.lines.push(hd.desc);
-      return null;
+      return undefined;
     }
 
     const head = this.currentHead;
@@ -36,22 +36,22 @@ export class EijiroParser implements DictParser {
 
     this.currentHead = hd.head;
     this.lines = [hd.desc];
-    return head && desc ? { head, desc } : null;
+    return head && desc ? { head, desc } : undefined;
   }
 
-  parseLine(line: string): DictEntry {
+  #parseLine(line: string): DictEntry | undefined {
     if (!line.startsWith(HEADWORD_FIRST)) {
-      return null;
+      return undefined;
     }
 
     const dindex1 = line.indexOf(DELIMITER1);
     if (dindex1 <= 0) {
-      return null;
+      return undefined;
     }
 
     const firstHalf = line.substring(1, dindex1);
 
-    let result: DictEntry = null;
+    let result: DictEntry | undefined;
     for (let i = 0; i < SPECIAL_DELIMITERS.length; i++) {
       const delimiter = SPECIAL_DELIMITERS[i];
 
@@ -74,12 +74,12 @@ export class EijiroParser implements DictParser {
     };
   }
 
-  flush(): Record<string, string> {
+  flush(): Record<string, string> | undefined {
     const data: Record<string, string> = {};
     if (this.currentHead && this.lines.length >= 1) {
       data[this.currentHead] = this.lines.join(NEW_LINE);
     }
-    this.currentHead = null;
+    this.currentHead = undefined;
     this.lines = [];
     return data;
   }

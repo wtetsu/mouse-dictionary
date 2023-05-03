@@ -33,7 +33,7 @@ const show = (text: string, icon: Icon, buttons?: Buttons, extraOptions?: Record
   const options = {
     text,
     icon,
-    buttons: buttons === "okCancel" ? [true, true] : null,
+    buttons: buttons === "okCancel" ? [true, true] : undefined,
   };
   if (extraOptions) {
     Object.assign(options, extraOptions);

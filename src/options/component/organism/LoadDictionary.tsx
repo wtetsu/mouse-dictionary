@@ -21,7 +21,7 @@ type TriggerEvent =
   | {
       type: "load";
       payload: {
-        file: File;
+        file: File | undefined;
         encoding: DictionaryFileEncoding;
         format: DictionaryFileFormat;
       };
@@ -29,8 +29,8 @@ type TriggerEvent =
   | { type: "clear" };
 
 export const LoadDictionary: React.FC<Props> = (props) => {
-  const [encoding, setEncoding] = useState(props.defaultEncoding);
-  const [format, setFormat] = useState(props.defaultFormat);
+  const [encoding, setEncoding] = useState(props.defaultEncoding ?? "Shift-JIS");
+  const [format, setFormat] = useState(props.defaultFormat ?? "EIJIRO");
 
   const fileInput = useRef() as MutableRefObject<HTMLInputElement>;
 
@@ -59,7 +59,7 @@ export const LoadDictionary: React.FC<Props> = (props) => {
       <Button
         type="primary"
         text={res.get("loadSelectedFile")}
-        onClick={() => props.trigger({ type: "load", payload: { encoding, format, file: fileInput.current.files[0] } })}
+        onClick={() => props.trigger({ type: "load", payload: { encoding, format, file: fileInput.current.files?.[0] } })}
         disabled={props.busy}
       />
       <img

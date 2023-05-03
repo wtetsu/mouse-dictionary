@@ -12,9 +12,9 @@ export class JsonDictParser implements DictParser {
     this.lines = [];
   }
 
-  addLine(line: string): DictEntry {
+  addLine(line: string): DictEntry | undefined {
     this.lines.push(line);
-    return null;
+    return undefined;
   }
 
   flush(): Record<string, string> {

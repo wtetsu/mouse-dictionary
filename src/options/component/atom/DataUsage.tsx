@@ -9,14 +9,14 @@ import { res } from "../../logic";
 import { storage, config } from "../../extern";
 
 type Props = {
-  byteSize: number;
+  byteSize: number | undefined;
   onUpdate: (byteSize: number) => void;
 };
 
 export const DataUsage: React.FC<Props> = (props) => {
   useEffect(() => {
     const updateSize = async () => {
-      if (props.byteSize === null) {
+      if (props.byteSize === undefined) {
         const newSize = (await config.getBytesInUse()) ?? -1;
         props.onUpdate(newSize);
       }
@@ -32,7 +32,7 @@ export const DataUsage: React.FC<Props> = (props) => {
     updateSize();
   }, [props.byteSize]);
 
-  if (props.byteSize === null || props.byteSize === -1) {
+  if (props.byteSize === undefined || props.byteSize === -1) {
     return (
       <div style={{ height: 24 }}>
         <img src="img/loading.gif" width="16" height="16" style={{ verticalAlign: "middle" }} />

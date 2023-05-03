@@ -66,7 +66,7 @@ const reduce = (state: Replace[], action: Action): Replace[] => {
       });
 
     case "delete":
-      return immer(state, (d) => {
+      return produce(state, (d) => {
         d.splice(action.payload.index, 1);
       });
   }

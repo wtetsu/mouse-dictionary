@@ -14,7 +14,7 @@ type GeneralFunction = (...args: any[]) => void;
 
 export const debounce = (functionBody: GeneralFunction, wait: number): GeneralFunction => {
   let _timestamp: number;
-  let _id: NodeJS.Timeout = null;
+  let _id: NodeJS.Timeout | undefined;
   let _args: any[];
 
   const later = () => {
@@ -23,7 +23,7 @@ export const debounce = (functionBody: GeneralFunction, wait: number): GeneralFu
     if (elapsed < wait) {
       _id = setTimeout(later, wait - elapsed);
     } else {
-      _id = null;
+      _id = undefined;
       functionBody(..._args);
     }
   };
@@ -31,7 +31,7 @@ export const debounce = (functionBody: GeneralFunction, wait: number): GeneralFu
   const debounced = (...args: any[]) => {
     _timestamp = Date.now();
     _args = args;
-    if (_id === null) {
+    if (_id === undefined) {
       _id = setTimeout(later, wait);
       functionBody(...args);
     }

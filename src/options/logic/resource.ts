@@ -8,7 +8,7 @@ import { template } from "../extern";
 
 import { JapaneseTextResource, EnglishTextResource, TextResourceKeys } from "../resource";
 
-let _lang: string = null;
+let _lang = "";
 
 const resources = {
   ja: JapaneseTextResource,
@@ -20,6 +20,9 @@ export const setLang = (newLang: string): void => {
 };
 
 export const getLang = (): string => {
+  if (_lang === "") {
+    throw new Error("Language is not set");
+  }
   return _lang;
 };
 

@@ -39,7 +39,7 @@ const canReplace = (a: SettingsValue, b: SettingsValue) => {
 
 type Props = {
   initialValue: MouseDictionarySettings;
-  onChange: (value: MouseDictionarySettings) => void;
+  onChange: (value: MouseDictionarySettings | undefined) => void;
 };
 
 const COPY_BUTTON_STYLES: React.CSSProperties = {
@@ -70,7 +70,7 @@ export const WholeSettings: React.FC<Props> = (props) => {
     const newSettings = data.preProcessSettings(JSON.parse(json));
     const orgSettings = data.postProcessSettings(defaultSettings.get());
     return produce(orgSettings, (d) => {
-      const errors = [];
+      const errors: string[] = [];
       for (const key of Object.keys(d)) {
         if (!(key in newSettings)) {
           continue;
@@ -91,12 +91,16 @@ export const WholeSettings: React.FC<Props> = (props) => {
       const settings = createSettings(json);
       props.onChange(settings);
     } catch (e) {
-      message.warn(res.get("JsonImportError") + "\n" + e.message);
+      if (e instanceof Error) {
+        message.warn(res.get("JsonImportError") + "\n" + e.message);
+      } else {
+        message.warn(res.get("JsonImportError") + "\n" + String(e));
+      }
     }
   };
 
   const close = () => {
-    props.onChange(null);
+    props.onChange(undefined);
   };
 
   const editor = useRef() as MutableRefObject<AceEditor>;

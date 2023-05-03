@@ -56,7 +56,7 @@ export const load = async (loadParam: LoadParam, callback: Callback): Promise<nu
 
   const parser = createDictParser(loadParam.format);
   while (reader.next()) {
-    const hd: HeadWord = parser.addLine(reader.getLine());
+    const hd = parser.addLine(reader.getLine());
     if (!hd) {
       continue;
     }
@@ -87,7 +87,7 @@ const readAsText = async (file: Blob, encoding: string, callback: ReadingCallbac
         callback({ name: "reading", loaded: e.loaded, total: e.total });
       };
       reader.onload = (e) => {
-        done(<string>e.target.result);
+        done(<string>e.target?.result);
       };
       reader.readAsText(file, encoding);
     } catch (e) {

@@ -6,21 +6,21 @@
 
 export class LineReader {
   data: string;
-  lineFeedString: string;
+  lineFeedString: string | undefined;
   currentIndex: number;
-  currentLine: string;
+  currentLine: string | undefined;
 
   constructor(data: string) {
     this.data = data;
     this.lineFeedString = this.detectLineFeedString(data);
     this.currentIndex = 0;
-    this.currentLine = null;
+    this.currentLine = undefined;
   }
 
-  detectLineFeedString(data: string): string {
+  detectLineFeedString(data: string): string | undefined {
     const index = data.indexOf("\n");
     if (index < 0) {
-      return null;
+      return undefined;
     }
     if (data[index - 1] === "\r") {
       return "\r\n";
@@ -30,10 +30,10 @@ export class LineReader {
 
   next(): boolean {
     if (this.currentIndex === -1) {
-      this.currentLine = null;
+      this.currentLine = undefined;
       return false;
     }
-    if (this.lineFeedString === null) {
+    if (this.lineFeedString === undefined) {
       this.currentIndex = -1;
       this.currentLine = this.data;
       return true;
@@ -53,6 +53,9 @@ export class LineReader {
   }
 
   getLine(): string {
+    if (this.currentLine === undefined) {
+      throw new Error("Invalid state");
+    }
     return this.currentLine;
   }
 }

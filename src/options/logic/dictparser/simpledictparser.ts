@@ -7,17 +7,17 @@
 import { DictParser, DictEntry } from "./dictparser";
 
 export class SimpleDictParser implements DictParser {
-  delimiter: string;
+  #delimiter: string;
   constructor(delimiter: string) {
-    this.delimiter = delimiter;
+    this.#delimiter = delimiter;
   }
 
-  addLine(line: string): DictEntry {
-    let hd = null;
-    const didx = line.indexOf(this.delimiter);
+  addLine(line: string): DictEntry | undefined {
+    let hd: DictEntry | undefined;
+    const didx = line.indexOf(this.#delimiter);
     if (didx >= 0) {
       const head = line.substring(0, didx);
-      const desc = line.substring(didx + this.delimiter.length);
+      const desc = line.substring(didx + this.#delimiter.length);
       if (head && desc) {
         hd = { head, desc };
       }
@@ -25,7 +25,7 @@ export class SimpleDictParser implements DictParser {
     return hd;
   }
 
-  flush(): Record<string, string> {
-    return null;
+  flush(): Record<string, string> | undefined {
+    return undefined;
   }
 }

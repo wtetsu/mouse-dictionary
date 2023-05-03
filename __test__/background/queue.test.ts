@@ -38,7 +38,7 @@ test("", async () => {
 });
 
 const sleep = (time: number) => {
-  return new Promise((done) => {
+  return new Promise<void>((done) => {
     setTimeout(() => {
       done();
     }, time);

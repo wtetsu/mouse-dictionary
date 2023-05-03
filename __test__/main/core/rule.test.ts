@@ -37,7 +37,7 @@ test("consecutive load", async () => {
   const testRuleData = "__test__/rule.dummy.json";
 
   const NUM = 100;
-  const promiseList = [];
+  const promiseList: Promise<void>[] = [];
   for (let i = 0; i < NUM; i++) {
     const newPromise = rule.load(testRuleData);
     promiseList.push(newPromise);

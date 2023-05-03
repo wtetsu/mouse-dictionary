@@ -9,7 +9,7 @@ import { MouseDictionarySettings } from "../types";
 
 export const fileMayBeShiftJis = async (file: Blob): Promise<boolean> => {
   const e = await readFile(file);
-  const buffer = e.target.result as ArrayBuffer;
+  const buffer = e.target?.result as ArrayBuffer;
   const length = Math.min(512, buffer.byteLength);
   const bytes = new Uint8Array(buffer, 0, length);
   return byteArrayMayBeShiftJis(bytes);
@@ -76,7 +76,11 @@ const readFile = async (file: Blob): Promise<ProgressEvent<FileReader>> => {
     try {
       reader.readAsArrayBuffer(file);
     } catch (e) {
-      fail(new Error(e.toString()));
+      if (e instanceof Error) {
+        fail(new Error(e.toString()));
+      } else {
+        fail(new Error(String(e)));
+      }
     }
   });
 };

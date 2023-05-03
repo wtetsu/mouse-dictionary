@@ -62,7 +62,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
         }
       }
     });
-    props.onUpdate(null, newPatch);
+    props.onUpdate(undefined, newPatch);
   };
 
   type ColorPickerChangeEvent = {
@@ -89,7 +89,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
           type="number"
           name="width"
           value={settings.width}
-          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : null }}
+          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : undefined }}
           onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
         />
         <span> {res.get("height")}</span>
@@ -97,7 +97,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
           type="number"
           name="height"
           value={settings.height}
-          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : null }}
+          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : undefined }}
           onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
         />
         <label>{res.get("initialPosition")}</label>

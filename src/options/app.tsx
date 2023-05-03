@@ -78,7 +78,7 @@ const App = () => {
   }
 };
 
-const root = createRoot(document.getElementById("app"));
+const root = createRoot(document.getElementById("app") as HTMLElement);
 
 root.render(<App />);
 

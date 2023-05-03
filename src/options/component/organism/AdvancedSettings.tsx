@@ -36,7 +36,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
         }
       }
     });
-    props.onUpdate(null, newPatch);
+    props.onUpdate(undefined, newPatch);
   };
 
   return (

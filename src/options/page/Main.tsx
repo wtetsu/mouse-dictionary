@@ -27,8 +27,8 @@ type MainState = {
 type Action =
   | {
       type: "patch";
-      statePatch: Partial<MainState>;
-      settingsPatch: Partial<MouseDictionarySettings>;
+      statePatch: Partial<MainState> | undefined;
+      settingsPatch: Partial<MouseDictionarySettings> | undefined;
     }
   | {
       type: "replace";
@@ -50,7 +50,7 @@ const reducer = (state: MainState, action: Action): MainState => {
 };
 
 const initialState: MainState = {
-  dictDataUsage: null,
+  dictDataUsage: undefined,
   busy: false,
   progress: "",
   settings: {} as MouseDictionarySettings,
@@ -101,7 +101,10 @@ export const Main: React.FC = () => {
     refPreview.current?.update(state.settings, state.previewText, false);
   }, [state.panelLevel, state.previewText, s]);
 
-  const updateState = (statePatch: Partial<MainState>, settingsPatch: Partial<MouseDictionarySettings> = null): void => {
+  const updateState = (
+    statePatch: Record<string, any> | undefined,
+    settingsPatch: Partial<MouseDictionarySettings> | undefined = undefined
+  ): void => {
     dispatch({ type: "patch", statePatch, settingsPatch });
   };
 
@@ -245,7 +248,11 @@ const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void>
   try {
     await config.saveSettings(settings);
   } catch (e) {
-    message.error(e.message);
+    if (e instanceof Error) {
+      message.error(e.toString());
+    } else {
+      message.error(String(e));
+    }
   }
 };
 
@@ -299,7 +306,11 @@ const loadDictionaryData = async (dictionaryFile: DictionaryFile, updateState: U
     message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
     config.setDataReady(true);
   } catch (e) {
-    message.error(e.toString());
+    if (e instanceof Error) {
+      message.error(e.toString());
+    } else {
+      message.error(String(e));
+    }
   } finally {
     updateState({ busy: false, progress: "", dictDataUsage: -1 });
   }
