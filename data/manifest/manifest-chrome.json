@@ -26,6 +26,9 @@
     },
     "scroll_up": {
       "description": "__MSG_scrollUp__"
+    },
+    "activate_extension": {
+      "description": "Activate the extension (Workaround for Vivaldi)"
     }
   },
   "icons": {

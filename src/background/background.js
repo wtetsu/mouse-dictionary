@@ -38,6 +38,12 @@ chrome.commands.onCommand.addListener((command) => {
     case "scroll_down":
       sendToActiveTab((tabId) => chrome.tabs.sendMessage(tabId, { message: { type: "scroll_down" } }));
       break;
+    case "activate_extension":
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["main.js"],
+      });
+      break;
   }
 });
 
