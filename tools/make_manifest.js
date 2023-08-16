@@ -22,6 +22,13 @@ const main = (options, outputDirPath) => {
     }
   }
 
+  // Workaround assuming Vivaldi (See #84)
+  if (manifest?.commands?._execute_action && options.activate_extension_command) {
+    const org = manifest.commands._execute_action;
+    manifest.commands[options.activate_extension_command] = org;
+    delete manifest.commands._execute_action;
+  }
+
   if (options.overwrite) {
     Object.assign(manifest, options.overwrite);
   }
@@ -55,6 +62,7 @@ if (require.main === module) {
 
   const browser = process.argv[2];
   const mode = process.argv[3];
+  const activate_extension_command = process.argv.length <= 4 ? "" : process.argv[4];
 
   if (mode !== "development" && mode !== "production") {
     throw new Error(`Invalid mode: ${mode}`);
@@ -65,6 +73,7 @@ if (require.main === module) {
       from: `data/manifest/manifest-${browser}.json`,
       to: "manifest.json",
       overwrite: { version },
+      activate_extension_command,
       debug: mode !== "production",
     },
     `static/gen-${browser}/`
