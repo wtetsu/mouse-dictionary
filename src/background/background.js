@@ -38,13 +38,10 @@ chrome.commands.onCommand.addListener((command) => {
     case "scroll_down":
       sendToActiveTab((tabId) => chrome.tabs.sendMessage(tabId, { message: { type: "scroll_down" } }));
       break;
-    // Workaround for Vivaldi, but causes CI error (see #84)
-    // case "activate_extension":
-    //   chrome.scripting.executeScript({
-    //     target: { tabId: tab.id },
-    //     files: ["main.js"],
-    //   });
-    //   break;
+    case "activate_extension":
+      // Workaround for Vivaldi (see #84)
+      sendToActiveTab((tabId) => chrome.scripting.executeScript({ target: { tabId }, files: ["main.js"] }));
+      break;
   }
 });
 
