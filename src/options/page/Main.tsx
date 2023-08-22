@@ -103,7 +103,7 @@ export const Main: React.FC = () => {
 
   const updateState = (
     statePatch: Record<string, any> | undefined,
-    settingsPatch: Partial<MouseDictionarySettings> | undefined = undefined
+    settingsPatch: Partial<MouseDictionarySettings> | undefined = undefined,
   ): void => {
     dispatch({ type: "patch", statePatch, settingsPatch });
   };

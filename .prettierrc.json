@@ -1,6 +1,5 @@
 {
   "printWidth": 125,
-  "tabWidth": 2,
   "overrides": [
     {
       "files": ["*.json", "*.json5"],

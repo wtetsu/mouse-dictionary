@@ -28,7 +28,7 @@ const registerPhrase = (data) => Object.assign(phraseRule, data);
 const registerPronoun = (data) =>
   Object.assign(
     pronounRule,
-    data.map((datum) => new Map(datum))
+    data.map((datum) => new Map(datum)),
   );
 const registerSpelling = (data) => utils.updateMap(spellingRule, data);
 const registerTrailing = (data) => Object.assign(trailingRule, data);

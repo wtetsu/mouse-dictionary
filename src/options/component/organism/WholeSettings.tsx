@@ -107,7 +107,7 @@ export const WholeSettings: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const copyButton = createProcessButton("COPY", COPY_BUTTON_STYLES1, "COPIED!", COPY_BUTTON_STYLES2, () =>
-      navigator.clipboard.writeText(json)
+      navigator.clipboard.writeText(json),
     );
     dom.applyStyles(copyButton, COPY_BUTTON_STYLES);
     editor?.current?.refEditor?.appendChild(copyButton);
@@ -143,7 +143,7 @@ const createProcessButton = (
   style1: React.CSSProperties,
   text2: string,
   style2: React.CSSProperties,
-  doSomething: () => void
+  doSomething: () => void,
 ): HTMLElement => {
   let canProcess = true;
   const element = document.createElement("span");

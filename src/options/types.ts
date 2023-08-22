@@ -46,7 +46,7 @@ export type Replace = {
 
 export type UpdateEventHandler = (
   statePatch: Record<string, any> | undefined,
-  settingsPatch: Partial<MouseDictionarySettings> | undefined
+  settingsPatch: Partial<MouseDictionarySettings> | undefined,
 ) => void;
 
 type EnvForMain = {

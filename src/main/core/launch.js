@@ -140,8 +140,8 @@ const setEvents = async (area, userSettings) => {
   // Notice for the very first launch.
   const notice = dom.create(
     `<span style="font-size: 1.3rem; font-family: 'hiragino kaku gothic pro', meiryo, sans-serif;">${res(
-      "needToPrepareDict"
-    )}</span>`
+      "needToPrepareDict",
+    )}</span>`,
   );
 
   dom.replace(area.content, notice);
