@@ -6,10 +6,10 @@
   "license": "MIT",
   "scripts": {
     "res": "node tools/bundle_json.js && node tools/make_dict.js",
-    "build": "npm run build-chrome && npm run build-firefox",
+    "build": "npm run build-chrome",
     "watch": "npm run watch-chrome",
-    "release": "npm run release-chrome && npm run release-firefox",
-    "package": "npm run package-chrome && npm run package-firefox",
+    "release": "npm run release-chrome",
+    "package": "npm run package-chrome",
     "lint": "eslint src/**/*.{js,ts,tsx} && prettier --check src/**/*.{js,ts,tsx} && tsc --noEmit",
     "format": "prettier --write src/**/*.{js,ts,tsx}",
     "test": "jest --silent",
