@@ -16,7 +16,11 @@ const invoke = async () => {
   try {
     response = await fetch(location.href);
   } catch (e) {
-    updateRibbon(e.message, [""]);
+    if (location.href.startsWith("file://")) {
+      updateRibbon(res("cannotFetchLocalPdf"), [""]);
+    } else {
+      updateRibbon(e.message, [""]);
+    }
     return;
   }
 

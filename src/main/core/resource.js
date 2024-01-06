@@ -15,6 +15,8 @@ const resources = {
     downloadingPdf: "📘ダウンロード中...",
     preparingPdf: "📘PDFビューア準備中...",
     nonPdf: "PDFファイルではないようです。処理を中断しました。",
+    cannotFetchLocalPdf:
+      "⛔Mouse DictionaryはローカルにあるPDFファイル上では起動できません。オプション画面から開けるPDFビューアをご利用ください。",
   },
   en: {
     continueProcessingPdf:
@@ -23,6 +25,7 @@ const resources = {
     downloadingPdf: "📘Downloading...",
     preparingPdf: "📘Preparing PDF viewer...",
     nonPdf: "This is not a PDF document.",
+    cannotFetchLocalPdf: "⛔Mouse Dictionary can't launch on local PDFs. Use the PDF viewer from the options screen.",
   },
 };
 
