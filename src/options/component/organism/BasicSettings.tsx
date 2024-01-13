@@ -10,7 +10,7 @@ import { produce } from "immer";
 import { res } from "../../logic";
 import { env } from "../../extern";
 import { Select } from "../atom/Select";
-import { MouseDictionaryBasicSettings, UpdateEventHandler, InitialPosition, Scroll } from "../../types";
+import { MouseDictionaryBasicSettings, UpdateEventHandler, InitialPosition } from "../../types";
 
 type Props = {
   settings: MouseDictionaryBasicSettings;
@@ -47,11 +47,6 @@ export const BasicSettings: React.FC<Props> = (props) => {
       value: "keep",
     });
   }
-
-  const scrolls = [
-    { name: res.get("scrollOn"), value: "scroll" },
-    { name: res.get("scrollOff"), value: "hidden" },
-  ];
 
   const update = (patch: Partial<MouseDictionaryBasicSettings>) => {
     const newPatch = produce(patch, (d) => {
@@ -106,14 +101,6 @@ export const BasicSettings: React.FC<Props> = (props) => {
           options={positions}
           style={{ width: 250 }}
           onChange={(value) => update({ initialPosition: value as InitialPosition })}
-        />
-
-        <label>{res.get("scrollBar")}</label>
-        <Select
-          value={settings.scroll}
-          options={scrolls}
-          style={{ width: 250 }}
-          onChange={(value) => update({ scroll: value as Scroll })}
         />
 
         <br />

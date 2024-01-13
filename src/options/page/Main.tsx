@@ -92,7 +92,7 @@ export const Main: React.FC = () => {
       refPreview.current = new Preview(s);
     }
     refPreview.current?.update(s, state.previewText, true);
-  }, [s.scroll, s.backgroundColor, s.dialogTemplate, s.contentWrapperTemplate]);
+  }, [s.backgroundColor, s.dialogTemplate, s.contentWrapperTemplate]);
   useEffect(() => {
     if (!state.initialized) {
       return;

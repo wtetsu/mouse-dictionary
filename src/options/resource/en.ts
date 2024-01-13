@@ -35,9 +35,6 @@ const EnglishTextResource: TextResource = {
   positionRight: "Right",
   positionKeep: "Restore the last position and size",
 
-  scrollOff: "Not available",
-  scrollOn: "Available",
-
   saveSettings: "Save settings",
   defaultSettings: "Reset to default",
   finishSaving: "Saving has finished",
@@ -58,7 +55,6 @@ const EnglishTextResource: TextResource = {
   width: "Width",
   height: "Height",
   initialPosition: "Initial position",
-  scrollBar: "Scroll bar",
   dictionaryData: "Dictionary data",
   colorAndFont: "Font size and color",
   headFont: "Header font",

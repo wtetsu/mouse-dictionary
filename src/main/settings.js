@@ -10,7 +10,6 @@ export default {
   parseWordsLimit: 8,
   lookupWithCapitalized: false,
   initialPosition: "right",
-  scroll: "scroll",
   skipPdfConfirmation: false,
   pdfUrl: "",
   backgroundColor: "#ffffff",
@@ -60,12 +59,12 @@ export default {
 
   dialogTemplate: `<div class="notranslate"
      style="all:initial;
-            {{systemStyles}}
+            border-radius: 5px 0px 0px 5px;
             width: {{width}}px;
             height: {{height}}px;
             position: fixed;
             overflow-x: hidden;
-            overflow-y: {{scroll}};
+            overflow-y: scroll;
             top: 5px;
             background-color: {{backgroundColor}};
             z-index: 2147483646;

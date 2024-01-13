@@ -24,8 +24,6 @@ export type TextResource = {
   positionLeft: string;
   positionRight: string;
   positionKeep: string;
-  scrollOff: string;
-  scrollOn: string;
   saveSettings: string;
   defaultSettings: string;
   finishSaving: string;
@@ -43,7 +41,6 @@ export type TextResource = {
   width: string;
   height: string;
   initialPosition: string;
-  scrollBar: string;
   dictionaryData: string;
   colorAndFont: string;
   headFont: string;

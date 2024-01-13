@@ -30,9 +30,6 @@ const JapaneseTextResource: TextResource = {
   positionRight: "右",
   positionKeep: "前回位置とサイズを記憶",
 
-  scrollOff: "なし",
-  scrollOn: "あり",
-
   saveSettings: "設定を保存する",
   defaultSettings: "初期状態に戻す",
   finishSaving: "保存しました。",
@@ -53,7 +50,6 @@ const JapaneseTextResource: TextResource = {
   width: "幅",
   height: "高さ",
   initialPosition: "初期表示位置",
-  scrollBar: "スクロールバー",
   dictionaryData: "辞書データ",
   colorAndFont: "色と文字サイズ",
   background: "背景",

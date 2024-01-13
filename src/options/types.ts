@@ -6,11 +6,8 @@
 
 export type InitialPosition = "left" | "right" | "keep";
 
-export type Scroll = "scroll" | "hidden";
-
 export type MouseDictionaryBasicSettings = {
   initialPosition: InitialPosition;
-  scroll: Scroll;
   backgroundColor: string;
   headFontColor: string;
   descFontColor: string;
