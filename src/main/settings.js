@@ -58,8 +58,7 @@ export default {
 </div>`,
 
   dialogTemplate: `<div class="notranslate"
-     style="all:initial;
-            border-radius: 5px 0px 0px 5px;
+     style="border-radius: 5px 0px 0px 5px;
             width: {{width}}px;
             height: {{height}}px;
             position: fixed;
