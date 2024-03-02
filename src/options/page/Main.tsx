@@ -130,18 +130,7 @@ export const Main: React.FC = () => {
         <div style={{ position: "absolute", top: 0, left: -30, cursor: "pointer" }} onClick={() => switchLanguage()}>
           {state.lang}
         </div>
-        <LoadDictionary
-          busy={state.busy}
-          trigger={(e) => {
-            switch (e.type) {
-              case "load":
-                return loadDictionaryData(e.payload, updateState);
-              case "clear":
-                // Not supported for the moment due to instability of chrome.storage.local.clear()
-                return;
-            }
-          }}
-        />
+        <LoadDictionary busy={state.busy} trigger={(e) => loadDictionaryData(e.payload, updateState)} />
 
         <Panel active={env.get().support.localGetBytesInUse && !state.busy}>
           <DataUsage byteSize={state.dictDataUsage} onUpdate={(byteSize) => updateState({ dictDataUsage: byteSize })} />

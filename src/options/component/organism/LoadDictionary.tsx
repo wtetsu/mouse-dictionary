@@ -17,16 +17,14 @@ type Props = {
   trigger: (e: TriggerEvent) => void;
 };
 
-type TriggerEvent =
-  | {
-      type: "load";
-      payload: {
-        file: File | undefined;
-        encoding: DictionaryFileEncoding;
-        format: DictionaryFileFormat;
-      };
-    }
-  | { type: "clear" };
+type TriggerEvent = {
+  type: "load";
+  payload: {
+    file: File | undefined;
+    encoding: DictionaryFileEncoding;
+    format: DictionaryFileFormat;
+  };
+};
 
 export const LoadDictionary: React.FC<Props> = (props) => {
   const [encoding, setEncoding] = useState(props.defaultEncoding ?? "Shift-JIS");
