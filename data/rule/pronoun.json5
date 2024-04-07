@@ -24,6 +24,10 @@
     ["him", "someone"],
     ["them", "someone"],
     ["us", "someone"],
+    ["isn't", "not"],
+    ["aren't", "not"],
+    ["wasn't", "not"],
+    ["weren't", "not"],
   ],
   [
     ["my", "someone's"],
@@ -45,6 +49,10 @@
     ["him", "someone"],
     ["them", "someone"],
     ["us", "someone"],
+    ["isn't", "not"],
+    ["aren't", "not"],
+    ["wasn't", "not"],
+    ["weren't", "not"],
   ],
   [
     ["my", "someone's"],
@@ -66,5 +74,9 @@
     ["him", "someone"],
     ["them", "someone"],
     ["us", "someone"],
+    ["isn't", "not"],
+    ["aren't", "not"],
+    ["wasn't", "not"],
+    ["weren't", "not"],
   ],
 ]
