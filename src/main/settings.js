@@ -58,8 +58,7 @@ export default {
 </div>`,
 
   dialogTemplate: `<div class="notranslate"
-     style="border-radius: 5px 0px 0px 5px;
-            width: {{width}}px;
+     style="width: {{width}}px;
             height: {{height}}px;
             position: fixed;
             overflow-x: hidden;

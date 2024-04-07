@@ -9,7 +9,6 @@ import template from "../lib/template";
 
 const createDialogElement = (settings) => {
   const html = template.render(settings.dialogTemplate, {
-    systemStyles: "border-radius: 5px 0px 0px 5px;", // For backward compatibility
     backgroundColor: settings.backgroundColor,
     width: settings.width,
     height: settings.height,
