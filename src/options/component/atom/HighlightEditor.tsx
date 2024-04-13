@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import React from "react";
 import AceEditor from "react-ace";
 
 type Props = {

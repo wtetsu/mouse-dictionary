@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import React from "react";
 import { produce } from "immer";
 import { Button } from "../atom/Button";
 import { res } from "../../logic";

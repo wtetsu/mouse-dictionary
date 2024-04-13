@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import React from "react";
 import { ChromePicker } from "react-color";
 import { produce } from "immer";
 import { res } from "../../logic";

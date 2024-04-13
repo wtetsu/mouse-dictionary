@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import React from "react";
 import { res } from "../../logic";
 import { ExternalLink } from "../atom/ExternalLink";
 import { Links } from "../../resource/links";

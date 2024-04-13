@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { res } from "../../logic";
 import { storage, config } from "../../extern";
 

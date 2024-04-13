@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import React, { useReducer, useEffect, useRef } from "react";
+import { useReducer, useEffect, useRef } from "react";
 import { produce } from "immer";
 import { Button, DataUsage, EditableSpan, ExternalLink, Launch, Overlay, Panel, Switch, Toggle } from "../component/atom";
 import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, Tips, WholeSettings } from "../component/organism";

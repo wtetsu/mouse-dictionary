@@ -4,8 +4,6 @@
  * Licensed under MIT
  */
 
-import React from "react";
-
 type Props = {
   active: boolean;
   children?: React.ReactNode;

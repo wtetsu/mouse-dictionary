@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import React, { useEffect, useRef, MutableRefObject } from "react";
+import { useEffect, useState, useRef, MutableRefObject } from "react";
 import AceEditor from "react-ace";
 import { produce } from "immer";
 import { Button } from "../atom/Button";
@@ -61,7 +61,7 @@ const COPY_BUTTON_STYLES1 = { ...COPY_BUTTON_STYLES, color: "#808080" } as React
 const COPY_BUTTON_STYLES2 = { ...COPY_BUTTON_STYLES, color: "#FF4500" } as React.CSSProperties;
 
 export const WholeSettings: React.FC<Props> = (props) => {
-  const [json, setJson] = React.useState(() => {
+  const [json, setJson] = useState(() => {
     const initialValue = data.postProcessSettings(props.initialValue);
     return JSON.stringify(initialValue, null, 2);
   });

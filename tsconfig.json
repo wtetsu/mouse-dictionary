@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2021",
+    "target": "es2022",
     "jsx": "react-jsx",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
     "strict": true,
     "noImplicitAny": false,
     "skipLibCheck": true

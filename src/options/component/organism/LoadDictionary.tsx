@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import React, { useRef, useState, MutableRefObject } from "react";
+import { useRef, useState, MutableRefObject } from "react";
 import { Button } from "../atom/Button";
 import { Select } from "../atom/Select";
 import { res } from "../../logic";
