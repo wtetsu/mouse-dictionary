@@ -67,7 +67,8 @@ export default {
             background-color: {{backgroundColor}};
             z-index: 2147483646;
             padding: 2px 4px 2px 4px;
-            border: 1px solid #A0A0A0;">
+            border: 1px solid #A0A0A0;
+            font-weight: normal;">
 </div>`,
 
   contentTemplate: `<div style="{{cssReset}};font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
