@@ -35,25 +35,25 @@
   },
   "dependencies": {
     "deinja": "0.0.3",
-    "immer": "^10.0.4",
+    "immer": "^10.1.1",
     "mustache": "^4.2.0",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-ace": "^11.0.1",
     "react-color": "^2.19.3",
-    "react-dom": "^18.2.0",
+    "react-dom": "^18.3.1",
     "sweetalert": "^2.1.2",
     "uniqlist": "^1.0.4"
   },
   "devDependencies": {
-    "@swc/core": "^1.4.12",
+    "@swc/core": "^1.4.17",
     "@swc/jest": "^0.2.36",
-    "@types/chrome": "^0.0.265",
+    "@types/chrome": "^0.0.267",
     "@types/jest": "^29.5.12",
     "@types/mustache": "^4.2.5",
-    "@types/react": "^18.2.74",
-    "@types/react-dom": "^18.2.24",
-    "@typescript-eslint/eslint-plugin": "^7.5.0",
-    "@typescript-eslint/parser": "^7.5.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
     "archiver": "^7.0.1",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
@@ -64,6 +64,6 @@
     "jest-environment-jsdom": "^29.7.0",
     "milligram": "^1.4.1",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.4"
+    "typescript": "^5.4.5"
   }
 }
