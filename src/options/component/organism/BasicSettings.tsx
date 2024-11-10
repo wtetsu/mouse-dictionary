@@ -76,7 +76,6 @@ export const BasicSettings: React.FC<Props> = (props) => {
             checked={settings.skipPdfConfirmation}
           />
         </label>
-
         <label>{res.get("initialSize")}</label>
         <span>{res.get("width")}</span>
         <input
@@ -101,19 +100,17 @@ export const BasicSettings: React.FC<Props> = (props) => {
           style={{ width: 250 }}
           onChange={(value) => update({ initialPosition: value as InitialPosition })}
         />
-
         <br />
-
         <h3>{res.get("colorAndFont")}</h3>
         <div className="container">
           <div className="row" style={{ width: 690 }}>
             <div className="column">
               <h4>{res.get("headFont")}</h4>
-              <ChromePicker
-                width={200}
-                color={settings.headFontColor}
-                disableAlpha={true}
-                onChange={(e: ColorPickerChangeEvent) => update({ headFontColor: e.hex })}
+              <input
+                type="color"
+                style={{ width: 200 }}
+                value={settings.headFontColor}
+                onChange={(e) => update({ headFontColor: e.target.value })}
               />
               <br />
               <Select
@@ -125,11 +122,11 @@ export const BasicSettings: React.FC<Props> = (props) => {
             </div>
             <div className="column">
               <h4>{res.get("descFont")}</h4>
-              <ChromePicker
-                width={200}
-                color={settings.descFontColor}
-                disableAlpha={true}
-                onChange={(e: ColorPickerChangeEvent) => update({ descFontColor: e.hex })}
+              <input
+                type="color"
+                style={{ width: 200 }}
+                value={settings.descFontColor}
+                onChange={(e) => update({ descFontColor: e.target.value })}
               />
               <br />
               <Select
@@ -141,11 +138,11 @@ export const BasicSettings: React.FC<Props> = (props) => {
             </div>
             <div className="column">
               <h4>{res.get("background")}</h4>
-              <ChromePicker
-                width={200}
-                color={settings.backgroundColor}
-                disableAlpha={true}
-                onChange={(e: ColorPickerChangeEvent) => update({ backgroundColor: e.hex })}
+              <input
+                type="color"
+                style={{ width: 200 }}
+                value={settings.backgroundColor}
+                onChange={(e) => update({ backgroundColor: e.target.value })}
               />
             </div>
           </div>
