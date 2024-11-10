@@ -4,7 +4,6 @@
  * Licensed under MIT
  */
 
-import { ChromePicker } from "react-color";
 import { produce } from "immer";
 import { res } from "../../logic";
 import { env } from "../../extern";
@@ -57,10 +56,6 @@ export const BasicSettings: React.FC<Props> = (props) => {
       }
     });
     props.onUpdate(undefined, newPatch);
-  };
-
-  type ColorPickerChangeEvent = {
-    hex: string;
   };
 
   return (

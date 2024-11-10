@@ -11,8 +11,6 @@ import { MouseDictionarySettings } from "../types";
 
 type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };
 
-declare const DEBUG: boolean;
-
 export class Preview {
   element: HTMLElement;
   update: (settings: MouseDictionarySettings, text: string, refresh: boolean) => void;
@@ -49,8 +47,6 @@ export class Preview {
   async updateText(previewText: string, lookupWithCapitalized: boolean): Promise<void> {
     const { entries, lang } = this.buildEntries(previewText, lookupWithCapitalized, false);
 
-    DEBUG && console.time("update");
-
     const descriptions = await storage.local.get(entries);
     const { html } = this.generator.generate(entries, descriptions, lang === "en");
 
@@ -59,8 +55,6 @@ export class Preview {
       this.previewWindow.content.innerHTML = "";
       this.previewWindow.content.appendChild(newDom);
     }
-
-    DEBUG && console.timeEnd("update");
   }
 
   createWindow(settings: MouseDictionarySettings): PreviewWindow {
