@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import { ExternalLinks } from "../types";
+import type { ExternalLinks } from "../types";
 
 declare const BROWSER: "chrome" | "firefox" | "safari";
 

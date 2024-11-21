@@ -135,9 +135,9 @@ const pxToFloat = (str) => {
     return 0;
   }
   if (str.endsWith("px")) {
-    return parseFloat(str.slice(0, -2));
+    return Number.parseFloat(str.slice(0, -2));
   }
-  return parseFloat(str);
+  return Number.parseFloat(str);
 };
 
 /**
@@ -200,4 +200,12 @@ class VirtualStyle {
   }
 }
 
-export default { create, applyStyles, replace, traverse, clone, pxToFloat, VirtualStyle };
+export default {
+  create,
+  applyStyles,
+  replace,
+  traverse,
+  clone,
+  pxToFloat,
+  VirtualStyle,
+};

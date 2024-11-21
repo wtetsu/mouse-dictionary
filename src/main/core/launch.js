@@ -4,14 +4,14 @@
  * Licensed under MIT
  */
 
-import res from "./resource";
-import rule from "./rule";
-import view from "./view";
+import dom from "../lib/dom";
+import utils from "../lib/utils";
 import config from "./config";
 import events from "./events";
 import pdf from "./pdf";
-import dom from "../lib/dom";
-import utils from "../lib/utils";
+import res from "./resource";
+import rule from "./rule";
+import view from "./view";
 
 export default async () => {
   const existingElement = document.getElementById(DIALOG_ID);

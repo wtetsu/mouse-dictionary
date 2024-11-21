@@ -43,7 +43,7 @@ class Edge {
   }
 
   getEdgeState(rect, x, y) {
-    if (isNaN(x) || isNaN(y)) {
+    if (Number.isNaN(x) || Number.isNaN(y)) {
       return 0;
     }
     let edge = 0;

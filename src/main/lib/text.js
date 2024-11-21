@@ -145,13 +145,13 @@ text.replaceTrailingCharacters = (str, searchValue, newValue) => {
 };
 
 text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
-  let words = [];
+  const words = [];
 
   for (let i = 0; i < trailingRule.length; i++) {
     const tlist = trailingRule[i];
     for (let j = 0; j < tlist.length; j++) {
       const t = tlist[j];
-      let w = text.replaceTrailingCharacters(str, t.search, t.new);
+      const w = text.replaceTrailingCharacters(str, t.search, t.new);
       if (w?.length >= minLength) {
         words.push(w);
         break;

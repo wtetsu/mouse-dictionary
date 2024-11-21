@@ -4,15 +4,15 @@
  * Licensed under MIT
  */
 
-import config from "./config";
-import rule from "./rule";
-import entryDefault from "./entry/default";
-import Lookuper from "./lookuper";
 import dom from "../lib/dom";
-import traverser from "../lib/traverser";
-import utils from "../lib/utils";
 import Draggable from "../lib/draggable";
 import sound from "../lib/sound";
+import traverser from "../lib/traverser";
+import utils from "../lib/utils";
+import config from "./config";
+import entryDefault from "./entry/default";
+import Lookuper from "./lookuper";
+import rule from "./rule";
 
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
@@ -42,7 +42,10 @@ const attach = async (settings, dialog, doUpdateContent) => {
     }
 
     const range = utils.omap(dialog.style, utils.convertToInt, POSITION_FIELDS);
-    const didMouseUpOnTheWindow = utils.isInsideRange(range, { x: e.clientX, y: e.clientY });
+    const didMouseUpOnTheWindow = utils.isInsideRange(range, {
+      x: e.clientX,
+      y: e.clientY,
+    });
     lookuper.halfLocked = didMouseUpOnTheWindow;
   });
 
@@ -153,7 +156,7 @@ const setDialogEvents = (dialog) => {
 };
 
 const createSnapGuideElement = () => {
-  const guideElement = dom.create(`<div>Shift+Move: Smart-snap</div>`);
+  const guideElement = dom.create("<div>Shift+Move: Smart-snap</div");
   dom.applyStyles(guideElement, {
     right: "0px",
     top: "0px",

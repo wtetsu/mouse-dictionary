@@ -5,8 +5,8 @@
  */
 
 import entry from "../entry";
-import entryGeneratorJa from "./ja";
 import entryGeneratorEn from "./en";
+import entryGeneratorJa from "./ja";
 
 // Can add other languages here
 const generators = {
@@ -15,7 +15,7 @@ const generators = {
   default: entryGeneratorEn,
 };
 
-let languageDetector = (text) => (isEnglishText(text) ? "en" : "ja");
+const languageDetector = (text) => (isEnglishText(text) ? "en" : "ja");
 
 const isEnglishText = (str) => {
   let result = true;

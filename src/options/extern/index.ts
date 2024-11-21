@@ -16,7 +16,7 @@ import template from "../../main/lib/template";
 
 import * as config from "./config";
 import * as env from "./env";
-import * as storage from "./storage";
 import * as defaultSettings from "./settings";
+import * as storage from "./storage";
 
 export { entry, entryDefault, Generator, view, dom, template, defaultSettings, env, config, storage };

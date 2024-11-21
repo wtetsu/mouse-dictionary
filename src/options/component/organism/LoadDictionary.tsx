@@ -4,11 +4,12 @@
  * Licensed under MIT
  */
 
-import { useRef, useState, MutableRefObject } from "react";
+import { useRef, useState } from "react";
+import type { MutableRefObject } from "react";
+import { res } from "../../logic";
+import type { DictionaryFileEncoding, DictionaryFileFormat } from "../../types";
 import { Button } from "../atom/Button";
 import { Select } from "../atom/Select";
-import { res } from "../../logic";
-import { DictionaryFileEncoding, DictionaryFileFormat } from "../../types";
 
 type Props = {
   defaultEncoding?: DictionaryFileEncoding;
@@ -57,14 +58,22 @@ export const LoadDictionary: React.FC<Props> = (props) => {
       <Button
         type="primary"
         text={res.get("loadSelectedFile")}
-        onClick={() => props.trigger({ type: "load", payload: { encoding, format, file: fileInput.current.files?.[0] } })}
+        onClick={() =>
+          props.trigger({
+            type: "load",
+            payload: { encoding, format, file: fileInput.current.files?.[0] },
+          })
+        }
         disabled={props.busy}
       />
       <img
         src="img/loading.gif"
         width="32"
         height="32"
-        style={{ verticalAlign: "middle", display: props.busy ? "inline" : "none" }}
+        style={{
+          verticalAlign: "middle",
+          display: props.busy ? "inline" : "none",
+        }}
       />
     </div>
   );

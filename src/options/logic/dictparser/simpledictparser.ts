@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import { DictParser, DictEntry } from "./dictparser";
+import type { DictEntry, DictParser } from "./dictparser";
 
 export class SimpleDictParser implements DictParser {
   #delimiter: string;

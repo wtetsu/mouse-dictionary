@@ -7,7 +7,7 @@
 
 import orgConfig from "../../main/core/config";
 import storage from "../../main/lib/storage";
-import { MouseDictionarySettings } from "../types";
+import type { MouseDictionarySettings } from "../types";
 
 const KEY_USER_CONFIG = "**** config ****";
 const KEY_LOADED = "**** loaded ****";

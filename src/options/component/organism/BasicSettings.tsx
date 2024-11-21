@@ -5,10 +5,10 @@
  */
 
 import { produce } from "immer";
-import { res } from "../../logic";
 import { env } from "../../extern";
+import { res } from "../../logic";
+import type { InitialPosition, MouseDictionaryBasicSettings, UpdateEventHandler } from "../../types";
 import { Select } from "../atom/Select";
-import { MouseDictionaryBasicSettings, UpdateEventHandler, InitialPosition } from "../../types";
 
 type Props = {
   settings: MouseDictionaryBasicSettings;
@@ -32,7 +32,7 @@ const FONT_SIZES = [
 export const BasicSettings: React.FC<Props> = (props) => {
   const settings = props.settings;
   if (!settings) {
-    return <div></div>;
+    return <div />;
   }
 
   const positions = [
@@ -77,16 +77,22 @@ export const BasicSettings: React.FC<Props> = (props) => {
           type="number"
           name="width"
           value={settings.width}
-          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : undefined }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
+          style={{
+            width: 90,
+            backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : undefined,
+          }}
+          onChange={(e) => update({ [e.target.name]: Number.parseInt(e.target.value, 10) })}
         />
         <span> {res.get("height")}</span>
         <input
           type="number"
           name="height"
           value={settings.height}
-          style={{ width: 90, backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : undefined }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
+          style={{
+            width: 90,
+            backgroundColor: settings.initialPosition === "keep" ? "#c0c0c0" : undefined,
+          }}
+          onChange={(e) => update({ [e.target.name]: Number.parseInt(e.target.value, 10) })}
         />
         <label>{res.get("initialPosition")}</label>
         <Select

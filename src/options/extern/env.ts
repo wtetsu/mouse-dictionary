@@ -6,7 +6,7 @@
 /* istanbul ignore file */
 
 import env from "../../main/env";
-import { Env } from "../types";
+import type { Env } from "../types";
 
 declare const BROWSER: "chrome" | "firefox" | "safari";
 

@@ -4,12 +4,12 @@
  * Licensed under MIT
  */
 
-import swal from "sweetalert";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Main } from "./page/Main";
+import swal from "sweetalert";
 import rule from "../main/core/rule";
 import { res } from "./logic";
+import { Main } from "./page/Main";
 
 import ace from "ace-builds/src-noconflict/ace";
 import "ace-builds/src-noconflict/mode-html";

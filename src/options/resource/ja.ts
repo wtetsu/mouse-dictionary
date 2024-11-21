@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import { TextResource } from "./types";
+import type { TextResource } from "./types";
 
 const JapaneseTextResource: TextResource = {
   dictDataEncoding: "辞書データの文字コード：",
@@ -81,7 +81,8 @@ const JapaneseTextResource: TextResource = {
   closeJsonEditor: "キャンセル",
   importJson: "JSONを設定に反映",
   JsonImportError: "正しいJSONデータになっていません",
-  aboutJsonEditor: "Mouse Dictionary設定全体のJSONデータです。バックアップや共有にご利用ください ※辞書データは含みません",
+  aboutJsonEditor:
+    "Mouse Dictionary設定全体のJSONデータです。バックアップや共有にご利用ください ※辞書データは含みません",
   skipPdfConfirmation: "PDFファイルのダウンロード確認を省略する",
   pdfUrlPattern: "PDFドキュメント判定の上書き(URLに対する正規表現)",
 };
