@@ -4,9 +4,9 @@
  * Licensed under MIT
  */
 
+import env from "../env";
 import storage from "../lib/storage";
 import defaultSettings from "../settings";
-import env from "../env";
 
 const KEY_USER_CONFIG = "**** config ****";
 const KEY_LAST_POSITION = "**** last_position ****";

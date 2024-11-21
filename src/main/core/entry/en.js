@@ -5,8 +5,8 @@
  */
 
 import UniqList from "uniqlist";
-import rule from "../rule";
 import text from "../../lib/text";
+import rule from "../rule";
 
 const RE_UNNECESSARY_CHARACTERS = new RegExp(String.fromCharCode(0x200c), "g");
 const RE_SLASH = new RegExp("/", "g");

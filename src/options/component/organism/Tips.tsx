@@ -5,8 +5,8 @@
  */
 
 import { res } from "../../logic";
-import { ExternalLink } from "../atom/ExternalLink";
 import { Links } from "../../resource/links";
+import { ExternalLink } from "../atom/ExternalLink";
 
 type TipsProps = {
   style: React.CSSProperties;

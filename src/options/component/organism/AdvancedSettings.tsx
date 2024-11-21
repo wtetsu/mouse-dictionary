@@ -6,9 +6,9 @@
 
 import { produce } from "immer";
 import { res } from "../../logic";
-import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
+import type { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../../types";
 import { HighlightEditor } from "../atom/HighlightEditor";
-import { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../../types";
+import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
 
 type AdvancedSettingsProps = {
   settings: MouseDictionaryAdvancedSettings;
@@ -49,7 +49,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           name="shortWordLength"
           value={props.settings.shortWordLength}
           style={{ width: 60 }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
+          onChange={(e) => update({ [e.target.name]: Number.parseInt(e.target.value, 10) })}
         />
         <span> {res.get("abbreviateShortWordDesc1")} </span>
         <input
@@ -57,7 +57,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           name="cutShortWordDescription"
           value={props.settings.cutShortWordDescription}
           style={{ width: 60 }}
-          onChange={(e) => update({ [e.target.name]: parseInt(e.target.value, 10) })}
+          onChange={(e) => update({ [e.target.name]: Number.parseInt(e.target.value, 10) })}
         />
         <span> {res.get("abbreviateShortWordDesc2")}</span>
         <label>
@@ -74,7 +74,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           <input
             type="number"
             value={parseWordsLimit}
-            onChange={(e) => update({ parseWordsLimit: parseInt(e.target.value, 10) })}
+            onChange={(e) => update({ parseWordsLimit: Number.parseInt(e.target.value, 10) })}
             style={{ width: 60 }}
           />
         </label>
@@ -151,7 +151,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
         <ReplaceRuleEditor
           replaceRules={props.settings.replaceRules}
           onUpdate={(rules) => update({ replaceRules: rules })}
-        ></ReplaceRuleEditor>
+        />
       </fieldset>
     </form>
   );

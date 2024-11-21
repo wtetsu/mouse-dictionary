@@ -5,9 +5,9 @@
  */
 
 import { produce } from "immer";
+import { Generator, dom, entryDefault, storage, view } from "../extern";
 import { debounce } from "../logic";
-import { dom, Generator, view, entryDefault, storage } from "../extern";
-import { MouseDictionarySettings } from "../types";
+import type { MouseDictionarySettings } from "../types";
 
 type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };
 
@@ -16,7 +16,11 @@ export class Preview {
   update: (settings: MouseDictionarySettings, text: string, refresh: boolean) => void;
   previewWindow: PreviewWindow | undefined;
   generator: Generator;
-  buildEntries: (text: string, withCapitalized: boolean, includeOrgText: boolean) => { entries: string[]; lang: string };
+  buildEntries: (
+    text: string,
+    withCapitalized: boolean,
+    includeOrgText: boolean,
+  ) => { entries: string[]; lang: string };
 
   constructor(settings: MouseDictionarySettings) {
     this.update = debounce(this.updateBody.bind(this), 64);

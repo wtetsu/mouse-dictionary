@@ -6,11 +6,11 @@
 
 import utils from "../lib/utils";
 
+import buildDeinja from "deinja/build";
 import base from "./rule/base";
 import phrase from "./rule/phrase";
 import pronoun from "./rule/pronoun";
 import spelling from "./rule/spelling";
-import buildDeinja from "deinja/build";
 
 // Lazy load
 const nounRule = new Map();

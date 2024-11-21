@@ -40,7 +40,12 @@ chrome.commands.onCommand.addListener((command) => {
       break;
     case "activate_extension":
       // Workaround for Vivaldi (see #84)
-      sendToActiveTab((tabId) => chrome.scripting.executeScript({ target: { tabId }, files: ["main.js"] }));
+      sendToActiveTab((tabId) =>
+        chrome.scripting.executeScript({
+          target: { tabId },
+          files: ["main.js"],
+        }),
+      );
       break;
   }
 });

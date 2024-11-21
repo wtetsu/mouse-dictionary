@@ -5,9 +5,9 @@
  */
 
 import dom from "./dom";
-import utils from "./utils";
 import edge from "./edge";
 import snap from "./snap";
+import utils from "./utils";
 
 const MODE_NONE = 0;
 const MODE_MOVING = 1;

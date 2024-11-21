@@ -4,8 +4,8 @@
  * Licensed under MIT
  */
 
-import dom from "./dom";
 import decoy from "./decoy";
+import dom from "./dom";
 import ponyfill from "./ponyfill/ponyfill";
 
 const build = (doConfirmValidCharacter, maxWords) => {

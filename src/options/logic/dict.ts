@@ -4,10 +4,10 @@
  * Licensed under MIT
  */
 
-import { LineReader } from "./linereader";
-import { EijiroParser, SimpleDictParser, JsonDictParser } from "./dictparser";
 import { env, storage } from "../extern";
-import { DictionaryFileEncoding, DictionaryFileFormat } from "../types";
+import type { DictionaryFileEncoding, DictionaryFileFormat } from "../types";
+import { EijiroParser, JsonDictParser, SimpleDictParser } from "./dictparser";
+import { LineReader } from "./linereader";
 
 type ProgressCallback = (wordCount: number, progress: string) => void;
 

@@ -5,9 +5,9 @@
  */
 
 import { produce } from "immer";
-import { Button } from "../atom/Button";
 import { res } from "../../logic";
-import { Replace } from "../../types";
+import type { Replace } from "../../types";
+import { Button } from "../atom/Button";
 
 type Props = {
   replaceRules: Replace[];

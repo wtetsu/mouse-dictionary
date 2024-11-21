@@ -5,7 +5,7 @@
  */
 
 import { produce } from "immer";
-import { MouseDictionarySettings } from "../types";
+import type { MouseDictionarySettings } from "../types";
 
 export const fileMayBeShiftJis = async (file: Blob): Promise<boolean> => {
   const e = await readFile(file);

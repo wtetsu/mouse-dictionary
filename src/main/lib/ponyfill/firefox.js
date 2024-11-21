@@ -8,7 +8,7 @@ const getComputedCssText = (params) => {
   const computedStyle = window.getComputedStyle(params);
 
   const styles = [];
-  for (let key in computedStyle) {
+  for (const key in computedStyle) {
     if (!isNumberString(key)) {
       const value = computedStyle[key];
       styles.push(`${key}:${value}`);

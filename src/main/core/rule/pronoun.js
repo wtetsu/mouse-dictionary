@@ -8,7 +8,7 @@
  * ["on", "my", "own"] -> [["on", "one's", "own"], ["on", "someone's", "own"]]
  */
 export default (pronounRule, words) => {
-  let result = [];
+  const result = [];
   let changed = false;
   for (let i = 0; i < pronounRule.length; i++) {
     const convertedWords = [...words];

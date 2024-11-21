@@ -4,8 +4,8 @@
  * Licensed under MIT
  */
 
-import res from "./resource";
 import ribbon from "../lib/ribbon";
+import res from "./resource";
 
 const invoke = async () => {
   const [updateRibbon, closeRibbon] = ribbon.create();

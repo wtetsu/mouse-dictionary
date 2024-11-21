@@ -113,7 +113,7 @@ const getElementText = (element) => {
 };
 
 function getSelectText(element) {
-  var index = element.selectedIndex;
+  const index = element.selectedIndex;
   return element.options[index]?.text;
 }
 
@@ -127,7 +127,11 @@ const createDecoyStyle = (decoy, underlay) => {
     left: `${left}px`,
   };
 
-  return { ...dynamicStyles, ...DEFAULT_STYLES, ...INPUT_STYLES[underlay.tagName] };
+  return {
+    ...dynamicStyles,
+    ...DEFAULT_STYLES,
+    ...INPUT_STYLES[underlay.tagName],
+  };
 };
 
 const getOffset = (element) => {

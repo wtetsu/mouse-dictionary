@@ -9,7 +9,7 @@
  * Corrector: David, Macropyre, Akarumbra
  */
 
-import { TextResource } from "./types";
+import type { TextResource } from "./types";
 
 const EnglishTextResource: TextResource = {
   dictDataEncoding: "Character set of dictionary data:",

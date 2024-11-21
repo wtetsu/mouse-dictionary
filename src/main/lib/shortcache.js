@@ -38,7 +38,7 @@ class ShortCache {
       return null;
     }
     const index = this.dict.get(key);
-    if (!isFinite(index)) {
+    if (!Number.isFinite(index)) {
       return null;
     }
     return this.list[index].value;

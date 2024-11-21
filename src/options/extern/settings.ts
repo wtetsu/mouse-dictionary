@@ -6,7 +6,7 @@
 /* istanbul ignore file */
 
 import settings from "../../main/settings";
-import { MouseDictionarySettings } from "../types";
+import type { MouseDictionarySettings } from "../types";
 
 const defaultSettingsJson = JSON.stringify(settings);
 

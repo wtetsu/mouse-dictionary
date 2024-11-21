@@ -23,7 +23,9 @@ export default class Generator {
 
     this.scroll = settings.scroll;
 
-    this.compiledReplaceRules = compileReplaceRules(settings.replaceRules, { cssReset });
+    this.compiledReplaceRules = compileReplaceRules(settings.replaceRules, {
+      cssReset,
+    });
 
     this.contentTemplate = settings.contentTemplate;
 

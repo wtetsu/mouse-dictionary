@@ -5,15 +5,19 @@
  */
 
 import { useState } from "react";
-import { Button } from "../atom/Button";
 import { res } from "../../logic";
+import { Button } from "../atom/Button";
 
 type Props = {
   disable: boolean;
   trigger: (type: "save" | "factoryReset") => void;
 };
 
-const style = { backgroundColor: "#FFFFFF", color: "#FF4500", transition: "0.5s" };
+const style = {
+  backgroundColor: "#FFFFFF",
+  color: "#FF4500",
+  transition: "0.5s",
+};
 const style1 = { ...style, opacity: 0.0 };
 const style2 = { ...style, opacity: 1.0 };
 

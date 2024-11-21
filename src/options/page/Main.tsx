@@ -4,14 +4,31 @@
  * Licensed under MIT
  */
 
-import { useReducer, useEffect, useRef } from "react";
 import { produce } from "immer";
-import { Button, DataUsage, EditableSpan, ExternalLink, Launch, Overlay, Panel, Switch, Toggle } from "../component/atom";
-import { AdvancedSettings, BasicSettings, LoadDictionary, OperationPanel, Tips, WholeSettings } from "../component/organism";
-import { data, dict, message, Preview, res } from "../logic";
+import { useEffect, useReducer, useRef } from "react";
+import {
+  Button,
+  DataUsage,
+  EditableSpan,
+  ExternalLink,
+  Launch,
+  Overlay,
+  Panel,
+  Switch,
+  Toggle,
+} from "../component/atom";
+import {
+  AdvancedSettings,
+  BasicSettings,
+  LoadDictionary,
+  OperationPanel,
+  Tips,
+  WholeSettings,
+} from "../component/organism";
 import { config, defaultSettings, env } from "../extern";
-import { MouseDictionarySettings, DictionaryFile } from "../types";
-import { TextResourceKeys } from "../resource";
+import { Preview, data, dict, message, res } from "../logic";
+import type { TextResourceKeys } from "../resource";
+import type { DictionaryFile, MouseDictionarySettings } from "../types";
 
 type MainState = {
   dictDataUsage?: number;
@@ -65,7 +82,10 @@ type UpdateState = (state: Partial<MainState>) => void;
 export const Main: React.FC = () => {
   const refPreview = useRef<Preview>();
 
-  const [state, dispatch] = useReducer(reducer, { ...initialState, lang: res.getLang() });
+  const [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    lang: res.getLang(),
+  });
 
   useEffect(() => {
     const init = async () => {
@@ -109,7 +129,10 @@ export const Main: React.FC = () => {
   };
 
   const doFactoryReset = (): void => {
-    dispatch({ type: "replace", settings: data.preProcessSettings(defaultSettings.get()) });
+    dispatch({
+      type: "replace",
+      settings: data.preProcessSettings(defaultSettings.get()),
+    });
   };
 
   const switchLanguage = (): void => {
@@ -139,7 +162,7 @@ export const Main: React.FC = () => {
           <span>{state.progress}</span>
         </div>
 
-        <div style={{ cursor: "pointer", fontSize: "75%" }} onClick={() => updateState({ dictDataUsage: -1 })}></div>
+        <div style={{ cursor: "pointer", fontSize: "75%" }} onClick={() => updateState({ dictDataUsage: -1 })} />
 
         <Switch visible={state.initialized && state.panelLevel === 0}>
           <Tips style={{ position: "absolute", bottom: -10, left: 315, width: 300 }} />
@@ -170,7 +193,7 @@ export const Main: React.FC = () => {
               value={state.previewText}
               style={{ width: 300 }}
               onChange={(e) => updateState({ previewText: e.target.value })}
-            ></EditableSpan>
+            />
           </div>
           <OperationPanel
             disable={state.busy}
@@ -288,7 +311,10 @@ const loadDictionaryData = async (dictionaryFile: DictionaryFile, updateState: U
         updateState({ progress });
       }
       if (ev.name === "loading") {
-        const progress = res.get("progressRegister", { count: ev.count?.toLocaleString(), progress: ev.word.head });
+        const progress = res.get("progressRegister", {
+          count: ev.count?.toLocaleString(),
+          progress: ev.word.head,
+        });
         updateState({ progress });
       }
     });

@@ -58,8 +58,8 @@ const convertToInt = (str) => {
   if (str === null || str === undefined || str === "") {
     r = 0;
   } else {
-    r = parseInt(str, 10);
-    if (isNaN(r)) {
+    r = Number.parseInt(str, 10);
+    if (Number.isNaN(r)) {
       r = 0;
     }
   }
@@ -101,17 +101,15 @@ const clamp = (value, minValue, maxValue) => {
 const max = (a, b) => {
   if (Number.isFinite(a)) {
     return Math.max(a, b);
-  } else {
-    return null;
   }
+  return null;
 };
 
 const min = (a, b) => {
   if (Number.isFinite(a)) {
     return Math.min(a, b);
-  } else {
-    return null;
   }
+  return null;
 };
 
 const getSelection = () => {
