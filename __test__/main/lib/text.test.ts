@@ -6,7 +6,7 @@ beforeAll(() => {
   testdata.load();
 });
 
-test("", () => {
+test("splitIntoWords function test", () => {
   const splitIntoWords = (str) => {
     return text.splitIntoWords(str, (ch) => rule.doLetters(ch) === 3);
   };
@@ -27,47 +27,7 @@ test("", () => {
   expect(splitIntoWords("American_English")).toEqual(["American_English"]);
 });
 
-// test("", () => {
-//   expect(text.parseFirstWord("word")).toEqual([]);
-
-//   expect(text.parseFirstWord("WordoneWordtwoWordthree")).toEqual([
-//     "Wordone wordone Wordtwo wordtwo Wordthree wordthree",
-//     "Wordone",
-//     "wordone",
-//     "Wordtwo",
-//     "wordtwo",
-//     "Wordthree",
-//     "wordthree",
-//     "wordonewordtwowordthree"
-//   ]);
-
-//   expect(text.parseFirstWord("wordone-wordtwo-wordthree")).toEqual([
-//     "wordone wordtwo wordthree",
-//     "wordone",
-//     "wordtwo",
-//     "wordthree",
-//     "-wordthree"
-//   ]);
-
-//   expect(text.parseFirstWord("WORDONE_WORDTWO_WORDTHREE")).toEqual([
-//     "WORDONE wordone WORDTWO wordtwo WORDTHREE wordthree",
-//     "WORDONE",
-//     "wordone",
-//     "WORDTWO",
-//     "wordtwo",
-//     "WORDTHREE",
-//     "wordthree",
-//     "wordone_wordtwo_wordthree",
-//     "wordone wordtwo wordthree"
-//   ]);
-
-//   expect(text.parseFirstWord("announcements")).toEqual(["announcement"]);
-//   expect(text.parseFirstWord("Announcements")).toEqual(["Announcement", "announcements", "announcement"]);
-
-//   expect(text.parseFirstWord("third-party")).toEqual(["third party", "third", "party", "-party"]);
-// });
-
-test("", () => {
+test("linkWords function test", () => {
   testList(text.linkWords([]), []);
   testList(text.linkWords(["word0"]), ["word0"]);
   testList(text.linkWords(["word0", "word1"]), ["word0 word1", "word0"]);
@@ -104,7 +64,7 @@ test("", () => {
   ]);
 });
 
-test("", () => {
+test("splitString function test", () => {
   expect(text.splitString("word", 2)).toEqual([]);
   expect(text.splitString("camelCase", 2)).toEqual([
     "camel", //
@@ -160,7 +120,7 @@ test("", () => {
   ]);
 });
 
-test("", () => {
+test("dealWithHyphens function test", () => {
   const dealWithHyphens = (str) => {
     return text.dealWithHyphens(str, rule.doLetters);
   };

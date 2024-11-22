@@ -11,7 +11,7 @@ const createSpanWithTextNodes = (...textList) => {
   return e;
 };
 
-test("", () => {
+test("applyStyles with valid and invalid properties", () => {
   const e = createDom("<span>text</span>") as HTMLElement;
 
   dom.applyStyles(e, { opacity: 0.5 });
@@ -29,14 +29,14 @@ test("", () => {
   expect(e.style.opacity).toEqual("0.7");
 });
 
-test("", () => {
+test("replace element content", () => {
   const e = createDom("<div><span>aaa</span></div>");
   dom.replace(e, createDom("<span>bbb</span>"));
   expect("<span>bbb</span>").toEqual(e.innerHTML);
 });
 
-test("", () => {
-  const lines = [];
+test("traverse DOM and get text content", () => {
+  const lines: string[] = [];
   lines.push("<div>");
   lines.push('  <span id="start">text01</span>');
   lines.push("  <span>text02</span>");
@@ -56,7 +56,7 @@ test("", () => {
   expect(dom.traverse(start)).toEqual("text01 text02 text03 text04 text05 text06 text07 text08 text09 text10");
 });
 
-test("", () => {
+test("traverse nested text nodes", () => {
   const e = createDom("<span></span>");
   e.appendChild(createSpanWithTextNodes("a", "b", "c"));
   e.appendChild(createSpanWithTextNodes("d", "e", "f"));
@@ -66,20 +66,20 @@ test("", () => {
   expect(dom.traverse(e.childNodes[1])).toEqual("d e f g h i j k l");
 });
 
-test("", () => {
+test("traverse mixed content", () => {
   const e = createDom("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
 
   expect(dom.traverse(e.childNodes[1])).toEqual("double-edged sword");
 });
 
-test("", () => {
+test("traverse mixed content with repeated test", () => {
   const e = createDom("<span>opinion can be a <em>double</em>-<em>edged sword</em></span>");
 
   expect(dom.traverse(e.childNodes[1])).toEqual("double-edged sword");
 });
 
-test("", () => {
-  const lines = [];
+test("traverse deeply nested content", () => {
+  const lines: string[] = [];
   lines.push("<div>");
   lines.push("  <span>");
   lines.push("    aaa");
@@ -104,8 +104,8 @@ test("", () => {
   expect(dom.traverse(start)).toEqual("bbb-ccc ddd eee fff ggg hhh");
 });
 
-test("", () => {
-  const lines = [];
+test("traverse empty element", () => {
+  const lines: string[] = [];
   lines.push("<div>");
   lines.push('<span id="start"></span>');
   lines.push("</div>");
@@ -114,8 +114,8 @@ test("", () => {
   expect(dom.traverse(start)).toEqual("");
 });
 
-test("", () => {
-  const lines = [];
+test("traverse with hyphenated text", () => {
+  const lines: string[] = [];
   lines.push("<div>");
   lines.push('<span id="start">text01</span>');
   lines.push("<span>-</span>");
@@ -129,8 +129,8 @@ test("", () => {
   expect(dom.traverse(start)).toEqual("text01-text02 text03-text04");
 });
 
-test("", () => {
-  const lines = [];
+test("traverse with leading hyphen", () => {
+  const lines: string[] = [];
   lines.push("<div>");
   lines.push('<span id="start">-</span>');
   lines.push("<span>text02</span>");
@@ -143,7 +143,7 @@ test("", () => {
   expect(dom.traverse(start)).toEqual("-text02 text03-text04");
 });
 
-test("", () => {
+test("VirtualStyle set and apply", () => {
   const element: Record<string, any> = {};
   const vStyle = new dom.VirtualStyle(element);
 
@@ -172,18 +172,18 @@ test("", () => {
   expect(element.style).toEqual({ cursor: "move", color: "blue" });
 });
 
-test("", () => {
+test("pxToFloat conversion", () => {
   expect(dom.pxToFloat()).toEqual(0);
   expect(dom.pxToFloat("")).toEqual(0);
-  expect(dom.pxToFloat("@@")).toEqual(NaN);
+  expect(dom.pxToFloat("@@")).toEqual(Number.NaN);
   expect(dom.pxToFloat("123")).toEqual(123);
   expect(dom.pxToFloat("123px")).toEqual(123);
   expect(dom.pxToFloat("123.5px")).toEqual(123.5);
 });
 
-test("", () => {
-  const lines = [];
-  lines.push('<div style="width:200px;height:300px;">');
+test("clone element with styles", () => {
+  const lines: string[] = [];
+  lines.push('<div style="width:200px; height:300px;">');
   lines.push('<span id="start">-</span>');
   lines.push("<span>text02</span>");
   lines.push("<span>text03</span>");

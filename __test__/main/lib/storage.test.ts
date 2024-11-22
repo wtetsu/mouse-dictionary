@@ -7,7 +7,7 @@ beforeEach(() => {
 
 afterEach(() => {});
 
-test("", async () => {
+test("should handle local storage get and set operations correctly", async () => {
   expect(await storage.local.get([])).toEqual({});
   expect(await storage.local.get(["key01"])).toEqual({});
   expect(await storage.local.pick("key01")).toEqual(undefined);
@@ -26,7 +26,7 @@ test("", async () => {
   expect(await storage.local.pick("key01")).toEqual("value01!");
 });
 
-test("", async () => {
+test("should handle sync storage get and set operations correctly", async () => {
   expect(await storage.sync.get([])).toEqual({});
   expect(await storage.sync.get(["key01"])).toEqual({});
   expect(await storage.sync.pick("key01")).toEqual(undefined);
@@ -45,7 +45,7 @@ test("", async () => {
   expect(await storage.sync.pick("key01")).toEqual("value01!");
 });
 
-test("", async () => {
+test("should throw an error when local storage get operation fails", async () => {
   expect.hasAssertions();
   global.chrome.runtime.lastError = { message: "error!" };
   try {
@@ -55,7 +55,7 @@ test("", async () => {
   }
 });
 
-test("", async () => {
+test("should throw an error when sync storage get operation fails", async () => {
   expect.hasAssertions();
   global.chrome.runtime.lastError = { message: "error!" };
   try {

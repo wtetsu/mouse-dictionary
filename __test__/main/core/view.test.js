@@ -1,6 +1,6 @@
 import view from "../../../src/main/core/view";
 
-test("", () => {
+test("should create a dialog element with the correct tag name", () => {
   const r = view.create({
     dialogTemplate: "<div></div>",
     contentWrapperTemplate: "<p></p>",
