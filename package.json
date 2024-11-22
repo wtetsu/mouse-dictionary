@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test-watch": "vitest watch",
     "test-cov": "vitest run --coverage",
-    "test-cov-watch": "npm test -- --coverage --watch --silent",
+    "test-cov-watch": "vitest watch --coverage",
     "build-chrome": "node tools/make_manifest.js chrome development && node tools/build.js chrome development",
     "watch-chrome": "node tools/make_manifest.js chrome development && node tools/build.js chrome development watch",
     "release-chrome": "node tools/make_manifest.js chrome production && npm run res && node tools/build.js chrome production",
