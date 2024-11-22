@@ -1,8 +1,8 @@
 import * as data from "../../../src/options/logic/data";
 import defaultsettings from "../../../src/main/settings";
-import { MouseDictionarySettings } from "../../../src/options/types";
+import type { MouseDictionarySettings } from "../../../src/options/types";
 
-test("", () => {
+test("byteArrayMayBeShiftJis should correctly identify Shift-JIS byte arrays", () => {
   expect(true).toEqual(data.byteArrayMayBeShiftJis([]));
 
   expect(true).toEqual(data.byteArrayMayBeShiftJis([0x81, 0x40]));
@@ -19,7 +19,7 @@ test("", () => {
   expect(false).toEqual(data.byteArrayMayBeShiftJis([0xef, 0xfd]));
 });
 
-test("", () => {
+test("preProcessSettings and postProcessSettings should correctly process settings", () => {
   const d1 = defaultsettings as MouseDictionarySettings;
   const d2 = data.preProcessSettings(d1);
   const d3 = data.postProcessSettings(d1);
@@ -34,7 +34,7 @@ test("", () => {
   expect(JSON.stringify(d1)).toEqual(JSON.stringify(d3));
 });
 
-test("", async () => {
+test("fileMayBeShiftJis should correctly identify Shift-JIS files", async () => {
   const createFile = (content: number[]) => {
     const bytes = new Uint8Array(content);
     return new Blob([bytes.buffer]) as File;

@@ -1,7 +1,7 @@
 import defaultSettings from "../../../src/main/settings";
 import Generator from "../../../src/main/core/generator";
 
-test("", () => {
+test("Generator should return empty HTML when no words are provided", () => {
   const generator = new Generator(defaultSettings);
 
   expect(generator.generate([], {}, false)).toEqual({
@@ -45,7 +45,7 @@ test("", () => {
   });
 });
 
-test("", () => {
+test("Generator should handle null search in replaceRules without error", () => {
   const settings = {
     ...defaultSettings,
     replaceRules: [{ search: null, replace: "xxx" }],
@@ -53,7 +53,7 @@ test("", () => {
   new Generator(settings); // No error
 });
 
-test("", () => {
+test("Generator should fail to compile regexp with invalid search pattern", () => {
   const settings = {
     ...defaultSettings,
     replaceRules: [{ search: "\\", replace: "xxx" }],

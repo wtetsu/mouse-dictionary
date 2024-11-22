@@ -12,7 +12,7 @@ const setWindowGetSelection = (fn: () => string) => {
   window.getSelection = fn;
 };
 
-test("", () => {
+test("omap function test", () => {
   expect(utils.omap({ a: 1, b: 2, c: 3 }, (v) => v * 2)).toEqual({ a: 2, b: 4, c: 6 });
   expect(utils.omap({ a: 1, b: 2, c: 3 }, (v) => v * 2, ["b", "c"])).toEqual({ b: 4, c: 6 });
 
@@ -20,13 +20,13 @@ test("", () => {
   expect(utils.omap({ a: 1, b: 2, c: 3 })).toEqual({ a: null, b: null, c: null });
 });
 
-test("", () => {
+test("areSame function test", () => {
   expect(utils.areSame({}, {})).toEqual(true);
   expect(utils.areSame({ a: 123 }, { a: 123 })).toEqual(true);
   expect(utils.areSame({ a: 123 }, { b: 123 })).toEqual(false);
 });
 
-test("", () => {
+test("isInsideRange function test", () => {
   expect(utils.isInsideRange({ left: 100, top: 200, width: 50, height: 100 }, { x: 100, y: 199 })).toEqual(false);
   expect(utils.isInsideRange({ left: 100, top: 200, width: 50, height: 100 }, { x: 99, y: 200 })).toEqual(false);
   expect(utils.isInsideRange({ left: 100, top: 200, width: 50, height: 100 }, { x: 100, y: 200 })).toEqual(true);
@@ -36,7 +36,7 @@ test("", () => {
   expect(utils.isInsideRange({ left: 100, top: 200, width: 50, height: 100 }, { x: 150, y: 301 })).toEqual(false);
 });
 
-test("", () => {
+test("convertToInt function test", () => {
   expect(utils.convertToInt("1")).toEqual(1);
   expect(utils.convertToInt("0")).toEqual(0);
   expect(utils.convertToInt("-1")).toEqual(-1);
@@ -46,14 +46,14 @@ test("", () => {
   expect(utils.convertToInt(undefined)).toEqual(0);
 });
 
-test("", () => {
+test("convertToStyles function test", () => {
   expect(utils.convertToStyles({})).toEqual({});
   expect(utils.convertToStyles({ top: 123, left: 234 })).toEqual({ top: "123px", left: "234px" });
   expect(utils.convertToStyles({ a: "aaa", b: "@@@" })).toEqual({});
   expect(utils.convertToStyles({ top: 123, left: 234, a: "aaa", b: "@@@" })).toEqual({ top: "123px", left: "234px" });
 });
 
-test("", () => {
+test("optimizeInitialPosition function test", () => {
   setWindowInnerSize(1024, 800);
   expect(
     utils.optimizeInitialPosition(
@@ -64,8 +64,8 @@ test("", () => {
         height: 200,
       },
       0,
-      0
-    )
+      0,
+    ),
   ).toEqual({
     left: 724,
     top: 600,
@@ -79,7 +79,7 @@ test("", () => {
       top: 700,
       width: 300,
       height: 200,
-    })
+    }),
   ).toEqual({
     left: 719,
     top: 595,
@@ -93,7 +93,7 @@ test("", () => {
       top: -200,
       width: 300,
       height: 200,
-    })
+    }),
   ).toEqual({
     left: 5,
     top: 5,
@@ -109,7 +109,7 @@ test("", () => {
       top: -200,
       width: 300,
       height: 200,
-    })
+    }),
   ).toEqual({
     left: 5,
     top: 5,
@@ -123,7 +123,7 @@ test("", () => {
       top: null,
       width: null,
       height: null,
-    })
+    }),
   ).toEqual({
     left: null,
     top: null,
@@ -132,7 +132,7 @@ test("", () => {
   });
 });
 
-test("", () => {
+test("getSelection function test", () => {
   setWindowGetSelection(() => "");
   expect(utils.getSelection()).toEqual("");
 

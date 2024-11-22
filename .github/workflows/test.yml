@@ -25,10 +25,10 @@ jobs:
       - name: Run Unit Tests
         run: npm run test-cov
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
-          files: ./coverage/lcov.info
+          files: ./coverage/coverage-final.json
           flags: unittests
           name: codecov-coverage
           token: ${{ secrets.CODECOV_TOKEN }}

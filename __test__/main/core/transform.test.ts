@@ -5,7 +5,7 @@ beforeAll(() => {
   testdata.load();
 });
 
-test("", () => {
+test("should return base forms for English words", () => {
   expect(rule.doBase("word")).toEqual([]);
   expect(rule.doBase("deal")).toEqual([]);
   expect(rule.doBase("deals")).toEqual(["deal"]);
@@ -18,7 +18,7 @@ test("", () => {
   expect(rule.doBase("running")).toEqual(["run", "runne", "runn"]);
 });
 
-test("", () => {
+test("should return base forms for Japanese words", () => {
   expect(rule.doJa("死んだ")).toEqual(expect.arrayContaining(["死ぬ"]));
   expect(rule.doJa("殺った")).toEqual(expect.arrayContaining(["殺る"]));
 });

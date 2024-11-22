@@ -11,7 +11,7 @@ afterEach(() => {
   env.enableWindowStatusSave = true;
 });
 
-test("", async () => {
+test("loadAll should return consistent settings and position", async () => {
   const { settings, position } = await config.loadAll();
   expect(await config.loadAll()).toEqual({ settings, position });
   expect(await config.loadAll()).toEqual({ settings: await config.loadSettings(), position });
@@ -21,7 +21,7 @@ test("", async () => {
   expect(await config.loadAll()).toEqual({ settings: await config.loadSettings(), position });
 });
 
-test("", async () => {
+test("parseSettings should handle various input cases", async () => {
   expect(config.parseSettings({})).toEqual({});
 
   expect(
@@ -33,7 +33,7 @@ test("", async () => {
       normalDialogStyles: null,
       movingDialogStyles: "",
       hiddenDialogStyles: "{",
-    })
+    }),
   ).toEqual({
     shortWordLength: 2,
     empty: "",
@@ -43,7 +43,7 @@ test("", async () => {
   });
 });
 
-test("", async () => {
+test("parseSettings should handle initialPosition and window status save", async () => {
   expect(config.parseSettings({})).toEqual({});
 
   expect(config.parseSettings({ initialPosition: "right" })).toEqual({ initialPosition: "right" });
@@ -53,7 +53,7 @@ test("", async () => {
   expect(config.parseSettings({ initialPosition: "keep" })).toEqual({ initialPosition: "right" });
 });
 
-test("", async () => {
+test("savePosition should save and load position correctly", async () => {
   global.chrome = chrome as any;
 
   expect((await config.loadAll()).position).toEqual({});

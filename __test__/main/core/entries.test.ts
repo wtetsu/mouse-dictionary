@@ -6,11 +6,11 @@ beforeAll(() => {
   testdata.load();
 });
 
-test("", () => {
+test("Test simple word", () => {
   expect(createLookupWordsEn("Test")).toEqual(expect.arrayContaining(["Test", "test"]));
 });
 
-test("", () => {
+test("Test hyphenated words", () => {
   let r;
   r = createLookupWordsEn("ladies-in-waiting");
   expect(r.includes("ladies-in-waiting")).toBeTruthy();
@@ -21,7 +21,7 @@ test("", () => {
   expect(r.includes("stand-by")).toBeTruthy();
 });
 
-test("", () => {
+test("Test phrases and capitalization", () => {
   expect(createLookupWordsEn("thousand miles down")).toEqual(
     expect.arrayContaining([
       "thousand miles down",
@@ -30,12 +30,12 @@ test("", () => {
       "thousand ~ down",
       "thousand down",
       "thousand mile",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("american english")).toEqual(expect.arrayContaining(["american english", "american"]));
   expect(createLookupWordsEn("American English")).toEqual(
-    expect.arrayContaining(["American English", "American", "american english", "american"])
+    expect.arrayContaining(["American English", "American", "american english", "american"]),
   );
 
   expect(createLookupWordsEn("Announcement of Hoge")).toEqual(
@@ -50,7 +50,7 @@ test("", () => {
       "announcement",
       "announcement ~ hoge",
       "announcement hoge",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("wonder if I shall")).toEqual(
@@ -76,7 +76,7 @@ test("", () => {
       "wonder ~ i shall",
       "wonder A i B",
       "wonder i shall",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("in my favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
@@ -84,13 +84,13 @@ test("", () => {
   expect(createLookupWordsEn("in my best favor")).toEqual(expect.arrayContaining(["in someone's favor"]));
 });
 
-test("", () => {
+test("Test hyphenated and non-breaking hyphen words", () => {
   expect(createLookupWordsEn("blue-gray")).toEqual(
-    expect.arrayContaining(["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"])
+    expect.arrayContaining(["blue-gray", "blue gray", "blue", "gray", "blue-", "-gray", "bluegray"]),
   );
 
   expect(createLookupWordsEn("third-party")).toEqual(
-    expect.arrayContaining(["third-party", "third party", "third", "party", "third-", "-party", "thirdparty"])
+    expect.arrayContaining(["third-party", "third party", "third", "party", "third-", "-party", "thirdparty"]),
   );
 
   // non-breaking hyphen(U+2011)
@@ -103,30 +103,30 @@ test("", () => {
       "blue-",
       "-gray",
       "bluegray",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("third‑party")).toEqual(
-    expect.arrayContaining(["third-party", "third party", "third", "party", "third-", "-party", "thirdparty"])
+    expect.arrayContaining(["third-party", "third party", "third", "party", "third-", "-party", "thirdparty"]),
   );
 });
 
-test("", () => {
+test("Test compound words", () => {
   expect(createLookupWordsEn("folk tales")).toEqual(
     expect.arrayContaining([
       "folk tales", //
       "folk",
       "folk tale",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test phrasal verbs", () => {
   expect(createLookupWordsEn("deal with")).toEqual(
     expect.arrayContaining([
       "deal with", //
       "deal",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("dealt with")).toEqual(
     expect.arrayContaining([
@@ -134,7 +134,7 @@ test("", () => {
       "dealt",
       "deal with",
       "deal",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("dealing with")).toEqual(
     expect.arrayContaining([
@@ -142,14 +142,14 @@ test("", () => {
       "dealing",
       "deal with",
       "deal",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("run with")).toEqual(
     expect.arrayContaining([
       "run with", //
       "run",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("ran with")).toEqual(
     expect.arrayContaining([
@@ -157,7 +157,7 @@ test("", () => {
       "ran",
       "run with",
       "run",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("running with")).toEqual(
     expect.arrayContaining([
@@ -165,21 +165,21 @@ test("", () => {
       "running",
       "run with",
       "run",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("yelled at")).toEqual(
     expect.arrayContaining([
       "yell at", //
       "yell",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("yelling at")).toEqual(
     expect.arrayContaining([
       "yell at", //
       "yell",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("dealt dealt dealt")).toEqual(
@@ -192,16 +192,16 @@ test("", () => {
       "deal",
       "dealt ~ dealt",
       "deal ~ dealt",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test phrasal verbs with different tenses", () => {
   expect(createLookupWordsEn("cut back")).toEqual(
     expect.arrayContaining([
       "cut back", //
       "cut",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("cutting back")).toEqual(
     expect.arrayContaining([
@@ -209,14 +209,14 @@ test("", () => {
       "cutting",
       "cut back",
       "cut",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("die out")).toEqual(
     expect.arrayContaining([
       "die out", //
       "die",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("dying out")).toEqual(
     expect.arrayContaining([
@@ -224,14 +224,14 @@ test("", () => {
       "dying",
       "die out",
       "die",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("play with")).toEqual(
     expect.arrayContaining([
       "play with", //
       "play",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("played with")).toEqual(
     expect.arrayContaining([
@@ -239,14 +239,14 @@ test("", () => {
       "played",
       "play with",
       "play",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("pop up")).toEqual(
     expect.arrayContaining([
       "pop up", //
       "pop",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("popped up")).toEqual(
     expect.arrayContaining([
@@ -254,11 +254,11 @@ test("", () => {
       "popped",
       "pop up",
       "pop",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test underscore words", () => {
   expect(createLookupWordsEn("aaa_bbb")).toEqual(expect.arrayContaining(["aaa_bbb", "aaa bbb", "aaa", "bbb"]));
   expect(createLookupWordsEn("worker_processes")).toEqual(
     expect.arrayContaining([
@@ -269,11 +269,11 @@ test("", () => {
       "processes",
       "process",
       "work",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test possessive and reflexive pronouns", () => {
   expect(createLookupWordsEn("on one's own")).toEqual(
     expect.arrayContaining([
       "on one's own", //
@@ -282,7 +282,7 @@ test("", () => {
       "on ~ own",
       "on own",
       "on one",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("on his own")).toEqual(
@@ -298,7 +298,7 @@ test("", () => {
       "on someone's own",
       "on someone's",
       "on someone",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("his only son")).toEqual(
@@ -324,7 +324,7 @@ test("", () => {
       "someone's son",
       "someone' ~ son",
       "someone' son",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("Senete's")).toEqual(
@@ -335,25 +335,25 @@ test("", () => {
       "senete's",
       "senete'",
       "senete",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("by oneself")).toEqual(
     expect.arrayContaining([
       "by oneself", //
       "by",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("by myself")).toEqual(
     expect.arrayContaining([
       "by myself", //
       "by",
       "by oneself",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("brush one's dog")).toEqual(
-    expect.arrayContaining(["brush one's dog", "brush one's", "brush", "brush ~ dog", "brush dog", "brush one"])
+    expect.arrayContaining(["brush one's dog", "brush one's", "brush", "brush ~ dog", "brush dog", "brush one"]),
   );
   expect(createLookupWordsEn("brush Taro's dog")).toEqual(
     expect.arrayContaining([
@@ -372,29 +372,29 @@ test("", () => {
       "brush taro's dog",
       "brush taro's",
       "brush taro",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test British and American English variations", () => {
   expect(createLookupWordsEn("colour")).toEqual(expect.arrayContaining(["colour", "color"]));
   expect(createLookupWordsEn("women")).toEqual(expect.arrayContaining(["women", "woman"]));
 });
 
-test("", () => {
+test("Test case sensitivity", () => {
   expect(createLookupWordsEn("abc.")).toEqual(expect.arrayContaining(["abc"]));
   expect(createLookupWordsEn("abc.", true)).toEqual(expect.arrayContaining(["abc", "ABC"]));
   expect(createLookupWordsEn("abc.", false, true)).toEqual(expect.arrayContaining(["abc"]));
   expect(createLookupWordsEn("abc.", true, true)).toEqual(expect.arrayContaining(["abc", "ABC"]));
 });
 
-test("", () => {
+test("Test slashes in phrases", () => {
   expect(createLookupWordsEn("pros / cons")).toEqual(
     expect.arrayContaining([
       "pros / cons", //
       "pros and cons",
       "pros or cons",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("pros/cons")).toEqual(
@@ -403,39 +403,39 @@ test("", () => {
       "pros / cons",
       "pros and cons",
       "pros or cons",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test sentences with punctuation", () => {
   expect(createLookupWordsEn("in the wild. That is a pen.")).toEqual(
     expect.arrayContaining([
       "in the wild", //
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("in the wild, That is a pen.")).toEqual(
     expect.arrayContaining([
       "in the wild", //
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test compound words with no space", () => {
   expect(createLookupWordsEn("self taught")).toEqual(
     expect.arrayContaining([
       "self taught", //
       "selftaught",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test proper nouns", () => {
   expect(createLookupWordsEn("united kingdom")).toEqual(
     expect.arrayContaining([
       "United", //
       "United Kingdom",
-    ])
+    ]),
   );
 
   expect(createLookupWordsEn("canadian broadcasting corporation")).toEqual(
@@ -443,30 +443,30 @@ test("", () => {
       "Canadian", //
       "Canadian Broadcasting",
       "Canadian Broadcasting Corporation",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test elongated words", () => {
   expect(createLookupWordsEn("craaaaaaaaaaaaaaazy")).toEqual(
     expect.arrayContaining([
       "crazy", //
       "craazy",
-    ])
+    ]),
   );
   expect(createLookupWordsEn("craaazy")).toEqual(
     expect.arrayContaining([
       "crazy", //
       "craazy",
-    ])
+    ]),
   );
 });
 
-test("", () => {
+test("Test empty string", () => {
   expect(createLookupWordsEn("")).toEqual(expect.arrayContaining([]));
 });
 
-test("", () => {
+test("Test Japanese words", () => {
   expect(createLookupWordsJa("動いた")).toEqual(expect.arrayContaining(["動く"]));
   expect(createLookupWordsJa("走った")).toEqual(expect.arrayContaining(["走る"]));
   expect(createLookupWordsJa("おいた")).toEqual(expect.arrayContaining(["おく", "おいる"]));

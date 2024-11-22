@@ -1,6 +1,6 @@
 import ShortCache from "../../../src/main/lib/shortcache";
 
-test("", () => {
+test("should return null for non-existent key", () => {
   const cache = new ShortCache(3);
 
   expect(cache.get("key00")).toEqual(null);

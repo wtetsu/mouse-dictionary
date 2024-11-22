@@ -1,14 +1,14 @@
 import entry from "../../../src/main/core/entry";
 
-test("", () => {
+test("should detect and generate Japanese text", () => {
   const detector = (text: string) => {
-    if (text[0] == "e") {
+    if (text[0] === "e") {
       return "en";
     }
-    if (text[0] == "j") {
+    if (text[0] === "j") {
       return "ja";
     }
-    if (text[0] == "z") {
+    if (text[0] === "z") {
       return "zh";
     }
     return "default";
