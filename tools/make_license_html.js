@@ -6,7 +6,7 @@
 
 // Convert license.json to a simple html file.
 
-const fs = require("fs");
+const fs = require("node:fs");
 
 const main = (licenseJsonPath) => {
   const licenseRecords = readJson(licenseJsonPath);
@@ -87,7 +87,7 @@ const makeHtmlContent = (licenseContent) => {
        .version {
          font-size: 0.8em;
          color: #4a4a4a;
-       }      
+       }
        .license {
          font-size: 0.8em;
          color: #4a4a4a;
@@ -95,7 +95,7 @@ const makeHtmlContent = (licenseContent) => {
        .publisher {
          font-size: 0.5em;
          color: #4a4a4a;
-       }    
+       }
      </style>
    </head>
    <body>
@@ -111,7 +111,7 @@ const readJson = (fileName) => {
 
 if (require.main === module) {
   if (process.argv.length <= 2) {
-    console.error(`Usage: node make_license_html.js license_file_path`);
+    console.error("Usage: node make_license_html.js license_file_path");
     process.exit(1);
   }
 

@@ -6,8 +6,8 @@
 
 // Make dictionary data and metadata.
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 const json5 = require("json5");
 const glob = require("fast-glob");
 
@@ -35,7 +35,7 @@ const splitDataAndWrite = (data, split, to, outputDirPath) => {
   for (let i = 1; i <= keys.length; i++) {
     const key = keys[i];
     outData[key] = data[key];
-    if (i >= nextThreshold || i == keys.length) {
+    if (i >= nextThreshold || i === keys.length) {
       const outJson = JSON.stringify(outData);
       const outFileName = `/${to}${outFiles.length}.json`;
       const outPath = path.join(outputDirPath, outFileName);
@@ -68,5 +68,5 @@ main(
     to: "data/dict",
     split: 10,
   },
-  "static/gen/"
+  "static/gen/",
 );

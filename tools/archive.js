@@ -6,9 +6,9 @@
 
 // Package a browser extension.
 
-const fs = require("fs");
-const archiver = require("archiver");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
+const AdmZip = require("adm-zip");
 
 const main = (sourcePath, outZipPath) => {
   if (!fs.existsSync(sourcePath)) {
@@ -16,34 +16,17 @@ const main = (sourcePath, outZipPath) => {
     process.exit(1);
   }
 
-  const stream = fs.createWriteStream(outZipPath, { flags: "w" });
+  const zip = new AdmZip();
+  zip.addLocalFolder(sourcePath);
+  zip.writeZip(outZipPath);
 
-  const archive = startArchiver(sourcePath, stream);
-
-  stream.on("close", () => {
-    const size = archive.pointer() / 1_024.0 + " KB";
-    console.log(`${outZipPath}: ${size}`);
-  });
-
-  archive.finalize();
-};
-
-const startArchiver = (targetPath, stream) => {
-  const archive = archiver("zip", { zlib: { level: 9 } });
-  archive.on("warning", (err) => {
-    throw err;
-  });
-  archive.on("error", (err) => {
-    throw err;
-  });
-  archive.pipe(stream);
-  archive.directory(targetPath, false);
-  return archive;
+  const size = fs.statSync(outZipPath).size / 1_024.0 + " KB";
+  console.log(`${outZipPath}: ${size}`);
 };
 
 if (require.main === module) {
   if (process.argv.length <= 2) {
-    console.error(`Usage: node archive.js postfix`);
+    console.error("Usage: node archive.js postfix");
     process.exit(1);
   }
 

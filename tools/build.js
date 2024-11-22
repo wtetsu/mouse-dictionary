@@ -28,7 +28,7 @@ const main = async (browser, mode, watchMode) => {
 
 const copyStaticFiles = (browser, mode) => {
   const sourceDirs = ["base", "gen", `gen-${browser}`, "pdf"];
-  if (mode != "production") {
+  if (mode !== "production") {
     sourceDirs.push("overwrite");
   }
   for (const sourceDir of sourceDirs) {
@@ -71,7 +71,7 @@ const watch = async (browser, mode) => {
             name: "on-end",
             setup(build) {
               build.onEnd((result) => {
-                if (result.errors.length == 0) {
+                if (result.errors.length === 0) {
                   console.info(`[${getTime()}]✅ Generated: ${io.outfile}`);
                 }
               });
@@ -125,7 +125,7 @@ const getTime = () => {
 
 if (require.main === module) {
   if (process.argv.length <= 3) {
-    console.error(`Usage: node build.js browser mode`);
+    console.error("Usage: node build.js browser mode");
     process.exit(1);
   }
 

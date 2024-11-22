@@ -6,8 +6,8 @@
 
 // Make manifest.json.
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 const version = require("../package.json").version;
 
 const main = (options, outputDirPath) => {
@@ -56,7 +56,7 @@ const getDebugConfigFileName = (fileName) => {
 
 if (require.main === module) {
   if (process.argv.length <= 3) {
-    console.error(`Usage: node make_manifest.js browser mode`);
+    console.error("Usage: node make_manifest.js browser mode");
     process.exit(1);
   }
 
@@ -76,6 +76,6 @@ if (require.main === module) {
       activate_extension_command,
       debug: mode !== "production",
     },
-    `static/gen-${browser}/`
+    `static/gen-${browser}/`,
   );
 }

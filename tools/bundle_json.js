@@ -6,8 +6,8 @@
 
 // Bundle multiple JSON files into a single file.
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 const json5 = require("json5");
 const jaRule = require("deinja/src/data");
 
@@ -50,5 +50,5 @@ main(
     { name: "verb", file: "data/rule/verb.json5" },
     { name: "ja", data: jaRule },
   ],
-  "static/gen/data/rule.json"
+  "static/gen/data/rule.json",
 );
