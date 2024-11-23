@@ -83,7 +83,7 @@ const processSecondOrLaterLaunch = async (existingElement) => {
 };
 
 const isFramePage = () => {
-  const frames = document.getElementsByTagName("frame");
+  const frames = document.getElementsByTagName("FRAME");
   return frames?.length >= 1;
 };
 

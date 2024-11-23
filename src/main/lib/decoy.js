@@ -139,8 +139,8 @@ const getOffset = (element) => {
   const doc = document.documentElement;
 
   return {
-    top: rect.top + window.pageYOffset - doc.clientTop,
-    left: rect.left + window.pageXOffset - doc.clientLeft,
+    top: rect.top + window.scrollY - doc.clientTop,
+    left: rect.left + window.scrollX - doc.clientLeft,
   };
 };
 
