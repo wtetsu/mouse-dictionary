@@ -24,4 +24,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist-chrome-${{ matrix.node-version }}
-          path: dist-chrome-${{ matrix.node-version }}
+          path: dist-chrome
