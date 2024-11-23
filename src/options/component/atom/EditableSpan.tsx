@@ -34,6 +34,6 @@ export const EditableSpan: React.FC<Props> = (props) => {
           setEditable(false);
         }
       }}
-    ></input>
+    />
   );
 };

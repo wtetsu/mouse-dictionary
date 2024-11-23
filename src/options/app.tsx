@@ -70,11 +70,11 @@ const App = () => {
 
   switch (mode) {
     case "loading":
-      return <div></div>;
+      return <div />;
     case "options":
       return <Main />;
     case "pdf":
-      return <div></div>;
+      return <div />;
   }
 };
 

@@ -11,9 +11,7 @@
     "enabled": true,
     "rules": {
       "style": {
-        "useTemplate": "off",
-        "useSingleVarDeclarator": "off",
-        "useSelfClosingElements": "off"
+        "useTemplate": "off"
       },
       "correctness": {
         "useExhaustiveDependencies": "off"
@@ -27,12 +25,10 @@
       },
       "suspicious": {
         "noExplicitAny": "off",
-        "noArrayIndexKey": "off",
-        "noEmptyInterface": "off"
+        "noArrayIndexKey": "off"
       },
       "complexity": {
-        "useRegexLiterals": "off",
-        "noForEach": "off"
+        "useRegexLiterals": "off"
       },
       "performance": {
         "noDelete": "off"

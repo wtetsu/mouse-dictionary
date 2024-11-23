@@ -137,21 +137,21 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
 const setDialogEvents = (dialog) => {
   dialog.addEventListener("mouseenter", (e) => {
-    e.target.querySelectorAll("[data-md-pronunciation]").forEach((elem) => {
+    for (const elem of e.target.querySelectorAll("[data-md-pronunciation]")) {
       if (elem.dataset.mdPronunciationSet) {
-        return;
+        continue;
       }
       elem.dataset.mdPronunciationSet = "true";
       elem.addEventListener("click", () => sound.pronounce(elem.dataset.mdPronunciation));
-    });
-    e.target.querySelectorAll("[data-md-hovervisible]").forEach((elem) => {
+    }
+    for (const elem of e.target.querySelectorAll("[data-md-hovervisible]")) {
       elem.style.visibility = "visible";
-    });
+    }
   });
   dialog.addEventListener("mouseleave", (e) => {
-    e.target.querySelectorAll("[data-md-hovervisible]").forEach((elem) => {
+    for (const elem of e.target.querySelectorAll("[data-md-hovervisible]")) {
       elem.style.visibility = "hidden";
-    });
+    }
   });
 };
 

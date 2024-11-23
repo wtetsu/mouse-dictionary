@@ -93,22 +93,20 @@ class Traverser {
     const code = sourceText.charCodeAt(offset);
     const isEnglish = isEnglishLikeCharacter(code);
 
-    let startIndex, endIndex, text, subText;
     if (isEnglish) {
-      startIndex = searchStartIndex(sourceText, offset, this.getTargetCharacterType);
-      endIndex = searchEndIndex(sourceText, offset, this.maxWords, this.getTargetCharacterType);
-      text = sourceText.substring(startIndex, endIndex);
-    } else {
-      startIndex = offset;
-      endIndex = offset + this.JA_MAX_LENGTH;
-
-      const properStartIndex = retrieveProperStartIndex(sourceText, startIndex + 1);
-      text = sourceText.substring(properStartIndex, endIndex);
-
-      if (startIndex !== properStartIndex) {
-        subText = sourceText.substring(startIndex, endIndex);
-      }
+      const startIndex = searchStartIndex(sourceText, offset, this.getTargetCharacterType);
+      const endIndex = searchEndIndex(sourceText, offset, this.maxWords, this.getTargetCharacterType);
+      const text = sourceText.substring(startIndex, endIndex);
+      const end = endIndex >= sourceText.length;
+      return { text, undefined, end, isEnglish };
     }
+
+    const startIndex = offset;
+    const endIndex = offset + this.JA_MAX_LENGTH;
+    const properStartIndex = retrieveProperStartIndex(sourceText, startIndex + 1);
+    const text = sourceText.substring(properStartIndex, endIndex);
+
+    const subText = startIndex !== properStartIndex ? sourceText.substring(startIndex, endIndex) : undefined;
     const end = endIndex >= sourceText.length;
     return { text, subText, end, isEnglish };
   }
