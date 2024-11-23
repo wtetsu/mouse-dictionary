@@ -11,8 +11,8 @@ const fse = require("fs-extra");
 const version = require("../package.json").version;
 
 const TARGETS = {
-  chrome: ["chrome79"],
-  firefox: ["firefox71"],
+  chrome: ["chrome131"],
+  firefox: ["firefox132"],
   safari: ["safari14"],
 };
 
