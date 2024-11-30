@@ -1,4 +1,4 @@
-name: Build for Firefox
+name: Build
 
 on: [push, pull_request]
 
@@ -8,6 +8,7 @@ jobs:
 
     strategy:
       matrix:
+        platform: [chrome, firefox]
         node-version: [22.x, 23.x]
 
     steps:
@@ -19,9 +20,9 @@ jobs:
       - name: Install Packages
         run: npm install
       - name: Build
-        run: npm run release-firefox
+        run: npm run release-${{ matrix.platform }}
       - name: Upload Build as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist-firefox-${{ matrix.node-version }}
-          path: dist-firefox
+          name: dist-${{ matrix.platform }}-${{ matrix.node-version }}
+          path: dist-${{ matrix.platform }}

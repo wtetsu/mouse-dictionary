@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: macos-12
+    runs-on: macos-latest
 
     strategy:
       matrix:
@@ -16,6 +16,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Install xcrun
+        run: sudo xcode-select -s /Library/Developer/CommandLineTools
+      - name: Install Safari Web Extension Converter
+        run: sudo xcode-select -s /Applications/Xcode.app
       - name: Install Packages
         run: npm install
       - name: Build
