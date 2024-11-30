@@ -54,6 +54,7 @@
     "esbuild": "^0.24.0",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
+    "jsdom": "^25.0.1",
     "json5": "^2.2.3",
     "milligram": "^1.4.1",
     "typescript": "^5.7.2",
