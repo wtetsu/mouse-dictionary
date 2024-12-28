@@ -8,11 +8,9 @@ import UniqList from "uniqlist";
 import text from "../../lib/text";
 import rule from "../rule";
 
-const RE_UNNECESSARY_CHARACTERS = new RegExp(String.fromCharCode(0x200c), "g");
-const RE_SLASH = new RegExp("/", "g");
-
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
-  const replacedSourceStr = rawSourceStr.replace(RE_UNNECESSARY_CHARACTERS, "").replace(RE_SLASH, " / ");
+  // U+200C: zero width non-joiner
+  const replacedSourceStr = rawSourceStr.replaceAll("\u200c", "").replaceAll("/", " / ");
   const sourceStr = text.dealWithHyphens(replacedSourceStr, rule.doLetters);
 
   const { firstWords, linkedWords } = processSourceString(sourceStr);

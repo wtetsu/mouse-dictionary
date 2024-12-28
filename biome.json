@@ -27,9 +27,6 @@
         "noExplicitAny": "off",
         "noArrayIndexKey": "off"
       },
-      "complexity": {
-        "useRegexLiterals": "off"
-      },
       "performance": {
         "noDelete": "off"
       }
