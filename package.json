@@ -38,9 +38,9 @@
     "deinja": "0.0.3",
     "immer": "^10.1.1",
     "mustache": "^4.2.0",
-    "react": "^18.3.1",
+    "react": "^19.0.0",
     "react-ace": "^13.0.0",
-    "react-dom": "^18.3.1",
+    "react-dom": "^19.0.0",
     "sweetalert": "^2.1.2",
     "uniqlist": "^1.0.4"
   },
@@ -48,17 +48,17 @@
     "@biomejs/biome": "^1.9.4",
     "@types/chrome": "^0.0.287",
     "@types/mustache": "^4.2.5",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@vitest/coverage-v8": "^2.1.6",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitest/coverage-v8": "^2.1.8",
     "adm-zip": "^0.5.16",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.24.2",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
     "jsdom": "^25.0.1",
     "json5": "^2.2.3",
     "milligram": "^1.4.1",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.6"
+    "vitest": "^2.1.8"
   }
 }
