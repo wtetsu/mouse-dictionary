@@ -11,7 +11,32 @@ const path = require("node:path");
 const json5 = require("json5");
 const jaRule = require("deinja/src/data");
 
+const DEFAULT_OPTIONS = [
+  { name: "letters", file: "data/rule/letters.json5" },
+  { name: "noun", file: "data/rule/noun.json5" },
+  { name: "phrase", file: "data/rule/phrase.json5" },
+  { name: "pronoun", file: "data/rule/pronoun.json5" },
+  { name: "spelling", file: "data/rule/spelling.json5" },
+  { name: "trailing", file: "data/rule/trailing.json5" },
+  { name: "verb", file: "data/rule/verb.json5" },
+  { name: "ja", data: jaRule },
+]
+const DEFAULT_OUTPUT_PATH = "static/gen/data/rule.json";
+
 const main = (options, outputPath) => {
+  const args = process.argv.slice(2);
+  const force = args.includes('--force');
+
+  const skip = fs.existsSync(outputPath) && !force;
+  if (skip) {
+    console.info(`Skipped(Already exists): ${outputPath}`);
+    return;
+  }
+
+  generateJaRule(options, outputPath);
+};
+
+const generateJaRule = (options, outputPath) => {
   const data = uniteJsonFiles(options);
   const unitedJson = JSON.stringify(data);
 
@@ -22,33 +47,19 @@ const main = (options, outputPath) => {
 
 const uniteJsonFiles = (options) => {
   const resultData = {};
-  for (let i = 0; i < options.length; i++) {
-    const option = options[i];
-
-    let data = null;
+  for (const option of options) {
     if (option.data) {
-      data = option.data;
-    } else if (option.file) {
-      const json = fs.readFileSync(option.file, "utf-8");
-      data = json5.parse(json);
+      resultData[option.name] = option.data;
+      continue;
     }
-    if (data) {
-      resultData[option.name] = data;
+    if (option.file) {
+      const json = fs.readFileSync(option.file, "utf-8");
+      resultData[option.name] = json5.parse(json);
     }
   }
   return resultData;
 };
 
-main(
-  [
-    { name: "letters", file: "data/rule/letters.json5" },
-    { name: "noun", file: "data/rule/noun.json5" },
-    { name: "phrase", file: "data/rule/phrase.json5" },
-    { name: "pronoun", file: "data/rule/pronoun.json5" },
-    { name: "spelling", file: "data/rule/spelling.json5" },
-    { name: "trailing", file: "data/rule/trailing.json5" },
-    { name: "verb", file: "data/rule/verb.json5" },
-    { name: "ja", data: jaRule },
-  ],
-  "static/gen/data/rule.json",
-);
+if (require.main === module) {
+  main(DEFAULT_OPTIONS, DEFAULT_OUTPUT_PATH);
+}

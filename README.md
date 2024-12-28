@@ -66,12 +66,6 @@ Use [Node.js](https://nodejs.org/en/download/) 22+.
 npm install
 ```
 
-Generate static resources.
-
-```sh
-npm run res
-```
-
 
 ### Build
 

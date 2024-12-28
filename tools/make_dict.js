@@ -12,6 +12,19 @@ const json5 = require("json5");
 const glob = require("fast-glob");
 
 const main = (options, outputDirPath) => {
+  const args = process.argv.slice(2);
+  const force = args.includes('--force');
+
+  const skip = allFilesExist(options.to, options.split, outputDirPath) && !force;
+  if (skip) {
+    console.info(`Skipped(Already exists): ${outputDirPath}/${options.to}.json`);
+    return
+  }
+
+  generateDictData(options, outputDirPath);
+};
+
+const generateDictData = (options, outputDirPath) => {
   fs.mkdirSync(outputDirPath, { recursive: true });
 
   const data = uniteJsonFiles(options.from);
@@ -21,7 +34,7 @@ const main = (options, outputDirPath) => {
   const outputFilePath = path.join(outputDirPath, `${options.to}.json`);
   fs.writeFileSync(outputFilePath, JSON.stringify(distInformation), "utf-8");
   console.info(`Generated: ${outputFilePath}`);
-};
+}
 
 const splitDataAndWrite = (data, split, to, outputDirPath) => {
   const keys = Object.keys(data);
@@ -48,6 +61,20 @@ const splitDataAndWrite = (data, split, to, outputDirPath) => {
     }
   }
   return outFiles;
+};
+
+const allFilesExist = (to, split, outputDirPath) => {
+  if (!fs.existsSync(path.join(outputDirPath, `${to}.json`))) {
+    return false;
+  }
+
+  for (let i = 0; i < split; i++) {
+    const outPath = path.join(outputDirPath, `${to}${i}.json`);
+    if (!fs.existsSync(outPath)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 const uniteJsonFiles = (fileGlobList) => {
