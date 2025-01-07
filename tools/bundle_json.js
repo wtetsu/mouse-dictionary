@@ -21,15 +21,16 @@ const DEFAULT_OPTIONS = [
   { name: "verb", file: "data/rule/verb.json5" },
   { name: "ja", data: jaRule },
 ]
-const DEFAULT_OUTPUT_PATH = "static/gen/data/rule.json";
+const DEFAULT_OUTPUT_DIR_PATH = "static/gen/data";
 
-const main = (options, outputPath) => {
+const main = (options, outputDirPath) => {
   const args = process.argv.slice(2);
   const force = args.includes('--force');
 
+  const outputPath = path.join(outputDirPath, "rule.json");
   const skip = fs.existsSync(outputPath) && !force;
   if (skip) {
-    console.info(`Skipped(Already exists): ${outputPath}`);
+    console.info(`⏭️ Skipped(Already exists): ${outputPath}`);
     return;
   }
 
@@ -42,7 +43,7 @@ const generateJaRule = (options, outputPath) => {
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, unitedJson, "utf-8");
-  console.info(`Generated: ${outputPath}`);
+  console.info(`✅ Generated: ${outputPath}`);
 };
 
 const uniteJsonFiles = (options) => {
@@ -61,5 +62,5 @@ const uniteJsonFiles = (options) => {
 };
 
 if (require.main === module) {
-  main(DEFAULT_OPTIONS, DEFAULT_OUTPUT_PATH);
+  main(DEFAULT_OPTIONS, DEFAULT_OUTPUT_DIR_PATH);
 }

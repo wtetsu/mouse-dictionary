@@ -17,7 +17,8 @@ const main = (options, outputDirPath) => {
 
   const skip = allFilesExist(options.to, options.split, outputDirPath) && !force;
   if (skip) {
-    console.info(`Skipped(Already exists): ${outputDirPath}/${options.to}.json`);
+    const outPath = path.join(outputDirPath, `${options.to}.json`);
+    console.info(`⏭️ Skipped(Already exists): ${outPath}`);
     return
   }
 
@@ -33,7 +34,7 @@ const generateDictData = (options, outputDirPath) => {
   const distInformation = { files: outFilePaths };
   const outputFilePath = path.join(outputDirPath, `${options.to}.json`);
   fs.writeFileSync(outputFilePath, JSON.stringify(distInformation), "utf-8");
-  console.info(`Generated: ${outputFilePath}`);
+  console.info(`✅ Generated: ${outputFilePath}`);
 }
 
 const splitDataAndWrite = (data, split, to, outputDirPath) => {
@@ -53,7 +54,7 @@ const splitDataAndWrite = (data, split, to, outputDirPath) => {
       const outFileName = `/${to}${outFiles.length}.json`;
       const outPath = path.join(outputDirPath, outFileName);
       fs.writeFileSync(outPath, outJson, "utf-8");
-      console.info(`Generated: ${outPath}`);
+      console.info(`✅ Generated: ${outPath}`);
 
       outData = {};
       outFiles.push(outFileName);
@@ -95,5 +96,5 @@ main(
     to: "data/dict",
     split: 10,
   },
-  "static/gen/",
+  "static/gen",
 );

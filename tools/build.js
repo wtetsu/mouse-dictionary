@@ -6,15 +6,13 @@
 
 // Build with esbuild.
 
+const path = require("node:path");
 const esbuild = require("esbuild");
 const fse = require("fs-extra");
 const version = require("../package.json").version;
 
-const TARGETS = {
-  chrome: ["chrome131"],
-  firefox: ["firefox132"],
-  safari: ["safari14"],
-};
+const settings = require("./build.json");
+
 
 const main = async (browser, mode, watchMode) => {
   copyStaticFiles(browser, mode);
@@ -88,11 +86,12 @@ const watch = async (browser, mode) => {
 };
 
 const createIoList = (browser) => {
-  return [
-    { entryPoints: ["src/main/start.js"], outfile: `dist-${browser}/main.js` },
-    { entryPoints: ["src/options/app.tsx"], outfile: `dist-${browser}/options/options.js` },
-    { entryPoints: ["src/background/background.js"], outfile: `dist-${browser}/background.js` },
-  ];
+  return Object.keys(settings.entries).map((key) => {
+    return {
+      entryPoints: [key],
+      outfile: path.join(`dist-${browser}`, settings.entries[key]),
+    };
+  });
 };
 
 const createOptions = (browser, mode) => {
@@ -107,7 +106,7 @@ const createOptions = (browser, mode) => {
     },
     minify: isProd,
     sourcemap: isProd ? undefined : "inline",
-    target: TARGETS[browser],
+    target: settings.targets[browser],
   };
 };
 

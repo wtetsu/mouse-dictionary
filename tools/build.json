@@ -1,0 +1,12 @@
+{
+  "targets": {
+    "chrome": ["chrome131"],
+    "firefox": ["firefox132"],
+    "safari": ["safari14"]
+  },
+  "entries": {
+    "src/main/start.js": "main.js",
+    "src/options/app.tsx": "options/options.js",
+    "src/background/background.js": "background.js"
+  }
+}
