@@ -1,5 +1,8 @@
 name: Submit Chrome and Firefox
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 

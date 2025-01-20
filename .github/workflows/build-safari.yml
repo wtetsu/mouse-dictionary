@@ -1,5 +1,8 @@
 name: Build for Safari
 
+permissions:
+  contents: read
+
 on: [push, pull_request]
 
 jobs:

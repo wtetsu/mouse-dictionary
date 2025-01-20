@@ -1,5 +1,8 @@
 name: License
 
+permissions:
+  contents: read
+
 on:
   push:
     tags:
