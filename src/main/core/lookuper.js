@@ -7,6 +7,7 @@
 import dom from "../lib/dom";
 import ShortCache from "../lib/shortcache";
 import storage from "../lib/storage";
+import text from "../lib/text";
 import utils from "../lib/utils";
 import Generator from "./generator";
 
@@ -29,11 +30,6 @@ export default class Lookuper {
     this.generator = new Generator(settings);
     const cacheSize = process.env.NODE_ENV === "production" ? 100 : 0;
     this.shortCache = new ShortCache(cacheSize);
-
-    // String.prototype.matchAll may not exist(#44)
-    if (String.prototype.matchAll) {
-      this.reForReferences = /[→＝]([- A-z']+)/g;
-    }
   }
 
   #canUpdate() {
@@ -137,17 +133,17 @@ export default class Lookuper {
       allEntries.push(...entries);
       langs.push(lang);
     }
-    const { heads, descriptions } = await fetchDescriptions(allEntries, this.reForReferences);
+    const { heads, descriptions } = await fetchDescriptions(allEntries);
     const { html, hitCount } = this.generator.generate(heads, descriptions, enableShortWord && langs[0] === "en");
     return { html, hit: hitCount };
   }
 }
 
-const fetchDescriptions = async (entries, reForReferences) => {
+const fetchDescriptions = async (entries) => {
   const primaryDescriptions = await storage.local.get(entries);
   const primaryHeads = entries.filter((e) => primaryDescriptions[e]);
 
-  const refHeads = pickOutRefs(primaryDescriptions, reForReferences);
+  const refHeads = extractRefPatterns(primaryDescriptions);
   if (refHeads.length === 0) {
     return { heads: primaryHeads, descriptions: primaryDescriptions };
   }
@@ -158,20 +154,14 @@ const fetchDescriptions = async (entries, reForReferences) => {
   return { heads, descriptions };
 };
 
-const pickOutRefs = (descriptions, reForReferences) => {
+const extractRefPatterns = (descriptions) => {
   const resultSet = new Set();
-  if (!reForReferences) {
-    return resultSet;
-  }
   const existingKeys = new Set(Object.keys(descriptions));
   const descList = Object.values(descriptions);
 
   for (let i = 0; i < descList.length; i++) {
-    const desc = descList[i];
-    const refList = capture(desc, reForReferences);
-
-    for (let i = 0; i < refList.length; i++) {
-      const ref = refList[i];
+    const refList = text.extractRefPatternsInText(descList[i]);
+    for (const ref of refList) {
       if (existingKeys.has(ref)) {
         continue;
       }
@@ -179,13 +169,4 @@ const pickOutRefs = (descriptions, reForReferences) => {
     }
   }
   return Array.from(resultSet);
-};
-
-const capture = (str, re) => {
-  const capturedStrings = [];
-  const matches = str.matchAll(re);
-  for (const m of matches) {
-    capturedStrings.push(m[1]);
-  }
-  return capturedStrings;
 };

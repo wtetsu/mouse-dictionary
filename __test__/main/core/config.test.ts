@@ -33,7 +33,7 @@ test("parseSettings should handle various input cases", async () => {
       normalDialogStyles: null,
       movingDialogStyles: "",
       hiddenDialogStyles: "{",
-    }),
+    })
   ).toEqual({
     shortWordLength: 2,
     empty: "",

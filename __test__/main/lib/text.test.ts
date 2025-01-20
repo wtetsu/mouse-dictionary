@@ -31,27 +31,9 @@ test("linkWords function test", () => {
   testList(text.linkWords([]), []);
   testList(text.linkWords(["word0"]), ["word0"]);
   testList(text.linkWords(["word0", "word1"]), ["word0 word1", "word0"]);
-  testList(text.linkWords(["word0", "word1", "word2"]), [
-    "word0 word1 word2",
-    "word0 word1",
-    "word0",
-    "word0 ~ word2",
-    "word0 word2",
-  ]);
-  testList(text.linkWords(["announcement", "of", "hoge"]), [
-    "announcement of hoge",
-    "announcement of",
-    "announcement",
-    "announcement ~ hoge",
-    "announcement hoge",
-  ]);
-  testList(text.linkWords(["Announcement", "of", "Hoge"]), [
-    "Announcement of Hoge",
-    "Announcement of",
-    "Announcement",
-    "Announcement ~ Hoge",
-    "Announcement Hoge",
-  ]);
+  testList(text.linkWords(["word0", "word1", "word2"]), ["word0 word1 word2", "word0 word1", "word0", "word0 ~ word2", "word0 word2"]);
+  testList(text.linkWords(["announcement", "of", "hoge"]), ["announcement of hoge", "announcement of", "announcement", "announcement ~ hoge", "announcement hoge"]);
+  testList(text.linkWords(["Announcement", "of", "Hoge"]), ["Announcement of Hoge", "Announcement of", "Announcement", "Announcement ~ Hoge", "Announcement Hoge"]);
   testList(text.linkWords(["American", "English"]), [
     "American English", //
     "American",
@@ -160,3 +142,59 @@ const testList = (actualList, expectedList) => {
     expect(actualList.includes(expected)).toBeTruthy();
   }
 };
+
+test("extractRefPatternsInText basic cases", () => {
+  const e = text.extractRefPatternsInText;
+
+  expect(e("")).toEqual([]);
+  expect(e("This is a test.")).toEqual([]);
+  expect(e("The disease <→actinobacillosis> occurred.")).toEqual(["actinobacillosis"]);
+  expect(e("Find <→pattern1> and <→pattern2> in text.")).toEqual(["pattern1", "pattern2"]);
+  expect(e("Caused by ＝fungus.")).toEqual(["fungus"]);
+  expect(e("Affected by ＝bacteria and ＝virus.")).toEqual(["bacteria and", "virus"]);
+  expect(e("Found <→object> and caused by ＝reason.")).toEqual(["object", "reason"]);
+});
+
+test("extractRefPatternsInText complex cases", () => {
+  const e = text.extractRefPatternsInText;
+
+  expect(e("Nested <→outer<→inner>> pattern.")).toEqual(["outer<→inner"]);
+  expect(e("Check ＝valid valid.")).toEqual(["valid valid"]);
+  expect(e("Found ＝some pattern.")).toEqual(["some pattern"]);
+  expect(e("Special <→characters like @# > are skipped.")).toEqual(["characters like @#"]);
+  expect(e("Example with trailing ＝word")).toEqual(["word"]);
+  expect(e("Example with trailing ＝word.")).toEqual(["word"]);
+  expect(e("Unfinished <→pattern left open.")).toEqual([]);
+  expect(e("Check this ＝!invalid.")).toEqual([]);
+});
+
+test("extractRefPatternsInText edge cases", () => {
+  const e = text.extractRefPatternsInText;
+
+  expect(e("Duplicate <→same> and <→same> patterns.")).toEqual(["same", "same"]);
+  expect(e("Repeated ＝test & ＝test.")).toEqual(["test", "test"]);
+  expect(e("Upper ＝Case & ＝case.")).toEqual(["Case", "case"]);
+});
+
+test("extractRefPatternsInText tricky cases", () => {
+  const e = text.extractRefPatternsInText;
+
+  expect(e("<→open and =wrongly formatted>")).toEqual(["open and =wrongly formatted"]);
+  expect(e("Mismatched <→open and no closing")).toEqual([]);
+  expect(e("Nested weirdness <→<→inner> outer>>")).toEqual(["<→inner"]);
+
+  expect(e("<→special@chars!>")).toEqual(["special@chars!"]);
+  expect(e("＝including 123 numbers ")).toEqual(["including"]);
+  expect(e("Spaces <→ surrounded by > extra")).toEqual(["surrounded by"]);
+  expect(e("＝   leading spaces")).toEqual(["leading spaces"]);
+  expect(e("＝ spaces  in  the  middle  are  kept ")).toEqual(["spaces  in  the  middle  are  kept"]);
+
+  expect(e("Non-ASCII <→あいうえお>")).toEqual(["あいうえお"]);
+  expect(e("Mixing ASCII and ＝日本語 patterns")).toEqual([]);
+
+  expect(e(`<→${"x".repeat(1000)}>`)).toEqual([`${"x".repeat(1000)}`]);
+  expect(e(`＝${"y".repeat(1000)} with trailing space`)).toEqual([`${"y".repeat(1000)} with trailing space`]);
+
+  expect(e("＝pattern with trailing: colon")).toEqual(["pattern with trailing"]);
+  expect(e("<→pattern ending with punctuation.")).toEqual([]);
+});
