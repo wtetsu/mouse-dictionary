@@ -184,7 +184,7 @@ test("extractRefPatternsInText tricky cases", () => {
   expect(e("Nested weirdness <→<→inner> outer>>")).toEqual(["<→inner"]);
 
   expect(e("<→special@chars!>")).toEqual(["special@chars!"]);
-  expect(e("＝including 123 numbers ")).toEqual(["including"]);
+  expect(e("＝including 123 numbers ")).toEqual(["including 123 numbers"]);
   expect(e("Spaces <→ surrounded by > extra")).toEqual(["surrounded by"]);
   expect(e("＝   leading spaces")).toEqual(["leading spaces"]);
   expect(e("＝ spaces  in  the  middle  are  kept ")).toEqual(["spaces  in  the  middle  are  kept"]);

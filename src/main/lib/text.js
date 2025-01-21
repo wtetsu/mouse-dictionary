@@ -217,12 +217,13 @@ text.extractRefPatternsInText = (input) => {
     if (input[i] === "＝") {
       const start = i + 1;
       let end = start;
-      while (
-        (end < input.length && input[end] >= "A" && input[end] <= "Z") ||
-        (input[end] >= "a" && input[end] <= "z") ||
-        input[end] === " "
-      ) {
-        end++;
+      for (; end < input.length; end++) {
+        const ch = input[end];
+        if (ch >= "A" && ch <= "Z") continue;
+        if (ch >= "a" && ch <= "z") continue;
+        if (ch >= "0" && ch <= "9") continue;
+        if (ch === " ") continue;
+        break;
       }
       const w = input.slice(start, end).trim();
       if (w) {
