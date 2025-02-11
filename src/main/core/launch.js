@@ -88,7 +88,7 @@ const isOnPdfDocument = () => {
   }
 
   return false;
-}
+};
 
 const processSecondOrLaterLaunch = async (existingElement) => {
   const userSettings = await config.loadSettings();
