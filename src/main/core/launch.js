@@ -63,9 +63,7 @@ const launchPdfViewer = (settings) => {
 
 const onPdfDocument = (url, pdfUrlPattern) => {
   if (!pdfUrlPattern) {
-    const e = document.body?.children?.[0];
-    const embedPdf = e?.tagName === "EMBED" && e?.type === "application/pdf";
-    return embedPdf;
+    return isOnPdfDocument();
   }
 
   try {
@@ -76,6 +74,21 @@ const onPdfDocument = (url, pdfUrlPattern) => {
   }
   return false;
 };
+
+const isOnPdfDocument = () => {
+  if (document.contentType === "application/pdf") {
+    return true;
+  }
+
+  // Traditional logic
+  const e = document.body?.children?.[0];
+  const embedPdf = e?.tagName === "EMBED" && e?.type === "application/pdf";
+  if (embedPdf) {
+    return true;
+  }
+
+  return false;
+}
 
 const processSecondOrLaterLaunch = async (existingElement) => {
   const userSettings = await config.loadSettings();
