@@ -1,7 +1,6 @@
 Place a PDF.js-based viewer here.
 
-[https://github.com/mozilla/pdf.js/
-Apache-2.0 License](https://github.com/wtetsu/pdf.js)
+https://github.com/wtetsu/pdf.js
 
 ----
 
