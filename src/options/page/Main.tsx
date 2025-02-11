@@ -27,6 +27,8 @@ import {
 } from "../component/organism";
 import { config, defaultSettings, env } from "../extern";
 import { Preview, data, dict, message, res } from "../logic";
+import { detectFileEncoding } from "../logic/encoding";
+
 import type { TextResourceKeys } from "../resource";
 import type { DictionaryFile, MouseDictionarySettings } from "../types";
 
@@ -80,7 +82,7 @@ const initialState: MainState = {
 type UpdateState = (state: Partial<MainState>) => void;
 
 export const Main: React.FC = () => {
-  const refPreview = useRef<Preview>();
+  const refPreview = useRef<Preview>(null);
 
   const [state, dispatch] = useReducer(reducer, {
     ...initialState,
@@ -297,7 +299,7 @@ const loadDictionaryData = async (dictionaryFile: DictionaryFile, updateState: U
     message.warn(res.get("selectDictFile"));
     return;
   }
-  if (encoding === "Shift-JIS" && !(await data.fileMayBeShiftJis(file))) {
+  if (encoding === "Shift-JIS" && (await detectFileEncoding(file)) !== "Shift_JIS") {
     const willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
     if (!willContinue) {
       return;

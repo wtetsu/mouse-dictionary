@@ -6,7 +6,7 @@
 
 import { produce } from "immer";
 import { useEffect, useRef, useState } from "react";
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import AceEditor from "react-ace";
 import { defaultSettings, dom } from "../../extern";
 import { data, message, res } from "../../logic";
@@ -110,7 +110,7 @@ export const WholeSettings: React.FC<Props> = (props) => {
     props.onChange(undefined);
   };
 
-  const editor = useRef() as MutableRefObject<AceEditor>;
+  const editor = useRef(null) as RefObject<AceEditor | null>;
 
   useEffect(() => {
     const copyButton = createProcessButton("COPY", COPY_BUTTON_STYLES1, "COPIED!", COPY_BUTTON_STYLES2, () =>

@@ -4,9 +4,9 @@
  * Licensed under MIT
  */
 
-import { useRef, useState } from "react";
-import type { MutableRefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 import { res } from "../../logic";
+import { detectFileEncoding } from "../../logic/encoding";
 import type { DictionaryFileEncoding, DictionaryFileFormat } from "../../types";
 import { Button } from "../atom/Button";
 import { Select } from "../atom/Select";
@@ -28,10 +28,10 @@ type TriggerEvent = {
 };
 
 export const LoadDictionary: React.FC<Props> = (props) => {
-  const [encoding, setEncoding] = useState(props.defaultEncoding ?? "Shift-JIS");
-  const [format, setFormat] = useState(props.defaultFormat ?? "EIJIRO");
-
-  const fileInput = useRef() as MutableRefObject<HTMLInputElement>;
+  const [encoding, setEncoding] = useState<DictionaryFileEncoding>("Shift-JIS");
+  const [format, setFormat] = useState<DictionaryFileFormat>("EIJIRO");
+  const [file, setFile] = useState<File | undefined>(undefined);
+  const selectRef = useRef<HTMLSelectElement>(null);
 
   const ENCODINGS = [
     { value: "Shift-JIS", name: "Shift-JIS" },
@@ -46,14 +46,46 @@ export const LoadDictionary: React.FC<Props> = (props) => {
     { value: "JSON", name: res.get("formatJson") },
   ];
 
+  useEffect(() => {
+    if (!file) {
+      return;
+    }
+    const load = async () => {
+      const detectedEncoding = await detectFileEncoding(file);
+      if (detectedEncoding === "Unknown") {
+        return;
+      }
+      const detectedEncodingName = (
+        detectedEncoding === "ASCII" ? "UTF-8" : detectedEncoding
+      ) as DictionaryFileEncoding;
+      setEncoding(detectedEncodingName);
+
+      if (selectRef.current) {
+        selectRef.current.style.transition = "background-color 0.5s ease";
+        selectRef.current.style.backgroundColor = "lightyellow";
+        setTimeout(() => {
+          if (selectRef.current) {
+            selectRef.current.style.backgroundColor = "";
+          }
+        }, 1500);
+      }
+    };
+    load();
+  }, [file]);
+
   return (
     <div>
       <label>{res.get("dictDataEncoding")}</label>
-      <Select value={encoding} options={ENCODINGS} onChange={(value) => setEncoding(value as DictionaryFileEncoding)} />
+      <Select
+        ref={selectRef}
+        value={encoding}
+        options={ENCODINGS}
+        onChange={(value) => setEncoding(value as DictionaryFileEncoding)}
+      />
       <label>{res.get("dictDataFormat")}</label>
       <Select value={format} options={FORMATS} onChange={(value) => setFormat(value as DictionaryFileFormat)} />
       <label>{res.get("readDictData")}</label>
-      <input type="file" ref={fileInput} />
+      <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
       <br />
       <Button
         type="primary"
@@ -61,7 +93,7 @@ export const LoadDictionary: React.FC<Props> = (props) => {
         onClick={() =>
           props.trigger({
             type: "load",
-            payload: { encoding, format, file: fileInput.current.files?.[0] },
+            payload: { encoding, format, file },
           })
         }
         disabled={props.busy}
@@ -77,9 +109,4 @@ export const LoadDictionary: React.FC<Props> = (props) => {
       />
     </div>
   );
-};
-
-LoadDictionary.defaultProps = {
-  defaultEncoding: "Shift-JIS",
-  defaultFormat: "EIJIRO",
 };

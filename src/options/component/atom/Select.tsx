@@ -4,21 +4,21 @@
  * Licensed under MIT
  */
 
-type Props = {
+import { forwardRef } from "react";
+
+type SelectProps = {
   value: string;
   options: { value: string; name: string }[];
   onChange: (value: string) => void;
   style?: React.CSSProperties;
 };
 
-export const Select: React.FC<Props> = (props) => {
-  return (
-    <select value={props.value} style={props.style} onChange={(e) => props.onChange(e.target.value)}>
-      {props.options.map((e) => (
-        <option key={e.value} value={e.value}>
-          {e.name}
-        </option>
-      ))}
-    </select>
-  );
-};
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(({ value, options, onChange, style }, ref) => (
+  <select ref={ref} value={value} style={style} onChange={(e) => onChange(e.target.value)}>
+    {options.map((option) => (
+      <option key={option.value} value={option.value}>
+        {option.name}
+      </option>
+    ))}
+  </select>
+));

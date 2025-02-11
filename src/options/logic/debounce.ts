@@ -14,7 +14,7 @@ type GeneralFunction = (...args: any[]) => void;
 
 export const debounce = (functionBody: GeneralFunction, wait: number): GeneralFunction => {
   let _timestamp: number;
-  let _id: NodeJS.Timeout | undefined;
+  let _id: number | undefined;
   let _args: any[];
 
   const later = () => {
