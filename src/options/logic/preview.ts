@@ -3,15 +3,39 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
-
 import { produce } from "immer";
+import { useCallback, useEffect, useRef } from "react";
 import { Generator, dom, entryDefault, storage, view } from "../extern";
 import { debounce } from "../logic";
 import type { MouseDictionarySettings } from "../types";
 
 type PreviewWindow = { dialog: HTMLElement; content: HTMLElement };
 
-export class Preview {
+export const usePreview = () => {
+  const refPreview = useRef<Preview>(null);
+
+  const updatePreview = useCallback((settings: MouseDictionarySettings, previewText: string, refresh: boolean) => {
+    if (!refPreview.current) {
+      refPreview.current = new Preview(settings);
+    }
+    refPreview.current?.update(settings, previewText, refresh);
+  }, []);
+
+  const setPreviewVisible = useCallback((visible: boolean) => {
+    refPreview.current?.setVisible(visible);
+  }, []);
+
+  useEffect(() => {
+    // cleanup
+    return () => {
+      refPreview.current?.remove();
+    };
+  }, []);
+
+  return { updatePreview, setPreviewVisible };
+};
+
+class Preview {
   element: HTMLElement;
   update: (settings: MouseDictionarySettings, text: string, refresh: boolean) => void;
   previewWindow: PreviewWindow | undefined;
@@ -99,5 +123,9 @@ export class Preview {
 
   setVisible(visible: boolean): void {
     this.element.hidden = !visible;
+  }
+
+  remove(): void {
+    this.element.remove();
   }
 }

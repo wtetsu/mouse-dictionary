@@ -5,7 +5,7 @@
  */
 
 import { produce } from "immer";
-import { useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer } from "react";
 import {
   Button,
   DataUsage,
@@ -26,8 +26,9 @@ import {
   WholeSettings,
 } from "../component/organism";
 import { config, defaultSettings, env } from "../extern";
-import { Preview, data, dict, message, res } from "../logic";
+import { data, dict, message, res } from "../logic";
 import { detectFileEncoding } from "../logic/encoding";
+import { usePreview } from "../logic/preview";
 
 import type { TextResourceKeys } from "../resource";
 import type { DictionaryFile, MouseDictionarySettings } from "../types";
@@ -82,17 +83,17 @@ const initialState: MainState = {
 type UpdateState = (state: Partial<MainState>) => void;
 
 export const Main: React.FC = () => {
-  const refPreview = useRef<Preview>(null);
-
   const [state, dispatch] = useReducer(reducer, {
     ...initialState,
     lang: res.getLang(),
   });
 
+  const { updatePreview, setPreviewVisible } = usePreview();
+
   useEffect(() => {
     const init = async () => {
       const settings = data.preProcessSettings(await config.loadRawSettings());
-      refPreview.current = new Preview(settings);
+      updatePreview(settings, state.previewText, true);
       updateState({ settings });
 
       const isLoaded = await config.isDataReady();
@@ -105,23 +106,16 @@ export const Main: React.FC = () => {
     };
     init();
   }, []);
-  const s = state.settings;
   useEffect(() => {
-    if (!state.initialized) {
-      return;
-    }
-    if (!refPreview.current) {
-      refPreview.current = new Preview(s);
-    }
-    refPreview.current?.update(s, state.previewText, true);
-  }, [s.backgroundColor, s.dialogTemplate, s.contentWrapperTemplate]);
+    if (!state.initialized) return;
+    updatePreview(state.settings, state.previewText, true);
+  }, [state.settings, state.previewText]);
+
   useEffect(() => {
-    if (!state.initialized) {
-      return;
-    }
-    refPreview.current?.setVisible(state.panelLevel >= 1 && state.panelLevel <= 2);
-    refPreview.current?.update(state.settings, state.previewText, false);
-  }, [state.panelLevel, state.previewText, s]);
+    if (!state.initialized) return;
+    const visible = state.panelLevel >= 1 && state.panelLevel <= 2;
+    setPreviewVisible(visible);
+  }, [state.panelLevel]);
 
   const updateState = (
     statePatch: Record<string, any> | undefined,
@@ -299,7 +293,7 @@ const loadDictionaryData = async (dictionaryFile: DictionaryFile, updateState: U
     message.warn(res.get("selectDictFile"));
     return;
   }
-  if (encoding === "Shift-JIS" && (await detectFileEncoding(file)) !== "Shift_JIS") {
+  if (encoding === "Shift_JIS" && (await detectFileEncoding(file)) !== "Shift_JIS") {
     const willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
     if (!willContinue) {
       return;

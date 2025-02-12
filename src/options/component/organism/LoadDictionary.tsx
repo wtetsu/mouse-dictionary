@@ -28,13 +28,13 @@ type TriggerEvent = {
 };
 
 export const LoadDictionary: React.FC<Props> = (props) => {
-  const [encoding, setEncoding] = useState<DictionaryFileEncoding>("Shift-JIS");
+  const [encoding, setEncoding] = useState<DictionaryFileEncoding>("Shift_JIS");
   const [format, setFormat] = useState<DictionaryFileFormat>("EIJIRO");
   const [file, setFile] = useState<File | undefined>(undefined);
   const selectRef = useRef<HTMLSelectElement>(null);
 
   const ENCODINGS = [
-    { value: "Shift-JIS", name: "Shift-JIS" },
+    { value: "Shift_JIS", name: "Shift_JIS" },
     { value: "UTF-8", name: "UTF-8" },
     { value: "UTF-16", name: "UTF-16" },
   ];
