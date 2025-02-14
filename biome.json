@@ -26,9 +26,6 @@
       "suspicious": {
         "noExplicitAny": "off",
         "noArrayIndexKey": "off"
-      },
-      "performance": {
-        "noDelete": "off"
       }
     }
   }
