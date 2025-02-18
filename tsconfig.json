@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2023",
+    "target": "es2024",
     "jsx": "react-jsx",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "noImplicitAny": false,
     "skipLibCheck": true
