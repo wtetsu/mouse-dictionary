@@ -27,7 +27,8 @@ const build = (doConfirmValidCharacter, maxWords) => {
 class Traverser {
   constructor(doGetTargetCharacterType, maxWords) {
     this.JA_MAX_LENGTH = 40;
-    this.getTargetCharacterType = doGetTargetCharacterType ?? ((code) => (isEnglishLikeCharacter(code) ? 3 : 0));
+    this.getTargetCharacterType =
+      doGetTargetCharacterType ?? ((code) => (isEnglishLikeCharacterFallback(code) ? 3 : 0));
     this.maxWords = maxWords ?? 8;
     this.decoy = decoy.create("div");
   }
@@ -91,7 +92,7 @@ class Traverser {
       return {};
     }
     const code = sourceText.charCodeAt(offset);
-    const isEnglish = isEnglishLikeCharacter(code);
+    const isEnglish = this.getTargetCharacterType(code) !== undefined;
 
     if (isEnglish) {
       const startIndex = searchStartIndex(sourceText, offset, this.getTargetCharacterType);
@@ -194,7 +195,7 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
   return text + " " + followingText;
 };
 
-const isEnglishLikeCharacter = (code) => 0x20 <= code && code <= 0x7e;
+const isEnglishLikeCharacterFallback = (code) => 0x20 <= code && code <= 0x7e;
 
 // Intl.v8BreakIterator will be replaced with Intl.Segmenter in the future.
 // https://github.com/tc39/proposal-intl-segmenter
