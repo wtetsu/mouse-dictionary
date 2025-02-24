@@ -1,17 +1,10 @@
 import unique from "../../src/background/unique";
 
 test("", () => {
-  expect(unique(1).length).toEqual(1);
-  expect(unique(32).length).toEqual(32);
-  expect(unique(128).length).toEqual(128);
-
-  let preId = "";
-  for (let i = 0; i < 100; i++) {
-    const newId = unique(32);
-
-    if (preId === newId) {
-      throw new Error();
-    }
-    preId = newId;
+  const generatedIds = new Set();
+  for (let i = 0; i < 1000; i++) {
+    const newId = unique();
+    expect(generatedIds.has(newId)).toBe(true);
+    generatedIds.add(newId);
   }
 });

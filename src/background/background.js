@@ -5,7 +5,7 @@
  */
 
 import ExpiringQueue from "./queue";
-import uniqueId from "./unique";
+import generateUniqueId from "./unique";
 
 if (BROWSER === "chrome") {
   chrome.action.onClicked.addListener((tab) => {
@@ -55,7 +55,7 @@ const queue = new ExpiringQueue(1000 * 30);
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   switch (request?.type) {
     case "open_pdf": {
-      const id = uniqueId(32);
+      const id = generateUniqueId();
       queue.push(id, request.payload);
       chrome.runtime.sendMessage({ type: "prepare_pdf" });
       chrome.runtime.openOptionsPage(() => {
