@@ -1,6 +1,7 @@
-import testdata from "../../testdata";
+import { beforeAll, expect, test } from "vitest";
 import createLookupWordsEn from "../../../src/main/core/entry/en";
 import createLookupWordsJa from "../../../src/main/core/entry/ja";
+import testdata from "../../testdata";
 
 beforeAll(() => {
   testdata.load();
@@ -11,7 +12,7 @@ test("Test simple word", () => {
 });
 
 test("Test hyphenated words", () => {
-  let r;
+  let r: string[];
   r = createLookupWordsEn("ladies-in-waiting");
   expect(r.includes("ladies-in-waiting")).toBeTruthy();
   expect(r.includes("lady-in-waiting")).toBeTruthy();

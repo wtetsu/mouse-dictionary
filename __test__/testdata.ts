@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "node:fs";
 import json5 from "json5";
 const jaRule = require("deinja/src/data");
 import rule from "../src/main/core/rule";

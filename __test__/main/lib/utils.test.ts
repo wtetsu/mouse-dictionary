@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import utils from "../../../src/main/lib/utils";
 
 const setWindowInnerSize = (width: number, height: number) => {

@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import ExpiringQueue from "../../src/background/queue";
 
 test("", async () => {

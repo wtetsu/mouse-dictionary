@@ -1,9 +1,10 @@
-import { EijiroParser, SimpleDictParser, JsonDictParser } from "../../../src/options/logic/dictparser";
+import { expect, test } from "vitest";
+import { EijiroParser, JsonDictParser, SimpleDictParser } from "../../../src/options/logic/dictparser";
 
 test("", () => {
   const parser = new EijiroParser();
 
-  let hd;
+  let hd: any;
   hd = parser.addLine("■when  {代名} : ＊＊");
   expect(hd).toEqual(undefined);
   hd = parser.addLine("■when  {名} : 〔＊＊＊＊＊＊＊〕＊＊＊＊＊");
@@ -39,7 +40,7 @@ test("", () => {
 test("", () => {
   const parser = new SimpleDictParser(" /// ");
 
-  let hd;
+  let hd: any;
   hd = parser.addLine("aaa///bbb");
   expect(hd).toEqual(undefined);
 

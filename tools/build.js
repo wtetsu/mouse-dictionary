@@ -13,7 +13,6 @@ const version = require("../package.json").version;
 
 const settings = require("./build.json");
 
-
 const main = async (browser, mode, watchMode) => {
   copyStaticFiles(browser, mode);
 

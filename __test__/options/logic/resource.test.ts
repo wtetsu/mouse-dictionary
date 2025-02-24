@@ -1,5 +1,6 @@
+import { expect, test } from "vitest";
 import * as res from "../../../src/options/logic/resource";
-import { TextResourceKeys } from "../../../src/options/resource";
+import type { TextResourceKeys } from "../../../src/options/resource";
 
 test("", () => {
   expect(res.decideInitialLanguage([])).toEqual("en");
@@ -19,7 +20,9 @@ test("", () => {
   res.setLang("en");
   expect(res.get("selectDictFile")).toEqual("Select dictionary data");
   expect(res.get("finishRegister", { count: 999 })).toEqual("Loading has finished(999 words)");
-  expect(res.get("progressRegister", { count: 999, progress: "hello" })).toEqual("999 words have been registered(hello)");
+  expect(res.get("progressRegister", { count: 999, progress: "hello" })).toEqual(
+    "999 words have been registered(hello)",
+  );
   expect(res.get("invalidKey" as TextResourceKeys)).toEqual("invalidKey");
 
   res.setLang("invalid_language");

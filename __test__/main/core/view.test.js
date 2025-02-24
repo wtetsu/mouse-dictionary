@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import view from "../../../src/main/core/view";
 
 test("should create a dialog element with the correct tag name", () => {

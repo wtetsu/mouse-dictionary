@@ -20,12 +20,12 @@ const DEFAULT_OPTIONS = [
   { name: "trailing", file: "data/rule/trailing.json5" },
   { name: "verb", file: "data/rule/verb.json5" },
   { name: "ja", data: jaRule },
-]
+];
 const DEFAULT_OUTPUT_DIR_PATH = "static/gen/data";
 
 const main = (options, outputDirPath) => {
   const args = process.argv.slice(2);
-  const force = args.includes('--force');
+  const force = args.includes("--force");
 
   const outputPath = path.join(outputDirPath, "rule.json");
   const skip = fs.existsSync(outputPath) && !force;

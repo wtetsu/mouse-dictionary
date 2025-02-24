@@ -1,5 +1,6 @@
-import testdata from "../../testdata";
+import { beforeAll, expect, test } from "vitest";
 import rule from "../../../src/main/core/rule";
+import testdata from "../../testdata";
 
 beforeAll(() => {
   testdata.load();

@@ -13,13 +13,13 @@ const glob = require("fast-glob");
 
 const main = (options, outputDirPath) => {
   const args = process.argv.slice(2);
-  const force = args.includes('--force');
+  const force = args.includes("--force");
 
   const skip = allFilesExist(options.to, options.split, outputDirPath) && !force;
   if (skip) {
     const outPath = path.join(outputDirPath, `${options.to}.json`);
     console.info(`⏭️ Skipped(Already exists): ${outPath}`);
-    return
+    return;
   }
 
   generateDictData(options, outputDirPath);
@@ -35,7 +35,7 @@ const generateDictData = (options, outputDirPath) => {
   const outputFilePath = path.join(outputDirPath, `${options.to}.json`);
   fs.writeFileSync(outputFilePath, JSON.stringify(distInformation), "utf-8");
   console.info(`✅ Generated: ${outputFilePath}`);
-}
+};
 
 const splitDataAndWrite = (data, split, to, outputDirPath) => {
   const keys = Object.keys(data);

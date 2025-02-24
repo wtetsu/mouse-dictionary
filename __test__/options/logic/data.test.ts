@@ -1,5 +1,6 @@
-import * as data from "../../../src/options/logic/data";
+import { expect, test } from "vitest";
 import defaultsettings from "../../../src/main/settings";
+import * as data from "../../../src/options/logic/data";
 import type { MouseDictionarySettings } from "../../../src/options/types";
 
 test("preProcessSettings and postProcessSettings should correctly process settings", () => {

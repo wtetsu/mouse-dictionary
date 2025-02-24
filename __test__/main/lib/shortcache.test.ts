@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import ShortCache from "../../../src/main/lib/shortcache";
 
 test("should return null for non-existent key", () => {

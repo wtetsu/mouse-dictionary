@@ -1,4 +1,5 @@
-import { detectFileEncoding, detectByteArrayEncoding } from "../../../src/options/logic/encoding";
+import { describe, expect, test } from "vitest";
+import { detectByteArrayEncoding, detectFileEncoding } from "../../../src/options/logic/encoding";
 
 describe("detectByteArrayEncoding", () => {
   test("empty array returns Unknown", () => {

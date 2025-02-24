@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import entry from "../../../src/main/core/entry";
 
 test("should detect and generate Japanese text", () => {

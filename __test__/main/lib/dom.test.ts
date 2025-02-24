@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import dom from "../../../src/main/lib/dom";
 
 const createDom = (html: string): HTMLElement => dom.create(html) as HTMLElement;

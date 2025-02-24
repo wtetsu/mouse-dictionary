@@ -1,6 +1,7 @@
-import testdata from "../../testdata";
-import text from "../../../src/main/lib/text";
+import { beforeAll, expect, test } from "vitest";
 import rule from "../../../src/main/core/rule";
+import text from "../../../src/main/lib/text";
+import testdata from "../../testdata";
 
 beforeAll(() => {
   testdata.load();
@@ -31,9 +32,27 @@ test("linkWords function test", () => {
   testList(text.linkWords([]), []);
   testList(text.linkWords(["word0"]), ["word0"]);
   testList(text.linkWords(["word0", "word1"]), ["word0 word1", "word0"]);
-  testList(text.linkWords(["word0", "word1", "word2"]), ["word0 word1 word2", "word0 word1", "word0", "word0 ~ word2", "word0 word2"]);
-  testList(text.linkWords(["announcement", "of", "hoge"]), ["announcement of hoge", "announcement of", "announcement", "announcement ~ hoge", "announcement hoge"]);
-  testList(text.linkWords(["Announcement", "of", "Hoge"]), ["Announcement of Hoge", "Announcement of", "Announcement", "Announcement ~ Hoge", "Announcement Hoge"]);
+  testList(text.linkWords(["word0", "word1", "word2"]), [
+    "word0 word1 word2",
+    "word0 word1",
+    "word0",
+    "word0 ~ word2",
+    "word0 word2",
+  ]);
+  testList(text.linkWords(["announcement", "of", "hoge"]), [
+    "announcement of hoge",
+    "announcement of",
+    "announcement",
+    "announcement ~ hoge",
+    "announcement hoge",
+  ]);
+  testList(text.linkWords(["Announcement", "of", "Hoge"]), [
+    "Announcement of Hoge",
+    "Announcement of",
+    "Announcement",
+    "Announcement ~ Hoge",
+    "Announcement Hoge",
+  ]);
   testList(text.linkWords(["American", "English"]), [
     "American English", //
     "American",

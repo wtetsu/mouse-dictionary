@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, expect, test } from "vitest";
 import config from "../../../src/main/core/config";
 import env from "../../../src/main/env";
 import Chrome from "../chrome";
@@ -33,7 +34,7 @@ test("parseSettings should handle various input cases", async () => {
       normalDialogStyles: null,
       movingDialogStyles: "",
       hiddenDialogStyles: "{",
-    })
+    }),
   ).toEqual({
     shortWordLength: 2,
     empty: "",

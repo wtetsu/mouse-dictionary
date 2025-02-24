@@ -1,5 +1,6 @@
-import Chrome from "../chrome";
+import { afterEach, beforeEach, expect, test } from "vitest";
 import storage from "../../../src/main/lib/storage";
+import Chrome from "../chrome";
 
 beforeEach(() => {
   global.chrome = new Chrome() as any;

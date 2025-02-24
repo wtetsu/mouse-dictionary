@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import decoy from "../../../src/main/lib/decoy";
 import dom from "../../../src/main/lib/dom";
 

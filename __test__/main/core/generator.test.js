@@ -1,5 +1,6 @@
-import defaultSettings from "../../../src/main/settings";
+import { expect, test } from "vitest";
 import Generator from "../../../src/main/core/generator";
+import defaultSettings from "../../../src/main/settings";
 
 test("Generator should return empty HTML when no words are provided", () => {
   const generator = new Generator(defaultSettings);
