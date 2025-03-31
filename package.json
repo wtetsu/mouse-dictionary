@@ -38,27 +38,27 @@
     "deinja": "0.0.3",
     "immer": "^10.1.1",
     "mustache": "^4.2.0",
-    "react": "^19.0.0",
+    "react": "^19.1.0",
     "react-ace": "^14.0.1",
-    "react-dom": "^19.0.0",
+    "react-dom": "^19.1.0",
     "sweetalert": "^2.1.2",
     "uniqlist": "^1.0.4"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@types/chrome": "^0.0.309",
+    "@types/chrome": "^0.0.313",
     "@types/mustache": "^4.2.5",
-    "@types/react": "^19.0.10",
+    "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
-    "@vitest/coverage-v8": "^3.0.8",
+    "@vitest/coverage-v8": "^3.1.1",
     "adm-zip": "^0.5.16",
-    "esbuild": "^0.25.1",
+    "esbuild": "^0.25.2",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.0",
     "jsdom": "^26.0.0",
     "json5": "^2.2.3",
     "milligram": "^1.4.1",
     "typescript": "^5.8.2",
-    "vitest": "^3.0.8"
+    "vitest": "^3.1.1"
   }
 }
