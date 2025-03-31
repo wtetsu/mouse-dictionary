@@ -15,7 +15,7 @@ export default {
   backgroundColor: "#ffffff",
   headFontColor: "#000088",
   descFontColor: "#101010",
-  headFontSize: "medium",
+  headFontSize: "x-large",
   descFontSize: "small",
 
   width: 350,
@@ -24,7 +24,7 @@ export default {
   replaceRules: [
     {
       search: "(■.+|◆.+)",
-      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>',
+      replace: '<span style="{{cssReset}};color:#003366;margin-left:1em;font-size:0.9em;">$1</span>',
     },
     {
       search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
@@ -71,10 +71,10 @@ export default {
             font-weight: normal;">
 </div>`,
 
-  contentTemplate: `<div style="{{cssReset}};font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
+  contentTemplate: `<div style="{{cssReset}};cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
   {{#words}}
     {{^isShort}}
-      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;">
+      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
         {{head}}
       </span>
       <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="{{head}}" data-md-hovervisible="true">🔊</span>
@@ -84,7 +84,7 @@ export default {
       </span>
     {{/isShort}}
     {{#isShort}}
-      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;">
+      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
         {{head}}
       </span>
       <span style="{{cssReset}};color:#505050;font-size:x-small;">
@@ -92,7 +92,7 @@ export default {
       </span>
     {{/isShort}}
     {{^isLast}}
-      <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:0;height:1px;width:100%;" />
+      <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:12px 0;height:1px;width:100%;" />
     {{/isLast}}
   {{/words}}
 </div>`,

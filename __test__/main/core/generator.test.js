@@ -7,20 +7,20 @@ test("Generator should return empty HTML when no words are provided", () => {
 
   expect(generator.generate([], {}, false)).toEqual({
     hitCount: 0,
-    html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
+    html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
 </div>`,
   });
 
   expect(generator.generate(["hasOwnProperty"], {}, false)).toEqual({
     hitCount: 0,
-    html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
+    html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
 </div>`,
   });
 
   expect(generator.generate(["test"], { test: "テスト" }, false)).toEqual({
     hitCount: 1,
-    html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
-      <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:medium;color:#000088;font-weight:bold;\">
+    html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
+      <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:x-large;color:#000088;font-weight:bold;font-family:Georgia;\">
         test
       </span>
       <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="test" data-md-hovervisible="true">🔊</span>
@@ -33,14 +33,14 @@ test("Generator should return empty HTML when no words are provided", () => {
 
   expect(generator.generate(["test"], { test: "テスト ■TEST" }, false)).toEqual({
     hitCount: 1,
-    html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
-      <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:medium;color:#000088;font-weight:bold;\">
+    html: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
+      <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:x-large;color:#000088;font-weight:bold;font-family:Georgia;\">
         test
       </span>
       <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="test" data-md-hovervisible="true">🔊</span>
       <br/>
       <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;font-size:small;color:#101010;\">
-        テスト <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;color:#008000;font-size:100%;\">■TEST</span>
+        テスト <span style=\"margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;;color:#003366;margin-left:1em;font-size:0.9em;\">■TEST</span>
       </span>
 </div>`,
   });
