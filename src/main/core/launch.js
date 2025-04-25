@@ -13,13 +13,25 @@ import res from "./resource";
 import rule from "./rule";
 import view from "./view";
 
+const SHADOW_HOST_ID = `${DIALOG_ID}_SH`;
+
 export default async () => {
-  const existingElement = document.getElementById(DIALOG_ID);
-  if (!existingElement) {
+  const existingDialog = findExistingDialog();
+  if (!existingDialog) {
     await processFirstLaunch();
   } else {
-    await processSecondOrLaterLaunch(existingElement);
+    await processSecondOrLaterLaunch(existingDialog);
   }
+};
+
+const findExistingDialog = () => {
+  // Try to find the dialog in the shadow DOM first
+  const host = document.getElementById(SHADOW_HOST_ID);
+  if (host?.shadowRoot) {
+    return host.shadowRoot.getElementById(DIALOG_ID);
+  }
+  // If not found in shadow DOM, check the main document
+  return document.getElementById(DIALOG_ID);
 };
 
 const processFirstLaunch = async () => {
@@ -115,13 +127,47 @@ const initialize = (userSettings, storedPosition) => {
   const area = view.create(userSettings);
   area.dialog.id = DIALOG_ID;
   dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
-  document.body.appendChild(area.dialog);
+
+  if (useShadowDom(userSettings)) {
+    const shadowHost = createShadowRoot(area.dialog);
+    document.body.appendChild(shadowHost);
+  } else {
+    document.body.appendChild(area.dialog);
+  }
 
   const newStyles = decideInitialStyles(userSettings, storedPosition, area.dialog.clientWidth);
   dom.applyStyles(area.dialog, newStyles);
 
   // Async
   setEvents(area, userSettings);
+};
+
+const createShadowRoot = (dialog) => {
+  const shadowHost = document.createElement("div");
+  shadowHost.id = SHADOW_HOST_ID;
+  const shadowRoot = shadowHost.attachShadow({ mode: "open" });
+  const style = document.createElement("style");
+  style.textContent = `
+    :host {
+      all: initial;
+      display: block;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      font: inherit;
+      line-height: normal;
+      box-sizing: border-box;
+      text-shadow: none;
+      vertical-align: baseline;
+    }
+  `;
+  shadowRoot.appendChild(style);
+  shadowRoot.appendChild(dialog);
+
+  return shadowHost;
 };
 
 const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
@@ -177,4 +223,12 @@ const getInitialPosition = (type, dialogWidth) => {
       break;
   }
   return position;
+};
+
+const useShadowDom = (settings) => {
+  if (settings?.domType === "light") {
+    return false;
+  }
+  // true by default
+  return true;
 };

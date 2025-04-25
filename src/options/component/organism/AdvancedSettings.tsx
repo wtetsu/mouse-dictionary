@@ -19,6 +19,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   const lookupWithCapitalized = props.settings?.lookupWithCapitalized ?? false;
   const parseWordsLimit = props.settings?.parseWordsLimit ?? 8;
   const pdfUrl = props.settings?.pdfUrl ?? "";
+  const domType = props.settings?.domType ?? "shadow";
   const contentWrapperTemplate = props.settings?.contentWrapperTemplate ?? "";
   const dialogTemplate = props.settings?.dialogTemplate ?? "";
   const contentTemplate = props.settings?.contentTemplate ?? "";
@@ -87,6 +88,29 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           style={{ width: 600 }}
           placeholder="\.pdf$"
         />
+        <label>{res.get("domType")}</label>
+        <div style={{ marginLeft: 10, marginBottom: 10 }}>
+          <label style={{ marginRight: 20 }}>
+            <input
+              type="radio"
+              name="domType"
+              value="shadow"
+              checked={domType === "shadow"}
+              onChange={(e) => update({ domType: e.target.value as "shadow" })}
+            />
+            Shadow DOM
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="domType"
+              value="light"
+              checked={domType === "light"}
+              onChange={(e) => update({ domType: e.target.value as "light" })}
+            />
+            Light DOM
+          </label>
+        </div>
         <h3>
           {res.get("htmlTemplate")}
           <a

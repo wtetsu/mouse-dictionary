@@ -75,6 +75,7 @@ export type TextResource = {
   aboutJsonEditor: string;
   skipPdfConfirmation: string;
   pdfUrlPattern: string;
+  domType: string;
 };
 
 export type TextResourceKeys = keyof TextResource;
