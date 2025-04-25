@@ -1,5 +1,5 @@
 {
-  "name": "Mouse Dictionary",
+  "name": "Mouse Dictionary(Beta)",
   "manifest_version": 3,
   "version": "",
   "description": "__MSG_appDesc__",
@@ -15,7 +15,7 @@
   },
   "action": {
     "default_icon": "icons/icon19.png",
-    "default_title": "Mouse Dictionary"
+    "default_title": "Mouse Dictionary(Beta)"
   },
   "commands": {
     "_execute_action": {

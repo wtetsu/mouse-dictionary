@@ -113,15 +113,46 @@ const toggleDialog = (area, userSettings) => {
 
 const initialize = (userSettings, storedPosition) => {
   const area = view.create(userSettings);
-  area.dialog.id = DIALOG_ID;
+
+  // area.dialog.id = DIALOG_ID;
   dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
-  document.body.appendChild(area.dialog);
+
+  const shadowHost = createShadowRoot(area);
+  document.body.appendChild(shadowHost);
 
   const newStyles = decideInitialStyles(userSettings, storedPosition, area.dialog.clientWidth);
   dom.applyStyles(area.dialog, newStyles);
 
   // Async
   setEvents(area, userSettings);
+};
+
+const createShadowRoot = (area) => {
+  const shadowHost = document.createElement("div");
+  shadowHost.id = DIALOG_ID;
+  const shadowRoot = shadowHost.attachShadow({ mode: "open" });
+  const style = document.createElement("style");
+  style.textContent = `
+    :host {
+      all: initial;
+      display: block;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      font: inherit;
+      line-height: normal;
+      box-sizing: border-box;
+      text-shadow: none;
+      vertical-align: baseline;
+    }
+  `;
+  shadowRoot.appendChild(style);
+  shadowRoot.appendChild(area.dialog);
+
+  return shadowHost;
 };
 
 const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
