@@ -88,7 +88,17 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           style={{ width: 600 }}
           placeholder="\.pdf$"
         />
-        <label>{res.get("domType")}</label>
+        <label>
+          {res.get("domType")}
+          <a
+            href="https://github.com/wtetsu/mouse-dictionary/wiki/DOM-Type"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "underline", fontSize: "medium" }}
+          >
+            ?
+          </a>
+        </label>
         <div style={{ marginLeft: 10, marginBottom: 10 }}>
           <label style={{ marginRight: 20 }}>
             <input
