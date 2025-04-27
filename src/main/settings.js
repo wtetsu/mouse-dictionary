@@ -24,15 +24,15 @@ export default {
   replaceRules: [
     {
       search: "(■.+|◆.+)",
-      replace: '<span style="{{cssReset}};color:#003366;margin-left:1em;font-size:0.9em;">$1</span>',
+      replace: '<span style="color:#003366;margin-left:1em;font-size:0.9em;">$1</span>',
     },
     {
       search: "({.+?}|\\[.+?\\]|\\(.+?\\))",
-      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>',
+      replace: '<span style="color:#008000;font-size:100%;">$1</span>',
     },
     {
       search: "(【.+?】|《.+?》|〈.+?〉|〔.+?〕)",
-      replace: '<span style="{{cssReset}};color:#008000;font-size:100%;">$1</span>',
+      replace: '<span style="color:#008000;font-size:100%;">$1</span>',
     },
     {
       search: "\\n|\\\\n",
@@ -71,23 +71,23 @@ export default {
             font-weight: normal;">
 </div>`,
 
-  contentTemplate: `<div style="{{cssReset}};cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
+  contentTemplate: `<div style="cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
   {{#words}}
     {{^isShort}}
-      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
+      <span style="font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
         {{head}}
       </span>
       <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="{{head}}" data-md-hovervisible="true">🔊</span>
       <br/>
-      <span style="{{cssReset}};font-size:{{descFontSize}};color:{{descFontColor}};">
+      <span style="font-size:{{descFontSize}};color:{{descFontColor}};">
         {{{desc}}}
       </span>
     {{/isShort}}
     {{#isShort}}
-      <span style="{{cssReset}};font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
+      <span style="font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
         {{head}}
       </span>
-      <span style="{{cssReset}};color:#505050;font-size:x-small;">
+      <span style="color:#505050;font-size:x-small;">
         {{shortDesc}}
       </span>
     {{/isShort}}
@@ -96,4 +96,5 @@ export default {
     {{/isLast}}
   {{/words}}
 </div>`,
+  domType: "shadow",
 };

@@ -31,6 +31,7 @@ export type MouseDictionaryAdvancedSettings = {
   dialogTemplate: string;
   contentTemplate: string;
   pdfUrl: string;
+  domType: "shadow" | "light";
 };
 
 export type MouseDictionarySettings = MouseDictionaryBasicSettings & MouseDictionaryAdvancedSettings;
