@@ -11,6 +11,7 @@ export default class Generator {
     this.shortWordLength = settings.shortWordLength;
     this.cutShortWordDescription = settings.cutShortWordDescription;
 
+    // cssReset is deprecated. It is kept for backward compatibility with older settings.
     const cssReset = "margin:0;padding:0;border:0;vertical-align:baseline;line-height:normal;text-shadow:none;";
 
     this.baseParameters = {
