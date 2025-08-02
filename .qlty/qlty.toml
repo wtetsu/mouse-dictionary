@@ -1,0 +1,102 @@
+# Qlty configuration for Mouse Dictionary
+# TypeScript/JavaScript ブラウザ拡張機能プロジェクト
+
+[plugins.prettier]
+enabled = true
+version = "known_good"
+
+[plugins.markdownlint]
+enabled = true
+version = "known_good"
+
+[plugins.yamllint]
+enabled = true
+version = "known_good"
+config_file = ".yamllint.yaml"
+
+[plugins.actionlint]
+enabled = true
+version = "known_good"
+
+[plugins.trufflehog]
+enabled = true
+version = "known_good"
+
+[plugins.osv-scanner]
+enabled = true
+version = "known_good"
+
+[plugins.trivy]
+enabled = true
+version = "known_good"
+
+[plugins.checkov]
+enabled = true
+version = "known_good"
+
+[plugins.ripgrep]
+enabled = true
+version = "known_good"
+
+[plugins.radarlint-js]
+enabled = true
+version = "known_good"
+
+# Biomeは既存のbiome.jsonとnpm run lintで管理しているため無効化
+[plugins.biome]
+enabled = false
+version = "known_good"
+
+# ESLintは既存のプロジェクトで使用していないため無効化
+[plugins.eslint]
+enabled = false
+
+# TypeScript型チェックは既存のnpm run testで実行しているため無効化
+[plugins.tsc]
+enabled = false
+
+# 除外パターン
+[exclude]
+# ビルド出力ディレクトリ
+paths = [
+  "dist*/",
+  "coverage/",
+  "node_modules/",
+  "__test__/",
+  "static/",
+  "static_pdf/",
+  ".git/",
+  ".github/",
+  ".vscode/",
+  ".dic/",
+  ".tools/",
+  ".tempfile/",
+  ".serena/",
+  ".claude/",
+  "*.zip",
+  "*.min.js",
+  "*.min.css"
+]
+
+# Prettier設定（既存のbiome.jsonと競合しないよう調整）
+[plugins.prettier.config]
+# TypeScript/JavaScriptファイルはBiomeで処理するため除外
+ignore_patterns = [
+  "*.ts",
+  "*.tsx", 
+  "*.js",
+  "*.jsx",
+  "*.json"
+]
+
+# markdownlint設定
+[plugins.markdownlint.config]
+# HTMLタグを許可（README.mdでロゴなどに使用）
+MD033 = false
+# 行の長さ制限を緩和
+MD013.line_length = 120
+
+# yamllint設定
+[plugins.yamllint.config]
+# GitHub Actionsで引用符の警告を緩和
+rules.quoted-strings = "disable"

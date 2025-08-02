@@ -23,20 +23,16 @@ jobs:
         run: npm install
       - name: Install Qlty CLI
         uses: qltysh/qlty-action/install@v1
-      - name: Initialize Qlty (if not exists)
+      - name: Verify Qlty Configuration
         run: |
-          echo "Checking if .qlty/qlty.toml exists..."
-          if [ ! -f .qlty/qlty.toml ]; then
-            echo "File does not exist, running qlty init..."
-            qlty init --yes
-            echo "qlty init completed"
-            echo "Disabling biome plugin due to parse errors..."
-            sed -i '/\[plugins\.biome\]/,/^\[/ s/enabled = true/enabled = false/' .qlty/qlty.toml
+          echo "Checking Qlty configuration..."
+          if [ -f .qlty/qlty.toml ]; then
+            echo "✅ .qlty/qlty.toml found"
+            ls -la .qlty/
           else
-            echo ".qlty/qlty.toml already exists, skipping init"
+            echo "❌ .qlty/qlty.toml not found"
+            exit 1
           fi
-          echo "Listing .qlty directory contents:"
-          ls -la .qlty/ || echo "No .qlty directory found"
       - name: Run Qlty Check
         run: qlty check
       - name: Lint
