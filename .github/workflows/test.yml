@@ -25,12 +25,18 @@ jobs:
         uses: qltysh/qlty-action/install@v1
       - name: Initialize Qlty (if not exists)
         run: |
+          echo "Checking if .qlty/qlty.toml exists..."
           if [ ! -f .qlty/qlty.toml ]; then
+            echo "File does not exist, running qlty init..."
             qlty init --yes
+            echo "qlty init completed"
+          else
+            echo ".qlty/qlty.toml already exists, skipping init"
           fi
+          echo "Listing .qlty directory contents:"
+          ls -la .qlty/ || echo "No .qlty directory found"
       - name: Run Qlty Check
-        run: qlty check || true
-        continue-on-error: true
+        run: qlty check
       - name: Lint
         run: npm run lint
       - name: Run Unit Tests
