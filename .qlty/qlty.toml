@@ -1,4 +1,4 @@
-exclude = [
+exclude_patterns  = [
   "dist*/",
   "coverage/",
   "node_modules/",
