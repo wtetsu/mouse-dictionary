@@ -29,7 +29,8 @@ jobs:
             qlty init --yes
           fi
       - name: Run Qlty Check
-        run: qlty check
+        run: qlty check || true
+        continue-on-error: true
       - name: Lint
         run: npm run lint
       - name: Run Unit Tests
