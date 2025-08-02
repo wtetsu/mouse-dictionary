@@ -19,10 +19,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install codecov
-        run: npm install -g codecov
       - name: Install Packages
         run: npm install
+      - name: Install Qlty CLI
+        uses: qltysh/qlty-action/install@v1
+      - name: Run Qlty Check
+        run: qlty check
       - name: Lint
         run: npm run lint
       - name: Run Unit Tests
