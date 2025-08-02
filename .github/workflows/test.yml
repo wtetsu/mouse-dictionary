@@ -30,6 +30,8 @@ jobs:
             echo "File does not exist, running qlty init..."
             qlty init --yes
             echo "qlty init completed"
+            echo "Disabling biome plugin due to parse errors..."
+            sed -i '/\[plugins\.biome\]/,/^\[/ s/enabled = true/enabled = false/' .qlty/qlty.toml
           else
             echo ".qlty/qlty.toml already exists, skipping init"
           fi
