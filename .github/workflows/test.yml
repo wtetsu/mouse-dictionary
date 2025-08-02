@@ -47,7 +47,3 @@ jobs:
           flags: unittests
           name: codecov-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
-      - name: Upload coverage to Qlty
-        uses: qltysh/qlty-action/coverage@v1
-        with:
-          coverage_file: ./coverage/coverage-final.json
