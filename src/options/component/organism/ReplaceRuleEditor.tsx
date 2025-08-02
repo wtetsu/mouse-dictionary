@@ -44,7 +44,7 @@ const reduce = (state: Replace[], action: Action): Replace[] => {
   switch (action.type) {
     case "add":
       return produce(state, (d) => {
-        const newKey = new Date().getTime().toString();
+        const newKey = Date.now().toString();
         d.push({ key: newKey, search: "", replace: "" });
       });
     case "change":

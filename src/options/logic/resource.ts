@@ -5,9 +5,8 @@
  */
 
 import { template } from "../extern";
-
-import { EnglishTextResource, JapaneseTextResource } from "../resource";
 import type { TextResourceKeys } from "../resource";
+import { EnglishTextResource, JapaneseTextResource } from "../resource";
 
 let _lang = "";
 

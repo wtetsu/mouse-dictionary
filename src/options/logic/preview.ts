@@ -5,7 +5,7 @@
  */
 import { produce } from "immer";
 import { useCallback, useEffect, useRef } from "react";
-import { Generator, dom, entryDefault, storage, view } from "../extern";
+import { dom, entryDefault, Generator, storage, view } from "../extern";
 import { debounce } from "../logic";
 import type { MouseDictionarySettings } from "../types";
 

@@ -3,6 +3,7 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
-export * from "./simpledictparser";
-export * from "./jsondictparser";
+
 export * from "./eijiroparser";
+export * from "./jsondictparser";
+export * from "./simpledictparser";

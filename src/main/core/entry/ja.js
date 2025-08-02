@@ -6,6 +6,7 @@
 
 import UniqList from "uniqlist";
 import rule from "../rule";
+
 const RE_ALPHABETS_NUMBERS = /[A-Za-z0-9]/g;
 const FULLWIDTH_OFFSET = 0xfee0;
 

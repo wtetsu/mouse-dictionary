@@ -4,6 +4,6 @@
  * Licensed under MIT
  */
 
-export * from "./ja";
 export * from "./en";
+export * from "./ja";
 export * from "./types";

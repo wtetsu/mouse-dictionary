@@ -4,14 +4,13 @@
  * Licensed under MIT
  */
 
+import ace from "ace-builds/src-noconflict/ace";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import swal from "sweetalert";
 import rule from "../main/core/rule";
 import { res } from "./logic";
 import { Main } from "./page/Main";
-
-import ace from "ace-builds/src-noconflict/ace";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-xcode";

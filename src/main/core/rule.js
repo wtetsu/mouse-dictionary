@@ -4,9 +4,8 @@
  * Licensed under MIT
  */
 
-import utils from "../lib/utils";
-
 import buildDeinja from "deinja/build";
+import utils from "../lib/utils";
 import base from "./rule/base";
 import phrase from "./rule/phrase";
 import pronoun from "./rule/pronoun";

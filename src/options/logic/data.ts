@@ -18,7 +18,6 @@ export const preProcessSettings = (settings: MouseDictionarySettings): MouseDict
 export const postProcessSettings = (settings: MouseDictionarySettings): MouseDictionarySettings => {
   return produce(settings, (d) => {
     for (const replaceRule of d.replaceRules) {
-      // biome-ignore lint:lint/performance/noDelete
       delete replaceRule.key;
     }
   });

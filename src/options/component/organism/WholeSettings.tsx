@@ -5,8 +5,8 @@
  */
 
 import { produce } from "immer";
-import { useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 import AceEditor from "react-ace";
 import { defaultSettings, dom } from "../../extern";
 import { data, message, res } from "../../logic";

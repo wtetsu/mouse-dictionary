@@ -1,10 +1,9 @@
 {
-  "organizeImports": {
-    "enabled": true
-  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
     "lineWidth": 120
   },
   "linter": {
@@ -14,18 +13,23 @@
         "useTemplate": "off"
       },
       "correctness": {
-        "useExhaustiveDependencies": "off"
+        "useExhaustiveDependencies": "off",
+        "useHookAtTopLevel": "off"
       },
       "a11y": {
         "noLabelWithoutControl": "off",
         "useKeyWithClickEvents": "off",
         "useAltText": "off",
         "useValidAnchor": "off",
-        "noAutofocus": "off"
+        "noAutofocus": "off",
+        "noStaticElementInteractions": "off"
       },
       "suspicious": {
         "noExplicitAny": "off",
         "noArrayIndexKey": "off"
+      },
+      "complexity": {
+        "noUselessFragments": "off"
       }
     }
   }
