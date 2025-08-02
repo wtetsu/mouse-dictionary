@@ -56,9 +56,7 @@ enabled = false
 enabled = false
 
 # 除外パターン
-[exclude]
-# ビルド出力ディレクトリ
-paths = [
+exclude = [
   "dist*/",
   "coverage/",
   "node_modules/",
@@ -78,25 +76,3 @@ paths = [
   "*.min.css"
 ]
 
-# Prettier設定（既存のbiome.jsonと競合しないよう調整）
-[plugins.prettier.config]
-# TypeScript/JavaScriptファイルはBiomeで処理するため除外
-ignore_patterns = [
-  "*.ts",
-  "*.tsx", 
-  "*.js",
-  "*.jsx",
-  "*.json"
-]
-
-# markdownlint設定
-[plugins.markdownlint.config]
-# HTMLタグを許可（README.mdでロゴなどに使用）
-MD033 = false
-# 行の長さ制限を緩和
-MD013.line_length = 120
-
-# yamllint設定
-[plugins.yamllint.config]
-# GitHub Actionsで引用符の警告を緩和
-rules.quoted-strings = "disable"
