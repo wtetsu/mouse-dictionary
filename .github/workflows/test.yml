@@ -23,6 +23,11 @@ jobs:
         run: npm install
       - name: Install Qlty CLI
         uses: qltysh/qlty-action/install@v1
+      - name: Initialize Qlty (if not exists)
+        run: |
+          if [ ! -f .qlty/qlty.toml ]; then
+            qlty init --yes
+          fi
       - name: Run Qlty Check
         run: qlty check
       - name: Lint
