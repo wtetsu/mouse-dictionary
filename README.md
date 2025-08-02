@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://github.com/wtetsu/mouse-dictionary/actions?query=workflow%3ATest"><img src="https://github.com/wtetsu/mouse-dictionary/workflows/Test/badge.svg" alt="Test" /></a>
-  <a href="https://codeclimate.com/github/wtetsu/mouse-dictionary"><img src="https://codeclimate.com/github/wtetsu/mouse-dictionary/badges/gpa.svg" alt="Code Climate" /></a>
+  <a href="https://qlty.sh/gh/wtetsu/projects/mouse-dictionary"><img src="https://qlty.sh/gh/wtetsu/projects/mouse-dictionary/maintainability.svg" alt="Maintainability" /></a>
   <a href="https://codecov.io/gh/wtetsu/mouse-dictionary"><img src="https://codecov.io/gh/wtetsu/mouse-dictionary/branch/master/graph/badge.svg" alt="codecov" /></a>
 </p>
 

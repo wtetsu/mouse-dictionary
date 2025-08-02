@@ -19,10 +19,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install codecov
-        run: npm install -g codecov
       - name: Install Packages
         run: npm install
+      - name: Install Qlty CLI
+        uses: qltysh/qlty-action/install@v1
+      - name: Run Qlty Check
+        run: qlty check
       - name: Lint
         run: npm run lint
       - name: Run Unit Tests
@@ -35,3 +37,7 @@ jobs:
           flags: unittests
           name: codecov-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage to Qlty
+        uses: qltysh/qlty-action/coverage@v1
+        with:
+          coverage_file: ./coverage/coverage-final.json
