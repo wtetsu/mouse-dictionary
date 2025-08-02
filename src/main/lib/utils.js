@@ -33,15 +33,13 @@ const omap = (object, func, specifiedProps) => {
 const areSame = (a, b) => {
   // On the assumption that both have the same properties
   const props = Object.keys(b);
-  let same = true;
   for (let i = 0; i < props.length; i++) {
     const prop = props[i];
     if (a[prop] !== b[prop]) {
-      same = false;
-      break;
+      return false;
     }
   }
-  return same;
+  return true;
 };
 
 const isInsideRange = (range, position) => {

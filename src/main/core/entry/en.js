@@ -15,11 +15,11 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
 
   const { firstWords, linkedWords } = processSourceString(sourceStr);
 
+  const firstWord = firstWords?.[0];
   const lookupWords = new UniqList();
   lookupWords.filer = (s) => s.length >= 2 || s === firstWord;
   lookupWords.merge(linkedWords);
 
-  const firstWord = firstWords?.[0];
   if (firstWord) {
     lookupWords.merge(processFirstWord(firstWord));
   }
@@ -54,8 +54,10 @@ const generateTitledExpressions = (words) => {
     result.push(str);
   }
 
+  const MAX_TITLED_EXPRESSION_WORDS = 6;
+
   for (let i = 1; ; i++) {
-    if (i >= words.length || i >= 6) {
+    if (i >= words.length || i >= MAX_TITLED_EXPRESSION_WORDS) {
       break;
     }
     const w = words[i];
