@@ -18,3 +18,5 @@ exclude_patterns  = [
   "*.min.css"
 ]
 
+[smells.return_statements]
+threshold = 10
