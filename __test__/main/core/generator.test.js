@@ -20,12 +20,12 @@ test("Generator should return empty HTML when no words are provided", () => {
   expect(generator.generate(["test"], { test: "テスト" }, false)).toEqual({
     hitCount: 1,
     html: `<div style="cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
-      <span style=\"font-size:x-large;color:#000088;font-weight:bold;font-family:Georgia;\">
+      <span style="font-size:x-large;color:#000088;font-weight:bold;font-family:Georgia;">
         test
       </span>
       <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="test" data-md-hovervisible="true">🔊</span>
       <br/>
-      <span style=\"font-size:small;color:#101010;\">
+      <span style="font-size:small;color:#101010;">
         テスト
       </span>
 </div>`,
@@ -34,13 +34,13 @@ test("Generator should return empty HTML when no words are provided", () => {
   expect(generator.generate(["test"], { test: "テスト ■TEST" }, false)).toEqual({
     hitCount: 1,
     html: `<div style="cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
-      <span style=\"font-size:x-large;color:#000088;font-weight:bold;font-family:Georgia;\">
+      <span style="font-size:x-large;color:#000088;font-weight:bold;font-family:Georgia;">
         test
       </span>
       <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="test" data-md-hovervisible="true">🔊</span>
       <br/>
-      <span style=\"font-size:small;color:#101010;\">
-        テスト <span style=\"color:#003366;margin-left:1em;font-size:0.9em;\">■TEST</span>
+      <span style="font-size:small;color:#101010;">
+        テスト <span style="color:#003366;margin-left:1em;font-size:0.9em;">■TEST</span>
       </span>
 </div>`,
   });

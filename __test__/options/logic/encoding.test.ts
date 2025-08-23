@@ -99,7 +99,7 @@ describe("detectFileEncoding", () => {
         throw new Error("fail");
       }
     }
-    // @ts-ignore
+    // @ts-expect-error
     global.FileReader = FailFileReader;
     const file = new File([new Uint8Array([0x41])], "fail.txt", { type: "text/plain" });
     await expect(detectFileEncoding(file)).rejects.toThrow("fail");

@@ -2,14 +2,14 @@ import { expect, test } from "vitest";
 import utils from "../../../src/main/lib/utils";
 
 const setWindowInnerSize = (width: number, height: number) => {
-  //@ts-ignore
+  //@ts-expect-error
   window.innerWidth = width;
-  //@ts-ignore
+  //@ts-expect-error
   window.innerHeight = height;
 };
 
 const setWindowGetSelection = (fn: () => string) => {
-  //@ts-ignore
+  //@ts-expect-error
   window.getSelection = fn;
 };
 
