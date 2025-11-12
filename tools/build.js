@@ -102,6 +102,7 @@ const createOptions = (browser, mode) => {
       DIALOG_ID: JSON.stringify(`____MOUSE_DICTIONARY_6FQSXRIXUKBSIBEF_${version}`),
       MODE: JSON.stringify(mode),
       DEBUG: JSON.stringify(isProd ? "" : "true"),
+      VERSION: JSON.stringify(version),
     },
     minify: isProd,
     sourcemap: isProd ? undefined : "inline",
