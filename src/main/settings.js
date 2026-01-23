@@ -42,7 +42,8 @@ export default {
 
   normalDialogStyles: `{
   "opacity": 0.95,
-  "zIndex": 2147483647
+  "zIndex": 2147483647,
+  "visibility": "visible"
 }`,
 
   movingDialogStyles: `{
@@ -51,7 +52,8 @@ export default {
 
   hiddenDialogStyles: `{
   "opacity": 0.0,
-  "zIndex": -1
+  "zIndex": -1,
+  "visibility": "hidden"
 }`,
 
   contentWrapperTemplate: `<div style="margin:0;padding:0;border:0;vertical-align:baseline;text-align:left;">
