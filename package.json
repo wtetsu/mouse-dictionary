@@ -45,12 +45,12 @@
     "uniqlist": "^1.0.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.10",
-    "@types/chrome": "^0.1.32",
+    "@biomejs/biome": "^2.3.11",
+    "@types/chrome": "^0.1.36",
     "@types/mustache": "^4.2.6",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
-    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/coverage-v8": "^4.0.18",
     "adm-zip": "^0.5.16",
     "esbuild": "^0.27.2",
     "fast-glob": "^3.3.3",
@@ -59,6 +59,6 @@
     "json5": "^2.2.3",
     "milligram": "^1.4.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.18"
   }
 }
