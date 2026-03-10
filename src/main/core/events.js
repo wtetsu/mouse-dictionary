@@ -244,6 +244,8 @@ const openAnkiDialog = async (dialog, entry) => {
     stored.modelName ?? (modelNames.includes(anki.DEFAULT_MODEL_NAME) ? anki.DEFAULT_MODEL_NAME : modelNames[0] ?? "");
   const tagsValue = stored.tags ?? ANKI_DEFAULT_TAGS;
 
+  const parsedEntry = parseEntryDetails(htmlToTextPreserveBreaks(entry?.desc ?? ""));
+
   body.innerHTML = `
     <div style="margin-bottom:8px;">
       <label style="display:block;margin-bottom:4px;">Deck</label>
@@ -274,7 +276,8 @@ const openAnkiDialog = async (dialog, entry) => {
 
   fillSelect(deckSelect, deckNames, selectedDeck);
   fillSelect(modelSelect, modelNames, selectedModel);
-  tagsInput.value = tagsValue;
+  const mergedTagValue = dedupe([...parseTags(tagsValue), ...(parsedEntry.tags ?? [])]).join(" ");
+  tagsInput.value = mergedTagValue;
 
   const updateFields = async (modelName) => {
     if (!modelName) {
@@ -284,7 +287,7 @@ const openAnkiDialog = async (dialog, entry) => {
     fieldsArea.textContent = "Loading fields...";
     const fields = await anki.modelFieldNames(modelName);
     const mapping = ANKI_DEFAULT_FIELD_MAPPING;
-    renderFieldInputs(fieldsArea, fields, mapping, entry);
+    renderFieldInputs(fieldsArea, fields, mapping, entry, parsedEntry);
   };
 
   const updateModelActions = () => {
@@ -329,7 +332,9 @@ const openAnkiDialog = async (dialog, entry) => {
       return;
     }
     const fieldData = collectFieldValues(fieldsArea, entry);
-    const tags = parseTags(tagsInput.value);
+    const extraTags = parseTags(tagsInput.value);
+    const autoTags = parseEntryDetails(htmlToTextPreserveBreaks(entry?.desc ?? "")).tags ?? [];
+    const tags = dedupe([...extraTags, ...autoTags]);
     try {
       await anki.addNote({
         deckName: deckSelect.value,
@@ -362,19 +367,18 @@ const fillSelect = (select, list, selectedValue) => {
   }
 };
 
-const renderFieldInputs = (container, fields, mapping, entry) => {
+const renderFieldInputs = (container, fields, mapping, entry, parsedEntry) => {
   container.innerHTML = "";
-  const parsed = parseEntryDetails(htmlToTextPreserveBreaks(entry?.desc ?? ""));
   const defaults = {
     head: entry?.head ?? "",
-    meaning: parsed.meaning,
-    synonyms: parsed.synonyms,
-    notes: parsed.notes,
-    pronunciation: parsed.pronunciation,
-    etymology: parsed.etymology,
-    inflection: parsed.inflection,
-    syllables: parsed.syllables,
-    examples: parsed.examples,
+    meaning: parsedEntry.meaning,
+    synonyms: parsedEntry.synonyms,
+    notes: parsedEntry.notes,
+    pronunciation: parsedEntry.pronunciation,
+    etymology: parsedEntry.etymology,
+    inflection: parsedEntry.inflection,
+    syllables: parsedEntry.syllables,
+    examples: parsedEntry.examples,
     url: location.href ?? "",
   };
   for (const fieldName of fields) {
@@ -444,53 +448,90 @@ const parseEntryDetails = (descText) => {
   const { text: textAfterSyl, value: syllables } = extractSingleTag(text, "分節");
   text = textAfterSyl;
 
-  const { text: textAfterNotesTags, values: noteTags } = extractOtherBracketTags(text, [
-    "類",
-    "同",
-    "発音",
-    "＠",
-    "語源",
-    "変化",
-    "分節",
-  ]);
-  text = textAfterNotesTags;
+  const levelTag = extractLevelTag(text);
+  text = levelTag.text;
+  const tags = [];
+  if (levelTag.value) {
+    tags.push(`level-${levelTag.value}`);
+  }
 
   const examples = [];
-  let notesParts = [];
-  if (noteTags.length > 0) {
-    notesParts.push(...noteTags);
-  }
+  const notesParts = [];
 
-  const { text: textAfterExamples, values: extractedExamples } = extractExamples(text);
-  text = textAfterExamples;
-  if (extractedExamples.length > 0) {
-    examples.push(...extractedExamples);
-  }
+  const skipTags = ["類", "同", "発音", "＠", "語源", "変化", "分節"];
+  const lines = (text ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
 
-  let meaning = text;
-  let notes = "";
-  if (meaning.includes("◆")) {
-    const parts = meaning.split("◆");
-    meaning = parts.shift()?.trim() ?? "";
-    const extraNotes = [];
-    for (const part of parts) {
-      const trimmed = part.trim();
-      if (!trimmed) {
+  let currentSense = "";
+  const meaningLines = [];
+
+  for (const line of lines) {
+    let working = line;
+    const senseMatch = working.match(/^\s*(\{[^}]+\})/);
+    if (senseMatch?.[1]) {
+      currentSense = senseMatch[1].trim();
+    }
+
+    const addNote = (value) => {
+      const trimmed = (value ?? "").trim();
+      if (!trimmed) return;
+      notesParts.push(currentSense ? `${currentSense} ${trimmed}` : trimmed);
+    };
+
+    const addExample = (value) => {
+      const trimmed = (value ?? "").trim();
+      if (!trimmed) return;
+      examples.push(currentSense ? `${currentSense} ${trimmed}` : trimmed);
+    };
+
+    // Extract bracket tags (other than skipTags) and remove them from the line
+    const bracketRe = /【([^】]+)】([^【◆]*)/g;
+    let match = null;
+    while ((match = bracketRe.exec(working)) !== null) {
+      const tag = match?.[1];
+      if (!tag || skipTags.includes(tag)) {
         continue;
       }
-      if (trimmed.startsWith("＝")) {
-        meaning = `${meaning} ◆ ${trimmed}`.trim();
-        continue;
-      }
-      extraNotes.push(trimmed);
+      addNote(`【${tag}】${(match?.[2] ?? "").trim()}`.trim());
     }
-    if (extraNotes.length > 0) {
-      notesParts.unshift(extraNotes.join("◆").trim());
+    working = working.replace(/【[^】]+】[^【◆]*/g, "");
+
+    // Extract examples marked by ■
+    if (working.includes("■")) {
+      const parts = working.split("■");
+      working = parts.shift()?.trim() ?? "";
+      for (const part of parts) {
+        const example = part.replace(/^・?/, "").trim();
+        if (example) {
+          addExample(example);
+        }
+      }
+    }
+
+    // Split notes after ◆ but keep "◆＝" inside meaning
+    if (working.includes("◆")) {
+      const parts = working.split("◆");
+      working = parts.shift()?.trim() ?? "";
+      for (const part of parts) {
+        const trimmed = part.trim();
+        if (!trimmed) continue;
+        if (trimmed.startsWith("＝")) {
+          working = `${working} ◆ ${trimmed}`.trim();
+          continue;
+        }
+        addNote(trimmed);
+      }
+    }
+
+    if (working.length > 0) {
+      meaningLines.push(working);
     }
   }
 
-  meaning = normalizeLines(meaning);
-  notes = normalizeNotes(notesParts);
+  let meaning = normalizeLines(meaningLines.join("\n"));
+  let notes = normalizeNotes(notesParts);
   const { notes: cleanedNotes, examples: labeledExamples } = extractLabeledExamplesFromNotes(notes);
   notes = cleanedNotes;
   if (labeledExamples.length > 0) {
@@ -506,6 +547,7 @@ const parseEntryDetails = (descText) => {
     syllables: trimTrailingPunctuation(syllables),
     examples: formatExamples(dedupe(examples)),
     notes: trimTrailingPunctuation(notes),
+    tags,
   };
 };
 
@@ -554,26 +596,6 @@ const joinParts = (...parts) =>
     .filter((part) => part.length > 0)
     .join(" / ");
 
-const extractOtherBracketTags = (text, skipTags) => {
-  const values = [];
-  const re = /【([^】]+)】([^【◆]*)/g;
-  let match = null;
-  let next = text;
-  while ((match = re.exec(text)) !== null) {
-    const tag = match?.[1];
-    if (!tag || skipTags.includes(tag)) {
-      continue;
-    }
-    const body = match?.[2] ?? "";
-    values.push(`【${tag}】${body}`.trim());
-  }
-  for (const tag of skipTags) {
-    next = next.replace(new RegExp(`【${tag}】[^【◆]*`, "g"), "");
-  }
-  next = next.replace(/【[^】]+】[^【◆]*/g, "");
-  return { text: next, values };
-};
-
 const extractExamples = (text) => {
   const values = [];
   const lines = (text ?? "").split("\n");
@@ -598,6 +620,17 @@ const extractExamples = (text) => {
     return base;
   });
   return { text: cleanedLines.join("\n"), values };
+};
+
+const extractLevelTag = (text) => {
+  const re = /【レベル】([^【◆]+)/g;
+  const values = [];
+  for (const match of text.matchAll(re)) {
+    if (match?.[1]) {
+      values.push(match[1].trim());
+    }
+  }
+  return { text: text.replace(re, ""), value: values.join(" / ") };
 };
 
 const normalizeText = (text) =>
