@@ -18,6 +18,12 @@ import rule from "./rule";
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 const ANKI_STORAGE_KEY = "md_anki_settings";
 const ANKI_DEFAULT_TAGS = "mouse-dictionary";
+const ANKI_OVERLAY_NORMAL_STYLES = {
+  opacity: 1,
+};
+const ANKI_OVERLAY_MOVING_STYLES = {
+  opacity: 0.9,
+};
 const ANKI_DEFAULT_FIELD_MAPPING = {
   Expression: "head",
   Meaning: "meaning",
@@ -34,6 +40,9 @@ const ANKI_DEFAULT_FIELD_MAPPING = {
 const attach = async (settings, dialog, doUpdateContent) => {
   let enableDefault = true;
   let lastSelectionText = "";
+  let ankiDialogOpen = false;
+  let ankiOverlay = null;
+  let ankiDraggable = null;
 
   const traverse = traverser.build(rule.doLetters, settings.parseWordsLimit);
   const lookuper = new Lookuper(settings, entryDefault(), doUpdateContent);
@@ -49,6 +58,10 @@ const attach = async (settings, dialog, doUpdateContent) => {
   });
 
   document.body.addEventListener("mouseup", async (e) => {
+    if (ankiDialogOpen) {
+      ankiDraggable?.onMouseUp(e);
+      return;
+    }
     if (dialog.querySelector("[data-md-anki-overlay]") && dialog.contains(e.target)) {
       return;
     }
@@ -71,6 +84,10 @@ const attach = async (settings, dialog, doUpdateContent) => {
   });
 
   const onMouseMoveFirst = async (e) => {
+    if (ankiDialogOpen) {
+      ankiDraggable?.onMouseMove(e);
+      return;
+    }
     // Wait until rule loading finish
     await rule.load();
 
@@ -79,7 +96,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
   };
 
   const onMouseMoveSecondOrLater = async (e) => {
+    if (ankiDialogOpen) {
+      ankiDraggable?.onMouseMove(e);
+      return;
+    }
     draggable.onMouseMove(e);
+    if (ankiDialogOpen) {
+      return;
+    }
     if (dialog.querySelector("[data-md-anki-overlay]") && dialog.contains(e.target)) {
       return;
     }
@@ -97,12 +121,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
   document.body.addEventListener("keydown", (e) => {
     if (e.key === "Shift") {
       draggable.activateSnap(e);
+      ankiDraggable?.activateSnap(e);
     }
   });
 
   document.body.addEventListener("keyup", (e) => {
     if (e.key === "Shift") {
       draggable.deactivateSnap(e);
+      ankiDraggable?.deactivateSnap(e);
     }
   });
 
@@ -175,6 +201,10 @@ const attach = async (settings, dialog, doUpdateContent) => {
       head,
       desc,
       selection: lastSelectionText,
+    }, (open, overlay, overlayDraggable) => {
+      ankiDialogOpen = open;
+      ankiOverlay = overlay;
+      ankiDraggable = overlayDraggable;
     });
   });
 };
@@ -199,31 +229,40 @@ const setDialogEvents = (dialog) => {
   });
 };
 
-const openAnkiDialog = async (dialog, entry) => {
-  const existing = dialog.querySelector("[data-md-anki-overlay]");
+const openAnkiDialog = async (dialog, entry, setOpen) => {
+  const existing = document.querySelector("[data-md-anki-overlay]");
   if (existing) {
     existing.remove();
   }
 
   const overlay = dom.create(`
-    <div data-md-anki-overlay="true" style="position:absolute;top:6px;left:6px;right:6px;bottom:6px;background:#ffffff;border:1px solid #a0a0a0;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.2);padding:8px;z-index:2147483647;overflow:auto;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="font-weight:bold;font-size:14px;">Add to Anki</div>
-        <button data-md-anki-close="true" style="border:0;background:transparent;font-size:16px;cursor:pointer;">✕</button>
+    <div data-md-anki-overlay="true" style="position:fixed;background:#f0fff4;border:1px solid #9cc2a4;border-radius:8px;box-shadow:0 6px 18px rgba(10,40,20,0.22);padding:10px;z-index:2147483647;overflow:auto;scrollbar-width:none;-ms-overflow-style:none;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;color:#0f1f12;">
+      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #cbe4d1;padding-bottom:6px;">
+        <div style="font-weight:bold;font-size:14px;color:#12351b;">Add to Anki</div>
+        <button data-md-anki-close="true" style="border:0;background:transparent;font-size:16px;cursor:pointer;color:#12351b;">✕</button>
       </div>
       <div data-md-anki-body="true" style="margin-top:8px;font-size:12px;"></div>
     </div>
   `);
-  dialog.appendChild(overlay);
-  const stopPropagation = (e) => e.stopPropagation();
-  overlay.addEventListener("mousedown", stopPropagation);
-  overlay.addEventListener("mouseup", stopPropagation);
-  overlay.addEventListener("mousemove", stopPropagation);
-  overlay.addEventListener("click", stopPropagation);
+  document.body.appendChild(overlay);
+  const scrollbarStyle = document.createElement("style");
+  scrollbarStyle.textContent = `
+    * { box-sizing: border-box; }
+    *::-webkit-scrollbar { display: none; }
+  `;
+  overlay.appendChild(scrollbarStyle);
+  placeOverlayNextToDialog(overlay, dialog);
+  const stopClick = (e) => e.stopPropagation();
+  overlay.addEventListener("click", stopClick);
+
+  const overlayDraggable = new Draggable(ANKI_OVERLAY_NORMAL_STYLES, ANKI_OVERLAY_MOVING_STYLES);
+  overlayDraggable.add(overlay);
+  setOpen?.(true, overlay, overlayDraggable);
 
   overlay.querySelector("[data-md-anki-close]").addEventListener("click", (e) => {
     e.preventDefault();
     overlay.remove();
+    setOpen?.(false, null, null);
   });
 
   const body = overlay.querySelector("[data-md-anki-body]");
@@ -248,24 +287,24 @@ const openAnkiDialog = async (dialog, entry) => {
 
   body.innerHTML = `
     <div style="margin-bottom:8px;">
-      <label style="display:block;margin-bottom:4px;">Deck</label>
-      <select data-md-anki-deck style="width:100%;padding:4px;"></select>
+      <label style="display:block;margin-bottom:4px;color:#12351b;">Deck</label>
+      <select data-md-anki-deck style="width:100%;padding:6px;border:1px solid #9cc2a4;border-radius:6px;background:#ffffff;color:#0f1f12;"></select>
     </div>
     <div style="margin-bottom:8px;">
-      <label style="display:block;margin-bottom:4px;">Note type</label>
-      <select data-md-anki-model style="width:100%;padding:4px;"></select>
+      <label style="display:block;margin-bottom:4px;color:#12351b;">Note type</label>
+      <select data-md-anki-model style="width:100%;padding:6px;border:1px solid #9cc2a4;border-radius:6px;background:#ffffff;color:#0f1f12;"></select>
       <div data-md-anki-model-actions="true" style="margin-top:4px;"></div>
     </div>
     <div style="margin-bottom:8px;">
-      <label style="display:block;margin-bottom:4px;">Tags (comma or space separated)</label>
-      <input data-md-anki-tags style="width:100%;padding:4px;" />
+      <label style="display:block;margin-bottom:4px;color:#12351b;">Tags (comma or space separated)</label>
+      <input data-md-anki-tags style="width:100%;padding:6px;border:1px solid #9cc2a4;border-radius:6px;background:#ffffff;color:#0f1f12;" />
     </div>
     <div data-md-anki-fields="true" style="margin-bottom:8px;"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;">
-      <button data-md-anki-edit="true" style="padding:6px 10px;border:1px solid #a0a0a0;background:#f8f8f8;border-radius:4px;cursor:pointer;">Edit</button>
-      <button data-md-anki-add-note="true" style="padding:6px 10px;border:1px solid #2b6cb0;background:#3182ce;color:#fff;border-radius:4px;cursor:pointer;">Add</button>
+      <button data-md-anki-edit="true" style="padding:6px 12px;border:1px solid #7ea488;background:#dff3e3;color:#12351b;border-radius:6px;cursor:pointer;">Edit</button>
+      <button data-md-anki-add-note="true" style="padding:6px 12px;border:1px solid #1e5f3a;background:#2f7a4a;color:#ffffff;border-radius:6px;cursor:pointer;">Add</button>
     </div>
-    <div data-md-anki-status="true" style="margin-top:8px;color:#444;"></div>
+    <div data-md-anki-status="true" style="margin-top:8px;color:#12351b;"></div>
   `;
 
   const deckSelect = body.querySelector("[data-md-anki-deck]");
@@ -375,6 +414,43 @@ const setEditingState = (container, enabled) => {
     }
     input.disabled = !enabled;
     input.readOnly = !enabled;
+    if (enabled) {
+      input.style.background = "#ffffff";
+      input.style.color = "#0f1f12";
+      input.style.cursor = "text";
+      input.style.borderColor = "#9cc2a4";
+    } else {
+      input.style.background = "#e6f4ea";
+      input.style.color = "#6b7d71";
+      input.style.cursor = "not-allowed";
+      input.style.borderColor = "#c1d5c7";
+    }
+  });
+};
+
+const placeOverlayNextToDialog = (overlay, dialog) => {
+  const dialogRect = dialog.getBoundingClientRect();
+  const overlayWidth = Math.min(420, Math.max(320, dialogRect.width));
+  const overlayHeight = Math.min(window.innerHeight - 20, Math.max(260, dialogRect.height));
+
+  let left = dialogRect.right + 10;
+  let top = dialogRect.top;
+
+  if (left + overlayWidth > window.innerWidth - 10) {
+    left = dialogRect.left - overlayWidth - 10;
+  }
+  if (left < 10) {
+    left = 10;
+  }
+  if (top + overlayHeight > window.innerHeight - 10) {
+    top = Math.max(10, window.innerHeight - overlayHeight - 10);
+  }
+
+  dom.applyStyles(overlay, {
+    left: `${Math.round(left)}px`,
+    top: `${Math.round(top)}px`,
+    width: `${Math.round(overlayWidth)}px`,
+    height: `${Math.round(overlayHeight)}px`,
   });
 };
 
@@ -405,11 +481,17 @@ const renderFieldInputs = (container, fields, mapping, entry, parsedEntry, edita
     examples: parsedEntry.examples,
     url: location.href ?? "",
   };
+  const singleLineFields = new Set(["Expression", "Pronunciation", "Inflection", "Syllables"]);
   for (const fieldName of fields) {
+    const isSingleLine = singleLineFields.has(fieldName);
     const fieldRow = dom.create(`
       <div data-md-anki-field-row="true" style="margin-bottom:6px;">
-        <label style="display:block;margin-bottom:4px;">${escapeHtml(fieldName)}</label>
-        <textarea data-md-anki-field="${escapeHtml(fieldName)}" style="width:100%;padding:4px;min-height:60px;"></textarea>
+        <label style="display:block;margin-bottom:4px;color:#12351b;">${escapeHtml(fieldName)}</label>
+        ${
+          isSingleLine
+            ? `<input data-md-anki-field="${escapeHtml(fieldName)}" style="width:100%;padding:6px;border:1px solid #9cc2a4;border-radius:6px;background:#ffffff;color:#0f1f12;" />`
+            : `<textarea data-md-anki-field="${escapeHtml(fieldName)}" style="width:100%;padding:6px;min-height:60px;border:1px solid #9cc2a4;border-radius:6px;background:#ffffff;color:#0f1f12;"></textarea>`
+        }
       </div>
     `);
     const textarea = fieldRow.querySelector(`[data-md-anki-field="${cssEscape(fieldName)}"]`);
@@ -426,9 +508,12 @@ const collectFieldValues = (container, entry) => {
   const rows = container.querySelectorAll("[data-md-anki-field-row]");
 
   rows.forEach((row) => {
-    const textarea = row.querySelector("textarea");
-    const fieldName = textarea.dataset.mdAnkiField;
-    result[fieldName] = textarea.value ?? "";
+    const input = row.querySelector("textarea, input");
+    if (!input) {
+      return;
+    }
+    const fieldName = input.dataset.mdAnkiField;
+    result[fieldName] = input.value ?? "";
   });
 
   return result;

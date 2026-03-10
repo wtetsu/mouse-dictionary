@@ -65,6 +65,8 @@ export default {
             position: fixed;
             overflow-x: hidden;
             overflow-y: scroll;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
             top: 5px;
             background-color: {{backgroundColor}};
             z-index: 2147483646;
@@ -74,6 +76,9 @@ export default {
 </div>`,
 
   contentTemplate: `<div style="cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
+  <style>
+    *::-webkit-scrollbar { display: none; }
+  </style>
   {{#words}}
     {{^isShort}}
       <div data-md-entry="true" data-md-head="{{head}}" data-md-desc="{{desc}}" style="position:relative;">
