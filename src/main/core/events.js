@@ -478,7 +478,10 @@ const parseEntryDetails = (descText) => {
   text = levelTag.text;
   const tags = [];
   if (levelTag.value) {
-    tags.push(`level-${levelTag.value}`);
+    const levelValues = extractLevelValues(levelTag.value);
+    for (const levelValue of levelValues) {
+      tags.push(`level-${levelValue}`);
+    }
   }
 
   const examples = [];
@@ -657,6 +660,15 @@ const extractLevelTag = (text) => {
     }
   }
   return { text: text.replace(re, ""), value: values.join(" / ") };
+};
+
+const extractLevelValues = (value) => {
+  const cleaned = (value ?? "").replace(/[、。]/g, " ").trim();
+  const matches = cleaned.match(/\d+/g);
+  if (!matches) {
+    return [];
+  }
+  return matches.map((v) => v.trim()).filter(Boolean);
 };
 
 const normalizeText = (text) =>
