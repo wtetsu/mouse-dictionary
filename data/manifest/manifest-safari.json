@@ -9,7 +9,7 @@
     "page": "options/options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "unlimitedStorage", "activeTab"],
+  "permissions": ["storage", "unlimitedStorage", "activeTab", "http://127.0.0.1:8765/"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
