@@ -262,6 +262,7 @@ const openAnkiDialog = async (dialog, entry) => {
     </div>
     <div data-md-anki-fields="true" style="margin-bottom:8px;"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button data-md-anki-edit="true" style="padding:6px 10px;border:1px solid #a0a0a0;background:#f8f8f8;border-radius:4px;cursor:pointer;">Edit</button>
       <button data-md-anki-add-note="true" style="padding:6px 10px;border:1px solid #2b6cb0;background:#3182ce;color:#fff;border-radius:4px;cursor:pointer;">Add</button>
     </div>
     <div data-md-anki-status="true" style="margin-top:8px;color:#444;"></div>
@@ -273,11 +274,14 @@ const openAnkiDialog = async (dialog, entry) => {
   const fieldsArea = body.querySelector("[data-md-anki-fields]");
   const modelActions = body.querySelector("[data-md-anki-model-actions]");
   const statusArea = body.querySelector("[data-md-anki-status]");
+  const editButton = body.querySelector("[data-md-anki-edit]");
+  let isEditing = false;
 
   fillSelect(deckSelect, deckNames, selectedDeck);
   fillSelect(modelSelect, modelNames, selectedModel);
   const mergedTagValue = dedupe([...parseTags(tagsValue), ...(parsedEntry.tags ?? [])]).join(" ");
   tagsInput.value = mergedTagValue;
+  setEditingState(body, isEditing);
 
   const updateFields = async (modelName) => {
     if (!modelName) {
@@ -287,7 +291,8 @@ const openAnkiDialog = async (dialog, entry) => {
     fieldsArea.textContent = "Loading fields...";
     const fields = await anki.modelFieldNames(modelName);
     const mapping = ANKI_DEFAULT_FIELD_MAPPING;
-    renderFieldInputs(fieldsArea, fields, mapping, entry, parsedEntry);
+    renderFieldInputs(fieldsArea, fields, mapping, entry, parsedEntry, isEditing);
+    setEditingState(body, isEditing);
   };
 
   const updateModelActions = () => {
@@ -352,6 +357,25 @@ const openAnkiDialog = async (dialog, entry) => {
       statusArea.textContent = error?.message ?? "Failed to add note.";
     }
   });
+
+  editButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    isEditing = !isEditing;
+    setEditingState(body, isEditing);
+    editButton.dataset.mdEditing = isEditing.toString();
+    editButton.textContent = isEditing ? "Lock" : "Edit";
+  });
+};
+
+const setEditingState = (container, enabled) => {
+  const textInputs = container.querySelectorAll("textarea, input");
+  textInputs.forEach((input) => {
+    if (input.type === "checkbox" || input.type === "radio") {
+      return;
+    }
+    input.disabled = !enabled;
+    input.readOnly = !enabled;
+  });
 };
 
 const fillSelect = (select, list, selectedValue) => {
@@ -367,7 +391,7 @@ const fillSelect = (select, list, selectedValue) => {
   }
 };
 
-const renderFieldInputs = (container, fields, mapping, entry, parsedEntry) => {
+const renderFieldInputs = (container, fields, mapping, entry, parsedEntry, editable) => {
   container.innerHTML = "";
   const defaults = {
     head: entry?.head ?? "",
@@ -391,6 +415,8 @@ const renderFieldInputs = (container, fields, mapping, entry, parsedEntry) => {
     const textarea = fieldRow.querySelector(`[data-md-anki-field="${cssEscape(fieldName)}"]`);
     const key = mapping?.[fieldName];
     textarea.value = defaults[key] ?? "";
+    textarea.disabled = !editable;
+    textarea.readOnly = !editable;
     container.appendChild(fieldRow);
   }
 };
