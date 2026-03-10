@@ -9,6 +9,9 @@ import generateUniqueId from "./unique";
 
 if (BROWSER === "chrome") {
   chrome.action.onClicked.addListener((tab) => {
+    if (tab?.url && isUnsupportedUrl(tab.url)) {
+      return;
+    }
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["main.js"],
@@ -99,3 +102,12 @@ const sendToActiveTab = (callback) => {
     }
   });
 };
+
+const isUnsupportedUrl = (url) =>
+  url.startsWith("chrome://") ||
+  url.startsWith("chrome-extension://") ||
+  url.startsWith("vivaldi://") ||
+  url.startsWith("opera://") ||
+  url.startsWith("edge://") ||
+  url.startsWith("about:") ||
+  url.startsWith("file://");

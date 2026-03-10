@@ -7,7 +7,18 @@
 const ANKI_CONNECT_URL = "http://127.0.0.1:8765";
 const ANKI_CONNECT_VERSION = 6;
 const DEFAULT_MODEL_NAME = "MouseDictionary";
-const DEFAULT_FIELDS = ["Expression", "Meaning", "Source", "Url", "Context", "CreatedAt"];
+const DEFAULT_FIELDS = [
+  "Expression",
+  "Meaning",
+  "Synonyms",
+  "Notes",
+  "Pronunciation",
+  "Etymology",
+  "Inflection",
+  "Syllables",
+  "Examples",
+  "Url",
+];
 const DEFAULT_CSS =
   ".card { font-family: 'Hiragino Kaku Gothic Pro', Meiryo, sans-serif; font-size: 18px; color: #222; }";
 const DEFAULT_TEMPLATES = [
@@ -15,7 +26,7 @@ const DEFAULT_TEMPLATES = [
     Name: "Card 1",
     Front: "{{Expression}}",
     Back:
-      "{{FrontSide}}<hr id=answer>{{Meaning}}<br><br><div style='font-size:0.75em;color:#555;'>{{Source}}<br>{{Url}}<br>{{Context}}<br>{{CreatedAt}}</div>",
+      "{{FrontSide}}<hr id=answer>{{Meaning}}<br><br>{{#Synonyms}}<div style='font-size:0.85em;color:#555;'>Synonyms: {{Synonyms}}</div>{{/Synonyms}}{{#Pronunciation}}<div style='font-size:0.85em;color:#555;'>Pronunciation: {{Pronunciation}}</div>{{/Pronunciation}}{{#Etymology}}<div style='font-size:0.85em;color:#555;'>Etymology: {{Etymology}}</div>{{/Etymology}}{{#Inflection}}<div style='font-size:0.85em;color:#555;'>Inflection: {{Inflection}}</div>{{/Inflection}}{{#Syllables}}<div style='font-size:0.85em;color:#555;'>Syllables: {{Syllables}}</div>{{/Syllables}}{{#Examples}}<div style='font-size:0.85em;color:#555;'>Examples: {{Examples}}</div>{{/Examples}}{{#Notes}}<div style='font-size:0.85em;color:#555;'>Notes: {{Notes}}</div>{{/Notes}}{{#Url}}<div style='font-size:0.85em;color:#555;'>{{Url}}</div>{{/Url}}",
   },
 ];
 

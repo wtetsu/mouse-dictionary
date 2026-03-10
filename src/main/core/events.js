@@ -20,11 +20,15 @@ const ANKI_STORAGE_KEY = "md_anki_settings";
 const ANKI_DEFAULT_TAGS = "mouse-dictionary";
 const ANKI_DEFAULT_FIELD_MAPPING = {
   Expression: "head",
-  Meaning: "desc_html",
-  Source: "title",
+  Meaning: "meaning",
+  Synonyms: "synonyms",
+  Notes: "notes",
+  Pronunciation: "pronunciation",
+  Etymology: "etymology",
+  Inflection: "inflection",
+  Syllables: "syllables",
+  Examples: "examples",
   Url: "url",
-  Context: "selection",
-  CreatedAt: "date",
 };
 
 const attach = async (settings, dialog, doUpdateContent) => {
@@ -45,6 +49,9 @@ const attach = async (settings, dialog, doUpdateContent) => {
   });
 
   document.body.addEventListener("mouseup", async (e) => {
+    if (dialog.querySelector("[data-md-anki-overlay]") && dialog.contains(e.target)) {
+      return;
+    }
     draggable.onMouseUp(e);
     lookuper.suspended = false;
 
@@ -73,6 +80,9 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   const onMouseMoveSecondOrLater = async (e) => {
     draggable.onMouseMove(e);
+    if (dialog.querySelector("[data-md-anki-overlay]") && dialog.contains(e.target)) {
+      return;
+    }
     if (enableDefault) {
       const textList = traverse(e.target, e.clientX, e.clientY);
       const updated = await lookuper.lookupAll(textList);
@@ -196,7 +206,7 @@ const openAnkiDialog = async (dialog, entry) => {
   }
 
   const overlay = dom.create(`
-    <div data-md-anki-overlay="true" style="position:absolute;top:6px;left:6px;right:6px;bottom:6px;background:#ffffff;border:1px solid #a0a0a0;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.2);padding:8px;z-index:2147483647;overflow:auto;">
+    <div data-md-anki-overlay="true" style="position:absolute;top:6px;left:6px;right:6px;bottom:6px;background:#ffffff;border:1px solid #a0a0a0;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.2);padding:8px;z-index:2147483647;overflow:auto;font-family:'hiragino kaku gothic pro', meiryo, sans-serif;">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div style="font-weight:bold;font-size:14px;">Add to Anki</div>
         <button data-md-anki-close="true" style="border:0;background:transparent;font-size:16px;cursor:pointer;">✕</button>
@@ -205,6 +215,11 @@ const openAnkiDialog = async (dialog, entry) => {
     </div>
   `);
   dialog.appendChild(overlay);
+  const stopPropagation = (e) => e.stopPropagation();
+  overlay.addEventListener("mousedown", stopPropagation);
+  overlay.addEventListener("mouseup", stopPropagation);
+  overlay.addEventListener("mousemove", stopPropagation);
+  overlay.addEventListener("click", stopPropagation);
 
   overlay.querySelector("[data-md-anki-close]").addEventListener("click", (e) => {
     e.preventDefault();
@@ -268,8 +283,8 @@ const openAnkiDialog = async (dialog, entry) => {
     }
     fieldsArea.textContent = "Loading fields...";
     const fields = await anki.modelFieldNames(modelName);
-    const mapping = stored.fieldMapping?.[modelName] ?? ANKI_DEFAULT_FIELD_MAPPING;
-    renderFieldMapping(fieldsArea, fields, mapping);
+    const mapping = ANKI_DEFAULT_FIELD_MAPPING;
+    renderFieldInputs(fieldsArea, fields, mapping, entry);
   };
 
   const updateModelActions = () => {
@@ -327,7 +342,6 @@ const openAnkiDialog = async (dialog, entry) => {
         deckName: deckSelect.value,
         modelName: selectedModelName,
         tags: tagsInput.value,
-        fieldMapping: readFieldMapping(fieldsArea, selectedModelName, stored.fieldMapping),
       });
     } catch (error) {
       statusArea.textContent = error?.message ?? "Failed to add note.";
@@ -348,44 +362,31 @@ const fillSelect = (select, list, selectedValue) => {
   }
 };
 
-const renderFieldMapping = (container, fields, mapping) => {
+const renderFieldInputs = (container, fields, mapping, entry) => {
   container.innerHTML = "";
-  const options = [
-    { value: "head", label: "Head (word)" },
-    { value: "desc_html", label: "Meaning (HTML)" },
-    { value: "desc_text", label: "Meaning (plain)" },
-    { value: "selection", label: "Selection" },
-    { value: "title", label: "Page title" },
-    { value: "url", label: "URL" },
-    { value: "date", label: "Date" },
-    { value: "empty", label: "(empty)" },
-    { value: "custom", label: "Custom..." },
-  ];
-
+  const parsed = parseEntryDetails(htmlToTextPreserveBreaks(entry?.desc ?? ""));
+  const defaults = {
+    head: entry?.head ?? "",
+    meaning: parsed.meaning,
+    synonyms: parsed.synonyms,
+    notes: parsed.notes,
+    pronunciation: parsed.pronunciation,
+    etymology: parsed.etymology,
+    inflection: parsed.inflection,
+    syllables: parsed.syllables,
+    examples: parsed.examples,
+    url: location.href ?? "",
+  };
   for (const fieldName of fields) {
     const fieldRow = dom.create(`
       <div data-md-anki-field-row="true" style="margin-bottom:6px;">
         <label style="display:block;margin-bottom:4px;">${escapeHtml(fieldName)}</label>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <select data-md-anki-field="${escapeHtml(fieldName)}" style="flex:1;padding:4px;"></select>
-          <input data-md-anki-custom="${escapeHtml(fieldName)}" style="flex:1;padding:4px;display:none;" />
-        </div>
+        <textarea data-md-anki-field="${escapeHtml(fieldName)}" style="width:100%;padding:4px;min-height:60px;"></textarea>
       </div>
     `);
-    const select = fieldRow.querySelector(`[data-md-anki-field="${cssEscape(fieldName)}"]`);
-    const customInput = fieldRow.querySelector(`[data-md-anki-custom="${cssEscape(fieldName)}"]`);
-    for (const optItem of options) {
-      const opt = document.createElement("option");
-      opt.value = optItem.value;
-      opt.textContent = optItem.label;
-      select.appendChild(opt);
-    }
-    const defaultValue = mapping?.[fieldName] ?? "empty";
-    select.value = defaultValue;
-    customInput.style.display = select.value === "custom" ? "block" : "none";
-    select.addEventListener("change", () => {
-      customInput.style.display = select.value === "custom" ? "block" : "none";
-    });
+    const textarea = fieldRow.querySelector(`[data-md-anki-field="${cssEscape(fieldName)}"]`);
+    const key = mapping?.[fieldName];
+    textarea.value = defaults[key] ?? "";
     container.appendChild(fieldRow);
   }
 };
@@ -393,66 +394,14 @@ const renderFieldMapping = (container, fields, mapping) => {
 const collectFieldValues = (container, entry) => {
   const result = {};
   const rows = container.querySelectorAll("[data-md-anki-field-row]");
-  const descHtml = entry?.desc ?? "";
-  const descText = htmlToText(descHtml);
-  const selection = entry?.selection ?? "";
-  const nowDate = new Date().toISOString().slice(0, 10);
-  const sourceTitle = document.title ?? "";
-  const url = location.href ?? "";
 
   rows.forEach((row) => {
-    const select = row.querySelector("select");
-    const fieldName = select.dataset.mdAnkiField;
-    const customInput = row.querySelector("input");
-    const value = resolveFieldValue(select.value, customInput.value, {
-      head: entry?.head ?? "",
-      descHtml,
-      descText,
-      selection,
-      title: sourceTitle,
-      url,
-      date: nowDate,
-    });
-    result[fieldName] = value;
+    const textarea = row.querySelector("textarea");
+    const fieldName = textarea.dataset.mdAnkiField;
+    result[fieldName] = textarea.value ?? "";
   });
 
   return result;
-};
-
-const readFieldMapping = (container, modelName, existingMapping = {}) => {
-  const mapping = { ...existingMapping };
-  mapping[modelName] = {};
-  const rows = container.querySelectorAll("[data-md-anki-field-row]");
-  rows.forEach((row) => {
-    const select = row.querySelector("select");
-    const fieldName = select.dataset.mdAnkiField;
-    mapping[modelName][fieldName] = select.value;
-  });
-  return mapping;
-};
-
-const resolveFieldValue = (source, customValue, context) => {
-  switch (source) {
-    case "head":
-      return context.head;
-    case "desc_html":
-      return context.descHtml;
-    case "desc_text":
-      return context.descText;
-    case "selection":
-      return context.selection;
-    case "title":
-      return context.title;
-    case "url":
-      return context.url;
-    case "date":
-      return context.date;
-    case "custom":
-      return customValue ?? "";
-    case "empty":
-    default:
-      return "";
-  }
 };
 
 const parseTags = (value) =>
@@ -468,10 +417,253 @@ const loadAnkiSettings = async () => {
 
 const saveAnkiSettings = (settings) => chrome.storage.local.set({ [ANKI_STORAGE_KEY]: settings });
 
-const htmlToText = (html) => {
+const htmlToTextPreserveBreaks = (html) => {
   const temp = document.createElement("div");
-  temp.innerHTML = html ?? "";
+  temp.innerHTML = (html ?? "").replace(/<br\s*\/?>/gi, "\n");
   return temp.textContent ?? "";
+};
+
+const parseEntryDetails = (descText) => {
+  let text = normalizeText(descText);
+
+  const synonyms = extractAll(text, /<→([^>]+)>/g);
+  text = text.replace(/＝?<→[^>]+>/g, "");
+
+  const { text: textAfterSynTags, values: synTagValues } = extractInlineTag(text, ["類", "同"]);
+  text = textAfterSynTags;
+  synonyms.push(...synTagValues);
+
+  const { text: textAfterPron, value: pronunciationRaw } = extractSingleTag(text, "発音");
+  text = textAfterPron;
+  const { text: textAfterKana, value: kanaPronunciation } = extractSingleTag(text, "＠");
+  text = textAfterKana;
+  const { text: textAfterEty, value: etymology } = extractSingleTag(text, "語源");
+  text = textAfterEty;
+  const { text: textAfterInf, value: inflection } = extractSingleTag(text, "変化");
+  text = textAfterInf;
+  const { text: textAfterSyl, value: syllables } = extractSingleTag(text, "分節");
+  text = textAfterSyl;
+
+  const { text: textAfterNotesTags, values: noteTags } = extractOtherBracketTags(text, [
+    "類",
+    "同",
+    "発音",
+    "＠",
+    "語源",
+    "変化",
+    "分節",
+  ]);
+  text = textAfterNotesTags;
+
+  const examples = [];
+  let notesParts = [];
+  if (noteTags.length > 0) {
+    notesParts.push(...noteTags);
+  }
+
+  const { text: textAfterExamples, values: extractedExamples } = extractExamples(text);
+  text = textAfterExamples;
+  if (extractedExamples.length > 0) {
+    examples.push(...extractedExamples);
+  }
+
+  let meaning = text;
+  let notes = "";
+  if (meaning.includes("◆")) {
+    const parts = meaning.split("◆");
+    meaning = parts.shift()?.trim() ?? "";
+    const extraNotes = [];
+    for (const part of parts) {
+      const trimmed = part.trim();
+      if (!trimmed) {
+        continue;
+      }
+      if (trimmed.startsWith("＝")) {
+        meaning = `${meaning} ◆ ${trimmed}`.trim();
+        continue;
+      }
+      extraNotes.push(trimmed);
+    }
+    if (extraNotes.length > 0) {
+      notesParts.unshift(extraNotes.join("◆").trim());
+    }
+  }
+
+  meaning = normalizeLines(meaning);
+  notes = normalizeNotes(notesParts);
+  const { notes: cleanedNotes, examples: labeledExamples } = extractLabeledExamplesFromNotes(notes);
+  notes = cleanedNotes;
+  if (labeledExamples.length > 0) {
+    examples.push(...labeledExamples);
+  }
+
+  return {
+    meaning: trimTrailingPunctuation(meaning),
+    synonyms: trimTrailingPunctuation(dedupe(synonyms).join(", ")),
+    pronunciation: trimTrailingPunctuation(joinParts(pronunciationRaw, kanaPronunciation)),
+    etymology: trimTrailingPunctuation(etymology),
+    inflection: trimTrailingPunctuation(inflection),
+    syllables: trimTrailingPunctuation(syllables),
+    examples: formatExamples(dedupe(examples)),
+    notes: trimTrailingPunctuation(notes),
+  };
+};
+
+const extractAll = (text, re) => {
+  const values = [];
+  for (const match of text.matchAll(re)) {
+    if (match?.[1]) {
+      values.push(match[1].trim());
+    }
+  }
+  return values;
+};
+
+const extractInlineTag = (text, tags) => {
+  const values = [];
+  let next = text;
+  for (const tag of tags) {
+    const re = new RegExp(`【${tag}】([^【◆]+)`, "g");
+    for (const match of next.matchAll(re)) {
+      if (match?.[1]) {
+        values.push(match[1].trim());
+      }
+    }
+    next = next.replace(re, "");
+  }
+  return { text: next, values };
+};
+
+const extractSingleTag = (text, tag) => {
+  const re = new RegExp(`【${tag}】([^【◆]+)`, "g");
+  const values = [];
+  for (const match of text.matchAll(re)) {
+    if (match?.[1]) {
+      values.push(match[1].trim());
+    }
+  }
+  return {
+    text: text.replace(re, ""),
+    value: values.join(" / "),
+  };
+};
+
+const joinParts = (...parts) =>
+  parts
+    .map((part) => (part ?? "").trim())
+    .filter((part) => part.length > 0)
+    .join(" / ");
+
+const extractOtherBracketTags = (text, skipTags) => {
+  const values = [];
+  const re = /【([^】]+)】([^【◆]*)/g;
+  let match = null;
+  let next = text;
+  while ((match = re.exec(text)) !== null) {
+    const tag = match?.[1];
+    if (!tag || skipTags.includes(tag)) {
+      continue;
+    }
+    const body = match?.[2] ?? "";
+    values.push(`【${tag}】${body}`.trim());
+  }
+  for (const tag of skipTags) {
+    next = next.replace(new RegExp(`【${tag}】[^【◆]*`, "g"), "");
+  }
+  next = next.replace(/【[^】]+】[^【◆]*/g, "");
+  return { text: next, values };
+};
+
+const extractExamples = (text) => {
+  const values = [];
+  const lines = (text ?? "").split("\n");
+  let lastSense = "";
+  const cleanedLines = lines.map((line) => {
+    const senseMatch = line.match(/^\s*(\{[^}]+\})/);
+    if (senseMatch?.[1]) {
+      lastSense = senseMatch[1].trim();
+    }
+    if (!line.includes("■")) {
+      return line;
+    }
+    const parts = line.split("■");
+    const base = parts.shift()?.trim() ?? "";
+    for (const part of parts) {
+      const example = part.replace(/^・?/, "").trim();
+      if (!example) {
+        continue;
+      }
+      values.push(lastSense ? `${lastSense} ${example}` : example);
+    }
+    return base;
+  });
+  return { text: cleanedLines.join("\n"), values };
+};
+
+const normalizeText = (text) =>
+  (text ?? "")
+    .replace(/、[ \t]*/g, "、")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\r/g, "");
+
+const normalizeLines = (text) =>
+  (text ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .map(trimTrailingPunctuation)
+    .join("\n");
+
+const normalizeNotes = (parts) =>
+  parts
+    .map((part) => (part ?? "").trim())
+    .filter((part) => part.length > 0)
+    .map(trimTrailingPunctuation)
+    .join(" / ");
+
+const dedupe = (list) => Array.from(new Set(list.filter(Boolean)));
+
+const trimTrailingPunctuation = (value) => (value ?? "").replace(/[、。]+$/g, "").trim();
+
+const extractLabeledExamplesFromNotes = (notes) => {
+  if (!notes) {
+    return { notes: "", examples: [] };
+  }
+  const parts = notes.split(" / ").map((part) => part.trim()).filter(Boolean);
+  const examples = [];
+  const kept = [];
+  for (const part of parts) {
+    if (part.startsWith("例:")) {
+      const example = part.replace(/^例:\s*/, "").trim();
+      if (example) {
+        examples.push(example);
+      }
+    } else if (part.includes("例:")) {
+      const idx = part.indexOf("例:");
+      const head = part.slice(0, idx).trim();
+      const tail = part.slice(idx + 2).trim();
+      if (head) {
+        kept.push(head);
+      }
+      if (tail) {
+        examples.push(tail);
+      }
+    } else {
+      kept.push(part);
+    }
+  }
+  return { notes: kept.join(" / "), examples };
+};
+
+const formatExamples = (list) => {
+  const cleaned = list.map((item) => trimTrailingPunctuation(item)).filter(Boolean);
+  if (cleaned.length === 0) {
+    return "";
+  }
+  if (cleaned.length === 1) {
+    return cleaned[0];
+  }
+  return cleaned.map((item, index) => `${index + 1}. ${item}`).join("\n");
 };
 
 const escapeHtml = (str) =>
