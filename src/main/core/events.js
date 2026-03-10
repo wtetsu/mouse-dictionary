@@ -32,8 +32,10 @@ const ANKI_DEFAULT_FIELD_MAPPING = {
   Pronunciation: "pronunciation",
   Etymology: "etymology",
   Inflection: "inflection",
+  InflectionEn: "inflectionEn",
   Syllables: "syllables",
   Examples: "examples",
+  ExamplesEn: "examplesEn",
   Url: "url",
 };
 
@@ -387,10 +389,11 @@ const openAnkiDialog = async (dialog, entry, setOpen) => {
         tags,
       });
       statusArea.textContent = "Added!";
+      const userTags = removeAutoTags(extraTags).join(" ");
       await saveAnkiSettings({
         deckName: deckSelect.value,
         modelName: selectedModelName,
-        tags: tagsInput.value,
+        tags: userTags,
       });
     } catch (error) {
       statusArea.textContent = error?.message ?? "Failed to add note.";
@@ -477,11 +480,13 @@ const renderFieldInputs = (container, fields, mapping, entry, parsedEntry, edita
     pronunciation: parsedEntry.pronunciation,
     etymology: parsedEntry.etymology,
     inflection: parsedEntry.inflection,
+    inflectionEn: parsedEntry.inflectionEn,
     syllables: parsedEntry.syllables,
     examples: parsedEntry.examples,
+    examplesEn: parsedEntry.examplesEn,
     url: location.href ?? "",
   };
-  const singleLineFields = new Set(["Expression", "Pronunciation", "Inflection", "Syllables"]);
+  const singleLineFields = new Set(["Expression", "Pronunciation", "Inflection", "InflectionEn", "Syllables"]);
   for (const fieldName of fields) {
     const isSingleLine = singleLineFields.has(fieldName);
     const fieldRow = dom.create(`
@@ -652,14 +657,19 @@ const parseEntryDetails = (descText) => {
     examples.push(...labeledExamples);
   }
 
+  const examplesEn = extractEnglishOnlyFromList(examples);
+  const inflectionEn = extractEnglishOnlyFromText(inflection);
+
   return {
     meaning: trimTrailingPunctuation(meaning),
     synonyms: trimTrailingPunctuation(dedupe(synonyms).join(", ")),
     pronunciation: trimTrailingPunctuation(joinParts(pronunciationRaw, kanaPronunciation)),
     etymology: trimTrailingPunctuation(etymology),
     inflection: trimTrailingPunctuation(inflection),
+    inflectionEn,
     syllables: trimTrailingPunctuation(syllables),
     examples: formatExamples(dedupe(examples)),
+    examplesEn,
     notes: trimTrailingPunctuation(notes),
     tags,
   };
@@ -781,6 +791,8 @@ const dedupe = (list) => Array.from(new Set(list.filter(Boolean)));
 
 const trimTrailingPunctuation = (value) => (value ?? "").replace(/[、。]+$/g, "").trim();
 
+const removeAutoTags = (tags) => tags.filter((tag) => !/^level-\d+$/i.test(tag));
+
 const extractLabeledExamplesFromNotes = (notes) => {
   if (!notes) {
     return { notes: "", examples: [] };
@@ -820,6 +832,33 @@ const formatExamples = (list) => {
     return cleaned[0];
   }
   return cleaned.map((item, index) => `${index + 1}. ${item}`).join("\n");
+};
+
+const extractEnglishOnlyFromList = (list) => {
+  if (!list || list.length === 0) {
+    return "";
+  }
+  const results = [];
+  for (const item of list) {
+    const cleaned = extractEnglishOnlyFromText(item);
+    if (cleaned) {
+      results.push(cleaned);
+    }
+  }
+  return results.join("\n");
+};
+
+const extractEnglishOnlyFromText = (text) => {
+  if (!text) {
+    return "";
+  }
+  const withoutSense = text.replace(/^\{[^}]+\}\s*/, "");
+  const withoutNumber = withoutSense.replace(/^\d+\.\s*/, "");
+  const asciiOnly = withoutNumber.replace(/[^\x20-\x7E]/g, "").trim();
+  if (!/[A-Za-z]/.test(asciiOnly)) {
+    return "";
+  }
+  return asciiOnly;
 };
 
 const escapeHtml = (str) =>
