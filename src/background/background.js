@@ -9,6 +9,9 @@ import generateUniqueId from "./unique";
 
 if (BROWSER === "chrome") {
   chrome.action.onClicked.addListener((tab) => {
+    if (tab?.url && isUnsupportedUrl(tab.url)) {
+      return;
+    }
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["main.js"],
@@ -54,6 +57,22 @@ chrome.commands.onCommand.addListener((command) => {
 const queue = new ExpiringQueue(1000 * 30);
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   switch (request?.type) {
+    case "anki_request": {
+      const { url, body } = request.payload ?? {};
+      if (!url || !body) {
+        sendResponse({ error: "Invalid AnkiConnect request" });
+        break;
+      }
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+        .then((response) => response.json())
+        .then((data) => sendResponse(data))
+        .catch((error) => sendResponse({ error: error?.message ?? "Failed to reach AnkiConnect" }));
+      return true;
+    }
     case "open_pdf": {
       const id = generateUniqueId();
       queue.push(id, request.payload);
@@ -83,3 +102,12 @@ const sendToActiveTab = (callback) => {
     }
   });
 };
+
+const isUnsupportedUrl = (url) =>
+  url.startsWith("chrome://") ||
+  url.startsWith("chrome-extension://") ||
+  url.startsWith("vivaldi://") ||
+  url.startsWith("opera://") ||
+  url.startsWith("edge://") ||
+  url.startsWith("about:") ||
+  url.startsWith("file://");

@@ -65,6 +65,8 @@ export default {
             position: fixed;
             overflow-x: hidden;
             overflow-y: scroll;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
             top: 5px;
             background-color: {{backgroundColor}};
             z-index: 2147483646;
@@ -74,24 +76,41 @@ export default {
 </div>`,
 
   contentTemplate: `<div style="cursor:inherit;font-family:'hiragino kaku gothic pro', meiryo, sans-serif; padding:10px;">
+  <style>
+    *::-webkit-scrollbar { display: none; }
+  </style>
   {{#words}}
     {{^isShort}}
-      <span style="font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
-        {{head}}
-      </span>
-      <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="{{head}}" data-md-hovervisible="true">🔊</span>
-      <br/>
-      <span style="font-size:{{descFontSize}};color:{{descFontColor}};">
-        {{{desc}}}
-      </span>
+      <div data-md-entry="true" data-md-head="{{head}}" data-md-desc="{{desc}}" style="position:relative;">
+        <span style="font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
+          {{head}}
+        </span>
+        <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="{{head}}" data-md-hovervisible="true">🔊</span>
+        <br/>
+        <span style="font-size:{{descFontSize}};color:{{descFontColor}};">
+          {{{desc}}}
+        </span>
+        <div style="margin-top:6px;">
+          <button data-md-anki-add="true" style="font-size:12px;padding:2px 6px;border:1px solid #a0a0a0;border-radius:4px;background:#f8f8f8;cursor:pointer;">
+            Add to Anki
+          </button>
+        </div>
+      </div>
     {{/isShort}}
     {{#isShort}}
-      <span style="font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
-        {{head}}
-      </span>
-      <span style="color:#505050;font-size:x-small;">
-        {{shortDesc}}
-      </span>
+      <div data-md-entry="true" data-md-head="{{head}}" data-md-desc="{{desc}}" style="position:relative;">
+        <span style="font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
+          {{head}}
+        </span>
+        <span style="color:#505050;font-size:x-small;">
+          {{shortDesc}}
+        </span>
+        <div style="margin-top:6px;">
+          <button data-md-anki-add="true" style="font-size:12px;padding:2px 6px;border:1px solid #a0a0a0;border-radius:4px;background:#f8f8f8;cursor:pointer;">
+            Add to Anki
+          </button>
+        </div>
+      </div>
     {{/isShort}}
     {{^isLast}}
       <br/><hr style="border:0;border-top:1px solid #E0E0E0;margin:12px 0;height:1px;width:100%;" />

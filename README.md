@@ -151,3 +151,145 @@ This project includes some third-party data:
 ## See also
 
 [Chrome 拡張の高速な英語辞書ツールをつくりました](https://qiita.com/wtetsu/items/c43232c6c44918e977c9)(a Japanese tutorial)
+
+## AnkiConnect integration (experimental)
+
+Mouse Dictionary can add the currently shown entry to Anki via AnkiConnect.
+
+### Requirements
+
+- Anki desktop app installed and running
+- AnkiConnect add-on installed and enabled
+- Mouse Dictionary extension built with the AnkiConnect feature
+
+### Quick start
+
+1. Open a normal web page (not `chrome://`, `vivaldi://`, etc).
+2. Hover a word to open the dictionary popup.
+3. Click **Add to Anki**.
+4. If you do not have the note type yet, click **Create "MouseDictionary" note type**.
+5. Click **Add** to create a card.
+
+### Editing and lock behavior
+
+- The add popup starts in **Lock** state. Click **Edit** to unlock inputs.
+- While **Shift** is held, the dictionary popup is **locked** (word does not change) and is highlighted.
+- While **Shift** is held, you can scroll the dictionary popup even if the cursor is outside it.
+
+### Auto fields and parsing
+
+The integration parses the entry and fills these fields automatically:
+
+- Expression
+- Meaning
+- Synonyms
+- Notes
+- Pronunciation (includes `【発音】` and `【＠】`)
+- Etymology (`【語源】`)
+- Inflection (`【変化】`)
+- InflectionEn (English-only text extracted from Inflection for TTS)
+- Syllables (`【分節】`)
+- Examples (examples like `■ ...`)
+- ExamplesEn (English-only examples for TTS)
+- Url
+
+Parsing rules (summary):
+
+- `◆` separates notes, but `◆＝...` stays in Meaning (unit conversions, etc).
+- `【類】`/`【同】` are merged into Synonyms.
+- Other `【...】` tags go to Notes.
+- Examples (`■`) move to Examples. When a sense label like `{副-1}` exists, it is prefixed to each example.
+- `【レベル】n` is not shown in Notes; it becomes an Anki tag `level-n`.
+
+### Tags
+
+- The tag input is pre-filled with:
+  - stored user tags
+  - auto tag `level-n` when available
+- Auto tags are not saved back to your stored tags.
+
+### TTS (pronunciation button on cards)
+
+The default note template uses Anki's built-in `{{tts}}`:
+
+- Front: `{{tts en_US:Expression}}`
+- Back: `{{tts en_US:ExamplesEn}}` and `{{tts en_US:InflectionEn}}`
+
+Make sure Anki TTS is enabled on your system. If you want another language or voice, edit the template in Anki.
+
+### Troubleshooting
+
+- If **Add** hangs: ensure Anki is running and AnkiConnect is enabled.
+- If **fields look outdated**: delete the old `MouseDictionary` note type and recreate it.
+- If **newlines do not show in Anki**: recreate the note type or update the template with `white-space: pre-wrap;`.
+
+## AnkiConnect連携（実験機能）
+
+Mouse Dictionary から AnkiConnect 経由で表示中の単語を Anki に追加できます。
+
+### 必要なもの
+
+- Anki デスクトップアプリ（起動中）
+- AnkiConnect アドオンのインストール・有効化
+- AnkiConnect連携付きの Mouse Dictionary ビルド
+
+### 使い方（最短）
+
+1. 通常のWebページを開く（`chrome://` や `vivaldi://` は不可）。
+2. 単語にホバーして辞書ポップアップを表示。
+3. **Add to Anki** をクリック。
+4. 初回は **Create "MouseDictionary" note type** をクリック。
+5. **Add** を押してカードを追加。
+
+### 編集とロックの挙動（便利機能）
+
+- 追加ポップアップは **Lock** 状態で始まります。編集したい場合は **Edit** をクリック。
+- **Shift** を押している間は辞書ポップアップが **固定** され、強調表示されます。
+- **Shift** を押している間はカーソルが外にあっても辞書ポップアップをスクロールできます。
+
+### 自動入力フィールドとパース
+
+以下のフィールドを自動で埋めます：
+
+- Expression
+- Meaning
+- Synonyms
+- Notes
+- Pronunciation（`【発音】` と `【＠】` を統合）
+- Etymology（`【語源】`）
+- Inflection（`【変化】`）
+- InflectionEn（TTS用に英語のみ抽出）
+- Syllables（`【分節】`）
+- Examples（`■ ...` の例文）
+- ExamplesEn（TTS用に英語のみ抽出）
+- Url
+
+パースの概要：
+
+- `◆` は注記に分離。ただし `◆＝...` は Meaning に残す（換算など）。
+- `【類】` / `【同】` は Synonyms に統合。
+- それ以外の `【...】` は Notes へ。
+- 例文（`■`）は Examples に移動。`{副-1}` のような語義があれば前に付与。
+- `【レベル】n` は Notes に出さず、Ankiタグ `level-n` を付与。
+
+### タグ
+
+- タグ入力は以下を合成して初期表示：
+  - 保存されているユーザータグ
+  - 自動タグ `level-n`（ある場合）
+- 自動タグは保存されません（次回に持ち越さない）。
+
+### TTS（カードの発音ボタン）
+
+テンプレートで Anki の `{{tts}}` を使っています：
+
+- 表面: `{{tts en_US:Expression}}`
+- 裏面: `{{tts en_US:ExamplesEn}}` と `{{tts en_US:InflectionEn}}`
+
+別の言語・音声にしたい場合は Anki 側のテンプレートを編集してください。
+
+### トラブルシュート
+
+- **Add で止まる**: Anki が起動しているか / AnkiConnect が有効か確認。
+- **フィールドが古い**: 既存の `MouseDictionary` ノートタイプを削除して再作成。
+- **改行が表示されない**: テンプレートに `white-space: pre-wrap;` を追加、または再作成。
