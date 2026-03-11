@@ -43,7 +43,6 @@ const attach = async (settings, dialog, doUpdateContent) => {
   let enableDefault = true;
   let lastSelectionText = "";
   let ankiDialogOpen = false;
-  let ankiOverlay = null;
   let ankiDraggable = null;
 
   const traverse = traverser.build(rule.doLetters, settings.parseWordsLimit);
@@ -54,14 +53,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
   draggable.add(dialog);
 
   setDialogEvents(dialog);
-  const onShiftWheel = (e) => {
-    if (!e.shiftKey) {
-      return;
-    }
-    dialog.scrollTop += e.deltaY;
-    e.preventDefault();
-  };
-  let shiftWheelActive = false;
+  const shiftWheel = createShiftWheelHandler(dialog);
 
   document.body.addEventListener("mousedown", () => {
     lookuper.suspended = true;
@@ -72,7 +64,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
       ankiDraggable?.onMouseUp(e);
       return;
     }
-    if (dialog.querySelector("[data-md-anki-overlay]") && dialog.contains(e.target)) {
+    if (isOverlayTarget(e.target)) {
       return;
     }
     draggable.onMouseUp(e);
@@ -111,21 +103,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
       return;
     }
     draggable.onMouseMove(e);
-    if (ankiDialogOpen) {
+    if (!enableDefault || isOverlayTarget(e.target)) {
       return;
     }
-    if (!enableDefault) {
-      return;
-    }
-    if (dialog.querySelector("[data-md-anki-overlay]") && dialog.contains(e.target)) {
-      return;
-    }
-    if (enableDefault) {
-      const textList = traverse(e.target, e.clientX, e.clientY);
-      const updated = await lookuper.lookupAll(textList);
-      if (updated) {
-        draggable.resetScroll();
-      }
+
+    const textList = traverse(e.target, e.clientX, e.clientY);
+    const updated = await lookuper.lookupAll(textList);
+    if (updated) {
+      draggable.resetScroll();
     }
   };
   let onMouseMove = onMouseMoveFirst;
@@ -136,13 +121,8 @@ const attach = async (settings, dialog, doUpdateContent) => {
       enableDefault = false;
       draggable.activateSnap(e);
       ankiDraggable?.activateSnap(e);
-      dialog.dataset.mdLocked = "true";
-      dialog.style.outline = "2px solid #2f7a4a";
-      dialog.style.boxShadow = "0 0 0 3px rgba(47, 122, 74, 0.25)";
-      if (!shiftWheelActive) {
-        window.addEventListener("wheel", onShiftWheel, { passive: false, capture: true });
-        shiftWheelActive = true;
-      }
+      setDialogLocked(dialog, true);
+      shiftWheel.activate();
     }
   });
 
@@ -151,13 +131,8 @@ const attach = async (settings, dialog, doUpdateContent) => {
       draggable.deactivateSnap(e);
       ankiDraggable?.deactivateSnap(e);
       enableDefault = true;
-      delete dialog.dataset.mdLocked;
-      dialog.style.outline = "";
-      dialog.style.boxShadow = "";
-      if (shiftWheelActive) {
-        window.removeEventListener("wheel", onShiftWheel, { capture: true });
-        shiftWheelActive = false;
-      }
+      setDialogLocked(dialog, false);
+      shiftWheel.deactivate();
     }
   });
 
@@ -230,9 +205,8 @@ const attach = async (settings, dialog, doUpdateContent) => {
       head,
       desc,
       selection: lastSelectionText,
-    }, (open, overlay, overlayDraggable) => {
+    }, (open, _overlay, overlayDraggable) => {
       ankiDialogOpen = open;
-      ankiOverlay = overlay;
       ankiDraggable = overlayDraggable;
     });
   });
@@ -256,6 +230,46 @@ const setDialogEvents = (dialog) => {
       elem.style.visibility = "hidden";
     }
   });
+};
+
+const setDialogLocked = (dialog, locked) => {
+  if (locked) {
+    dialog.dataset.mdLocked = "true";
+    dialog.style.outline = "2px solid #2f7a4a";
+    dialog.style.boxShadow = "0 0 0 3px rgba(47, 122, 74, 0.25)";
+  } else {
+    delete dialog.dataset.mdLocked;
+    dialog.style.outline = "";
+    dialog.style.boxShadow = "";
+  }
+};
+
+const createShiftWheelHandler = (dialog) => {
+  const onShiftWheel = (e) => {
+    if (!e.shiftKey) {
+      return;
+    }
+    dialog.scrollTop += e.deltaY;
+    e.preventDefault();
+  };
+  let active = false;
+  return {
+    activate: () => {
+      if (active) return;
+      window.addEventListener("wheel", onShiftWheel, { passive: false, capture: true });
+      active = true;
+    },
+    deactivate: () => {
+      if (!active) return;
+      window.removeEventListener("wheel", onShiftWheel, { capture: true });
+      active = false;
+    },
+  };
+};
+
+const isOverlayTarget = (target) => {
+  const overlay = document.querySelector("[data-md-anki-overlay]");
+  return overlay && overlay.contains(target);
 };
 
 const openAnkiDialog = async (dialog, entry, setOpen) => {
@@ -356,7 +370,7 @@ const openAnkiDialog = async (dialog, entry, setOpen) => {
 
   fillSelect(deckSelect, deckNames, selectedDeck);
   fillSelect(modelSelect, modelNames, selectedModel);
-  const mergedTagValue = dedupe([...parseTags(tagsValue), ...(parsedEntry.tags ?? [])]).join(" ");
+  const mergedTagValue = mergeTags(tagsValue, parsedEntry.tags);
   tagsInput.value = mergedTagValue;
   setEditingState(body, isEditing);
 
@@ -415,7 +429,7 @@ const openAnkiDialog = async (dialog, entry, setOpen) => {
     }
     const fieldData = collectFieldValues(fieldsArea, entry);
     const extraTags = parseTags(tagsInput.value);
-    const autoTags = parseEntryDetails(htmlToTextPreserveBreaks(entry?.desc ?? "")).tags ?? [];
+    const autoTags = parsedEntry.tags ?? [];
     const tags = dedupe([...extraTags, ...autoTags]);
     try {
       await anki.addNote({
@@ -472,6 +486,10 @@ const setEditingState = (container, enabled) => {
 const isFormControl = (target) => {
   const elem = target?.closest?.("input, textarea, select, button, option, label");
   return Boolean(elem);
+};
+
+const mergeTags = (storedTags, autoTags = []) => {
+  return dedupe([...parseTags(storedTags), ...autoTags]).join(" ");
 };
 
 const placeOverlayNextToDialog = (overlay, dialog) => {
@@ -762,32 +780,6 @@ const joinParts = (...parts) =>
     .map((part) => (part ?? "").trim())
     .filter((part) => part.length > 0)
     .join(" / ");
-
-const extractExamples = (text) => {
-  const values = [];
-  const lines = (text ?? "").split("\n");
-  let lastSense = "";
-  const cleanedLines = lines.map((line) => {
-    const senseMatch = line.match(/^\s*(\{[^}]+\})/);
-    if (senseMatch?.[1]) {
-      lastSense = senseMatch[1].trim();
-    }
-    if (!line.includes("■")) {
-      return line;
-    }
-    const parts = line.split("■");
-    const base = parts.shift()?.trim() ?? "";
-    for (const part of parts) {
-      const example = part.replace(/^・?/, "").trim();
-      if (!example) {
-        continue;
-      }
-      values.push(lastSense ? `${lastSense} ${example}` : example);
-    }
-    return base;
-  });
-  return { text: cleanedLines.join("\n"), values };
-};
 
 const extractLevelTag = (text) => {
   const re = /【レベル】([^【◆]+)/g;
