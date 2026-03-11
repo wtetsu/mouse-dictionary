@@ -54,6 +54,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
   draggable.add(dialog);
 
   setDialogEvents(dialog);
+  const onShiftWheel = (e) => {
+    if (!e.shiftKey) {
+      return;
+    }
+    dialog.scrollTop += e.deltaY;
+    e.preventDefault();
+  };
+  let shiftWheelActive = false;
 
   document.body.addEventListener("mousedown", () => {
     lookuper.suspended = true;
@@ -106,6 +114,9 @@ const attach = async (settings, dialog, doUpdateContent) => {
     if (ankiDialogOpen) {
       return;
     }
+    if (!enableDefault) {
+      return;
+    }
     if (dialog.querySelector("[data-md-anki-overlay]") && dialog.contains(e.target)) {
       return;
     }
@@ -122,8 +133,16 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   document.body.addEventListener("keydown", (e) => {
     if (e.key === "Shift") {
+      enableDefault = false;
       draggable.activateSnap(e);
       ankiDraggable?.activateSnap(e);
+      dialog.dataset.mdLocked = "true";
+      dialog.style.outline = "2px solid #2f7a4a";
+      dialog.style.boxShadow = "0 0 0 3px rgba(47, 122, 74, 0.25)";
+      if (!shiftWheelActive) {
+        window.addEventListener("wheel", onShiftWheel, { passive: false, capture: true });
+        shiftWheelActive = true;
+      }
     }
   });
 
@@ -131,6 +150,14 @@ const attach = async (settings, dialog, doUpdateContent) => {
     if (e.key === "Shift") {
       draggable.deactivateSnap(e);
       ankiDraggable?.deactivateSnap(e);
+      enableDefault = true;
+      delete dialog.dataset.mdLocked;
+      dialog.style.outline = "";
+      dialog.style.boxShadow = "";
+      if (shiftWheelActive) {
+        window.removeEventListener("wheel", onShiftWheel, { capture: true });
+        shiftWheelActive = false;
+      }
     }
   });
 
@@ -256,6 +283,15 @@ const openAnkiDialog = async (dialog, entry, setOpen) => {
   placeOverlayNextToDialog(overlay, dialog);
   const stopClick = (e) => e.stopPropagation();
   overlay.addEventListener("click", stopClick);
+  overlay.addEventListener(
+    "mousedown",
+    (e) => {
+      if (isFormControl(e.target)) {
+        e.stopPropagation();
+      }
+    },
+    true,
+  );
 
   const overlayDraggable = new Draggable(ANKI_OVERLAY_NORMAL_STYLES, ANKI_OVERLAY_MOVING_STYLES);
   overlayDraggable.add(overlay);
@@ -395,6 +431,8 @@ const openAnkiDialog = async (dialog, entry, setOpen) => {
         modelName: selectedModelName,
         tags: userTags,
       });
+      overlay.remove();
+      setOpen?.(false, null, null);
     } catch (error) {
       statusArea.textContent = error?.message ?? "Failed to add note.";
     }
@@ -429,6 +467,11 @@ const setEditingState = (container, enabled) => {
       input.style.borderColor = "#c1d5c7";
     }
   });
+};
+
+const isFormControl = (target) => {
+  const elem = target?.closest?.("input, textarea, select, button, option, label");
+  return Boolean(elem);
 };
 
 const placeOverlayNextToDialog = (overlay, dialog) => {
