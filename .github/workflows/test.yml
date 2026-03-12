@@ -28,12 +28,4 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Run Unit Tests
-        run: npm run test-cov
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          fail_ci_if_error: true
-          files: ./coverage/coverage-final.json
-          flags: unittests
-          name: codecov-coverage
-          token: ${{ secrets.CODECOV_TOKEN }}
+        run: npm run test
