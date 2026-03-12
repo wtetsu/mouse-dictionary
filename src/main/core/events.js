@@ -612,8 +612,7 @@ const htmlToTextPreserveBreaks = (html) => {
 const parseEntryDetails = (descText) => {
   let text = normalizeText(descText);
 
-  const synonyms = extractAll(text, /<→([^>]+)>/g);
-  text = text.replace(/＝?<→[^>]+>/g, "");
+  const synonyms = [];
 
   const { text: textAfterSynTags, values: synTagValues } = extractInlineTag(text, ["類", "同"]);
   text = textAfterSynTags;
@@ -657,6 +656,11 @@ const parseEntryDetails = (descText) => {
     const senseMatch = working.match(/^\s*(\{[^}]+\})/);
     if (senseMatch?.[1]) {
       currentSense = senseMatch[1].trim();
+    }
+    const lineRefs = extractAll(working, /<→([^>]+)>/g);
+    if (lineRefs.length > 0) {
+      synonyms.push(...lineRefs);
+      working = working.replace(/＝?<→[^>]+>/g, "");
     }
 
     const addNote = (value) => {
@@ -715,6 +719,13 @@ const parseEntryDetails = (descText) => {
     }
 
     if (working.length > 0) {
+      if (lineRefs.length > 0) {
+        if (/^\s*\{[^}]+\}\s*:\s*$/.test(working)) {
+          working = `${working} ${lineRefs.join(", ")}`.trim();
+        } else if (!working.trim()) {
+          working = lineRefs.join(", ");
+        }
+      }
       meaningLines.push(working);
     }
   }
@@ -759,7 +770,7 @@ const extractInlineTag = (text, tags) => {
   const values = [];
   let next = text;
   for (const tag of tags) {
-    const re = new RegExp(`【${tag}】([^【◆]+)`, "g");
+    const re = new RegExp(`【${tag}】([^【◆\\n]+)`, "g");
     for (const match of next.matchAll(re)) {
       if (match?.[1]) {
         values.push(match[1].trim());
@@ -771,7 +782,7 @@ const extractInlineTag = (text, tags) => {
 };
 
 const extractSingleTag = (text, tag) => {
-  const re = new RegExp(`【${tag}】([^【◆]+)`, "g");
+  const re = new RegExp(`【${tag}】([^【◆\\n]+)`, "g");
   const values = [];
   for (const match of text.matchAll(re)) {
     if (match?.[1]) {
@@ -791,7 +802,7 @@ const joinParts = (...parts) =>
     .join(" / ");
 
 const extractLevelTag = (text) => {
-  const re = /【レベル】([^【◆]+)/g;
+  const re = /【レベル】([^【◆\n]+)/g;
   const values = [];
   for (const match of text.matchAll(re)) {
     if (match?.[1]) {
