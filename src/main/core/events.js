@@ -225,6 +225,34 @@ const setDialogEvents = (dialog) => {
       elem.dataset.mdPronunciationSet = "true";
       elem.addEventListener("click", () => sound.pronounce(elem.dataset.mdPronunciation));
     }
+    for (const elem of e.target.querySelectorAll("[data-md-skell]")) {
+      if (elem.dataset.mdSkellSet) {
+        continue;
+      }
+      const entry = elem.closest("[data-md-entry]");
+      const head = entry?.dataset?.mdHead ?? "";
+      if (head) {
+        elem.setAttribute(
+          "href",
+          `https://skell.sketchengine.eu/#result?f=wordsketch&lang=en&query=${encodeURIComponent(head)}`,
+        );
+      }
+      elem.dataset.mdSkellSet = "true";
+    }
+    for (const elem of e.target.querySelectorAll("[data-md-youglish]")) {
+      if (elem.dataset.mdYouglishSet) {
+        continue;
+      }
+      const entry = elem.closest("[data-md-entry]");
+      const head = entry?.dataset?.mdHead ?? "";
+      if (head) {
+        elem.setAttribute(
+          "href",
+          `https://youglish.com/pronounce/${encodeURIComponent(head)}/english`,
+        );
+      }
+      elem.dataset.mdYouglishSet = "true";
+    }
     for (const elem of e.target.querySelectorAll("[data-md-hovervisible]")) {
       elem.style.visibility = "visible";
     }
@@ -394,8 +422,33 @@ const openAnkiDialog = async (dialog, entry, setOpen) => {
   const updateModelActions = () => {
     modelActions.innerHTML = "";
     if (modelNames.includes(anki.DEFAULT_MODEL_NAME)) {
+      const updateButton = dom.create(
+        `<button data-md-anki-update-model="true" style="padding:4px 8px;border:1px solid #7ea488;background:#dff3e3;border-radius:4px;cursor:pointer;color:#12351b;">Update "${anki.DEFAULT_MODEL_NAME}" templates</button>`,
+      );
+      modelActions.appendChild(updateButton);
+      updateButton.addEventListener("click", async (e) => {
+        e.preventDefault();
+        if (modelSelect.value !== anki.DEFAULT_MODEL_NAME) {
+          statusArea.textContent = `Select "${anki.DEFAULT_MODEL_NAME}" to update templates.`;
+          return;
+        }
+        const ok = confirm(
+          `Update "${anki.DEFAULT_MODEL_NAME}" templates and CSS to the latest version?\\nExisting notes will not be deleted.`,
+        );
+        if (!ok) {
+          return;
+        }
+        statusArea.textContent = "Updating templates...";
+        try {
+          await anki.updateDefaultModel();
+          statusArea.textContent = `Updated "${anki.DEFAULT_MODEL_NAME}".`;
+        } catch (error) {
+          statusArea.textContent = error?.message ?? "Failed to update templates.";
+        }
+      });
       return;
     }
+
     const createButton = dom.create(
       `<button data-md-anki-create-model="true" style="padding:4px 8px;border:1px solid #a0a0a0;background:#f8f8f8;border-radius:4px;cursor:pointer;">Create "${anki.DEFAULT_MODEL_NAME}" note type</button>`,
     );

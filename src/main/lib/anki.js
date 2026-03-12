@@ -28,7 +28,7 @@ const DEFAULT_TEMPLATES = [
     Name: "Card 1",
     Front:
       "<div style='font-size:24px;font-weight:bold;'>{{Expression}}</div>{{#Pronunciation}}<div style='font-size:0.9em;color:#555;margin-top:6px;'>{{Pronunciation}}</div>{{/Pronunciation}}{{#Syllables}}<div style='font-size:0.85em;color:#777;margin-top:4px;'>{{Syllables}}</div>{{/Syllables}}<div style='margin-top:6px;'>{{tts en_US:Expression}}</div>",
-    Back: "{{FrontSide}}<hr id=answer><div style='white-space:pre-wrap;'>{{Meaning}}</div>{{#Examples}}<div style='margin-top:10px;white-space:pre-wrap;'>{{Examples}}</div>{{/Examples}}{{#ExamplesEn}}<div style='margin-top:4px;'>{{tts en_US:ExamplesEn}}</div>{{/ExamplesEn}}{{#Synonyms}}<div style='margin-top:10px;font-size:0.85em;color:#555;'>Synonyms: {{Synonyms}}</div>{{/Synonyms}}{{#Notes}}<div style='margin-top:8px;font-size:0.85em;color:#555;white-space:pre-wrap;'>Notes: {{Notes}}</div>{{/Notes}}{{#Etymology}}<div style='margin-top:8px;font-size:0.85em;color:#555;'>Etymology: {{Etymology}}</div>{{/Etymology}}{{#Inflection}}<div style='margin-top:6px;font-size:0.85em;color:#555;'>Inflection（変化形）: {{Inflection}}</div>{{/Inflection}}{{#InflectionEn}}<div style='margin-top:4px;'>{{tts en_US:InflectionEn}}</div>{{/InflectionEn}}{{#Url}}<div style='margin-top:10px;font-size:0.85em;color:#555;'><a href='{{Url}}'>{{Url}}</a></div>{{/Url}}",
+    Back: "{{FrontSide}}<hr id=answer><div style='white-space:pre-wrap;'>{{Meaning}}</div>{{#Examples}}<div style='margin-top:10px;white-space:pre-wrap;'>{{Examples}}</div>{{/Examples}}{{#ExamplesEn}}<div style='margin-top:4px;'>{{tts en_US:ExamplesEn}}</div>{{/ExamplesEn}}{{#Synonyms}}<div style='margin-top:10px;font-size:0.85em;color:#555;'>Synonyms: {{Synonyms}}</div>{{/Synonyms}}{{#Notes}}<div style='margin-top:8px;font-size:0.85em;color:#555;white-space:pre-wrap;'>Notes: {{Notes}}</div>{{/Notes}}{{#Etymology}}<div style='margin-top:8px;font-size:0.85em;color:#555;'>Etymology: {{Etymology}}</div>{{/Etymology}}{{#Inflection}}<div style='margin-top:6px;font-size:0.85em;color:#555;'>Inflection（変化形）: {{Inflection}}</div>{{/Inflection}}{{#InflectionEn}}<div style='margin-top:4px;'>{{tts en_US:InflectionEn}}</div>{{/InflectionEn}}<div style='margin-top:10px;font-size:0.85em;color:#555;'><a href='https://skell.sketchengine.eu/#result?f=wordsketch&lang=en&query={{Expression}}'>SkELL</a> · <a href='https://youglish.com/pronounce/{{Expression}}/english'>YouGlish</a></div>{{#Url}}<div style='margin-top:6px;font-size:0.85em;color:#555;'><a href='{{Url}}'>{{Url}}</a></div>{{/Url}}",
   },
 ];
 
@@ -74,6 +74,32 @@ const createDefaultModel = () =>
     cardTemplates: DEFAULT_TEMPLATES,
   });
 
+const updateDefaultModel = () =>
+  request("updateModelTemplates", {
+    model: {
+      name: DEFAULT_MODEL_NAME,
+      templates: templatesToMap(DEFAULT_TEMPLATES),
+    },
+  }).then(() =>
+    request("updateModelStyling", {
+      model: {
+        name: DEFAULT_MODEL_NAME,
+        css: DEFAULT_CSS,
+      },
+    }),
+  );
+
+const templatesToMap = (templates) => {
+  const map = {};
+  for (const tpl of templates) {
+    if (!tpl?.Name) {
+      continue;
+    }
+    map[tpl.Name] = { Front: tpl.Front, Back: tpl.Back };
+  }
+  return map;
+};
+
 export default {
   request,
   deckNames,
@@ -81,6 +107,7 @@ export default {
   modelFieldNames,
   addNote,
   createDefaultModel,
+  updateDefaultModel,
   DEFAULT_MODEL_NAME,
   DEFAULT_FIELDS,
 };

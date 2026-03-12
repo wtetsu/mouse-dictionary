@@ -86,6 +86,8 @@ export default {
           {{head}}
         </span>
         <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="{{head}}" data-md-hovervisible="true">🔊</span>
+        <a data-md-skell="true" data-md-hovervisible="true" style="margin-left:6px;font-size:12px;text-decoration:underline;color:#1f4e8c;visibility:hidden;" target="_blank" rel="noopener noreferrer">SkELL</a>
+        <a data-md-youglish="true" data-md-hovervisible="true" style="margin-left:6px;font-size:12px;text-decoration:underline;color:#1f4e8c;visibility:hidden;" target="_blank" rel="noopener noreferrer">YouGlish</a>
         <br/>
         <span style="font-size:{{descFontSize}};color:{{descFontColor}};">
           {{{desc}}}
@@ -102,6 +104,8 @@ export default {
         <span style="font-size:{{headFontSize}};color:{{headFontColor}};font-weight:bold;font-family:Georgia;">
           {{head}}
         </span>
+        <a data-md-skell="true" data-md-hovervisible="true" style="margin-left:6px;font-size:12px;text-decoration:underline;color:#1f4e8c;visibility:hidden;" target="_blank" rel="noopener noreferrer">SkELL</a>
+        <a data-md-youglish="true" data-md-hovervisible="true" style="margin-left:6px;font-size:12px;text-decoration:underline;color:#1f4e8c;visibility:hidden;" target="_blank" rel="noopener noreferrer">YouGlish</a>
         <span style="color:#505050;font-size:x-small;">
           {{shortDesc}}
         </span>
