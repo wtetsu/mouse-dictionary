@@ -36,29 +36,29 @@
   },
   "dependencies": {
     "deinja": "0.0.3",
-    "immer": "^11.1.3",
+    "immer": "^11.1.4",
     "mustache": "^4.2.0",
-    "react": "^19.2.3",
+    "react": "^19.2.4",
     "react-ace": "^14.0.1",
-    "react-dom": "^19.2.3",
+    "react-dom": "^19.2.4",
     "sweetalert": "^2.1.2",
     "uniqlist": "^1.0.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.11",
-    "@types/chrome": "^0.1.36",
+    "@biomejs/biome": "^2.4.8",
+    "@types/chrome": "^0.1.38",
     "@types/mustache": "^4.2.6",
-    "@types/react": "^19.2.9",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/coverage-v8": "^4.1.0",
     "adm-zip": "^0.5.16",
-    "esbuild": "^0.27.2",
+    "esbuild": "^0.27.4",
     "fast-glob": "^3.3.3",
-    "fs-extra": "^11.3.3",
+    "fs-extra": "^11.3.4",
     "jsdom": "^27.4.0",
     "json5": "^2.2.3",
     "milligram": "^1.4.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   }
 }
