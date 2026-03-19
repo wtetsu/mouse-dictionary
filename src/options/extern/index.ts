@@ -19,4 +19,4 @@ import * as env from "./env";
 import * as defaultSettings from "./settings";
 import * as storage from "./storage";
 
-export { entry, entryDefault, Generator, view, dom, template, defaultSettings, env, config, storage };
+export { config, defaultSettings, dom, entry, entryDefault, env, Generator, storage, template, view };

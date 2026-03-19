@@ -15,9 +15,7 @@ const KEY_BYTES_IN_USE = "**** bytes_in_use ****";
 
 const { loadRawSettings, isDataReady } = orgConfig;
 
-export { loadRawSettings };
-
-export { isDataReady };
+export { isDataReady, loadRawSettings };
 
 export const saveSettings = (settings: MouseDictionarySettings): Promise<void> =>
   storage.sync.set({ [KEY_USER_CONFIG]: JSON.stringify(settings) });
