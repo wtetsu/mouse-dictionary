@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         platform: [chrome, firefox]
-        node-version: [22.x, 23.x]
+        node-version: [24.x, 25.x]
 
     steps:
       - uses: actions/checkout@v5

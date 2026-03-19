@@ -60,7 +60,7 @@ Want to use for the German language? Take a look these great articles!
 
 ### Preparation
 
-Use [Node.js](https://nodejs.org/en/download/) 22+.
+Use [Node.js](https://nodejs.org/en/download/) 24+.
 
 ```sh
 npm install
