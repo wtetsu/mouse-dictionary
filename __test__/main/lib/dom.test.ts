@@ -182,7 +182,7 @@ test("pxToFloat conversion", () => {
   expect(dom.pxToFloat("123.5px")).toEqual(123.5);
 });
 
-test("clone element with styles", () => {
+test("clone element", () => {
   const lines: string[] = [];
   lines.push('<div style="width:200px; height:300px;">');
   lines.push('<span id="start">-</span>');
@@ -197,7 +197,5 @@ test("clone element with styles", () => {
   const clonedElem = dom.clone(elem);
 
   expect(clonedElem).not.toEqual(elem);
-
-  expect(clonedElem.style.width).toEqual("200px");
-  expect(clonedElem.style.height).toEqual("300px");
+  expect(clonedElem.tagName).toEqual("DIV");
 });

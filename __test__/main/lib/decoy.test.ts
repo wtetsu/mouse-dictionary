@@ -1,6 +1,18 @@
-import { expect, test } from "vitest";
+import { afterEach, expect, test } from "vitest";
 import decoy from "../../../src/main/lib/decoy";
 import dom from "../../../src/main/lib/dom";
+
+// Decoy reads computed styles of the underlay, which are only available
+// once the element is attached to the document.
+const createAttached = (html: string): HTMLElement => {
+  const elem = dom.create(html) as HTMLElement;
+  document.body.appendChild(elem);
+  return elem;
+};
+
+afterEach(() => {
+  document.body.innerHTML = "";
+});
 
 test("should handle input element", () => {
   const d = decoy.create("div");
@@ -8,7 +20,7 @@ test("should handle input element", () => {
   const lines: string[] = [];
   lines.push('<input type="text" value="this is text">');
 
-  const elem = dom.create(lines.map((a) => a.trim()).join(""));
+  const elem = createAttached(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
@@ -28,7 +40,7 @@ test("should handle textarea element", () => {
   const lines: string[] = [];
   lines.push("<textarea>this is text</textarea>");
 
-  const elem = dom.create(lines.map((a) => a.trim()).join(""));
+  const elem = createAttached(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
@@ -48,7 +60,7 @@ test("should handle select element", () => {
   const lines: string[] = [];
   lines.push("<select><option>this is text</option></select>");
 
-  const elem = dom.create(lines.map((a) => a.trim()).join(""));
+  const elem = createAttached(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
@@ -68,7 +80,7 @@ test("should handle div element", () => {
   const lines: string[] = [];
   lines.push("<div>this is text</div>");
 
-  const elem = dom.create(lines.map((a) => a.trim()).join(""));
+  const elem = createAttached(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
@@ -87,7 +99,7 @@ test("should handle null element", () => {
   const lines: string[] = [];
   lines.push('<input type="text" value="this is text">');
 
-  const elem = dom.create(lines.map((a) => a.trim()).join(""));
+  const elem = createAttached(lines.map((a) => a.trim()).join(""));
 
   expect(d.decoy).toEqual(null);
   d.deactivate();
