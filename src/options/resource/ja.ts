@@ -60,6 +60,10 @@ const JapaneseTextResource: TextResource = {
   replaceRule2: "に置換",
   advancedSettings: "上級者設定",
   htmlTemplate: "HTMLテンプレート",
+  scriptWarning:
+    "警告: このテンプレートにはスクリプトを実行しうる記述が含まれています（{{{detail}}}）。自分で書いたもの、または信頼できるものだけを使ってください。",
+  scriptWarningJson:
+    "警告: {{{field}}} にスクリプトを実行しうる記述が含まれています（{{{detail}}}）。自分で書いたもの、または信頼できる設定だけを取り込んでください。",
   htmlTemplateWindow: "Mouse Dictionaryウィンドウ全体",
   htmlTemplateDesc: "説明全体を囲う領域",
   htmlTemplateDescText: "説明テキスト",

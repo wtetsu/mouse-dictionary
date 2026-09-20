@@ -5,7 +5,7 @@
  */
 
 import { produce } from "immer";
-import { res } from "../../logic";
+import { htmlrisk, res } from "../../logic";
 import type { Replace } from "../../types";
 import { Button } from "../atom/Button";
 
@@ -71,6 +71,15 @@ const reduce = (state: Replace[], action: Action): Replace[] => {
   }
 };
 
+const WARNING_INPUT_STYLE: React.CSSProperties = {
+  border: "2px solid #d9534f",
+};
+
+const WARNING_TEXT_STYLE: React.CSSProperties = {
+  color: "#d9534f",
+  fontWeight: "bold",
+};
+
 export const ReplaceRuleEditor: React.FC<Props> = (props) => {
   const update = (action: Action) => {
     const newRules = reduce(props.replaceRules, action);
@@ -79,63 +88,71 @@ export const ReplaceRuleEditor: React.FC<Props> = (props) => {
 
   return (
     <>
-      {props.replaceRules.map((r, i) => (
-        <div key={r.key ?? r.search}>
-          <button
-            type="button"
-            className="button button-outline button-arrow"
-            onClick={() => update({ type: "move", payload: { index1: i, index2: i - 1 } })}
-            disabled={i === 0}
-          >
-            ↑
-          </button>
-          <button
-            type="button"
-            className="button button-outline button-arrow"
-            onClick={() => update({ type: "move", payload: { index1: i, index2: i + 1 } })}
-            disabled={i === props.replaceRules.length - 1}
-          >
-            ↓
-          </button>
-          <input
-            type="text"
-            name={`replaceRule.search.${i}`}
-            key={`replaceRule.search.${i}`}
-            value={r.search}
-            style={{ width: 230 }}
-            onChange={(e) =>
-              update({
-                type: "change",
-                payload: { index: i, target: "search", value: e.target.value },
-              })
-            }
-          />
-          <span>{res.get("replaceRule1")}</span>
-          <input
-            type="text"
-            name={`replaceRule.replace.${i}`}
-            key={`replaceRule.replace.${i}`}
-            value={r.replace}
-            style={{ width: 370 }}
-            onChange={(e) =>
-              update({
-                type: "change",
-                payload: { index: i, target: "replace", value: e.target.value },
-              })
-            }
-          />
-          <span>{res.get("replaceRule2")}</span>
+      {props.replaceRules.map((r, i) => {
+        const risks = htmlrisk.findHtmlRisks(r.replace);
+        return (
+          <div key={r.key ?? r.search}>
+            <button
+              type="button"
+              className="button button-outline button-arrow"
+              onClick={() => update({ type: "move", payload: { index1: i, index2: i - 1 } })}
+              disabled={i === 0}
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              className="button button-outline button-arrow"
+              onClick={() => update({ type: "move", payload: { index1: i, index2: i + 1 } })}
+              disabled={i === props.replaceRules.length - 1}
+            >
+              ↓
+            </button>
+            <input
+              type="text"
+              name={`replaceRule.search.${i}`}
+              key={`replaceRule.search.${i}`}
+              value={r.search}
+              style={{ width: 230 }}
+              onChange={(e) =>
+                update({
+                  type: "change",
+                  payload: { index: i, target: "search", value: e.target.value },
+                })
+              }
+            />
+            <span>{res.get("replaceRule1")}</span>
+            <input
+              type="text"
+              name={`replaceRule.replace.${i}`}
+              key={`replaceRule.replace.${i}`}
+              value={r.replace}
+              style={{ width: 370, ...(risks.length >= 1 ? WARNING_INPUT_STYLE : {}) }}
+              onChange={(e) =>
+                update({
+                  type: "change",
+                  payload: { index: i, target: "replace", value: e.target.value },
+                })
+              }
+            />
+            <span>{res.get("replaceRule2")}</span>
 
-          <button
-            type="button"
-            className="button button-arrow"
-            onClick={() => update({ type: "delete", payload: { index: i } })}
-            style={{ marginLeft: 3 }}
-          >
-            ×
-          </button>
-        </div>
-      ))}
+            <button
+              type="button"
+              className="button button-arrow"
+              onClick={() => update({ type: "delete", payload: { index: i } })}
+              style={{ marginLeft: 3 }}
+            >
+              ×
+            </button>
+            {risks.length >= 1 && (
+              <div style={WARNING_TEXT_STYLE}>
+                {res.get("scriptWarning", { detail: htmlrisk.describeHtmlRisks(risks) })}
+              </div>
+            )}
+          </div>
+        );
+      })}
       <Button type="primary" text={res.get("add")} onClick={() => update({ type: "add" })} />
     </>
   );

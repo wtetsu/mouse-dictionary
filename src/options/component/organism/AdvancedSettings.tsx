@@ -5,7 +5,7 @@
  */
 
 import { produce } from "immer";
-import { res } from "../../logic";
+import { htmlrisk, res } from "../../logic";
 import type { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../../types";
 import { HighlightEditor } from "../atom/HighlightEditor";
 import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
@@ -26,6 +26,14 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   const normalDialogStyles = props.settings?.normalDialogStyles ?? "";
   const movingDialogStyles = props.settings?.movingDialogStyles ?? "";
   const hiddenDialogStyles = props.settings?.hiddenDialogStyles ?? "";
+
+  const scriptWarning = (html: string): string | undefined => {
+    const risks = htmlrisk.findHtmlRisks(html);
+    if (risks.length === 0) {
+      return undefined;
+    }
+    return res.get("scriptWarning", { detail: htmlrisk.describeHtmlRisks(risks) });
+  };
 
   const update = (patch: Partial<MouseDictionaryAdvancedSettings>) => {
     const newPatch = produce(patch, (d) => {
@@ -139,6 +147,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           onChange={(value) => update({ dialogTemplate: value })}
           value={dialogTemplate}
           style={{ height: 250 }}
+          warning={scriptWarning(dialogTemplate)}
         />
         <label>{res.get("htmlTemplateDesc")}</label>
         <HighlightEditor
@@ -147,6 +156,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           onChange={(value) => update({ contentWrapperTemplate: value })}
           value={contentWrapperTemplate}
           style={{ height: 70 }}
+          warning={scriptWarning(contentWrapperTemplate)}
         />
         <label>{res.get("htmlTemplateDescText")}</label>
         <HighlightEditor
@@ -155,6 +165,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
           onChange={(value) => update({ contentTemplate: value })}
           value={contentTemplate}
           style={{ height: 400 }}
+          warning={scriptWarning(contentTemplate)}
         />
         <h3>{res.get("styles")}</h3>
         <label>{res.get("stylesActive")}</label>

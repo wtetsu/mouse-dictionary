@@ -51,6 +51,8 @@ export type TextResource = {
   replaceRule2: string;
   advancedSettings: string;
   htmlTemplate: string;
+  scriptWarning: string;
+  scriptWarningJson: string;
   htmlTemplateWindow: string;
   htmlTemplateDesc: string;
   htmlTemplateDescText: string;

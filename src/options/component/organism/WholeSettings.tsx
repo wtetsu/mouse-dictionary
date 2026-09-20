@@ -9,7 +9,7 @@ import type { RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
 import AceEditor from "react-ace";
 import { defaultSettings, dom } from "../../extern";
-import { data, message, res } from "../../logic";
+import { data, htmlrisk, message, res } from "../../logic";
 import type { MouseDictionarySettings } from "../../types";
 import { Button } from "../atom/Button";
 
@@ -36,6 +36,55 @@ const canReplace = (a: SettingsValue, b: SettingsValue) => {
     return Array.isArray(b);
   }
   return typeof a === typeof b;
+};
+
+const HTML_FIELDS = ["dialogTemplate", "contentWrapperTemplate", "contentTemplate"] as const;
+
+const WARNING_STYLE: React.CSSProperties = {
+  border: "2px solid #d9534f",
+};
+
+const WARNING_TEXT_STYLE: React.CSSProperties = {
+  color: "#d9534f",
+  fontWeight: "bold",
+  maxWidth: 800,
+};
+
+/**
+ * Reports script-ish constructs in the HTML template fields of an edited JSON.
+ * The JSON is incomplete while being typed, so a parse failure just means "nothing to report yet".
+ */
+const findWarnings = (json: string): string[] => {
+  let parsed: any;
+  try {
+    parsed = JSON.parse(json);
+  } catch {
+    return [];
+  }
+  if (!parsed || typeof parsed !== "object") {
+    return [];
+  }
+
+  const warnings: string[] = [];
+  const inspect = (field: string, value: unknown) => {
+    if (typeof value !== "string") {
+      return;
+    }
+    const risks = htmlrisk.findHtmlRisks(value);
+    if (risks.length >= 1) {
+      warnings.push(res.get("scriptWarningJson", { field, detail: htmlrisk.describeHtmlRisks(risks) }));
+    }
+  };
+
+  for (const field of HTML_FIELDS) {
+    inspect(field, parsed[field]);
+  }
+  if (Array.isArray(parsed.replaceRules)) {
+    for (let i = 0; i < parsed.replaceRules.length; i++) {
+      inspect(`replaceRules[${i}].replace`, parsed.replaceRules[i]?.replace);
+    }
+  }
+  return warnings;
 };
 
 type Props = {
@@ -110,6 +159,8 @@ export const WholeSettings: React.FC<Props> = (props) => {
     props.onChange(undefined);
   };
 
+  const warnings = findWarnings(json);
+
   const editor = useRef(null) as RefObject<AceEditor | null>;
 
   useEffect(() => {
@@ -136,10 +187,15 @@ export const WholeSettings: React.FC<Props> = (props) => {
           value={json}
           showPrintMargin={false}
           highlightActiveLine={false}
-          style={{ ...EDITOR_STYLE, height: 700 }}
+          style={{ ...EDITOR_STYLE, height: 700, ...(warnings.length >= 1 ? WARNING_STYLE : {}) }}
           ref={editor}
           setOptions={{ useWorker: false }}
         />
+        {warnings.map((w) => (
+          <div key={w} style={WARNING_TEXT_STYLE}>
+            {w}
+          </div>
+        ))}
       </div>
     </div>
   );

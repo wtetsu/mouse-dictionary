@@ -9,5 +9,6 @@ import * as message from "../logic/message";
 import * as res from "../logic/resource";
 import * as data from "./data";
 import { debounce } from "./debounce";
+import * as htmlrisk from "./htmlrisk";
 
-export { data, debounce, dict, message, res };
+export { data, debounce, dict, htmlrisk, message, res };

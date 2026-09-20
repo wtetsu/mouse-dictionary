@@ -65,6 +65,10 @@ const EnglishTextResource: TextResource = {
   replaceRule2: " ",
   advancedSettings: "Advanced settings",
   htmlTemplate: "HTML templates",
+  scriptWarning:
+    "Warning: this template contains code that can run scripts ({{{detail}}}). Only use templates you wrote yourself or trust.",
+  scriptWarningJson:
+    "Warning: {{{field}}} contains code that can run scripts ({{{detail}}}). Only import settings you wrote yourself or trust.",
   htmlTemplateWindow: "Mouse Dictionary window frame",
   htmlTemplateDesc: "Description frame",
   htmlTemplateDescText: "Description",
