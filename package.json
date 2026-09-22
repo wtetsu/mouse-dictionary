@@ -54,7 +54,7 @@
     "adm-zip": "^0.6.1",
     "esbuild": "^0.28.2",
     "fast-glob": "^3.3.3",
-    "fs-extra": "^11.4.0",
+    "fs-extra": "^11.4.1",
     "happy-dom": "^20.14.5",
     "json5": "^2.2.3",
     "milligram": "^1.4.1",
