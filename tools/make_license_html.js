@@ -34,7 +34,7 @@ const makeLicenseContent = (licenseRecords) => {
     const record = licenseRecords[key];
     const licenses = record.licenses;
     const name = record.publisher ?? "Link";
-    const href = record.repository ?? licenseContent.url;
+    const href = record.repository ?? record.url;
 
     if (!summary[licenses]) {
       summary[licenses] = 0;
