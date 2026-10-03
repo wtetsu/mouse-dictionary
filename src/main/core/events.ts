@@ -10,7 +10,7 @@ import sound from "../lib/sound";
 import traverser from "../lib/traverser";
 import type { Rect } from "../lib/utils";
 import utils from "../lib/utils";
-import type { DialogStyles, ParsedSettings } from "../types";
+import type { ParsedSettings } from "../types";
 import config from "./config";
 import entryDefault from "./entry/default";
 import type { UpdateContent } from "./lookuper";
@@ -34,10 +34,8 @@ const attach = async (settings: ParsedSettings, dialog: HTMLElement, doUpdateCon
   const traverse = traverser.build(rule.doLetters, settings.parseWordsLimit);
   const lookuper = new Lookuper(settings, entryDefault(), doUpdateContent);
 
-  const draggable = new Draggable(
-    settings.normalDialogStyles as DialogStyles,
-    settings.movingDialogStyles as DialogStyles,
-  );
+  // Dialog styles are null when the stored JSON is invalid
+  const draggable = new Draggable(settings.normalDialogStyles ?? {}, settings.movingDialogStyles ?? {});
   draggable.events.change = (e) => config.savePosition(e);
   draggable.add(dialog);
 
