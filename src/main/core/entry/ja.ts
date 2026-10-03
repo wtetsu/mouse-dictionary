@@ -10,6 +10,11 @@ import rule from "../rule";
 const RE_ALPHABETS_NUMBERS = /[A-Za-z0-9]/g;
 const FULLWIDTH_OFFSET = 0xfee0;
 
+// Halfwidth katakana (U+FF61-FF9F, common in manga/UI text) is normalized to
+// its fullwidth form so ﾃﾚﾋﾞ looks up the same headwords as テレビ.
+// NFKC also folds the voiced/semi-voiced combining sequences (ｶ + ﾞ -> ガ).
+const RE_HALFWIDTH_KATAKANA = /[\uFF61-\uFF9F]/;
+
 const createLookupWordsJa = (sourceStr: string): string[] => {
   const str = sourceStr
     .substring(0, 40)
@@ -20,13 +25,26 @@ const createLookupWordsJa = (sourceStr: string): string[] => {
 
   result.push(sourceStr); // Add the original word
 
-  for (let i = str.length; i >= 1; i--) {
-    const part = str.substring(0, i);
-    result.push(part);
+  // For halfwidth input, keep both chains: every candidate retains its usual
+  // prefix decomposition (show-all-plausible-candidates design), e.g.
+  // ﾃﾚﾋ -> ﾃﾚﾋ/ﾃﾚ/ﾃ plus テレビ/テレ/テ.
+  const chains = [str];
+  if (RE_HALFWIDTH_KATAKANA.test(str)) {
+    const normalized = str.normalize("NFKC");
+    if (normalized !== str) {
+      chains.push(normalized);
+    }
+  }
 
-    if (i >= 2) {
-      const deinedWords = rule.doJa(part);
-      result.merge(deinedWords ?? []);
+  for (const chain of chains) {
+    for (let i = chain.length; i >= 1; i--) {
+      const part = chain.substring(0, i);
+      result.push(part);
+
+      if (i >= 2) {
+        const deinedWords = rule.doJa(part);
+        result.merge(deinedWords ?? []);
+      }
     }
   }
   return result.toArray();
