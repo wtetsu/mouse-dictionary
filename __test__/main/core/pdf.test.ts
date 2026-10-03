@@ -32,8 +32,8 @@ const createResponse = (bytes: Uint8Array, status = 200) => ({
 const ribbonText = () => document.body.textContent;
 
 test("should send PDF data to the background", async () => {
-  // Larger than the chunk size (1023 bytes) used for base64 conversion
-  const bytes = new Uint8Array(3000);
+  // Larger than the chunk size (32768 bytes) used for base64 conversion
+  const bytes = new Uint8Array(70000);
   bytes.set([0x25, 0x50, 0x44, 0x46]); // "%PDF"
   for (let i = 4; i < bytes.length; i++) {
     bytes[i] = i % 256;

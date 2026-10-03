@@ -50,23 +50,15 @@ const isPdf = (arrayBuffer) => {
   return first4[0] === 37 && first4[1] === 80 && first4[2] === 68 && first4[3] === 70;
 };
 
+// Uint8Array.prototype.toBase64() would be simpler, but it is not available in all target browsers yet
 const convertToBase64 = (arrayBuffer) => {
-  let result = "";
-  const byteArray = new Uint8Array(arrayBuffer);
-
-  for (let i = 0; ; i++) {
-    if (i * 1023 >= byteArray.length) {
-      break;
-    }
-    const start = i * 1023;
-    const end = (i + 1) * 1023;
-
-    const slice = byteArray.slice(start, end);
-    const base64slice = btoa(String.fromCharCode(...slice));
-
-    result += base64slice;
+  const bytes = new Uint8Array(arrayBuffer);
+  const CHUNK_SIZE = 0x8000; // Avoids exceeding the maximum number of function arguments
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK_SIZE));
   }
-  return result;
+  return btoa(binary);
 };
 
 export default { invoke };

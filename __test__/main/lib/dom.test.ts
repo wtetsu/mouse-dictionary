@@ -34,6 +34,9 @@ test("replace element content", () => {
   const e = createDom("<div><span>aaa</span></div>");
   dom.replace(e, createDom("<span>bbb</span>"));
   expect("<span>bbb</span>").toEqual(e.innerHTML);
+
+  dom.replace(e, null);
+  expect(e.innerHTML).toEqual("");
 });
 
 test("traverse DOM and get text content", () => {

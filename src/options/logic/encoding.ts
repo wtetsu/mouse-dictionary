@@ -125,27 +125,7 @@ const isContinuation = (byte: number): boolean => {
   return byte >= 0x80 && byte <= 0xbf;
 };
 
+// Reads only the first bytes instead of the whole (possibly huge) file
 const getFirstBytes = async (file: Blob, length: number): Promise<Uint8Array> => {
-  const e = await readFile(file);
-  const buffer = e.target?.result as ArrayBuffer;
-  const actualLength = Math.min(length, buffer.byteLength);
-  return new Uint8Array(buffer, 0, actualLength);
-};
-
-const readFile = async (file: Blob): Promise<ProgressEvent<FileReader>> => {
-  return new Promise((done, fail) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      done(e);
-    };
-    try {
-      reader.readAsArrayBuffer(file);
-    } catch (e) {
-      if (e instanceof Error) {
-        fail(new Error(e.toString()));
-      } else {
-        fail(new Error(String(e)));
-      }
-    }
-  });
+  return new Uint8Array(await file.slice(0, length).arrayBuffer());
 };

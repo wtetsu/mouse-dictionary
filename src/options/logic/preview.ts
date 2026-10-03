@@ -117,9 +117,7 @@ class Preview {
       console.error(e);
     }
 
-    if (orgPreviewWindow?.dialog) {
-      this.element.removeChild(orgPreviewWindow.dialog);
-    }
+    orgPreviewWindow?.dialog.remove();
   }
 
   setVisible(visible: boolean): void {

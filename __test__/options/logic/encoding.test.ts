@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { detectByteArrayEncoding, detectFileEncoding } from "../../../src/options/logic/encoding";
 
 describe("detectByteArrayEncoding", () => {
@@ -92,17 +92,10 @@ describe("detectFileEncoding", () => {
   });
 
   test("file read error rejects", async () => {
-    const originalFileReader = global.FileReader;
-    class FailFileReader {
-      onload: ((e: ProgressEvent<FileReader>) => void) | null = null;
-      readAsArrayBuffer() {
-        throw new Error("fail");
-      }
-    }
-    // @ts-expect-error
-    global.FileReader = FailFileReader;
     const file = new File([new Uint8Array([0x41])], "fail.txt", { type: "text/plain" });
+    vi.spyOn(file, "slice").mockReturnValue({
+      arrayBuffer: () => Promise.reject(new Error("fail")),
+    } as unknown as Blob);
     await expect(detectFileEncoding(file)).rejects.toThrow("fail");
-    global.FileReader = originalFileReader;
   });
 });

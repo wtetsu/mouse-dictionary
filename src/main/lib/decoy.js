@@ -77,9 +77,7 @@ class Decoy {
     }
     const decoy = this.decoy;
     this.decoy = null;
-    if (decoy) {
-      document.body.removeChild(decoy);
-    }
+    decoy?.remove();
   }
 }
 

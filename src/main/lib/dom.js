@@ -26,8 +26,11 @@ const applyStyles = (element, styles) => {
 };
 
 const replace = (element, newDom) => {
-  element.innerHTML = "";
-  element.appendChild(newDom);
+  if (newDom) {
+    element.replaceChildren(newDom);
+  } else {
+    element.replaceChildren();
+  }
 };
 
 const MAX_TRAVERSE_LEVEL = 4;

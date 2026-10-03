@@ -36,7 +36,7 @@ const create = (style = "") => {
     }
   };
   const doClose = () => {
-    line.parentNode.removeChild(line);
+    line.remove();
     clearInterval(intervalId);
   };
   return [doUpdate, doClose];
