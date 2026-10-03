@@ -196,6 +196,15 @@ describe("concurrent lookups", () => {
   });
 });
 
+test("should retry the same text after a failed lookup", async () => {
+  const lookuper = createLookuper();
+  vi.spyOn(global.chrome.storage.local, "get").mockRejectedValueOnce(new Error("failed"));
+  await expect(lookuper.lookupAll(["dog"])).rejects.toThrow("failed");
+
+  expect(await lookuper.lookupAll(["dog"])).toBe(true);
+  expect(updatedText()).toContain("犬");
+});
+
 describe("cache", () => {
   test("should reuse the content without reading storage again", async () => {
     vi.stubEnv("MODE", "production");
@@ -205,10 +214,23 @@ describe("cache", () => {
     expect(await lookuper.lookupAll(["cat"])).toBe(true);
     const callCount = spy.mock.calls.length;
 
-    expect(await lookuper.lookupAll(["dog"])).toBe(false);
+    // Reported as updated so that the caller resets the scroll
+    expect(await lookuper.lookupAll(["dog"])).toBe(true);
     expect(spy).toHaveBeenCalledTimes(callCount);
     expect(doUpdateContent).toHaveBeenCalledTimes(3);
     expect(updatedText()).toContain("犬");
+  });
+
+  test("should not share the content between different options", async () => {
+    vi.stubEnv("MODE", "production");
+    const lookuper = createLookuper();
+    const spy = vi.spyOn(global.chrome.storage.local, "get");
+    await lookuper.update("dog", !defaultSettings.lookupWithCapitalized, false, false);
+    await lookuper.lookupAll(["cat"]);
+    const callCount = spy.mock.calls.length;
+
+    await lookuper.lookupAll(["dog"]);
+    expect(spy.mock.calls.length).toBeGreaterThan(callCount);
   });
 
   test("should be disabled outside production", async () => {

@@ -141,31 +141,41 @@ export default class Lookuper {
     const counter = ++this.counter;
     this.pendingText = null;
 
+    // The content also depends on the options
+    const shortCacheKey = [withCapitalized, enableShortWord, cacheKey].join("\u0001");
+
     if (!includeOriginalText) {
       if (this.lastText === cacheKey) {
         return {};
       }
-      const cacheData = this.shortCache.get(cacheKey);
+      const cacheData = this.shortCache.get(shortCacheKey);
       if (cacheData) {
-        this.doUpdateContent(cacheData.dom, cacheData.hitCount);
         this.lastText = cacheKey;
-        return {};
+        return { content: cacheData.dom, hit: cacheData.hitCount };
       }
       this.pendingText = cacheKey;
     }
     DEBUG && console.time(`lookup-${counter}`);
-    const { html, hit } = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
+    let result: { html: string; hit: number };
+    try {
+      result = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
+    } finally {
+      // Clear it even on failure so that the same text can be retried
+      if (counter === this.counter) {
+        this.pendingText = null;
+      }
+    }
     DEBUG && console.timeEnd(`lookup-${counter}`);
 
     if (counter !== this.counter) {
       // A newer request has been made while waiting
       return {};
     }
-    this.pendingText = null;
+    const { html, hit } = result;
     const content = dom.create(html);
     this.lastText = cacheKey;
     if (!includeOriginalText) {
-      this.shortCache.put(cacheKey, { dom: content, hitCount: hit });
+      this.shortCache.put(shortCacheKey, { dom: content, hitCount: hit });
     }
     return { content, hit };
   }
