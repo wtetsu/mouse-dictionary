@@ -12,16 +12,14 @@ const FULLWIDTH_OFFSET = 0xfee0;
 
 // Halfwidth katakana (U+FF61-FF9F, common in manga/UI text) is converted to
 // its fullwidth form so ﾃﾚﾋﾞ looks up the same headwords as テレビ.
-// The conversion is applied per character inside the halfwidth-katakana range
-// only: NFKC over the whole string would fold unrelated characters too
-// (circled digits, fullwidth latin, ligatures...). The trailing NFC pass is a
-// canonical-composition pass, needed to combine the converted voiced marks
-// with the preceding letter (ｶ + ﾞ -> ガ); it performs no compatibility folds.
-const RE_HALFWIDTH_KATAKANA = /[\uFF61-\uFF9F]/;
-const RE_HALFWIDTH_KATAKANA_G = /[\uFF61-\uFF9F]/g;
+// Only maximal halfwidth-katakana runs are normalized: NFKC over the whole
+// string would fold unrelated characters (e.g. ① -> 1). Normalizing each run
+// lets NFKC compose voiced marks with the preceding letter (ｶ + ﾞ -> ガ)
+// without touching anything outside the run.
+const RE_HALFWIDTH_KATAKANA_RUN = /[\uFF61-\uFF9F]+/g;
 
 const convertHalfwidthKatakana = (s: string): string =>
-  s.replace(RE_HALFWIDTH_KATAKANA_G, (c) => c.normalize("NFKC")).normalize("NFC");
+  s.replace(RE_HALFWIDTH_KATAKANA_RUN, (run) => run.normalize("NFKC"));
 
 const createLookupWordsJa = (sourceStr: string): string[] => {
   const str = sourceStr
@@ -35,13 +33,12 @@ const createLookupWordsJa = (sourceStr: string): string[] => {
 
   // For halfwidth input, keep both chains: every candidate retains its usual
   // prefix decomposition (show-all-plausible-candidates design), e.g.
-  // ﾃﾚﾋ -> ﾃﾚﾋ/ﾃﾚ/ﾃ plus テレビ/テレ/テ.
+  // ﾃﾚﾋ -> ﾃﾚﾋ/ﾃﾚ/ﾃ plus テレビ/テレ/テ. Without halfwidth katakana the
+  // replace is a no-op, so no second chain is added.
   const chains = [str];
-  if (RE_HALFWIDTH_KATAKANA.test(str)) {
-    const converted = convertHalfwidthKatakana(str);
-    if (converted !== str) {
-      chains.push(converted);
-    }
+  const converted = convertHalfwidthKatakana(str);
+  if (converted !== str) {
+    chains.push(converted);
   }
 
   for (const chain of chains) {
