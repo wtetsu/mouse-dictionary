@@ -9,7 +9,11 @@ import text from "../../lib/text";
 import trailing from "../../lib/trailing";
 import rule from "../rule";
 
-const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
+const createLookupWordsEn = (
+  rawSourceStr: string,
+  withCapitalized = false,
+  mustIncludeOriginalText = false,
+): string[] => {
   // U+200C: zero width non-joiner
   const replacedSourceStr = rawSourceStr.replaceAll("\u200c", "").replaceAll("/", " / ");
   const sourceStr = text.dealWithHyphens(replacedSourceStr, rule.doLetters);
@@ -17,8 +21,9 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
   const { firstWords, linkedWords } = processSourceString(sourceStr);
 
   const firstWord = firstWords?.[0];
-  const lookupWords = new UniqList();
-  lookupWords.filer = (s) => s.length >= 2 || s === firstWord;
+  const lookupWords = new UniqList<string>();
+  // TODO: This used to assign "filer" (a typo of "filter"), so no filter has ever been applied here.
+  // Enabling "lookupWords.filter = (s) => s.length >= 2 || s === firstWord" would change lookup results.
   lookupWords.merge(linkedWords);
 
   if (firstWord) {
@@ -44,11 +49,11 @@ const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeO
 };
 
 // ["united", "kingdom"] -> ["United", "United Kingdom"]
-const generateTitledExpressions = (words) => {
-  if (!(words?.length >= 1)) {
+const generateTitledExpressions = (words: string[] | undefined): string[] => {
+  if (!words || words.length === 0) {
     return [];
   }
-  const result = [];
+  const result: string[] = [];
 
   let str = toTitle(words[0]);
   if (str.length >= 2) {
@@ -69,13 +74,13 @@ const generateTitledExpressions = (words) => {
   return result;
 };
 
-const processSourceString = (sourceStr) => {
-  const linkedWords = [];
+const processSourceString = (sourceStr: string): { firstWords: string[] | undefined; linkedWords: string[] } => {
+  const linkedWords: string[] = [];
 
   const lowerStr = sourceStr.toLowerCase();
   const isAllLower = lowerStr === sourceStr;
 
-  let firstWords;
+  let firstWords: string[] | undefined;
   if (isAllLower) {
     const words1 = createWordsList(sourceStr);
     for (let i = 0; i < words1.length; i++) {
@@ -103,13 +108,13 @@ const processSourceString = (sourceStr) => {
   }
   return { firstWords, linkedWords };
 };
-const processFirstWord = (firstWord) => [
+const processFirstWord = (firstWord: string): string[] => [
   ...dealWithFirstWordHyphen(firstWord),
   ...divideIntoTwoWords(firstWord),
   ...cutDuplicatedLetters(firstWord),
 ];
 
-const createSlashWord = (wordList) => {
+const createSlashWord = (wordList: string[] | undefined): string[] | null => {
   if (!wordList) {
     return null;
   }
@@ -123,13 +128,13 @@ const createSlashWord = (wordList) => {
 const JOINER_LIST = ["-", "", " "];
 
 // "ladies-in-waiting" -> ["ladies-in-waiting", "lady-in-waiting", ...]
-const dealWithFirstWordHyphen = (theFirstWord) => {
+const dealWithFirstWordHyphen = (theFirstWord: string): string[] => {
   const wordList = theFirstWord.split("-");
   if (wordList.length <= 1) {
     return [];
   }
 
-  const result = new UniqList();
+  const result = new UniqList<string>();
   const splittedFirstWord = wordList[0];
 
   const phraseWithoutHyphen = wordList.join("");
@@ -149,8 +154,8 @@ const dealWithFirstWordHyphen = (theFirstWord) => {
   return result.toArray();
 };
 
-const divideIntoTwoWords = (str) => {
-  const result = [];
+const divideIntoTwoWords = (str: string): string[] => {
+  const result: string[] = [];
   for (let i = 2; i <= str.length - 2; i++) {
     const former = str.slice(0, i);
     const latter = str.slice(i);
@@ -163,7 +168,7 @@ const divideIntoTwoWords = (str) => {
 // craaaaaaaaaaaaazy -> crazy
 // snoooooooze -> snoze
 
-const cutDuplicatedLetters = (str) => {
+const cutDuplicatedLetters = (str: string): string[] => {
   let prevCode = 0;
   let count = 0;
 
@@ -202,13 +207,13 @@ const cutDuplicatedLetters = (str) => {
   return [prefix + middle + postfix, prefix + middle + middle + postfix];
 };
 
-const isValidCharacter = (ch) => rule.doLetters(ch);
+const isValidCharacter = (ch: number) => rule.doLetters(ch);
 
-const createWordsList = (str) => {
+const createWordsList = (str: string): string[][] => {
   if (!str) {
     return [];
   }
-  const wordsList = [];
+  const wordsList: string[][] = [];
 
   const breakIndex = findBreak(str);
   if (breakIndex >= 2) {
@@ -224,7 +229,7 @@ const createWordsList = (str) => {
   return wordsList;
 };
 
-const findBreak = (str) => {
+const findBreak = (str: string): number => {
   let r = -1;
   for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);
@@ -236,8 +241,8 @@ const findBreak = (str) => {
   return r;
 };
 
-const createLinkedWords = (words, isAllLower) => {
-  const lookupWords = [];
+const createLinkedWords = (words: string[], isAllLower: boolean): string[] => {
+  const lookupWords: string[] = [];
 
   const linkedWords = createLinkedWordList(words, isAllLower, 1);
   lookupWords.push(...linkedWords);
@@ -272,7 +277,7 @@ const TRAILING_RULES = [
  *  ['cut', 'back'] -> [ 'cut back', 'cut' ]
  *  [ 'ran', 'with' ]  -> [ 'ran with', 'ran', 'run with', 'run' ]
  */
-const createLinkedWordList = (arr, allLowercase, minWordNum = 1) => {
+const createLinkedWordList = (arr: string[], allLowercase: boolean, minWordNum = 1): string[] => {
   const enablePhrasing = allLowercase;
   const ignoreLowerCase = allLowercase;
 
@@ -281,7 +286,7 @@ const createLinkedWordList = (arr, allLowercase, minWordNum = 1) => {
     const wlist = parseFirstWord(arr[0], ignoreLowerCase);
     linkedWords.push(...wlist);
   }
-  const newPhrases = [];
+  const newPhrases: string[] = [];
   for (let i = 0; i < linkedWords.length; i++) {
     const arr = trailing.tryToReplaceTrailingStrings(linkedWords[i], TRAILING_RULES);
     newPhrases.push(...arr);
@@ -295,14 +300,15 @@ const createLinkedWordList = (arr, allLowercase, minWordNum = 1) => {
  * "Announcements" -> ["Announcement", "announcements", "announcement]
  * "third-party" -> ["third party", "third", "party", "-party"]
  */
-const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
+const parseFirstWord = (sourceStr: string, ignoreLowerCase: boolean): string[] => {
   if (!sourceStr) {
     return [];
   }
-  const wordList = new UniqList();
-  wordList.filer = (a) => a.length >= minLength;
+  const wordList = new UniqList<string>();
+  // TODO: This used to assign "filer" (a typo of "filter"), so no filter has ever been applied here.
+  // Enabling "wordList.filter = (a) => a.length >= 3" would change lookup results.
 
-  let strList;
+  let strList: string[];
   if (ignoreLowerCase) {
     strList = [sourceStr];
   } else {
@@ -334,7 +340,7 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
         wordList.push(first + "-");
       }
       // Add a postfix
-      const last = arr.at(-1);
+      const last = arr[arr.length - 1];
       if (isHyphenLikeCharacter(sourceStr, sourceStr.length - last.length - 1)) {
         wordList.push("-" + last);
       }
@@ -343,7 +349,7 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
   return wordList.toArray();
 };
 
-const isHyphenLikeCharacter = (sourceStr, position) => {
+const isHyphenLikeCharacter = (sourceStr: string, position: number): boolean => {
   const code = sourceStr.charCodeAt(position);
   // Note: This kind of naive comparison is fast enough(Much faster than using Set)
   return code === 45 || code === 8209;
@@ -351,8 +357,8 @@ const isHyphenLikeCharacter = (sourceStr, position) => {
 
 const QUOTE_CHARS = ['"', "'"];
 
-const fetchQuotedStrings = (str) => {
-  const result = [];
+const fetchQuotedStrings = (str: string): string[] => {
+  const result: string[] = [];
   for (const q of QUOTE_CHARS) {
     const nextQuoteIndex = str.indexOf(q, 1);
     if (nextQuoteIndex >= 3) {
@@ -369,7 +375,7 @@ const fetchQuotedStrings = (str) => {
   return result;
 };
 
-const toTitle = (str) => {
+const toTitle = (str: string): string => {
   return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
 };
 export default createLookupWordsEn;

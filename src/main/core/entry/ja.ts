@@ -10,13 +10,13 @@ import rule from "../rule";
 const RE_ALPHABETS_NUMBERS = /[A-Za-z0-9]/g;
 const FULLWIDTH_OFFSET = 0xfee0;
 
-const createLookupWordsJa = (sourceStr) => {
+const createLookupWordsJa = (sourceStr: string): string[] => {
   const str = sourceStr
     .substring(0, 40)
     .replaceAll("\u200c", "") // ZERO WIDTH NON-JOINER
-    .replace(RE_ALPHABETS_NUMBERS, (s) => String.fromCharCode(s.charCodeAt(0) + FULLWIDTH_OFFSET));
+    .replace(RE_ALPHABETS_NUMBERS, (s: string) => String.fromCharCode(s.charCodeAt(0) + FULLWIDTH_OFFSET));
 
-  const result = new UniqList();
+  const result = new UniqList<string>();
 
   result.push(sourceStr); // Add the original word
 
@@ -26,7 +26,7 @@ const createLookupWordsJa = (sourceStr) => {
 
     if (i >= 2) {
       const deinedWords = rule.doJa(part);
-      result.merge(deinedWords);
+      result.merge(deinedWords ?? []);
     }
   }
   return result.toArray();

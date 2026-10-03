@@ -16,9 +16,9 @@ const generators = {
   default: entryGeneratorEn,
 };
 
-const languageDetector = (text) => (isEnglishText(text) ? "en" : "ja");
+const languageDetector = (text: string): string => (isEnglishText(text) ? "en" : "ja");
 
-const isEnglishText = (str) => {
+const isEnglishText = (str: string): boolean => {
   let result = true;
   for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);

@@ -4,12 +4,15 @@
  * Licensed under MIT
  */
 
-export default (allRules, words) => {
+// Rule codes for each phrase, grouped by the number of words
+export type PhraseRule = number[][][];
+
+export default (allRules: PhraseRule, words: string[]): string[][] => {
   const ruleDataList = allRules[words.length];
   if (!ruleDataList) {
     return [];
   }
-  const result = [];
+  const result: string[][] = [];
   for (let i = 0; i < ruleDataList.length; i++) {
     const ruleData = ruleDataList[i];
     const newWordsList = normalizeByRule(words, ruleData);
@@ -18,17 +21,17 @@ export default (allRules, words) => {
   return result;
 };
 
-const VOWELS = new Set(["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]);
+const VOWELS: ReadonlySet<string | undefined> = new Set(["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]);
 
 // ["provide", "him", "with", "money"], [0, 1, 0, 1]
 //   -> [["provide", "A", "with", "B"]]
 //
 // ["pick", "her", "up"], [0, -1, 0]
 //   -> [["pick", "up]]
-const normalizeByRule = (words, ruleData) => {
-  const processedWords = [];
+const normalizeByRule = (words: string[], ruleData: number[]): string[][] => {
+  const processedWords: string[] = [];
   let wordIndex = 0;
-  const replaceIndices = [];
+  const replaceIndices: number[] = [];
   let lastIsA = false;
   for (let i = 0; i < ruleData.length; i++) {
     if (wordIndex >= words.length) {
@@ -45,7 +48,7 @@ const normalizeByRule = (words, ruleData) => {
       if (lastIsA && VOWELS.has(newWord?.[0])) {
         processedWords[processedWords.length - 1] = "an";
       }
-      processedWords.push(newWord);
+      processedWords.push(newWord as string);
       lastIsA = newWord === "a";
     }
   }
@@ -56,7 +59,8 @@ const normalizeByRule = (words, ruleData) => {
   return completePhraseProcess(processedWords, replaceIndices);
 };
 
-const processRuleCode = (ruleCode, word) => {
+// newWord: null means a placeholder that will be replaced later, undefined means no word
+const processRuleCode = (ruleCode: number, word: string): { newWord?: string | null; indexPlus: number } => {
   if (ruleCode === 0) {
     return { newWord: word, indexPlus: 1 };
   }
@@ -81,7 +85,7 @@ const processRuleCode = (ruleCode, word) => {
   return { indexPlus: 0 };
 };
 
-const completePhraseProcess = (processedWords, replaceIndices) => {
+const completePhraseProcess = (processedWords: string[], replaceIndices: number[]): string[][] => {
   if (replaceIndices.length === 1) {
     const processedWords2 = [...processedWords];
 

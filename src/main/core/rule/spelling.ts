@@ -4,9 +4,9 @@
  * Licensed under MIT
  */
 
-export default (spellingRule, words) => {
+export default (spellingRule: Map<string, string>, words: string[]): string[] | null => {
   let converted = false;
-  const convertedWords = [];
+  const convertedWords: string[] = [];
   for (let j = 0; j < words.length; j++) {
     const word = words[j];
     const convertedWord = spellingRule.get(word);
