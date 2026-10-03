@@ -106,7 +106,7 @@ export default class Generator {
       const isShort = word.length <= shortWordLength;
       const isShortWord = word.length <= this.shortWordLength;
       data.push({
-        head: escapeHtml(word),
+        head: word,
         desc: this.#createDescriptionHtml(desc),
         isShort,
         isShortWord,
@@ -155,17 +155,4 @@ const compileReplaceRule = (rule: Replace, renderParameters: unknown): CompiledR
     search: re,
     replace,
   };
-};
-
-const mapForEscapeHtml: Record<string, string> = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': "&quot;",
-};
-
-const reForEscapeHtml = /&|<|>|"/g;
-
-const escapeHtml = (str: string): string => {
-  return str.replace(reForEscapeHtml, (ch) => mapForEscapeHtml[ch]);
 };

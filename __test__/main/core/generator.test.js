@@ -63,3 +63,16 @@ test("Generator should fail to compile regexp with invalid search pattern", () =
   // Fail to compile regexp
   new Generator(settings);
 });
+
+test("Generator should escape headwords exactly once", () => {
+  const generator = new Generator(defaultSettings);
+  const { html } = generator.generate(["AT&T", "<b>"], { "AT&T": "test1", "<b>": "test2" }, false);
+
+  const container = document.createElement("div");
+  container.innerHTML = html;
+  expect(container.querySelector("b")).toBeNull();
+  expect(container.textContent).toContain("AT&T");
+  expect(container.textContent).toContain("<b>");
+  const pronunciations = [...container.querySelectorAll("[data-md-pronunciation]")];
+  expect(pronunciations.map((e) => e.getAttribute("data-md-pronunciation"))).toEqual(["AT&T", "<b>"]);
+});
