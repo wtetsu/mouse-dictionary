@@ -180,7 +180,7 @@ const setDialogEvents = (dialog: HTMLElement): void => {
 };
 
 const createSnapGuideElement = () => {
-  const guideElement = dom.create("<div>Shift+Move: Smart-snap</div");
+  const guideElement = dom.create("<div>Shift+Move: Smart-snap</div>");
   dom.applyStyles(guideElement, {
     right: "0px",
     top: "0px",
