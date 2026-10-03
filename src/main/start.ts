@@ -6,7 +6,7 @@
 
 import launch from "./core/launch";
 
-const main = async () => {
+const main = async (): Promise<void> => {
   DEBUG && console.time("launch");
   await launch();
   DEBUG && console.timeEnd("launch");

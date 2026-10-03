@@ -8,21 +8,36 @@ import dom from "../lib/dom";
 import Draggable from "../lib/draggable";
 import sound from "../lib/sound";
 import traverser from "../lib/traverser";
+import type { Rect } from "../lib/utils";
 import utils from "../lib/utils";
+import type { DialogStyles, ParsedSettings } from "../types";
 import config from "./config";
 import entryDefault from "./entry/default";
+import type { UpdateContent } from "./lookuper";
 import Lookuper from "./lookuper";
 import rule from "./rule";
 
 const POSITION_FIELDS = ["left", "top", "width", "height"];
 
-const attach = async (settings, dialog, doUpdateContent) => {
+// Messages sent from other extensions (via background) or the background itself
+type Message = {
+  type?: string;
+  text?: string;
+  withCapitalized?: boolean;
+  mustIncludeOriginalText?: boolean;
+  enableShortWord?: boolean;
+};
+
+const attach = async (settings: ParsedSettings, dialog: HTMLElement, doUpdateContent: UpdateContent): Promise<void> => {
   let enableDefault = true;
 
   const traverse = traverser.build(rule.doLetters, settings.parseWordsLimit);
   const lookuper = new Lookuper(settings, entryDefault(), doUpdateContent);
 
-  const draggable = new Draggable(settings.normalDialogStyles, settings.movingDialogStyles);
+  const draggable = new Draggable(
+    settings.normalDialogStyles as DialogStyles,
+    settings.movingDialogStyles as DialogStyles,
+  );
   draggable.events.change = (e) => config.savePosition(e);
   draggable.add(dialog);
 
@@ -33,7 +48,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
   });
 
   document.body.addEventListener("mouseup", async (e) => {
-    draggable.onMouseUp(e);
+    draggable.onMouseUp();
     lookuper.suspended = false;
 
     const updated = await lookuper.aimedLookup(utils.getSelection());
@@ -41,7 +56,11 @@ const attach = async (settings, dialog, doUpdateContent) => {
       draggable.resetScroll();
     }
 
-    const range = utils.omap(dialog.style, utils.convertToInt, POSITION_FIELDS);
+    const range = utils.omap(
+      dialog.style as unknown as Record<string, string>,
+      utils.convertToInt,
+      POSITION_FIELDS,
+    ) as Rect;
     const didMouseUpOnTheWindow = utils.isInsideRange(range, {
       x: e.clientX,
       y: e.clientY,
@@ -49,7 +68,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
     lookuper.halfLocked = didMouseUpOnTheWindow;
   });
 
-  const onMouseMoveFirst = async (e) => {
+  const onMouseMoveFirst = async (e: MouseEvent): Promise<void> => {
     // Wait until rule loading finish
     await rule.load();
 
@@ -57,10 +76,10 @@ const attach = async (settings, dialog, doUpdateContent) => {
     onMouseMove(e);
   };
 
-  const onMouseMoveSecondOrLater = async (e) => {
+  const onMouseMoveSecondOrLater = async (e: MouseEvent): Promise<void> => {
     draggable.onMouseMove(e);
     if (enableDefault) {
-      const textList = traverse(e.target, e.clientX, e.clientY);
+      const textList = traverse(e.target as HTMLElement, e.clientX, e.clientY);
       const updated = await lookuper.lookupAll(textList);
       if (updated) {
         draggable.resetScroll();
@@ -72,24 +91,30 @@ const attach = async (settings, dialog, doUpdateContent) => {
 
   document.body.addEventListener("keydown", (e) => {
     if (e.key === "Shift") {
-      draggable.activateSnap(e);
+      draggable.activateSnap();
     }
   });
 
   document.body.addEventListener("keyup", (e) => {
     if (e.key === "Shift") {
-      draggable.deactivateSnap(e);
+      draggable.deactivateSnap();
     }
   });
 
   chrome.runtime.onMessage.addListener((request) => {
-    const m = request.message;
+    const m: Message | undefined = request.message;
     switch (m?.type) {
       case "text":
-        lookuper.update(m.text, m.withCapitalized, m.mustIncludeOriginalText, m.enableShortWord);
+        lookuper.update(
+          m.text as string,
+          m.withCapitalized as boolean,
+          m.mustIncludeOriginalText as boolean,
+          m.enableShortWord as boolean,
+        );
         break;
       case "mousemove":
-        draggable.onMouseMove(m);
+        // The message carries mouse coordinates like a MouseEvent
+        draggable.onMouseMove(m as unknown as MouseEvent);
         break;
       case "mouseup":
         draggable.onMouseUp();
@@ -118,7 +143,7 @@ const attach = async (settings, dialog, doUpdateContent) => {
   }
 
   // Guide handling
-  let snapGuide = null;
+  let snapGuide: HTMLElement | null = null;
   draggable.events.move = () => {
     if (snapGuide) {
       return;
@@ -135,21 +160,22 @@ const attach = async (settings, dialog, doUpdateContent) => {
   };
 };
 
-const setDialogEvents = (dialog) => {
+const setDialogEvents = (dialog: HTMLElement): void => {
   dialog.addEventListener("mouseenter", (e) => {
-    for (const elem of e.target.querySelectorAll("[data-md-pronunciation]")) {
+    const target = e.target as HTMLElement;
+    for (const elem of target.querySelectorAll<HTMLElement>("[data-md-pronunciation]")) {
       if (elem.dataset.mdPronunciationSet) {
         continue;
       }
       elem.dataset.mdPronunciationSet = "true";
-      elem.addEventListener("click", () => sound.pronounce(elem.dataset.mdPronunciation));
+      elem.addEventListener("click", () => sound.pronounce(elem.dataset.mdPronunciation as string));
     }
-    for (const elem of e.target.querySelectorAll("[data-md-hovervisible]")) {
+    for (const elem of target.querySelectorAll<HTMLElement>("[data-md-hovervisible]")) {
       elem.style.visibility = "visible";
     }
   });
   dialog.addEventListener("mouseleave", (e) => {
-    for (const elem of e.target.querySelectorAll("[data-md-hovervisible]")) {
+    for (const elem of (e.target as HTMLElement).querySelectorAll<HTMLElement>("[data-md-hovervisible]")) {
       elem.style.visibility = "hidden";
     }
   });

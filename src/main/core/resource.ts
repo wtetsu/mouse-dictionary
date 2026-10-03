@@ -9,7 +9,18 @@
 
 import utils from "../lib/utils";
 
-const resources = {
+type ResourceKey =
+  | "continueProcessingPdf"
+  | "doesntSupportFrame"
+  | "downloadingPdf"
+  | "preparingPdf"
+  | "nonPdf"
+  | "cannotFetchLocalPdf"
+  | "needToPrepareDict";
+
+type Resource = Partial<Record<ResourceKey, string>>;
+
+const resources: Record<"ja" | "en", Resource> = {
   ja: {
     continueProcessingPdf:
       "このPDFファイルをダウンロードし、Mouse Dictionaryの内部ビューアで表示します。よろしいですか？\n(設定画面で、この確認ダイアログ表示をオフにすることもできます)",
@@ -53,8 +64,8 @@ if (BROWSER === "safari") {
 
 const decideLanguage = () => utils.pickLanguage(navigator.languages, Object.keys(resources));
 
-export default (key) => {
-  const lang = decideLanguage();
+export default (key: ResourceKey): string | null => {
+  const lang = decideLanguage() as keyof typeof resources;
   const res = resources[lang];
   return res[key] ?? null;
 };

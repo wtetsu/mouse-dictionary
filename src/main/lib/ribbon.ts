@@ -11,7 +11,7 @@ const INDICATORS = ["⠿", "⠿", "⠿", "⠷", "⠯", "⠟", "⠻", "⠽", "⠾
 const DEFAULT_STYLE =
   "position:absolute;width:100%;bottom:0;background-color:black;opacity:0.90;text-align:center;font-size:x-large;color:#FFFFFF";
 
-type UpdateRibbon = (text: string, newIndicators?: string[]) => void;
+type UpdateRibbon = (text: string | null, newIndicators?: string[]) => void;
 type CloseRibbon = () => void;
 
 const create = (style = ""): [UpdateRibbon, CloseRibbon] => {

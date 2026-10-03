@@ -9,12 +9,30 @@ import ShortCache from "../lib/shortcache";
 import storage from "../lib/storage";
 import text from "../lib/text";
 import utils from "../lib/utils";
+import type { ParsedSettings } from "../types";
+import type { BuildEntries } from "./entry";
 import Generator from "./generator";
 
 const TEXT_LENGTH_LIMIT = 128;
 
+export type UpdateContent = (content: HTMLElement, hitCount: number) => void;
+type CacheData = { dom: HTMLElement; hitCount: number };
+type Content = { content?: HTMLElement; hit?: number };
+
 export default class Lookuper {
-  constructor(settings, doBuildEntry, doUpdateContent) {
+  lookupWithCapitalized: boolean;
+  doUpdateContent: UpdateContent;
+  doBuildEntry: BuildEntries;
+  lastText: string | null;
+  aimed: boolean;
+  suspended: boolean;
+  halfLocked: boolean;
+  textLengthLimit: number;
+  counter: number;
+  generator: Generator;
+  shortCache: ShortCache<CacheData>;
+
+  constructor(settings: ParsedSettings, doBuildEntry: BuildEntries, doUpdateContent: UpdateContent) {
     this.lookupWithCapitalized = settings.lookupWithCapitalized;
     this.doUpdateContent = doUpdateContent;
     this.doBuildEntry = doBuildEntry;
@@ -28,11 +46,11 @@ export default class Lookuper {
 
     // Compile templates, regular expressions so that it works fast
     this.generator = new Generator(settings);
-    const cacheSize = process.env.NODE_ENV === "production" ? 100 : 0;
+    const cacheSize = import.meta.env.PROD ? 100 : 0;
     this.shortCache = new ShortCache(cacheSize);
   }
 
-  #canUpdate() {
+  #canUpdate(): boolean {
     if (this.suspended) {
       return false;
     }
@@ -45,18 +63,18 @@ export default class Lookuper {
     return true;
   }
 
-  async lookup(text) {
+  async lookup(text: string): Promise<boolean> {
     return this.lookupAll([text]);
   }
 
-  async lookupAll(textList) {
+  async lookupAll(textList: string[]): Promise<boolean> {
     if (!this.#canUpdate()) {
       return false;
     }
     return await this.#updateAll(textList, this.lookupWithCapitalized, false, true, 0);
   }
 
-  async aimedLookup(text) {
+  async aimedLookup(text: string): Promise<boolean> {
     if (!text) {
       this.aimed = false;
       return false;
@@ -68,25 +86,43 @@ export default class Lookuper {
     return await this.update(text, true, true, false, 1);
   }
 
-  async update(text, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
+  async update(
+    text: string,
+    withCapitalized: boolean,
+    includeOriginalText: boolean,
+    enableShortWord: boolean,
+    threshold = 0,
+  ): Promise<boolean> {
     if (!text) {
       return false;
     }
     return await this.#updateAll([text], withCapitalized, includeOriginalText, enableShortWord, threshold);
   }
 
-  async #updateAll(textList, withCapitalized, includeOriginalText, enableShortWord, threshold = 0) {
+  async #updateAll(
+    textList: string[],
+    withCapitalized: boolean,
+    includeOriginalText: boolean,
+    enableShortWord: boolean,
+    threshold = 0,
+  ): Promise<boolean> {
     const { content, hit } = await this.#createContent(textList, withCapitalized, includeOriginalText, enableShortWord);
 
-    if (hit >= threshold) {
-      this.doUpdateContent(content, hit);
+    // hit is undefined when the content is not updated
+    if ((hit as number) >= threshold) {
+      this.doUpdateContent(content as HTMLElement, hit as number);
       return true;
     }
     return false;
   }
 
-  async #createContent(sourceTextList, withCapitalized, includeOriginalText, enableShortWord) {
-    const textList = [];
+  async #createContent(
+    sourceTextList: string[],
+    withCapitalized: boolean,
+    includeOriginalText: boolean,
+    enableShortWord: boolean,
+  ): Promise<Content> {
+    const textList: string[] = [];
     for (let i = 0; i < sourceTextList.length; i++) {
       const text = sourceTextList[i].substring(0, this.textLengthLimit);
       if (text) {
@@ -117,13 +153,18 @@ export default class Lookuper {
     return { content, hit };
   }
 
-  async run(textToLookup, withCapitalized, includeOrgText, enableShortWord) {
+  async run(textToLookup: string, withCapitalized: boolean, includeOrgText: boolean, enableShortWord: boolean) {
     return this.runAll([textToLookup], withCapitalized, includeOrgText, enableShortWord);
   }
 
-  async runAll(textList, withCapitalized, includeOrgText, enableShortWord) {
-    const allEntries = [];
-    const langs = [];
+  async runAll(
+    textList: string[],
+    withCapitalized: boolean,
+    includeOrgText: boolean,
+    enableShortWord: boolean,
+  ): Promise<{ html: string; hit: number }> {
+    const allEntries: string[] = [];
+    const langs: string[] = [];
     for (let i = 0; i < textList.length; i++) {
       const text = textList[i];
       const { entries, lang } = this.doBuildEntry(text, withCapitalized, includeOrgText);
@@ -139,7 +180,9 @@ export default class Lookuper {
   }
 }
 
-const fetchDescriptions = async (entries) => {
+const fetchDescriptions = async (
+  entries: string[],
+): Promise<{ heads: string[]; descriptions: Record<string, unknown> }> => {
   const primaryDescriptions = await storage.local.get(entries);
   const primaryHeads = entries.filter((e) => primaryDescriptions[e]);
 
@@ -154,13 +197,13 @@ const fetchDescriptions = async (entries) => {
   return { heads, descriptions };
 };
 
-const extractRefPatterns = (descriptions) => {
-  const resultSet = new Set();
+const extractRefPatterns = (descriptions: Record<string, unknown>): string[] => {
+  const resultSet = new Set<string>();
   const existingKeys = new Set(Object.keys(descriptions));
   const descList = Object.values(descriptions);
 
   for (let i = 0; i < descList.length; i++) {
-    const refList = text.extractRefPatternsInText(descList[i]);
+    const refList = text.extractRefPatternsInText(descList[i] as string);
     for (const ref of refList) {
       if (existingKeys.has(ref)) {
         continue;

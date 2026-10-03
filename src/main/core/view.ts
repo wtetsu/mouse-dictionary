@@ -6,8 +6,16 @@
 
 import dom from "../lib/dom";
 import template from "../lib/template";
+import type { DialogStyles, ParsedSettings } from "../types";
 
-const createDialogElement = (settings) => {
+export type View = { dialog: HTMLElement; content: HTMLElement };
+
+type ViewSettings = Pick<
+  ParsedSettings,
+  "dialogTemplate" | "contentWrapperTemplate" | "backgroundColor" | "width" | "height"
+> & { normalDialogStyles?: DialogStyles | null };
+
+const createDialogElement = (settings: ViewSettings): HTMLElement => {
   const html = template.render(settings.dialogTemplate, {
     backgroundColor: settings.backgroundColor,
     width: settings.width,
@@ -19,7 +27,7 @@ const createDialogElement = (settings) => {
   return dialog;
 };
 
-const create = (settings) => {
+const create = (settings: ViewSettings): View => {
   const dialog = createDialogElement(settings);
   const content = dom.create(settings.contentWrapperTemplate);
   dialog.appendChild(content);

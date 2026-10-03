@@ -13,14 +13,14 @@ const invoke = async () => {
 
   updateRibbon(res("downloadingPdf"));
 
-  let response;
+  let response: Response;
   try {
     response = await fetch(location.href);
   } catch (e) {
     if (location.href.startsWith("file://")) {
       updateRibbon(res("cannotFetchLocalPdf"), [""]);
     } else {
-      updateRibbon(e.message, [""]);
+      updateRibbon((e as Error).message, [""]);
     }
     return;
   }
@@ -45,13 +45,13 @@ const invoke = async () => {
   closeRibbon();
 };
 
-const isPdf = (arrayBuffer) => {
+const isPdf = (arrayBuffer: ArrayBuffer): boolean => {
   const first4 = new Uint8Array(arrayBuffer.slice(0, 4));
   return first4[0] === 37 && first4[1] === 80 && first4[2] === 68 && first4[3] === 70;
 };
 
 // Uint8Array.prototype.toBase64() would be simpler, but it is not available in all target browsers yet
-const convertToBase64 = (arrayBuffer) => {
+const convertToBase64 = (arrayBuffer: ArrayBuffer): string => {
   const bytes = new Uint8Array(arrayBuffer);
   const CHUNK_SIZE = 0x8000; // Avoids exceeding the maximum number of function arguments
   let binary = "";

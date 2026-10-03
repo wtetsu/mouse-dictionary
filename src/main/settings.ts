@@ -4,7 +4,9 @@
  * Licensed under MIT
  */
 
-export default {
+import type { MouseDictionarySettings } from "./types";
+
+const defaultSettings: MouseDictionarySettings = {
   shortWordLength: 2,
   cutShortWordDescription: 30,
   parseWordsLimit: 8,
@@ -100,3 +102,5 @@ export default {
 </div>`,
   domType: "shadow",
 };
+
+export default defaultSettings;

@@ -6,7 +6,7 @@
 
 import ponyfill from "./ponyfill/ponyfill";
 
-export type Styles = Record<string, string>;
+export type Styles = Record<string, string | number>;
 
 // Callers pass HTML that has a single root element
 const create = <T extends Element = HTMLElement>(html: string): T => {
@@ -159,8 +159,8 @@ const pxToFloat = (str: string | null | undefined): number => {
  */
 class VirtualStyle {
   element: HTMLElement;
-  stagedStyles: Map<string, string>;
-  appliedStyles: Map<string, string>;
+  stagedStyles: Map<string, string | number>;
+  appliedStyles: Map<string, string | number>;
 
   constructor(element: HTMLElement) {
     this.element = element;
@@ -168,7 +168,7 @@ class VirtualStyle {
     this.appliedStyles = new Map();
   }
 
-  set(prop: string, value: string): void {
+  set(prop: string, value: string | number): void {
     if (this.stagedStyles.get(prop) === value) {
       return;
     }
@@ -196,7 +196,10 @@ class VirtualStyle {
     }
   }
 
-  getUpdatedData(stagedStyles: Map<string, string>, appliedStyles: Map<string, string>): Styles | null {
+  getUpdatedData(
+    stagedStyles: Map<string, string | number>,
+    appliedStyles: Map<string, string | number>,
+  ): Styles | null {
     const diff: Styles = {};
     let count = 0;
     for (const [prop, stagedValue] of stagedStyles) {

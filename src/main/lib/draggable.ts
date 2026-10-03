@@ -4,6 +4,7 @@
  * Licensed under MIT
  */
 
+import type { Styles } from "./dom";
 import dom from "./dom";
 import edge from "./edge";
 import snap from "./snap";
@@ -30,8 +31,8 @@ export type DraggableEvents = {
 };
 
 export default class Draggable {
-  normalStyles: Record<string, string>;
-  movingStyles: Record<string, string>;
+  normalStyles: Styles;
+  movingStyles: Styles;
   mainElement: HTMLElement | null;
   mainElementStyle: InstanceType<typeof dom.VirtualStyle> | null;
   current: Square;
@@ -49,7 +50,7 @@ export default class Draggable {
   changingSquare!: ChangingSquare | null;
   mode!: number;
 
-  constructor(normalStyles: Record<string, string>, movingStyles: Record<string, string>) {
+  constructor(normalStyles: Styles, movingStyles: Styles) {
     this.normalStyles = normalStyles;
     this.movingStyles = movingStyles;
     this.mainElement = null;

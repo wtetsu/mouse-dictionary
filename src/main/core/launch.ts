@@ -6,11 +6,14 @@
 
 import dom from "../lib/dom";
 import utils from "../lib/utils";
+import type { InitialPosition, ParsedSettings } from "../types";
+import type { Position } from "./config";
 import config from "./config";
 import events from "./events";
 import pdf from "./pdf";
 import res from "./resource";
 import rule from "./rule";
+import type { View } from "./view";
 import view from "./view";
 
 const SHADOW_HOST_ID = `${DIALOG_ID}_SH`;
@@ -51,7 +54,7 @@ const processFirstLaunch = async () => {
   try {
     initialize(settings, position);
   } catch (e) {
-    alert(e.message);
+    alert((e as Error).message);
     console.error(e);
     return;
   }
@@ -60,20 +63,20 @@ const processFirstLaunch = async () => {
   rule.load();
 };
 
-const launchPdfViewer = (settings) => {
-  const toContinue = settings.skipPdfConfirmation || confirm(res("continueProcessingPdf"));
+const launchPdfViewer = (settings: ParsedSettings): void => {
+  const toContinue = settings.skipPdfConfirmation || confirm(res("continueProcessingPdf") as string);
   if (!toContinue) {
     return;
   }
   try {
     pdf.invoke();
   } catch (e) {
-    alert(e.message);
+    alert((e as Error).message);
     console.error(e);
   }
 };
 
-const onPdfDocument = (url, pdfUrlPattern) => {
+const onPdfDocument = (url: string, pdfUrlPattern: string): boolean => {
   if (!pdfUrlPattern) {
     return isOnPdfDocument();
   }
@@ -94,7 +97,7 @@ const isOnPdfDocument = () => {
 
   // Traditional logic
   const e = document.body?.children?.[0];
-  const embedPdf = e?.tagName === "EMBED" && e?.type === "application/pdf";
+  const embedPdf = e?.tagName === "EMBED" && (e as HTMLEmbedElement).type === "application/pdf";
   if (embedPdf) {
     return true;
   }
@@ -102,7 +105,7 @@ const isOnPdfDocument = () => {
   return false;
 };
 
-const processSecondOrLaterLaunch = async (existingElement) => {
+const processSecondOrLaterLaunch = async (existingElement: HTMLElement): Promise<void> => {
   const userSettings = await config.loadSettings();
   toggleDialog(existingElement, userSettings);
 };
@@ -112,7 +115,7 @@ const isFramePage = () => {
   return frames?.length >= 1;
 };
 
-const toggleDialog = (area, userSettings) => {
+const toggleDialog = (area: HTMLElement, userSettings: ParsedSettings): void => {
   const isHidden = area.getAttribute("data-mouse-dictionary-hidden");
   if (isHidden === "true") {
     dom.applyStyles(area, userSettings.normalDialogStyles);
@@ -123,7 +126,7 @@ const toggleDialog = (area, userSettings) => {
   }
 };
 
-const initialize = (userSettings, storedPosition) => {
+const initialize = (userSettings: ParsedSettings, storedPosition: Position): void => {
   const area = view.create(userSettings);
   area.dialog.id = DIALOG_ID;
   dom.applyStyles(area.dialog, userSettings.hiddenDialogStyles);
@@ -142,7 +145,7 @@ const initialize = (userSettings, storedPosition) => {
   setEvents(area, userSettings);
 };
 
-const createShadowRoot = (dialog) => {
+const createShadowRoot = (dialog: HTMLElement): HTMLElement => {
   const shadowHost = document.createElement("div");
   shadowHost.id = SHADOW_HOST_ID;
   const shadowRoot = shadowHost.attachShadow({ mode: "open" });
@@ -170,8 +173,8 @@ const createShadowRoot = (dialog) => {
   return shadowHost;
 };
 
-const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
-  let newPosition;
+const decideInitialStyles = (userSettings: ParsedSettings, storedPosition: Position, dialogWidth: number) => {
+  let newPosition: Partial<Record<string, number | null>>;
   if (userSettings.initialPosition === "keep") {
     newPosition = utils.optimizeInitialPosition(storedPosition);
   } else {
@@ -182,11 +185,13 @@ const decideInitialStyles = (userSettings, storedPosition, dialogWidth) => {
   return newStyles;
 };
 
-const setEvents = async (area, userSettings) => {
-  let doUpdate = (newDom) => dom.replace(area.content, newDom);
+const setEvents = async (area: View, userSettings: ParsedSettings): Promise<void> => {
+  let doUpdate = (newDom: HTMLElement): void | Promise<void> => dom.replace(area.content, newDom);
 
   events
-    .attach(userSettings, area.dialog, (newDom) => doUpdate(newDom))
+    .attach(userSettings, area.dialog, (newDom) => {
+      doUpdate(newDom);
+    })
     .catch((e) => {
       console.error(e);
       alert(e.message);
@@ -206,14 +211,14 @@ const setEvents = async (area, userSettings) => {
     if (!(await config.isDataReady())) {
       return;
     }
-    doUpdate = (newDom) => dom.replace(area.content, newDom);
+    doUpdate = (newDom: HTMLElement) => dom.replace(area.content, newDom);
   };
 };
 
 const EDGE_SPACE = 5;
 
-const getInitialPosition = (type, dialogWidth) => {
-  const position = {};
+const getInitialPosition = (type: InitialPosition, dialogWidth: number): { left?: number } => {
+  const position: { left?: number } = {};
   switch (type) {
     case "right":
       position.left = document.documentElement.clientWidth - dialogWidth - EDGE_SPACE;
@@ -225,7 +230,7 @@ const getInitialPosition = (type, dialogWidth) => {
   return position;
 };
 
-const useShadowDom = (settings) => {
+const useShadowDom = (settings: ParsedSettings): boolean => {
   if (settings?.domType === "light") {
     return false;
   }

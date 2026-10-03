@@ -3,7 +3,6 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
-import { produce } from "immer";
 import { useCallback, useEffect, useRef } from "react";
 import { dom, entryDefault, Generator, storage, view } from "../extern";
 import { debounce } from "../logic";
@@ -87,12 +86,8 @@ class Preview {
   }
 
   createWindow(settings: MouseDictionarySettings): PreviewWindow {
-    const tmpSettings = produce(settings as Partial<MouseDictionarySettings>, (d) => {
-      d.normalDialogStyles = undefined;
-      d.hiddenDialogStyles = undefined;
-      d.movingDialogStyles = undefined;
-    });
-    return view.create(tmpSettings) as PreviewWindow;
+    // The preview window does not use the dialog styles
+    return view.create({ ...settings, normalDialogStyles: undefined }) as PreviewWindow;
   }
 
   refreshGenerator(settings: MouseDictionarySettings): void {

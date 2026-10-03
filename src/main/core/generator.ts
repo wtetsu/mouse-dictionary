@@ -5,9 +5,40 @@
  */
 
 import template from "../lib/template";
+import type { MouseDictionarySettings, Replace } from "../types";
+
+type GeneratorSettings = Pick<
+  MouseDictionarySettings,
+  | "shortWordLength"
+  | "cutShortWordDescription"
+  | "headFontColor"
+  | "descFontColor"
+  | "headFontSize"
+  | "descFontSize"
+  | "replaceRules"
+  | "contentTemplate"
+>;
+
+type CompiledReplaceRule = { search: RegExp; replace: string };
+
+type WordParameter = {
+  head: string;
+  desc: string;
+  isShort: boolean;
+  isShortWord: boolean;
+  shortDesc: string;
+  isFirst: boolean;
+  isLast: boolean;
+};
 
 export default class Generator {
-  constructor(settings) {
+  shortWordLength: number;
+  cutShortWordDescription: number;
+  baseParameters: Record<string, string>;
+  compiledReplaceRules: CompiledReplaceRule[];
+  contentTemplate: string;
+
+  constructor(settings: GeneratorSettings) {
     this.shortWordLength = settings.shortWordLength;
     this.cutShortWordDescription = settings.cutShortWordDescription;
 
@@ -32,13 +63,17 @@ export default class Generator {
     template.parse(settings.contentTemplate);
   }
 
-  generate(words, descriptions, enableShortWordLength = true) {
+  generate(
+    words: string[],
+    descriptions: Record<string, unknown>,
+    enableShortWordLength = true,
+  ): { html: string; hitCount: number } {
     const html = this.#createContentHtml(words, descriptions, enableShortWordLength);
     const hitCount = Object.keys(descriptions).length;
     return { html, hitCount };
   }
 
-  #createContentHtml(words, descriptions, enableShortWordLength) {
+  #createContentHtml(words: string[], descriptions: Record<string, unknown>, enableShortWordLength: boolean): string {
     const parameters = {
       ...this.baseParameters,
       words: this.#createWordsParameter(words, descriptions, enableShortWordLength),
@@ -46,7 +81,7 @@ export default class Generator {
     return template.render(this.contentTemplate, parameters);
   }
 
-  #createDescriptionHtml(sourceText) {
+  #createDescriptionHtml(sourceText: string): string {
     let result = sourceText;
     for (let i = 0; i < this.compiledReplaceRules.length; i++) {
       const rule = this.compiledReplaceRules[i];
@@ -55,8 +90,12 @@ export default class Generator {
     return result;
   }
 
-  #createWordsParameter(words, descriptions, enableShortWordLength) {
-    const data = [];
+  #createWordsParameter(
+    words: string[],
+    descriptions: Record<string, unknown>,
+    enableShortWordLength: boolean,
+  ): WordParameter[] {
+    const data: WordParameter[] = [];
     const shortWordLength = enableShortWordLength ? this.shortWordLength : 0;
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
@@ -85,8 +124,8 @@ export default class Generator {
   }
 }
 
-const compileReplaceRules = (replaceRules, renderParameters) => {
-  const compiledReplaceRules = [];
+const compileReplaceRules = (replaceRules: Replace[], renderParameters: unknown): CompiledReplaceRule[] => {
+  const compiledReplaceRules: CompiledReplaceRule[] = [];
   for (let i = 0; i < replaceRules.length; i++) {
     const compiledRule = compileReplaceRule(replaceRules[i], renderParameters);
     if (compiledRule) {
@@ -96,7 +135,7 @@ const compileReplaceRules = (replaceRules, renderParameters) => {
   return compiledReplaceRules;
 };
 
-const compileReplaceRule = (rule, renderParameters) => {
+const compileReplaceRule = (rule: Replace, renderParameters: unknown): CompiledReplaceRule | null => {
   if (!rule.search) {
     return null;
   }
@@ -118,7 +157,7 @@ const compileReplaceRule = (rule, renderParameters) => {
   };
 };
 
-const mapForEscapeHtml = {
+const mapForEscapeHtml: Record<string, string> = {
   "&": "&amp;",
   "<": "&lt;",
   ">": "&gt;",
@@ -127,6 +166,6 @@ const mapForEscapeHtml = {
 
 const reForEscapeHtml = /&|<|>|"/g;
 
-const escapeHtml = (str) => {
+const escapeHtml = (str: string): string => {
   return str.replace(reForEscapeHtml, (ch) => mapForEscapeHtml[ch]);
 };

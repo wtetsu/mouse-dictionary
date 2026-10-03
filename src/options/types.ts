@@ -4,43 +4,16 @@
  * Licensed under MIT
  */
 
-export type InitialPosition = "left" | "right" | "keep";
+// Settings types are shared with the main feature
+import type { MouseDictionarySettings } from "../main/types";
 
-export type MouseDictionaryBasicSettings = {
-  initialPosition: InitialPosition;
-  backgroundColor: string;
-  headFontColor: string;
-  descFontColor: string;
-  headFontSize: string;
-  descFontSize: string;
-  width: number;
-  height: number;
-  skipPdfConfirmation: boolean;
-};
-
-export type MouseDictionaryAdvancedSettings = {
-  shortWordLength: number;
-  cutShortWordDescription: number;
-  lookupWithCapitalized: boolean;
-  parseWordsLimit: number;
-  replaceRules: Replace[];
-  normalDialogStyles: string;
-  movingDialogStyles: string;
-  hiddenDialogStyles: string;
-  contentWrapperTemplate: string;
-  dialogTemplate: string;
-  contentTemplate: string;
-  pdfUrl: string;
-  domType: "shadow" | "light";
-};
-
-export type MouseDictionarySettings = MouseDictionaryBasicSettings & MouseDictionaryAdvancedSettings;
-
-export type Replace = {
-  key?: string;
-  search: string;
-  replace: string;
-};
+export type {
+  InitialPosition,
+  MouseDictionaryAdvancedSettings,
+  MouseDictionaryBasicSettings,
+  MouseDictionarySettings,
+  Replace,
+} from "../main/types";
 
 export type UpdateEventHandler = (
   statePatch: Record<string, any> | undefined,
