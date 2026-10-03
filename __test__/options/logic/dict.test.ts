@@ -63,6 +63,22 @@ test("getPacks falls back to the single-dictionary layout without a manifest", a
   PACK_FILES["/data/packs.json"] = saved;
 });
 
+test("getPacks falls back when fetching the manifest throws", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => {
+      throw new TypeError("Failed to fetch");
+    }),
+  );
+  const dict = await import("../../../src/options/logic/dict");
+  expect(await dict.getPacks()).toEqual([{ id: "en-ja", metaFile: "/data/dict.json" }]);
+  // restore the file-based mock for subsequent tests
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => fetchMock(url)),
+  );
+});
+
 test("registerPacks merges descriptions when two packs share a headword", async () => {
   const dict = await import("../../../src/options/logic/dict");
   await dict.registerPacks(["en-ja", "en-fr"], () => {});
