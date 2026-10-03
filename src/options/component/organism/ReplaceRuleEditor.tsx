@@ -40,7 +40,7 @@ type Action =
       };
     };
 
-const reduce = (state: Replace[], action: Action): Replace[] => {
+export const reduce = (state: Replace[], action: Action): Replace[] => {
   switch (action.type) {
     case "add":
       return produce(state, (d) => {
@@ -55,7 +55,7 @@ const reduce = (state: Replace[], action: Action): Replace[] => {
     case "move":
       return produce(state, (d) => {
         const { index1, index2 } = action.payload;
-        const isValidIndex = (index1 >= 0 && index1 < d.length) || (index2 >= 0 && index2 < d.length);
+        const isValidIndex = index1 >= 0 && index1 < d.length && index2 >= 0 && index2 < d.length;
         if (!isValidIndex) {
           return;
         }
