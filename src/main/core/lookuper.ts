@@ -24,6 +24,7 @@ export default class Lookuper {
   doUpdateContent: UpdateContent;
   doBuildEntry: BuildEntries;
   lastText: string | null;
+  pendingText: string | null;
   aimed: boolean;
   suspended: boolean;
   halfLocked: boolean;
@@ -38,6 +39,7 @@ export default class Lookuper {
     this.doBuildEntry = doBuildEntry;
 
     this.lastText = null;
+    this.pendingText = null;
     this.aimed = false;
     this.suspended = false;
     this.halfLocked = false;
@@ -108,9 +110,9 @@ export default class Lookuper {
   ): Promise<boolean> {
     const { content, hit } = await this.#createContent(textList, withCapitalized, includeOriginalText, enableShortWord);
 
-    // hit is undefined when the content is not updated
-    if ((hit as number) >= threshold) {
-      this.doUpdateContent(content as HTMLElement, hit as number);
+    // content is undefined when the content is not updated
+    if (content && hit !== undefined && hit >= threshold) {
+      this.doUpdateContent(content, hit);
       return true;
     }
     return false;
@@ -131,6 +133,14 @@ export default class Lookuper {
     }
     const cacheKey = textList.join("\u0001");
 
+    if (!includeOriginalText && this.pendingText === cacheKey) {
+      // The same request is already in flight
+      return {};
+    }
+    // Every request invalidates older ones still in flight
+    const counter = ++this.counter;
+    this.pendingText = null;
+
     if (!includeOriginalText) {
       if (this.lastText === cacheKey) {
         return {};
@@ -141,15 +151,22 @@ export default class Lookuper {
         this.lastText = cacheKey;
         return {};
       }
+      this.pendingText = cacheKey;
     }
-    const counter = ++this.counter;
     DEBUG && console.time(`lookup-${counter}`);
     const { html, hit } = await this.runAll(textList, withCapitalized, includeOriginalText, enableShortWord);
-    const content = dom.create(html);
-
-    this.lastText = cacheKey;
     DEBUG && console.timeEnd(`lookup-${counter}`);
 
+    if (counter !== this.counter) {
+      // A newer request has been made while waiting
+      return {};
+    }
+    this.pendingText = null;
+    const content = dom.create(html);
+    this.lastText = cacheKey;
+    if (!includeOriginalText) {
+      this.shortCache.put(cacheKey, { dom: content, hitCount: hit });
+    }
     return { content, hit };
   }
 

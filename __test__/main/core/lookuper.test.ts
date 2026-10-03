@@ -28,6 +28,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllEnvs();
 });
 
 const createLookuper = (doBuildEntry = entryDefault()) => new Lookuper(defaultSettings, doBuildEntry, doUpdateContent);
@@ -150,6 +151,74 @@ describe("update", () => {
     selectText("selected");
     expect(await lookuper.update("dog", false, true, true)).toBe(true);
     expect(updatedText()).toContain("犬");
+  });
+});
+
+describe("concurrent lookups", () => {
+  // Holds storage reads until release() is called
+  const deferStorage = () => {
+    const local = global.chrome.storage.local;
+    const orgGet = local.get.bind(local);
+    const pending: (() => void)[] = [];
+    const spy = vi
+      .spyOn(local, "get")
+      .mockImplementation((keys: any) => new Promise((resolve) => pending.push(() => resolve(orgGet(keys)))));
+    const release = async (index: number) => {
+      pending[index]();
+      await new Promise((r) => setTimeout(r, 0));
+    };
+    return { spy, release };
+  };
+
+  test("should discard an older result that arrives after a newer one", async () => {
+    const lookuper = createLookuper();
+    const { release } = deferStorage();
+    const dog = lookuper.lookupAll(["dog"]);
+    const cat = lookuper.lookupAll(["cat"]);
+    await release(1);
+    await release(0);
+    expect(await cat).toBe(true);
+    expect(await dog).toBe(false);
+    expect(doUpdateContent).toHaveBeenCalledTimes(1);
+    expect(updatedText()).toContain("猫");
+  });
+
+  test("should not start the same lookup while it is in flight", async () => {
+    const lookuper = createLookuper();
+    const { spy, release } = deferStorage();
+    const first = lookuper.lookupAll(["dog"]);
+    const second = lookuper.lookupAll(["dog"]);
+    expect(spy).toHaveBeenCalledTimes(1);
+    await release(0);
+    expect(await first).toBe(true);
+    expect(await second).toBe(false);
+    expect(doUpdateContent).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("cache", () => {
+  test("should reuse the content without reading storage again", async () => {
+    vi.stubEnv("MODE", "production");
+    const lookuper = createLookuper();
+    const spy = vi.spyOn(global.chrome.storage.local, "get");
+    expect(await lookuper.lookupAll(["dog"])).toBe(true);
+    expect(await lookuper.lookupAll(["cat"])).toBe(true);
+    const callCount = spy.mock.calls.length;
+
+    expect(await lookuper.lookupAll(["dog"])).toBe(false);
+    expect(spy).toHaveBeenCalledTimes(callCount);
+    expect(doUpdateContent).toHaveBeenCalledTimes(3);
+    expect(updatedText()).toContain("犬");
+  });
+
+  test("should be disabled outside production", async () => {
+    const lookuper = createLookuper();
+    const spy = vi.spyOn(global.chrome.storage.local, "get");
+    await lookuper.lookupAll(["dog"]);
+    await lookuper.lookupAll(["cat"]);
+    const callCount = spy.mock.calls.length;
+    await lookuper.lookupAll(["dog"]);
+    expect(spy.mock.calls.length).toBeGreaterThan(callCount);
   });
 });
 
