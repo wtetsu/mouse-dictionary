@@ -14,16 +14,16 @@ jobs:
         node-version: [26.x]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - name: Install Packages
         run: npm ci
       - name: Install Qlty CLI
-        uses: qltysh/qlty-action/install@v1
+        uses: qltysh/qlty-action/install@v2
       - name: Run Qlty Check
         run: qlty check
       - name: Lint
@@ -34,7 +34,7 @@ jobs:
         run: npm run test-cov
       - name: Upload coverage to Codecov
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: true
           files: ./coverage/coverage-final.json
