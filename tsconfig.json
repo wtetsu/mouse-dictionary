@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
     "target": "es2024",
-    "jsx": "react-jsx",
+    "module": "preserve",
     "moduleResolution": "bundler",
+    "jsx": "react-jsx",
     "strict": true,
     "noImplicitAny": false,
-    "skipLibCheck": true
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "types": ["chrome", "vite/client"]
   },
-  "exclude": ["__test__"]
+  "include": ["src"]
 }

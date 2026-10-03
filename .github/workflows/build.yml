@@ -20,8 +20,9 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
+          cache: npm
       - name: Install Packages
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run release-${{ matrix.platform }}
       - name: Upload Build as Artifact

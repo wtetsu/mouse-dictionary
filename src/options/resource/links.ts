@@ -6,8 +6,6 @@
 
 import type { ExternalLinks } from "../types";
 
-declare const BROWSER: "chrome" | "firefox" | "safari";
-
 const Links: ExternalLinks = {
   windowManipulation: "https://github.com/wtetsu/mouse-dictionary/wiki/Window-manipulation",
   downloadDictData: "https://github.com/wtetsu/mouse-dictionary/wiki/Download-dictionary-data",

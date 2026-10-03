@@ -8,8 +8,6 @@
 import env from "../../main/env";
 import type { Env } from "../types";
 
-declare const BROWSER: "chrome" | "firefox" | "safari";
-
 const optionsEnv = { ...env } as Env;
 
 if (BROWSER === "firefox") {

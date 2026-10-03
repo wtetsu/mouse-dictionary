@@ -66,8 +66,7 @@ const createConfig = (browser, mode, watchMode, entry, outfile) => {
     define: {
       BROWSER: JSON.stringify(browser),
       DIALOG_ID: JSON.stringify(`____MOUSE_DICTIONARY_6FQSXRIXUKBSIBEF_${version}`),
-      MODE: JSON.stringify(mode),
-      DEBUG: JSON.stringify(isProd ? "" : "true"),
+      DEBUG: JSON.stringify(!isProd),
       VERSION: JSON.stringify(version),
       "process.env.NODE_ENV": JSON.stringify(mode),
     },

@@ -19,14 +19,17 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
+          cache: npm
       - name: Install Packages
-        run: npm install
+        run: npm ci
       - name: Install Qlty CLI
         uses: qltysh/qlty-action/install@v1
       - name: Run Qlty Check
         run: qlty check
       - name: Lint
-        run: npm run lint
+        run: npx biome ci
+      - name: Type Check
+        run: npm run typecheck
       - name: Run Unit Tests
         run: npm run test-cov
       - name: Upload coverage to Codecov

@@ -89,11 +89,13 @@ const uniteJsonFiles = (fileGlobList) => {
   return resultData;
 };
 
-main(
-  {
-    from: ["data/dict/[a-z].json5"],
-    to: "data/dict",
-    split: 10,
-  },
-  "static/gen",
-);
+if (import.meta.main) {
+  main(
+    {
+      from: ["data/dict/[a-z].json5"],
+      to: "data/dict",
+      split: 10,
+    },
+    "static/gen",
+  );
+}

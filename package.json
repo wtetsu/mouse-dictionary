@@ -9,14 +9,15 @@
     "node": ">=26"
   },
   "scripts": {
-    "res": "node tools/bundle_json.js && node tools/make_dict.js ",
+    "res": "node tools/bundle_json.js && node tools/make_dict.js",
     "res-force": "node tools/bundle_json.js --force && node tools/make_dict.js --force",
     "build": "npm run build-chrome",
     "watch": "npm run watch-chrome",
     "release": "npm run release-chrome",
     "package": "npm run package-chrome",
-    "lint": "biome check ./src ./__test__",
-    "format": "biome format --write ./src ./__test__",
+    "lint": "biome check",
+    "format": "biome format --write",
+    "typecheck": "tsc",
     "test": "vitest run",
     "test-watch": "vitest watch",
     "test-cov": "vitest run --coverage",
@@ -39,6 +40,7 @@
     "package-safari": "npm run release-safari && node tools/archive.js safari"
   },
   "dependencies": {
+    "ace-builds": "^1.37.5",
     "deinja": "0.0.3",
     "immer": "^11.1.21",
     "mustache": "^4.2.0",
