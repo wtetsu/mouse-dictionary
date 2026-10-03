@@ -40,7 +40,7 @@
     "package-safari": "npm run release-safari && node tools/archive.js safari"
   },
   "dependencies": {
-    "ace-builds": "^1.37.5",
+    "ace-builds": "^1.44.0",
     "deinja": "0.0.3",
     "immer": "^11.1.21",
     "mustache": "^4.2.0",
