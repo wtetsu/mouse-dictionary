@@ -15,8 +15,8 @@ jobs:
         market: [chrome, firefox]
 
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "26.x"
           cache: npm
@@ -26,7 +26,7 @@ jobs:
         run: |
           npm run package-${{ matrix.market }}
       - name: Submit artifact
-        uses: PlasmoHQ/bpp@v2
+        uses: PlasmoHQ/bpp@v3
         with:
           artifact: mouse-dictionary-${{ matrix.market }}-{version}.zip
           keys: ${{ secrets.SUBMIT_KEYS }}

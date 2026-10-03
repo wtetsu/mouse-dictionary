@@ -15,9 +15,9 @@ jobs:
         node-version: [26.x]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -26,7 +26,7 @@ jobs:
       - name: Build
         run: npm run release-${{ matrix.platform }}
       - name: Upload Build as Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dist-${{ matrix.platform }}-${{ matrix.node-version }}
           path: dist-${{ matrix.platform }}
