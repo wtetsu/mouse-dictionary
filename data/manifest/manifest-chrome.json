@@ -35,7 +35,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["data/rule.json", "data/dict*.json"],
+      "resources": ["data/rule.json", "data/packs.json", "data/dict*.json"],
       "matches": ["<all_urls>"]
     }
   ]

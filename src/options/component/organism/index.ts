@@ -6,6 +6,7 @@
 
 export * from "./AdvancedSettings";
 export * from "./BasicSettings";
+export * from "./DictionaryPacks";
 export * from "./LoadDictionary";
 export * from "./OperationPanel";
 export * from "./ReplaceRuleEditor";

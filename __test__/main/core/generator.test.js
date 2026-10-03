@@ -25,7 +25,7 @@ test("Generator should return empty HTML when no words are provided", () => {
       </span>
       <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="test" data-md-hovervisible="true">🔊</span>
       <br/>
-      <span style="font-size:small;color:#101010;">
+      <span style="font-size:small;color:#101010;unicode-bidi:plaintext;">
         テスト
       </span>
 </div>`,
@@ -39,7 +39,7 @@ test("Generator should return empty HTML when no words are provided", () => {
       </span>
       <span style="cursor:pointer;visibility:hidden;" data-md-pronunciation="test" data-md-hovervisible="true">🔊</span>
       <br/>
-      <span style="font-size:small;color:#101010;">
+      <span style="font-size:small;color:#101010;unicode-bidi:plaintext;">
         テスト <span style="color:#003366;margin-left:1em;font-size:0.9em;">■TEST</span>
       </span>
 </div>`,

@@ -20,6 +20,12 @@ class Storage {
   async set(items) {
     Object.assign(this.data, items);
   }
+
+  async remove(keys) {
+    for (const key of keys) {
+      delete this.data[key];
+    }
+  }
 }
 
 // Mimics chrome.events.Event. Tests can fire registered listeners via dispatch().

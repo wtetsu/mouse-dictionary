@@ -22,6 +22,8 @@ const EnglishTextResource: TextResource = {
   dictDataUsage: "{{{size}}} kilobytes used",
   confirmLoadInitialDict: "There is no dictionary data yet.\nDo you want to register free dictionary data?",
   confirmReloadInitialDict: "Are you sure you want to reload the default dictionary data?",
+  applyDictionaryPacks: "Apply dictionary packs",
+  finishSyncPacks: "Dictionary packs updated ({{{count}}} words)",
   fileMayNotBeShiftJis: "The selected file may not be Shift_JIS-encoded.",
 
   formatEijiroText: "EIJIRO text data",

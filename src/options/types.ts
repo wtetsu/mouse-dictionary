@@ -45,6 +45,14 @@ export type DictionaryFile = {
   format: DictionaryFileFormat;
 };
 
+// A bundled dictionary pack (one language pair), listed in the generated
+// /data/packs.json manifest; `metaFile` holds its shard list.
+export type DictionaryPack = {
+  id: string;
+  metaFile: string;
+  label?: string;
+};
+
 export type ExternalLinks = {
   windowManipulation: string;
   downloadDictData: string;

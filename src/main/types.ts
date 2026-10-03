@@ -16,6 +16,7 @@ export type MouseDictionaryBasicSettings = {
   width: number;
   height: number;
   skipPdfConfirmation: boolean;
+  dictionaryPacks: string[];
 };
 
 export type MouseDictionaryAdvancedSettings = {

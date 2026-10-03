@@ -17,6 +17,8 @@ const JapaneseTextResource: TextResource = {
   dictDataUsage: "{{{size}}}KB使用中",
   confirmLoadInitialDict: "まだ辞書データが無いようです。\nフリー辞書のデータを自動登録します。",
   confirmReloadInitialDict: "デフォルト辞書データを再登録します",
+  applyDictionaryPacks: "辞書パックを適用",
+  finishSyncPacks: "辞書パックを更新しました({{{count}}}語)",
   fileMayNotBeShiftJis: "このファイルはShift_JISではないかもしれません。",
 
   formatEijiroText: "英辞郎テキストデータ(■見出し)",

@@ -14,6 +14,8 @@ export type TextResource = {
   dictDataUsage: string;
   confirmLoadInitialDict: string;
   confirmReloadInitialDict: string;
+  applyDictionaryPacks: string;
+  finishSyncPacks: string;
   fileMayNotBeShiftJis: string;
   formatEijiroText: string;
   formatTsv: string;

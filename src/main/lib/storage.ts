@@ -17,6 +17,7 @@ const sync = {
 const local = {
   get: (keys?: Keys): Promise<Items> => ext().storage.local.get(keys),
   set: (items: Items): Promise<void> => ext().storage.local.set(items),
+  remove: (keys: string[]): Promise<void> => ext().storage.local.remove(keys),
   async pick<T = unknown>(key: string): Promise<T | undefined> {
     const data = await local.get([key]);
     return data?.[key] as T | undefined;

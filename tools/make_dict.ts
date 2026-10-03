@@ -91,13 +91,31 @@ const uniteJsonFiles = (fileGlobList: string[]) => {
   return resultData;
 };
 
+// Bundled dictionary packs. The generated /data/packs.json manifest is the
+// runtime source of truth for the options-page pack selector, so adding a
+// language pair here (from: shards glob, to: metadata name) is all it takes.
+type Pack = { id: string; from: string[]; to: string; split: number; label?: string };
+
+const DICTIONARY_PACKS: Pack[] = [{ id: "en-ja", from: ["data/dict/[a-z].json5"], to: "data/dict", split: 10 }];
+
+const writePacksManifest = (packs: Pack[], outputDirPath: string) => {
+  const manifest = packs.map((pack) => ({
+    id: pack.id,
+    metaFile: `/${pack.to}.json`,
+    ...(pack.label ? { label: pack.label } : {}),
+  }));
+  const outputPath = path.join(outputDirPath, "data/packs.json");
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, JSON.stringify(manifest), "utf-8");
+  console.info(`✅ Generated: ${outputPath}`);
+};
+
+export { DICTIONARY_PACKS, main, writePacksManifest };
+
 if (import.meta.main) {
-  main(
-    {
-      from: ["data/dict/[a-z].json5"],
-      to: "data/dict",
-      split: 10,
-    },
-    "static/gen",
-  );
+  const outputDirPath = "static/gen";
+  for (const pack of DICTIONARY_PACKS) {
+    main(pack, outputDirPath);
+  }
+  writePacksManifest(DICTIONARY_PACKS, outputDirPath);
 }

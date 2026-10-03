@@ -10,6 +10,7 @@ import { Button, DataUsage, EditableSpan, ExternalLink, Launch, Overlay, Panel, 
 import {
   AdvancedSettings,
   BasicSettings,
+  DictionaryPacks,
   LoadDictionary,
   OperationPanel,
   Tips,
@@ -17,16 +18,18 @@ import {
 } from "../component/organism";
 import { config, defaultSettings, env } from "../extern";
 import { data, dict, message, res } from "../logic";
+import { DEFAULT_PACK_IDS } from "../logic/packs";
 import { usePreview } from "../logic/preview";
 
 import type { TextResourceKeys } from "../resource";
-import type { DictionaryFile, MouseDictionarySettings } from "../types";
+import type { DictionaryFile, DictionaryPack, MouseDictionarySettings } from "../types";
 
 type MainState = {
   dictDataUsage?: number;
   busy: boolean;
   progress: string;
   settings: MouseDictionarySettings;
+  availablePacks: DictionaryPack[];
   previewText: string;
   panelLevel: 0 | 1 | 2 | 3;
   lang: string;
@@ -63,13 +66,14 @@ const initialState: MainState = {
   busy: false,
   progress: "",
   settings: {} as MouseDictionarySettings,
+  availablePacks: [],
   previewText: "rained cats and dogs",
   panelLevel: 0,
   lang: "",
   initialized: false,
 };
 
-type UpdateState = (state: Partial<MainState>) => void;
+type UpdateState = (state: Partial<MainState>, settingsPatch?: Partial<MouseDictionarySettings>) => void;
 
 export const Main: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, {
@@ -86,6 +90,7 @@ export const Main: React.FC = () => {
       updateState({ settings });
 
       const isLoaded = await config.isDataReady();
+      updateState({ availablePacks: await dict.getPacks() });
       if (!isLoaded) {
         const ok = await confirmAndLoadInitialDict("confirmLoadInitialDict", updateState);
         updateState({ initialized: ok, dictDataUsage: -1 });
@@ -204,6 +209,12 @@ export const Main: React.FC = () => {
               disabled={state.busy}
               onClick={() => confirmAndLoadInitialDict("confirmReloadInitialDict", updateState)}
             />
+            <DictionaryPacks
+              busy={state.busy}
+              packs={state.availablePacks}
+              selectedPackIds={state.settings.dictionaryPacks ?? DEFAULT_PACK_IDS}
+              onSync={(packIds) => applyDictionaryPacks(packIds, state.settings, updateState)}
+            />
           </BasicSettings>
           <br />
 
@@ -252,6 +263,26 @@ const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void>
     message.success(res.get("finishSaving"));
   } catch (e) {
     showError(e);
+  }
+};
+
+const applyDictionaryPacks = async (
+  packIds: string[],
+  settings: MouseDictionarySettings,
+  updateState: UpdateState,
+): Promise<void> => {
+  try {
+    updateState({ busy: true, panelLevel: 0 }, { dictionaryPacks: packIds });
+    await saveSettings({ ...settings, dictionaryPacks: packIds });
+    const { registered } = await dict.syncInstalledPacks(packIds, (count, progress) => {
+      updateState({ progress: res.get("progressRegister", { count: count.toLocaleString(), progress }) });
+    });
+    await config.setDataReady(true);
+    await message.success(res.get("finishSyncPacks", { count: registered.toLocaleString() }));
+  } catch (e) {
+    showError(e);
+  } finally {
+    updateState({ busy: false, progress: "", dictDataUsage: -1 });
   }
 };
 
