@@ -11,8 +11,6 @@ export type TextResource = {
   selectDictFile: string;
   progressRegister: string;
   finishRegister: string;
-  clearAllDictData: string;
-  finishedClear: string;
   dictDataUsage: string;
   confirmLoadInitialDict: string;
   confirmReloadInitialDict: string;
@@ -64,7 +62,6 @@ export type TextResource = {
   parseWordsLimit: string;
   add: string;
   loadSelectedFile: string;
-  clearLoadedData: string;
   loadInitialDict: string;
   downloadDictData: string;
   setKeyboardShortcuts: string;

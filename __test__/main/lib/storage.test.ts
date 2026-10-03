@@ -30,7 +30,6 @@ test("should handle local storage get and set operations correctly", async () =>
 test("should handle sync storage get and set operations correctly", async () => {
   expect(await storage.sync.get([])).toEqual({});
   expect(await storage.sync.get(["key01"])).toEqual({});
-  expect(await storage.sync.pick("key01")).toEqual(undefined);
 
   await storage.sync.set({});
   expect(await storage.sync.get(["key01"])).toEqual({});
@@ -38,12 +37,10 @@ test("should handle sync storage get and set operations correctly", async () => 
   await storage.sync.set({ key01: "value01", key02: "value02" });
   expect(await storage.sync.get(["key01"])).toEqual({ key01: "value01" });
   expect(await storage.sync.get(["key01", "key02"])).toEqual({ key01: "value01", key02: "value02" });
-  expect(await storage.sync.pick("key01")).toEqual("value01");
 
   await storage.sync.set({ key01: "value01!", key02: "value02!" });
   expect(await storage.sync.get(["key01"])).toEqual({ key01: "value01!" });
   expect(await storage.sync.get(["key01", "key02"])).toEqual({ key01: "value01!", key02: "value02!" });
-  expect(await storage.sync.pick("key01")).toEqual("value01!");
 });
 
 test("should throw an error when local storage get operation fails", async () => {

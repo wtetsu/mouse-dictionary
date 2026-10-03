@@ -9,10 +9,6 @@ import ext from "./ext";
 const sync = {
   get: (keys) => ext().storage.sync.get(keys),
   set: (items) => ext().storage.sync.set(items),
-  async pick(key) {
-    const data = await sync.get([key]);
-    return data?.[key];
-  },
 };
 
 const local = {

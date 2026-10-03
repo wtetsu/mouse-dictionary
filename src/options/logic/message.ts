@@ -9,10 +9,6 @@ import swal from "sweetalert";
 type Icon = "info" | "success" | "warning" | "error";
 type Buttons = "ok" | "okCancel";
 
-export const info = (text: string, buttons?: Buttons): Promise<any> => {
-  return show(text, "info", buttons);
-};
-
 export const notice = (text: string, buttons?: Buttons): Promise<any> => {
   return show(text, "info", buttons, { closeOnClickOutside: false });
 };

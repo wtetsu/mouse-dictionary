@@ -13,9 +13,4 @@ const local = {
   getBytesInUse: (): Promise<number> => ext().storage.local.getBytesInUse(),
 };
 
-const sync = {
-  ...orgStorage.sync,
-  getBytesInUse: (): Promise<number> => ext().storage.sync.getBytesInUse(),
-};
-
-export { local, sync };
+export { local };

@@ -7,7 +7,6 @@
 
 // References to "main" functions
 
-import entry from "../../main/core/entry";
 import entryDefault from "../../main/core/entry/default";
 import Generator from "../../main/core/generator";
 import rule from "../../main/core/rule";
@@ -22,4 +21,4 @@ import * as env from "./env";
 import * as defaultSettings from "./settings";
 import * as storage from "./storage";
 
-export { config, defaultSettings, dom, entry, entryDefault, env, ext, Generator, rule, storage, template, utils, view };
+export { config, defaultSettings, dom, entryDefault, env, ext, Generator, rule, storage, template, utils, view };
