@@ -5,6 +5,7 @@ import traverser from "../../../src/main/lib/traverser";
 import testdata from "../../testdata";
 
 let caretRangeFromPoint: ReturnType<typeof vi.fn>;
+const OriginalSegmenter = Intl.Segmenter;
 
 beforeAll(() => {
   testdata.load();
@@ -13,11 +14,13 @@ beforeAll(() => {
 beforeEach(() => {
   caretRangeFromPoint = vi.fn();
   (document as any).caretRangeFromPoint = caretRangeFromPoint;
+  // Behave as an environment without Intl.Segmenter unless a test sets it up
+  (Intl as any).Segmenter = undefined;
 });
 
 afterEach(() => {
   (document as any).caretRangeFromPoint = undefined;
-  (Intl as any).v8BreakIterator = undefined;
+  (Intl as any).Segmenter = OriginalSegmenter;
   document.body.innerHTML = "";
   vi.restoreAllMocks();
 });
@@ -93,11 +96,12 @@ describe("Japanese text", () => {
   });
 
   test("should move the start position to the beginning of the word", () => {
-    // Fake Intl.v8BreakIterator: "日本語" / "の" / "テキスト" / "です"
-    (Intl as any).v8BreakIterator = () => {
-      const boundaries = [3, 4, 8, 10];
-      let i = 0;
-      return { adoptText: () => {}, next: () => boundaries[i++] };
+    // Fake Intl.Segmenter: "日本語" / "の" / "テキスト" / "です"
+    (Intl as any).Segmenter = class {
+      segment() {
+        const starts = [0, 3, 4, 8];
+        return { containing: (index: number) => ({ index: starts.findLast((s) => s <= index) }) };
+      }
     };
     const elem = attach("<div>日本語のテキストです</div>");
 
@@ -108,6 +112,17 @@ describe("Japanese text", () => {
 
     pointAt(elem.firstChild, 4);
     expect(traverse(elem, 0, 0)).toEqual(["テキストです"]);
+  });
+
+  test("should move the start position with the real Intl.Segmenter", () => {
+    (Intl as any).Segmenter = OriginalSegmenter;
+    const elem = attach("<div>これはテキストです</div>");
+
+    const traverse = traverser.build(rule.doLetters, 8);
+
+    // Cursor on "キ" of "テキスト"
+    pointAt(elem.firstChild, 4);
+    expect(traverse(elem, 0, 0)).toEqual(["テキストです", "キストです"]);
   });
 });
 

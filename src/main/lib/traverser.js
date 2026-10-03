@@ -31,6 +31,7 @@ class Traverser {
       doGetTargetCharacterType ?? ((code) => (isEnglishLikeCharacterFallback(code) ? 3 : 0));
     this.maxWords = maxWords ?? 8;
     this.decoy = decoy.create("div");
+    this.segmenter = createWordSegmenter("ja-JP");
   }
 
   fetchTextUnderCursor(element, clientX, clientY) {
@@ -104,7 +105,7 @@ class Traverser {
 
     const startIndex = offset;
     const endIndex = offset + this.JA_MAX_LENGTH;
-    const properStartIndex = retrieveProperStartIndex(sourceText, startIndex + 1);
+    const properStartIndex = retrieveProperStartIndex(sourceText, startIndex + 1, this.segmenter);
     const text = sourceText.substring(properStartIndex, endIndex);
 
     const subText = startIndex !== properStartIndex ? sourceText.substring(startIndex, endIndex) : undefined;
@@ -113,20 +114,12 @@ class Traverser {
   }
 }
 
-const retrieveProperStartIndex = (sourceText, cursorIndex) => {
-  let currentLength = 0;
-  const tokens = tokenize(sourceText, "ja-JP");
-  if (!tokens) {
+// Returns the start index of the word that contains the character just before cursorIndex
+const retrieveProperStartIndex = (sourceText, cursorIndex, segmenter) => {
+  if (!segmenter) {
     return cursorIndex;
   }
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
-    if (cursorIndex <= currentLength + token.length) {
-      return currentLength;
-    }
-    currentLength += token.length;
-  }
-  return 0;
+  return segmenter.segment(sourceText).containing(cursorIndex - 1)?.index ?? 0;
 };
 
 const searchStartIndex = (text, index, doGetCharacterType) => {
@@ -197,24 +190,11 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
 
 const isEnglishLikeCharacterFallback = (code) => 0x20 <= code && code <= 0x7e;
 
-// Intl.v8BreakIterator will be replaced with Intl.Segmenter in the future.
-// https://github.com/tc39/proposal-intl-segmenter
-const tokenize = (text, lang) => {
-  if (!Intl?.v8BreakIterator) {
+const createWordSegmenter = (lang) => {
+  if (!Intl.Segmenter) {
     return null;
   }
-  const it = Intl.v8BreakIterator([lang], { type: "word" });
-  it.adoptText(text);
-
-  let cur = 0;
-
-  const words = [];
-  while (cur < text.length) {
-    const prev = cur;
-    cur = it.next();
-    words.push(text.substring(prev, cur));
-  }
-  return words;
+  return new Intl.Segmenter(lang, { granularity: "word" });
 };
 
 export default { build };
