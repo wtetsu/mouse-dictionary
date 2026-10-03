@@ -57,6 +57,7 @@ test("cache of size 0 should never hit", () => {
   cache.put("a", 1);
   cache.put("b", 2);
   cache.put("c", 3);
+  expect(cache.get("a")).toEqual(null);
   expect(cache.get("b")).toEqual(null);
   expect(cache.get("c")).toEqual(null);
 });

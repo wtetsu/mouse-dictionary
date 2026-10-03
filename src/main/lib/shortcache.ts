@@ -18,7 +18,7 @@ class ShortCache<T> {
   }
 
   put(key: string, value: T): void {
-    if (this.get(key)) {
+    if (this.size <= 0 || this.get(key)) {
       return;
     }
 
