@@ -472,4 +472,17 @@ test("Test Japanese words", () => {
   expect(createLookupWordsJa("走った")).toEqual(expect.arrayContaining(["走る"]));
   expect(createLookupWordsJa("おいた")).toEqual(expect.arrayContaining(["おく", "おいる"]));
   expect(createLookupWordsJa("19az")).toEqual(expect.arrayContaining(["１９ａｚ"]));
+  // Halfwidth katakana must also reach fullwidth headwords (manga/UI text),
+  // keeping the usual prefix decomposition on both spellings.
+  expect(createLookupWordsJa("ﾃﾚﾋﾞ")).toEqual(expect.arrayContaining(["ﾃﾚﾋﾞ", "テレビ", "テレ", "テ", "ﾃﾚﾋ", "ﾃﾚ", "ﾃ"]));
+  expect(createLookupWordsJa("ｶﾞｽ")).toEqual(expect.arrayContaining(["ｶﾞｽ", "ガス", "ｶﾞ", "ｶ", "ガ"]));
+  // Conversion is scoped to halfwidth katakana: other characters must not get
+  // compatibility-folded (NFKC over the whole string would turn ① into "1").
+  const mixed = createLookupWordsJa("①ﾃﾚﾋﾞ");
+  expect(mixed).toEqual(expect.arrayContaining(["①ﾃﾚﾋﾞ", "①テレビ", "①テレ", "①ﾃﾚ"]));
+  expect(mixed).not.toContain("1テレビ");
+  // Fullwidth katakana runs keep cutting into all prefixes (show-all-candidates design)
+  expect(createLookupWordsJa("ソフトウェアエンジニア")).toEqual(
+    expect.arrayContaining(["ソフトウェアエンジニア", "ソフトウェア", "ソフト", "ソ"]),
+  );
 });
