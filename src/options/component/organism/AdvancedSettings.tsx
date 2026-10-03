@@ -4,8 +4,7 @@
  * Licensed under MIT
  */
 
-import { produce } from "immer";
-import { htmlrisk, res } from "../../logic";
+import { data, htmlrisk, res } from "../../logic";
 import type { MouseDictionaryAdvancedSettings, UpdateEventHandler } from "../../types";
 import { HighlightEditor } from "../atom/HighlightEditor";
 import { ReplaceRuleEditor } from "./ReplaceRuleEditor";
@@ -36,15 +35,7 @@ export const AdvancedSettings: React.FC<AdvancedSettingsProps> = (props) => {
   };
 
   const update = (patch: Partial<MouseDictionaryAdvancedSettings>) => {
-    const newPatch = produce(patch, (d) => {
-      for (const name of Object.keys(patch)) {
-        const value = patch[name];
-        if (Number.isNaN(value) || (Number.isInteger(value) && value < 0)) {
-          d[name] = 0;
-        }
-      }
-    });
-    props.onUpdate(undefined, newPatch);
+    props.onUpdate(undefined, data.sanitizeNumbers(patch));
   };
 
   return (

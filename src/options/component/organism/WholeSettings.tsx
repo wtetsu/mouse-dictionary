@@ -125,16 +125,18 @@ export const WholeSettings: React.FC<Props> = (props) => {
   const createSettings = (json: string): MouseDictionarySettings => {
     const newSettings = data.preProcessSettings(JSON.parse(json));
     const orgSettings = data.postProcessSettings(defaultSettings.get());
-    return produce(orgSettings, (d) => {
+    const source = newSettings as unknown as Record<string, SettingsValue>;
+    return produce(orgSettings, (draft) => {
+      const d = draft as unknown as Record<string, SettingsValue>;
       const errors: string[] = [];
       for (const key of Object.keys(d)) {
-        if (!(key in newSettings)) {
+        if (!(key in source)) {
           continue;
         }
-        if (!canReplace(d[key], newSettings[key])) {
+        if (!canReplace(d[key], source[key])) {
           errors.push(`Invalid ${key}`);
         }
-        d[key] = newSettings[key];
+        d[key] = source[key];
       }
       if (errors.length >= 1) {
         throw new Error(errors.join("\n"));

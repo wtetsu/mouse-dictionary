@@ -22,3 +22,14 @@ export const postProcessSettings = (settings: MouseDictionarySettings): MouseDic
     }
   });
 };
+
+// Replaces invalid numbers (NaN or negative integers) with 0
+export const sanitizeNumbers = <T extends object>(patch: T): T => {
+  return produce(patch, (d) => {
+    for (const [name, value] of Object.entries(patch)) {
+      if (typeof value === "number" && (Number.isNaN(value) || (Number.isInteger(value) && value < 0))) {
+        (d as Record<string, unknown>)[name] = 0;
+      }
+    }
+  });
+};

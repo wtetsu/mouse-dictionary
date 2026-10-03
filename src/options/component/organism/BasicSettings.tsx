@@ -4,9 +4,8 @@
  * Licensed under MIT
  */
 
-import { produce } from "immer";
 import { env } from "../../extern";
-import { res } from "../../logic";
+import { data, res } from "../../logic";
 import type { InitialPosition, MouseDictionaryBasicSettings, UpdateEventHandler } from "../../types";
 import { Select } from "../atom/Select";
 
@@ -47,15 +46,7 @@ export const BasicSettings: React.FC<Props> = (props) => {
   }
 
   const update = (patch: Partial<MouseDictionaryBasicSettings>) => {
-    const newPatch = produce(patch, (d) => {
-      for (const name of Object.keys(patch)) {
-        const value = patch[name];
-        if (Number.isNaN(value) || (Number.isInteger(value) && value < 0)) {
-          d[name] = 0;
-        }
-      }
-    });
-    props.onUpdate(undefined, newPatch);
+    props.onUpdate(undefined, data.sanitizeNumbers(patch));
   };
 
   return (

@@ -51,7 +51,7 @@ export const load = async (loadParam: LoadParam, callback: Callback): Promise<nu
 
   const reader = new LineReader(fileContent);
 
-  let dictData = {};
+  let dictData: Record<string, string> = {};
   let wordCount = 0;
 
   const parser = createDictParser(loadParam.format);

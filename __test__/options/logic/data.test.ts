@@ -17,3 +17,13 @@ test("preProcessSettings and postProcessSettings should correctly process settin
 
   expect(JSON.stringify(d1)).toEqual(JSON.stringify(d3));
 });
+
+test("sanitizeNumbers should replace NaN and negative integers with 0", () => {
+  const patch = { a: Number.NaN, b: -1, c: 5, d: -1.5, e: "x", f: true };
+  const result = data.sanitizeNumbers(patch);
+  expect(result).toEqual({ a: 0, b: 0, c: 5, d: -1.5, e: "x", f: true });
+  expect(patch.a).toBeNaN();
+
+  const valid = { a: 1 };
+  expect(data.sanitizeNumbers(valid)).toBe(valid);
+});

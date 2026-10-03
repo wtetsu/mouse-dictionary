@@ -5,12 +5,12 @@
  */
 
 import { template } from "../extern";
-import type { TextResourceKeys } from "../resource";
+import type { TextResource, TextResourceKeys } from "../resource";
 import { EnglishTextResource, JapaneseTextResource } from "../resource";
 
 let _lang = "";
 
-const resources = {
+const resources: Record<string, TextResource | undefined> = {
   ja: JapaneseTextResource,
   en: EnglishTextResource,
 };

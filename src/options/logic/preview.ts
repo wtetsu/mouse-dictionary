@@ -39,7 +39,7 @@ class Preview {
   element: HTMLElement;
   update: (settings: MouseDictionarySettings, text: string, refresh: boolean) => void;
   previewWindow: PreviewWindow | undefined;
-  generator: Generator;
+  generator: Generator | undefined;
   buildEntries: (
     text: string,
     withCapitalized: boolean,
@@ -75,13 +75,14 @@ class Preview {
   async updateText(previewText: string, lookupWithCapitalized: boolean): Promise<void> {
     const { entries, lang } = this.buildEntries(previewText, lookupWithCapitalized, false);
 
+    if (!this.generator) {
+      return;
+    }
     const descriptions = await storage.local.get(entries);
     const { html } = this.generator.generate(entries, descriptions, lang === "en");
 
     if (this.previewWindow) {
-      const newDom = dom.create(html);
-      this.previewWindow.content.innerHTML = "";
-      this.previewWindow.content.appendChild(newDom);
+      dom.replace(this.previewWindow.content, dom.create(html));
     }
   }
 

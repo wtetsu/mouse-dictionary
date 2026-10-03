@@ -5,7 +5,7 @@
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "strict": true,
-    "noImplicitAny": false,
+    "allowJs": true,
     "noEmit": true,
     "isolatedModules": true,
     "skipLibCheck": true,
