@@ -31,7 +31,7 @@ import { detectFileEncoding } from "../logic/encoding";
 import { usePreview } from "../logic/preview";
 
 import type { TextResourceKeys } from "../resource";
-import type { DictionaryFile, MouseDictionarySettings } from "../types";
+import type { DictionaryFile, DictionaryFileEncoding, MouseDictionarySettings } from "../types";
 
 type MainState = {
   dictDataUsage?: number;
@@ -252,16 +252,16 @@ export const Main: React.FC = () => {
   );
 };
 
+const showError = (e: unknown): void => {
+  message.error(e instanceof Error ? e.toString() : String(e));
+};
+
 const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void> => {
   const settings = data.postProcessSettings(rawSettings);
   try {
     await config.saveSettings(settings);
   } catch (e) {
-    if (e instanceof Error) {
-      message.error(e.toString());
-    } else {
-      message.error(String(e));
-    }
+    showError(e);
   }
 };
 
@@ -294,36 +294,36 @@ const loadDictionaryData = async (dictionaryFile: DictionaryFile, updateState: U
     message.warn(res.get("selectDictFile"));
     return;
   }
-  if (encoding === "Shift_JIS" && (await detectFileEncoding(file)) !== "Shift_JIS") {
-    const willContinue = await message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
-    if (!willContinue) {
-      return;
-    }
+  if (!(await confirmEncoding(file, encoding))) {
+    return;
   }
   try {
     updateState({ busy: true, panelLevel: 0 });
     const count = await dict.load({ file, encoding, format }, (ev) => {
-      if (ev.name === "reading") {
-        const progress = `${ev.loaded.toLocaleString()} / ${ev.total.toLocaleString()} Byte`;
-        updateState({ progress });
-      }
-      if (ev.name === "loading") {
-        const progress = res.get("progressRegister", {
-          count: ev.count?.toLocaleString(),
-          progress: ev.word.head,
-        });
-        updateState({ progress });
-      }
+      updateState({ progress: formatLoadProgress(ev) });
     });
-    message.success(res.get("finishRegister", { count: count?.toLocaleString() }));
+    message.success(res.get("finishRegister", { count: count.toLocaleString() }));
     config.setDataReady(true);
   } catch (e) {
-    if (e instanceof Error) {
-      message.error(e.toString());
-    } else {
-      message.error(String(e));
-    }
+    showError(e);
   } finally {
     updateState({ busy: false, progress: "", dictDataUsage: -1 });
+  }
+};
+
+// Ask before importing a file that's declared Shift_JIS but doesn't look like it
+const confirmEncoding = async (file: File, encoding: DictionaryFileEncoding): Promise<boolean> => {
+  if (encoding !== "Shift_JIS" || (await detectFileEncoding(file)) === "Shift_JIS") {
+    return true;
+  }
+  return message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
+};
+
+const formatLoadProgress = (ev: dict.CallbackParam): string => {
+  switch (ev.name) {
+    case "reading":
+      return `${ev.loaded.toLocaleString()} / ${ev.total.toLocaleString()} Byte`;
+    case "loading":
+      return res.get("progressRegister", { count: ev.count.toLocaleString(), progress: ev.word.head });
   }
 };

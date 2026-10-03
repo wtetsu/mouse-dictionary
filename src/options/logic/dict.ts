@@ -19,7 +19,7 @@ type Callback = (param: CallbackParam) => void;
 type ReadingCallback = (param: ReadingCallbackParam) => void;
 // type LoadingCallback = (param: LoadingCallbackParam) => void;
 
-type CallbackParam = ReadingCallbackParam | LoadingCallbackParam;
+export type CallbackParam = ReadingCallbackParam | LoadingCallbackParam;
 
 type ReadingCallbackParam = {
   name: "reading";
