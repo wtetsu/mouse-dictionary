@@ -5,10 +5,19 @@
  */
 
 import dom from "./dom";
+import type { Rect } from "./utils";
 
 const DEFAULT_STYLE = "position:fixed;background-color:#4169e1;opacity:0.20;z-index:2147483646;";
 
 class Snap {
+  initialized: boolean;
+  activated: boolean;
+  minArea: number;
+  minSide: number;
+  isElementPresent: boolean;
+  snapElement?: HTMLElement;
+  lastRange?: Rect;
+
   constructor() {
     this.initialized = false;
     this.activated = false;
@@ -29,18 +38,18 @@ class Snap {
     if (this.isElementPresent) {
       return;
     }
-    document.body.appendChild(this.snapElement);
+    document.body.appendChild(this.snapElement as HTMLElement);
     this.isElementPresent = true;
   }
   removeElement() {
     if (!this.isElementPresent) {
       return;
     }
-    this.snapElement.remove();
+    this.snapElement?.remove();
     this.isElementPresent = false;
   }
 
-  update(pointX, pointY, square, clientWidth) {
+  update(pointX: number, pointY: number, square: Rect, clientWidth: number): void {
     const range = this.fetchSnapRange(pointX, pointY, square, clientWidth);
     if (!range) {
       return;
@@ -52,14 +61,14 @@ class Snap {
     }
   }
 
-  transform(range) {
+  transform(range: Rect): void {
     const style = {
       left: `${range.left}px`,
       top: `${range.top}px`,
       width: `${range.width}px`,
       height: `${range.height}px`,
     };
-    dom.applyStyles(this.snapElement, style);
+    dom.applyStyles(this.snapElement as HTMLElement, style);
   }
 
   activate() {
@@ -73,14 +82,14 @@ class Snap {
     this.activated = false;
   }
 
-  getRange() {
+  getRange(): Rect | null {
     if (!this.lastRange) {
       return null;
     }
     return { ...this.lastRange };
   }
 
-  fetchSnapRange(pointX, pointY, square, clientWidth) {
+  fetchSnapRange(pointX: number, pointY: number, square: Rect, clientWidth: number): Rect | null {
     if (square.left < 0) {
       const width = Math.min(clientWidth, window.innerWidth / 2);
       const height = window.innerHeight - 6;
@@ -98,7 +107,7 @@ class Snap {
     return this.selectSnapElementRange(candidates);
   }
 
-  selectSnapElementRange(elements) {
+  selectSnapElementRange(elements: Element[]): Rect | null {
     for (let i = 1; i < elements.length; i++) {
       const e = elements[i];
       if (this.isExceptionalElement(e)) {
@@ -112,7 +121,7 @@ class Snap {
     return null;
   }
 
-  isExceptionalElement(element) {
+  isExceptionalElement(element: Element): boolean {
     if (element === this.snapElement) {
       return true;
     }
@@ -123,7 +132,7 @@ class Snap {
     return false;
   }
 
-  isEligibleElement(range) {
+  isEligibleElement(range: Rect): boolean {
     if (range.width < this.minSide || range.height < this.minSide) {
       return false;
     }
@@ -135,12 +144,12 @@ class Snap {
     return true;
   }
 
-  isActivated() {
+  isActivated(): boolean {
     return this.activated;
   }
 }
 
-const adjustRange = (range) => {
+const adjustRange = (range: DOMRect): Rect => {
   return {
     left: range.left,
     top: range.top,

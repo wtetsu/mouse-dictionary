@@ -4,6 +4,7 @@
  * Licensed under MIT
  */
 
+import type { Rect } from "./utils";
 import utils from "./utils";
 
 const TOP = 1;
@@ -12,8 +13,9 @@ const BOTTOM = 4;
 const LEFT = 8;
 const EDGE = TOP | RIGHT | BOTTOM | LEFT;
 const INSIDE = 16;
-const DOWNWARDS = { near: TOP, far: BOTTOM };
-const RIGHTWARDS = { near: LEFT, far: RIGHT };
+type Edges = { near: number; far: number };
+const DOWNWARDS: Edges = { near: TOP, far: BOTTOM };
+const RIGHTWARDS: Edges = { near: LEFT, far: RIGHT };
 
 // Create a "packed" array
 // https://v8.dev/blog/elements-kinds
@@ -38,11 +40,13 @@ const CURSOR_STYLES = [
 ];
 
 class Edge {
-  constructor(options) {
+  gripWidth: number;
+
+  constructor(options: { gripWidth: number }) {
     this.gripWidth = options.gripWidth;
   }
 
-  getEdgeState(rect, x, y) {
+  getEdgeState(rect: Rect, x: number, y: number): number {
     if (Number.isNaN(x) || Number.isNaN(y)) {
       return 0;
     }
@@ -63,35 +67,47 @@ class Edge {
     return edge;
   }
 
-  getCursorStyle(edgeState) {
+  getCursorStyle(edgeState: number): string {
     return CURSOR_STYLES[edgeState & EDGE];
   }
 }
 
-const build = (options) => {
+const build = (options: { gripWidth: number }) => {
   return new Edge(options);
 };
 
-const inRange = (low, value, high) => {
+const inRange = (low: number, value: number, high: number): boolean => {
   return low <= value && value <= high;
 };
 
+type Position1d = { position?: number | null; length?: number };
+export type ResizedSquare = {
+  left?: number | null;
+  top?: number | null;
+  width?: number | null;
+  height?: number | null;
+};
+
 class Square {
-  constructor(onsetSquare, edgeState, minimumLength) {
+  square: Rect;
+  edgeState: number;
+  minimumLength: number;
+
+  constructor(onsetSquare: Rect, edgeState: number, minimumLength: number) {
     this.square = onsetSquare;
     this.edgeState = edgeState;
     this.minimumLength = minimumLength;
   }
 
-  move(movedX, movedY) {
+  move(movedX: number, movedY: number): { left: number; top: number } {
     return {
       left: this.square.left + movedX,
       top: this.square.top + movedY,
     };
   }
 
-  resize(movedX, movedY) {
-    const resizedSquare = { left: null, top: null, width: null, height: null };
+  resize(movedX: number, movedY: number): ResizedSquare {
+    const resizedSquare: ResizedSquare = { left: null, top: null, width: null, height: null };
 
     const downwardsPosition = this.calculate1dPosition(DOWNWARDS, this.square.top, this.square.height, movedY);
     resizedSquare.top = downwardsPosition.position;
@@ -104,7 +120,7 @@ class Square {
     return resizedSquare;
   }
 
-  calculate1dPosition(edges, startPosition, startLength, movedLength) {
+  calculate1dPosition(edges: Edges, startPosition: number, startLength: number, movedLength: number): Position1d {
     if (this.edgeState & edges.near) {
       const length = Math.max(startLength - movedLength, this.minimumLength);
       const position = startPosition + startLength - length;
@@ -118,7 +134,7 @@ class Square {
   }
 }
 
-const createSquare = (square, edgeState, minimumLength) => {
+const createSquare = (square: Rect, edgeState: number, minimumLength: number) => {
   return new Square(square, edgeState, minimumLength);
 };
 

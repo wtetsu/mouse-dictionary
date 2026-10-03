@@ -9,11 +9,16 @@ import dom from "./dom";
 import ponyfill from "./ponyfill/ponyfill";
 import utils from "./utils";
 
-const build = (doConfirmValidCharacter, maxWords) => {
+// Returns a bit set (1: can continue backward, 2: can continue forward), or undefined for non-English characters
+export type CharacterTypeGetter = (code: number) => number | undefined;
+
+type TextFromRange = { text?: string; subText?: string; end?: boolean; isEnglish?: boolean };
+
+const build = (doConfirmValidCharacter?: CharacterTypeGetter, maxWords?: number) => {
   const traverser = new Traverser(doConfirmValidCharacter, maxWords);
 
-  const getTextUnderCursor = (element, clientX, clientY) => {
-    let textOnCursor;
+  const getTextUnderCursor = (element: HTMLElement, clientX: number, clientY: number): string[] => {
+    let textOnCursor: string[] | undefined;
     try {
       textOnCursor = traverser.fetchTextUnderCursor(element, clientX, clientY);
     } catch (err) {
@@ -26,15 +31,20 @@ const build = (doConfirmValidCharacter, maxWords) => {
 };
 
 class Traverser {
-  constructor(doGetTargetCharacterType, maxWords) {
-    this.JA_MAX_LENGTH = 40;
+  readonly JA_MAX_LENGTH = 40;
+  getTargetCharacterType: CharacterTypeGetter;
+  maxWords: number;
+  decoy: ReturnType<typeof decoy.create>;
+  segmenter: Intl.Segmenter | null;
+
+  constructor(doGetTargetCharacterType: CharacterTypeGetter | undefined, maxWords: number | undefined) {
     this.getTargetCharacterType = doGetTargetCharacterType ?? ((code) => (utils.isEnglishLikeCharacter(code) ? 3 : 0));
     this.maxWords = maxWords ?? 8;
     this.decoy = decoy.create("div");
     this.segmenter = createWordSegmenter("ja-JP");
   }
 
-  fetchTextUnderCursor(element, clientX, clientY) {
+  fetchTextUnderCursor(element: HTMLElement, clientX: number, clientY: number): string[] | undefined {
     const range = ponyfill.getCaretNodeAndOffsetFromPoint(element.ownerDocument, clientX, clientY);
     if (!range) {
       return [];
@@ -42,7 +52,7 @@ class Traverser {
     const { node, offset } = range;
 
     if (node.nodeType === Node.TEXT_NODE) {
-      return this.fetchTextFromTextNode(node, offset);
+      return this.fetchTextFromTextNode(node as Text, offset);
     }
 
     if (node.nodeType === Node.ELEMENT_NODE) {
@@ -52,9 +62,9 @@ class Traverser {
     return [];
   }
 
-  fetchTextFromTextNode(textNode, offset) {
+  fetchTextFromTextNode(textNode: Text, offset: number): string[] {
     const { text, subText, end, isEnglish } = this.getTextFromRange(textNode.data, offset);
-    const textList = subText ? [text, subText] : [text];
+    const textList = (subText ? [text, subText] : [text]) as string[];
     if (!end) {
       return textList;
     }
@@ -62,7 +72,7 @@ class Traverser {
     return textList.map((t) => this.concatenate(t, followingText, isEnglish));
   }
 
-  concatenate(text, followingText, isEnglish) {
+  concatenate(text: string, followingText: string, isEnglish: boolean | undefined): string {
     const concatenatedText = concatenateFollowingText(text, followingText, isEnglish);
     const endIndex = isEnglish
       ? searchEndIndex(concatenatedText, 0, this.maxWords, this.getTargetCharacterType)
@@ -70,7 +80,7 @@ class Traverser {
     return concatenatedText.substring(0, endIndex);
   }
 
-  fetchTextFromElementNode(element, clientX, clientY) {
+  fetchTextFromElementNode(element: HTMLElement, clientX: number, clientY: number): string[] | undefined {
     try {
       this.decoy.activate(element);
 
@@ -81,14 +91,14 @@ class Traverser {
       const { node, offset } = range;
 
       if (node.nodeType === Node.TEXT_NODE) {
-        return this.fetchTextFromTextNode(node, offset, this.maxWords);
+        return this.fetchTextFromTextNode(node as Text, offset);
       }
     } finally {
       this.decoy.deactivate();
     }
   }
 
-  getTextFromRange(sourceText, offset) {
+  getTextFromRange(sourceText: string, offset: number): TextFromRange {
     if (!sourceText) {
       return {};
     }
@@ -100,7 +110,7 @@ class Traverser {
       const endIndex = searchEndIndex(sourceText, offset, this.maxWords, this.getTargetCharacterType);
       const text = sourceText.substring(startIndex, endIndex);
       const end = endIndex >= sourceText.length;
-      return { text, undefined, end, isEnglish };
+      return { text, subText: undefined, end, isEnglish };
     }
 
     const startIndex = offset;
@@ -115,19 +125,23 @@ class Traverser {
 }
 
 // Returns the start index of the word that contains the character just before cursorIndex
-const retrieveProperStartIndex = (sourceText, cursorIndex, segmenter) => {
+const retrieveProperStartIndex = (
+  sourceText: string,
+  cursorIndex: number,
+  segmenter: Intl.Segmenter | null,
+): number => {
   if (!segmenter) {
     return cursorIndex;
   }
   return segmenter.segment(sourceText).containing(cursorIndex - 1)?.index ?? 0;
 };
 
-const searchStartIndex = (text, index, doGetCharacterType) => {
-  let startIndex;
+const searchStartIndex = (text: string, index: number, doGetCharacterType: CharacterTypeGetter): number => {
+  let startIndex: number;
   let i = index;
   for (;;) {
     const code = text.charCodeAt(i);
-    const toPursue = doGetCharacterType(code) & 1;
+    const toPursue = (doGetCharacterType(code) ?? 0) & 1;
     if (!toPursue) {
       startIndex = i + 1;
       break;
@@ -141,8 +155,13 @@ const searchStartIndex = (text, index, doGetCharacterType) => {
   return startIndex;
 };
 
-const searchEndIndex = (text, index, maxWords, doGetCharacterType) => {
-  let endIndex;
+const searchEndIndex = (
+  text: string,
+  index: number,
+  maxWords: number,
+  doGetCharacterType: CharacterTypeGetter,
+): number => {
+  let endIndex: number;
   let i = index + 1;
   let spaceCount = 0;
   let theLastIsSpace = false;
@@ -158,7 +177,7 @@ const searchEndIndex = (text, index, maxWords, doGetCharacterType) => {
         break;
       }
     } else {
-      const toPursue = doGetCharacterType(code) & 2;
+      const toPursue = (doGetCharacterType(code) ?? 0) & 2;
       if (!toPursue) {
         endIndex = i;
         break;
@@ -175,7 +194,7 @@ const searchEndIndex = (text, index, maxWords, doGetCharacterType) => {
   return endIndex;
 };
 
-const concatenateFollowingText = (text, followingText, isEnglish) => {
+const concatenateFollowingText = (text: string, followingText: string, isEnglish: boolean | undefined): string => {
   if (!followingText) {
     return text;
   }
@@ -188,7 +207,7 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
   return text + " " + followingText;
 };
 
-const createWordSegmenter = (lang) => {
+const createWordSegmenter = (lang: string): Intl.Segmenter | null => {
   if (!Intl.Segmenter) {
     return null;
   }

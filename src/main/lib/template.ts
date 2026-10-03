@@ -6,8 +6,8 @@
 
 import Mustache from "mustache";
 
-const parse = (template) => Mustache.parse(template);
+const parse = (template: string) => Mustache.parse(template);
 
-const render = (template, view) => Mustache.render(template, view);
+const render = (template: string, view: unknown): string => Mustache.render(template, view);
 
 export default { parse, render };

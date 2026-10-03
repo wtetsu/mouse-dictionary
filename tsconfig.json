@@ -8,6 +8,7 @@
     "allowJs": true,
     "noEmit": true,
     "isolatedModules": true,
+    "useDefineForClassFields": false,
     "skipLibCheck": true,
     "types": ["chrome", "vite/client"]
   },

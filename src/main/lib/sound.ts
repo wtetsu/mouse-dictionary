@@ -6,7 +6,7 @@
 
 import utils from "./utils";
 
-const pronounce = (text) => {
+const pronounce = (text: string): void => {
   if (!text) {
     return;
   }

@@ -4,20 +4,22 @@
  * Licensed under MIT
  */
 
-const getComputedCssText = (params) => {
+import type { CaretPosition } from "./ponyfill";
+
+const getComputedCssText = (params: Element): string => {
   const computedStyle = window.getComputedStyle(params);
 
   const styles = [];
   for (const key in computedStyle) {
     if (!isNumberString(key)) {
-      const value = computedStyle[key];
+      const value = computedStyle[key as keyof CSSStyleDeclaration];
       styles.push(`${key}:${value}`);
     }
   }
   return styles.join(";");
 };
 
-const isNumberString = (str) => {
+const isNumberString = (str: string): boolean => {
   if (!str) {
     return false;
   }
@@ -33,7 +35,11 @@ const isNumberString = (str) => {
   return isNumberStr;
 };
 
-const getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
+const getCaretNodeAndOffsetFromPoint = (
+  ownerDocument: Document,
+  pointX: number,
+  pointY: number,
+): CaretPosition | null => {
   const position = ownerDocument.caretPositionFromPoint(pointX, pointY);
   if (!position) {
     return null;

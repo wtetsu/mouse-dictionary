@@ -11,7 +11,10 @@ const INDICATORS = ["⠿", "⠿", "⠿", "⠷", "⠯", "⠟", "⠻", "⠽", "⠾
 const DEFAULT_STYLE =
   "position:absolute;width:100%;bottom:0;background-color:black;opacity:0.90;text-align:center;font-size:x-large;color:#FFFFFF";
 
-const create = (style = "") => {
+type UpdateRibbon = (text: string, newIndicators?: string[]) => void;
+type CloseRibbon = () => void;
+
+const create = (style = ""): [UpdateRibbon, CloseRibbon] => {
   const line = dom.create(`<div style="${DEFAULT_STYLE};${style}"></div>`);
 
   const progress = dom.create('<span style=""></span>');
@@ -29,7 +32,7 @@ const create = (style = "") => {
   line.appendChild(indicator);
   document.body.appendChild(line);
 
-  const doUpdate = (text, newIndicators) => {
+  const doUpdate: UpdateRibbon = (text, newIndicators) => {
     progress.textContent = text;
     if (newIndicators) {
       indicators = newIndicators;

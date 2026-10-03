@@ -6,26 +6,31 @@
 
 import ponyfill from "./ponyfill/ponyfill";
 
-const create = (html) => {
+export type Styles = Record<string, string>;
+
+// Callers pass HTML that has a single root element
+const create = <T extends Element = HTMLElement>(html: string): T => {
   const template = document.createElement("template");
   template.innerHTML = html.trim();
-  return template.content.firstChild;
+  return template.content.firstChild as T;
 };
 
-const applyStyles = (element, styles) => {
+// Accepts any style object such as Styles or React.CSSProperties
+const applyStyles = (element: HTMLElement, styles: object | null | undefined): void => {
   if (!styles || typeof styles !== "object") {
     return;
   }
   try {
-    for (const key of Object.keys(styles)) {
-      element.style[key] = styles[key];
+    const style = element.style as unknown as Record<string, unknown>;
+    for (const [key, value] of Object.entries(styles)) {
+      style[key] = value;
     }
   } catch (e) {
     console.error(e);
   }
 };
 
-const replace = (element, newDom) => {
+const replace = (element: Element, newDom: Node | null | undefined): void => {
   if (newDom) {
     element.replaceChildren(newDom);
   } else {
@@ -36,14 +41,14 @@ const replace = (element, newDom) => {
 const MAX_TRAVERSE_LEVEL = 4;
 const MAX_TRAVERSE_WORDS = 10;
 
-const traverse = (elem) => {
-  const resultWords = [];
+const traverse = (elem: Node): string => {
+  const resultWords: string[] = [];
 
-  let current = elem;
-  let skip = current;
+  let current: Node | null = elem;
+  let skip: Node = current;
 
   for (let i = 0; i < MAX_TRAVERSE_LEVEL; i++) {
-    if (!current || current.tagName === "BODY") {
+    if (!current || (current as Element).tagName === "BODY") {
       break;
     }
 
@@ -61,8 +66,8 @@ const traverse = (elem) => {
   return joinWords(resultWords.slice(0, MAX_TRAVERSE_WORDS));
 };
 
-const joinWords = (words) => {
-  const newWords = [];
+const joinWords = (words: string[]): string => {
+  const newWords: string[] = [];
   let i = 0;
   for (;;) {
     if (i >= words.length) {
@@ -88,14 +93,14 @@ const joinWords = (words) => {
   return newWords.join(" ");
 };
 
-const getDescendantsWords = (elem, skip) => {
-  const words = [];
+const getDescendantsWords = (elem: Node, skip?: Node): string[] => {
+  const words: string[] = [];
 
   if (!elem.childNodes || elem.childNodes.length === 0) {
     if (elem === skip) {
       return [];
     }
-    const t = elem.textContent.trim();
+    const t = elem.textContent?.trim();
     return t ? [t] : [];
   }
 
@@ -107,12 +112,12 @@ const getDescendantsWords = (elem, skip) => {
   return words;
 };
 
-const getChildren = (elem, skip) => {
+const getChildren = (elem: Node, skip?: Node): ArrayLike<Node> => {
   if (!skip) {
     return elem.childNodes;
   }
 
-  const result = [];
+  const result: Node[] = [];
   for (let i = elem.childNodes.length - 1; i >= 0; i--) {
     const child = elem.childNodes[i];
     if (child === skip) {
@@ -123,7 +128,7 @@ const getChildren = (elem, skip) => {
   return result.reverse();
 };
 
-const clone = (orgElement, baseElement) => {
+const clone = <T extends HTMLElement>(orgElement: HTMLElement, baseElement?: T): T | HTMLElement => {
   const clonedElement = baseElement ?? document.createElement(orgElement.tagName);
 
   // Copy all styles
@@ -133,7 +138,7 @@ const clone = (orgElement, baseElement) => {
 };
 
 // "100px" -> 100.0
-const pxToFloat = (str) => {
+const pxToFloat = (str: string | null | undefined): number => {
   if (!str) {
     return 0;
   }
@@ -153,13 +158,17 @@ const pxToFloat = (str) => {
  * element.style.cursor = "move";
  */
 class VirtualStyle {
-  constructor(element) {
+  element: HTMLElement;
+  stagedStyles: Map<string, string>;
+  appliedStyles: Map<string, string>;
+
+  constructor(element: HTMLElement) {
     this.element = element;
     this.stagedStyles = new Map();
     this.appliedStyles = new Map();
   }
 
-  set(prop, value) {
+  set(prop: string, value: string): void {
     if (this.stagedStyles.get(prop) === value) {
       return;
     }
@@ -167,14 +176,14 @@ class VirtualStyle {
     this.updateStyles();
   }
 
-  apply(styles) {
+  apply(styles: Styles): void {
     for (const [prop, value] of Object.entries(styles)) {
       this.stagedStyles.set(prop, value);
     }
     this.updateStyles();
   }
 
-  updateStyles() {
+  updateStyles(): void {
     const diff = this.getUpdatedData(this.stagedStyles, this.appliedStyles);
     if (!diff) {
       return;
@@ -187,8 +196,8 @@ class VirtualStyle {
     }
   }
 
-  getUpdatedData(stagedStyles, appliedStyles) {
-    const diff = {};
+  getUpdatedData(stagedStyles: Map<string, string>, appliedStyles: Map<string, string>): Styles | null {
+    const diff: Styles = {};
     let count = 0;
     for (const [prop, stagedValue] of stagedStyles) {
       if (stagedValue !== appliedStyles.get(prop)) {

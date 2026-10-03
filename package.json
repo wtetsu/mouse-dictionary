@@ -53,6 +53,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
     "@types/chrome": "^0.3.4",
+    "@types/mustache": "^4.2.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitest/coverage-v8": "^5.0.3",

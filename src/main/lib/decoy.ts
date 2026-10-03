@@ -6,7 +6,7 @@
 
 import dom from "./dom";
 
-const create = (tag) => {
+const create = (tag: string | null | undefined) => {
   return new Decoy(tag);
 };
 
@@ -18,14 +18,14 @@ const DEFAULT_STYLES = {
   opacity: 0,
 };
 
-const INPUT_STYLES = {
+const INPUT_STYLES: Record<string, Record<string, string>> = {
   INPUT: { overflow: "hidden", whiteSpace: "nowrap" },
   TEXTAREA: { overflow: "hidden" },
   SELECT: { overflow: "hidden", whiteSpace: "nowrap" },
   OPTION: { overflow: "hidden", whiteSpace: "nowrap" },
 };
 
-const COPY_STYLE_PROPERTIES = [
+const COPY_STYLE_PROPERTIES: (keyof CSSStyleDeclaration & string)[] = [
   "fontSize",
   "fontWeight",
   "fontFamily",
@@ -36,13 +36,18 @@ const COPY_STYLE_PROPERTIES = [
   "paddingLeft",
 ];
 
+type InputLikeElement = HTMLElement & { text?: string; value?: string };
+
 class Decoy {
-  constructor(tag) {
+  elementCache: HTMLElement | null;
+  decoy: HTMLElement | null;
+
+  constructor(tag: string | null | undefined) {
     this.elementCache = createElement(tag);
     this.decoy = null;
   }
 
-  activate(underlay) {
+  activate(underlay: HTMLElement): void {
     if (!this.elementCache) {
       return;
     }
@@ -61,9 +66,9 @@ class Decoy {
     const correctionHeight = underlay.clientHeight - decoy.clientHeight;
 
     const computedStyle = getComputedStyle(underlay);
-    const decoyAdditionStyles = {};
+    const decoyAdditionStyles: Record<string, string> = {};
     for (const prop of COPY_STYLE_PROPERTIES) {
-      decoyAdditionStyles[prop] = computedStyle[prop];
+      decoyAdditionStyles[prop] = computedStyle[prop] as string;
     }
     decoyAdditionStyles.width = `${underlay.clientWidth + correctionWidth}px`;
     decoyAdditionStyles.height = `${underlay.clientHeight + correctionHeight}px`;
@@ -71,7 +76,7 @@ class Decoy {
     dom.applyStyles(decoy, decoyAdditionStyles);
   }
 
-  deactivate() {
+  deactivate(): void {
     if (!this.elementCache) {
       return;
     }
@@ -81,14 +86,14 @@ class Decoy {
   }
 }
 
-const createElement = (tag) => {
+const createElement = (tag: string | null | undefined): HTMLElement | null => {
   if (!tag) {
     return null;
   }
   return document.createElement(tag);
 };
 
-const prepare = (decoy, underlay) => {
+const prepare = (decoy: HTMLElement, underlay: HTMLElement): HTMLElement => {
   decoy.innerText = getElementText(underlay);
 
   const style = createDecoyStyle(decoy, underlay);
@@ -103,19 +108,19 @@ const prepare = (decoy, underlay) => {
   return decoy;
 };
 
-const getElementText = (element) => {
+const getElementText = (element: InputLikeElement): string => {
   if (element.tagName === "SELECT") {
-    return getSelectText(element);
+    return getSelectText(element as HTMLSelectElement);
   }
-  return element.text ?? element.value;
+  return (element.text ?? element.value) as string;
 };
 
-function getSelectText(element) {
+function getSelectText(element: HTMLSelectElement): string {
   const index = element.selectedIndex;
-  return element.options[index]?.text;
+  return element.options[index]?.text as string;
 }
 
-const createDecoyStyle = (decoy, underlay) => {
+const createDecoyStyle = (decoy: HTMLElement, underlay: HTMLElement): Record<string, string | number> => {
   const offset = getOffset(underlay);
   const top = offset.top - dom.pxToFloat(decoy.style.marginTop);
   const left = offset.left - dom.pxToFloat(decoy.style.marginLeft);
@@ -132,7 +137,7 @@ const createDecoyStyle = (decoy, underlay) => {
   };
 };
 
-const getOffset = (element) => {
+const getOffset = (element: HTMLElement): { top: number; left: number } => {
   const rect = element.getBoundingClientRect();
   const doc = document.documentElement;
 

@@ -60,6 +60,6 @@ test("safari should share the implementation with chrome", () => {
 test.each(["chrome", "firefox", "safari"])("ponyfill should select the implementation for %s", async (browser) => {
   vi.stubGlobal("BROWSER", browser);
   const { default: ponyfill } = await import("../../../src/main/lib/ponyfill/ponyfill");
-  const { default: expected } = await import(`../../../src/main/lib/ponyfill/${browser}.js`);
+  const { default: expected } = await import(`../../../src/main/lib/ponyfill/${browser}.ts`);
   expect(ponyfill).toBe(expected);
 });

@@ -4,22 +4,24 @@
  * Licensed under MIT
  */
 
-const replaceTrailingCharacters = (str, searchValue, newValue) => {
+export type TrailingRule = { search: string; new: string }[][];
+
+const replaceTrailingCharacters = (str: string, searchValue: string, newValue: string): string | null => {
   if (!str.endsWith(searchValue)) {
     return null;
   }
   return str.substring(0, str.length - searchValue.length) + newValue;
 };
 
-const tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
-  const words = [];
+const tryToReplaceTrailingStrings = (str: string, trailingRule: TrailingRule, minLength = 3): string[] => {
+  const words: string[] = [];
 
   for (let i = 0; i < trailingRule.length; i++) {
     const tlist = trailingRule[i];
     for (let j = 0; j < tlist.length; j++) {
       const t = tlist[j];
       const w = replaceTrailingCharacters(str, t.search, t.new);
-      if (w?.length >= minLength) {
+      if (w && w.length >= minLength) {
         words.push(w);
         break;
       }

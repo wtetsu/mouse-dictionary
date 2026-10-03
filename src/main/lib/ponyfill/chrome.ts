@@ -4,12 +4,18 @@
  * Licensed under MIT
  */
 
-const getComputedCssText = (params) => {
+import type { CaretPosition } from "./ponyfill";
+
+const getComputedCssText = (params: Element): string => {
   const computedStyle = window.getComputedStyle(params);
   return computedStyle.cssText;
 };
 
-const getCaretNodeAndOffsetFromPoint = (ownerDocument, pointX, pointY) => {
+const getCaretNodeAndOffsetFromPoint = (
+  ownerDocument: Document,
+  pointX: number,
+  pointY: number,
+): CaretPosition | null => {
   const range = ownerDocument.caretRangeFromPoint(pointX, pointY);
   if (!range) {
     return null;

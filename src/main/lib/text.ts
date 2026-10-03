@@ -6,14 +6,15 @@
 
 import rule from "../core/rule";
 
-const text = {};
-
 const RE_NON_BREAKING_HYPHEN = /‑/g;
 
 // aaa-bbb -> aaa-bbb
 // aaa-\nbbb -> aaabbb
 // aaa-%&*bbb -> aaabbb
-text.dealWithHyphens = (sourceStr, doIsValidCharacter = isValidCharacter) => {
+// Returns a truthy value for characters that can be part of a word
+type CharacterChecker = (code: number) => unknown;
+
+const dealWithHyphens = (sourceStr: string, doIsValidCharacter: CharacterChecker = isValidCharacter): string => {
   const str = sourceStr.replace(RE_NON_BREAKING_HYPHEN, "-");
   let result = "";
   let currentIndex = 0;
@@ -57,9 +58,9 @@ text.dealWithHyphens = (sourceStr, doIsValidCharacter = isValidCharacter) => {
  * "American-English" -> ["American-English"]
  * "American_English" -> ["American_English"]
  */
-text.splitIntoWords = (str, doIsValidCharacter = isValidCharacter) => {
-  const words = [];
-  let startIndex = null;
+const splitIntoWords = (str: string, doIsValidCharacter: CharacterChecker = isValidCharacter): string[] => {
+  const words: string[] = [];
+  let startIndex: number | null = null;
   let i = 0;
   for (;;) {
     const code = str.charCodeAt(i);
@@ -88,7 +89,7 @@ text.splitIntoWords = (str, doIsValidCharacter = isValidCharacter) => {
   return words;
 };
 
-const makeArrayIncludingLoweredString = (str) => {
+const makeArrayIncludingLoweredString = (str: string): string[] => {
   const arr = [str];
   const loweredStr = str.toLowerCase();
   if (loweredStr !== str) {
@@ -101,15 +102,15 @@ const makeArrayIncludingLoweredString = (str) => {
  * "camelCase" -> ["camel", "Case", "case"]
  * "Material-UI" -> ["Material", "material", "UI", "ui"]
  */
-text.splitString = (str, minWordLength) => {
-  const arr = [];
+const splitString = (str: string, minWordLength: number): string[] => {
+  const arr: string[] = [];
   let startIndex = 0;
   let i = 0;
   let prevIsCapital = true;
   while (i < str.length) {
     const chCode = str.charCodeAt(i);
     const isCapital = chCode >= 65 && chCode <= 90;
-    let wordToAdd = null;
+    let wordToAdd: string | null = null;
     // # - . _
     if (chCode === 35 || chCode === 45 || chCode === 46 || chCode === 95) {
       wordToAdd = str.substring(startIndex, i);
@@ -146,15 +147,15 @@ text.splitString = (str, minWordLength) => {
  * ["running", "away"]
  * -> ["running away", "running", "run away", "run"]
  */
-text.linkWords = (words, minWordNum = 1, enablePhrasing = true) => {
+const linkWords = (words: string[], minWordNum = 1, enablePhrasing = true): string[] => {
   if (words.length === 0) {
     return [];
   }
   const firstWordsList = makeFirstWordsList(words[0]);
   const wordsWithoutFirstWord = words.slice(1);
 
-  const result1 = [];
-  const result2 = [];
+  const result1: string[] = [];
+  const result2: string[] = [];
   for (const wordList of firstWordsList) {
     wordList.push(...wordsWithoutFirstWord);
     const { linkedWords, phraseProcessedWords } = makeLinkedWords(wordList, minWordNum, enablePhrasing);
@@ -172,8 +173,8 @@ text.linkWords = (words, minWordNum = 1, enablePhrasing = true) => {
  * 1: <→...> : Any characters between "<→" and ">".
  * 2: ＝... Alphabet characters and spaces after "＝".
  */
-text.extractRefPatternsInText = (input) => {
-  const results = [];
+const extractRefPatternsInText = (input: string): string[] => {
+  const results: string[] = [];
 
   let i = 0;
 
@@ -214,18 +215,18 @@ text.extractRefPatternsInText = (input) => {
   return results;
 };
 
-const makeLinkedWords = (wordList, minWordNum, enablePhrasing = true) => {
-  const linkedWords = [];
-  const phraseProcessedWords = [];
+const makeLinkedWords = (wordList: string[], minWordNum: number, enablePhrasing = true) => {
+  const linkedWords: string[] = [];
+  const phraseProcessedWords: string[] = [];
 
-  const currentWords = [];
+  const currentWords: string[] = [];
   for (let i = 0; i < wordList.length; i++) {
     const word = wordList[i];
     currentWords.push(word);
     if (i >= minWordNum - 1) {
       linkedWords.push(currentWords.join(" "));
       if (enablePhrasing) {
-        const phraseProcessed = rule.doPhrase(currentWords).map((a) => a.join(" "));
+        const phraseProcessed = rule.doPhrase(currentWords).map((a: string[]) => a.join(" "));
         phraseProcessedWords.push(...phraseProcessed);
       }
     }
@@ -233,16 +234,16 @@ const makeLinkedWords = (wordList, minWordNum, enablePhrasing = true) => {
   return { linkedWords, phraseProcessedWords };
 };
 
-const makeFirstWordsList = (firstWord) => {
+const makeFirstWordsList = (firstWord: string): string[][] => {
   const firstWordsList = [[firstWord]];
   const base = rule.doBase(firstWord);
   if (base.length >= 1) {
-    firstWordsList.push(...base.map((a) => [a]));
+    firstWordsList.push(...base.map((a: string) => [a]));
   }
 
   return firstWordsList;
 };
 
-const isValidCharacter = (code) => code >= 33 && code <= 126;
+const isValidCharacter: CharacterChecker = (code) => code >= 33 && code <= 126;
 
-export default text;
+export default { dealWithHyphens, splitIntoWords, splitString, linkWords, extractRefPatternsInText };
