@@ -1,11 +1,12 @@
 import { vi } from "vitest";
 
+// Promise-based like the real chrome.storage (MV3) / browser.storage
 class Storage {
   constructor() {
     this.data = {};
   }
 
-  get(keys, callback) {
+  async get(keys) {
     const result = {};
     // Like the real chrome.storage, missing keys are omitted
     for (const key of keys) {
@@ -13,12 +14,11 @@ class Storage {
         result[key] = this.data[key];
       }
     }
-    callback(result);
+    return result;
   }
 
-  set(items, callback) {
+  async set(items) {
     Object.assign(this.data, items);
-    callback();
   }
 }
 
@@ -33,21 +33,18 @@ class Event {
   }
 
   dispatch(...args) {
-    for (const listener of this.listeners) {
-      listener(...args);
-    }
+    return this.listeners.map((listener) => listener(...args));
   }
 }
 
 class Chrome {
   constructor() {
     this.runtime = {
-      lastError: null,
       onMessage: new Event(),
       onMessageExternal: new Event(),
       getURL: (path) => `chrome-extension://test/${path}`,
-      sendMessage: vi.fn((_message, callback) => callback?.()),
-      openOptionsPage: vi.fn((callback) => callback?.()),
+      sendMessage: vi.fn(async () => {}),
+      openOptionsPage: vi.fn(async () => {}),
     };
     this.storage = {
       local: new Storage(),
@@ -56,11 +53,11 @@ class Chrome {
     this.action = { onClicked: new Event() };
     this.browserAction = { onClicked: new Event() };
     this.commands = { onCommand: new Event() };
-    this.scripting = { executeScript: vi.fn() };
+    this.scripting = { executeScript: vi.fn(async () => {}) };
     this.tabs = {
-      query: vi.fn((_query, callback) => callback([])),
-      sendMessage: vi.fn(),
-      executeScript: vi.fn(),
+      query: vi.fn(async () => []),
+      sendMessage: vi.fn(async () => {}),
+      executeScript: vi.fn(async () => {}),
     };
   }
 }

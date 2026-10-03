@@ -4,6 +4,7 @@
  * Licensed under MIT
  */
 
+import ext from "../lib/ext";
 import ribbon from "../lib/ribbon";
 import res from "./resource";
 
@@ -39,7 +40,7 @@ const invoke = async () => {
   }
 
   const payload = convertToBase64(arrayBuffer);
-  sendMessage({ type: "open_pdf", payload });
+  ext().runtime.sendMessage({ type: "open_pdf", payload });
 
   closeRibbon();
 };
@@ -66,14 +67,6 @@ const convertToBase64 = (arrayBuffer) => {
     result += base64slice;
   }
   return result;
-};
-
-const sendMessage = async (message) => {
-  return new Promise((done) => {
-    chrome.runtime.sendMessage(message, (response) => {
-      done(response);
-    });
-  });
 };
 
 export default { invoke };

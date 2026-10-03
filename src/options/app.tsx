@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import swal from "sweetalert";
 import rule from "../main/core/rule";
+import { ext } from "./extern";
 import { res } from "./logic";
 import { Main } from "./page/Main";
 import "ace-builds/src-noconflict/mode-html";
@@ -28,14 +29,6 @@ window.onerror = (msg) => {
   });
 };
 
-const sendMessage = async (message: any) => {
-  return new Promise((done) => {
-    chrome.runtime.sendMessage(message, (response) => {
-      done(response);
-    });
-  });
-};
-
 const App = () => {
   const [mode, setMode] = useState<"loading" | "options" | "pdf">("loading");
 
@@ -45,8 +38,10 @@ const App = () => {
   };
 
   useEffect(() => {
+    const shiftPdfId = (): Promise<string | undefined> => ext().runtime.sendMessage({ type: "shift_pdf_id" });
+
     const init = async (): Promise<void> => {
-      const id = (await sendMessage({ type: "shift_pdf_id" })) as string;
+      const id = await shiftPdfId();
       if (id) {
         showPdfViewer(id);
       } else {
@@ -55,13 +50,15 @@ const App = () => {
     };
     init();
 
-    chrome.runtime.onMessage.addListener(async (request) => {
+    // Must not return a Promise: Firefox would treat it as this page responding to the message
+    ext().runtime.onMessage.addListener((request) => {
       switch (request?.type) {
         case "prepare_pdf": {
-          const id = (await sendMessage({ type: "shift_pdf_id" })) as string;
-          if (id) {
-            showPdfViewer(id);
-          }
+          shiftPdfId().then((id) => {
+            if (id) {
+              showPdfViewer(id);
+            }
+          });
           break;
         }
       }

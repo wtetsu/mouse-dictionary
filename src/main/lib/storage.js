@@ -4,19 +4,11 @@
  * Licensed under MIT
  */
 
-const locals = {
-  get: (...args) => chrome.storage.local.get(...args),
-  set: (...args) => chrome.storage.local.set(...args),
-};
-
-const syncs = {
-  get: (...args) => chrome.storage.sync.get(...args),
-  set: (...args) => chrome.storage.sync.set(...args),
-};
+import ext from "./ext";
 
 const sync = {
-  get: async (args) => doAsync(syncs.get, args),
-  set: async (args) => doAsync(syncs.set, args),
+  get: (keys) => ext().storage.sync.get(keys),
+  set: (items) => ext().storage.sync.set(items),
   async pick(key) {
     const data = await sync.get([key]);
     return data?.[key];
@@ -24,36 +16,12 @@ const sync = {
 };
 
 const local = {
-  get: async (args) => doAsync(locals.get, args),
-  set: async (args) => doAsync(locals.set, args),
+  get: (keys) => ext().storage.local.get(keys),
+  set: (items) => ext().storage.local.set(items),
   async pick(key) {
     const data = await local.get([key]);
     return data?.[key];
   },
 };
 
-const doAsync = async (fn, params) => {
-  if (!fn) {
-    return null;
-  }
-  return new Promise((resolve, reject) => {
-    try {
-      const callBack = (data) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          resolve(data);
-        }
-      };
-      if (params) {
-        fn(params, callBack);
-      } else {
-        fn(callBack);
-      }
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-export default { local, sync, doAsync };
+export default { local, sync };

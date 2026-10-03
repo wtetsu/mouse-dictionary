@@ -43,10 +43,10 @@ test("should send PDF data to the background", async () => {
   await pdf.invoke();
 
   expect(fetchMock).toHaveBeenCalledWith(location.href);
-  expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
-    { type: "open_pdf", payload: Buffer.from(bytes).toString("base64") },
-    expect.any(Function),
-  );
+  expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+    type: "open_pdf",
+    payload: Buffer.from(bytes).toString("base64"),
+  });
   // The ribbon is closed
   expect(document.body.children.length).toEqual(0);
 });

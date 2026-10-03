@@ -4,44 +4,45 @@
  * Licensed under MIT
  */
 
+import ext from "../main/lib/ext";
 import ExpiringQueue from "./queue";
 import generateUniqueId from "./unique";
 
+const api = ext();
+
 if (BROWSER === "chrome") {
-  chrome.action.onClicked.addListener((tab) => {
-    chrome.scripting.executeScript({
+  api.action.onClicked.addListener((tab) => {
+    api.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["main.js"],
     });
   });
 } else {
-  chrome.browserAction.onClicked.addListener(() => {
-    chrome.tabs.executeScript({
+  api.browserAction.onClicked.addListener(() => {
+    api.tabs.executeScript({
       file: "./main.js",
     });
   });
 }
 
 // cross-extension messaging
-chrome.runtime.onMessageExternal.addListener((message) => {
-  sendToActiveTab((tabId) => {
-    chrome.tabs.sendMessage(tabId, { message: message });
-  });
+api.runtime.onMessageExternal.addListener((message) => {
+  sendToActiveTabs((tabId) => api.tabs.sendMessage(tabId, { message: message }));
 });
 
 // Shortcut key handling
-chrome.commands.onCommand.addListener((command) => {
+api.commands.onCommand.addListener((command) => {
   switch (command) {
     case "scroll_up":
-      sendToActiveTab((tabId) => chrome.tabs.sendMessage(tabId, { message: { type: "scroll_up" } }));
+      sendToActiveTabs((tabId) => api.tabs.sendMessage(tabId, { message: { type: "scroll_up" } }));
       break;
     case "scroll_down":
-      sendToActiveTab((tabId) => chrome.tabs.sendMessage(tabId, { message: { type: "scroll_down" } }));
+      sendToActiveTabs((tabId) => api.tabs.sendMessage(tabId, { message: { type: "scroll_down" } }));
       break;
     case "activate_extension":
       // Workaround for Vivaldi (see #84)
-      sendToActiveTab((tabId) =>
-        chrome.scripting.executeScript({
+      sendToActiveTabs((tabId) =>
+        api.scripting.executeScript({
           target: { tabId },
           files: ["main.js"],
         }),
@@ -52,16 +53,16 @@ chrome.commands.onCommand.addListener((command) => {
 
 // PDF handling
 const queue = new ExpiringQueue(1000 * 30);
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
+api.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   switch (request?.type) {
     case "open_pdf": {
       const id = generateUniqueId();
       queue.push(id, request.payload);
-      chrome.runtime.sendMessage({ type: "prepare_pdf" });
-      chrome.runtime.openOptionsPage(() => {
-        sendResponse();
-      });
-      break;
+      // Rejects when no options page is open yet; the newly opened page will pick up the PDF itself
+      api.runtime.sendMessage({ type: "prepare_pdf" }).catch(() => {});
+      api.runtime.openOptionsPage().then(() => sendResponse());
+      // Keep the message channel open for the asynchronous response
+      return true;
     }
     case "shift_pdf_id": {
       const frontId = queue.shiftId();
@@ -76,10 +77,10 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   }
 });
 
-const sendToActiveTab = (callback) => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    for (let i = 0; i < tabs.length; i++) {
-      callback(tabs[i].id);
-    }
-  });
+const sendToActiveTabs = async (send) => {
+  const tabs = await api.tabs.query({ active: true, currentWindow: true });
+  for (const tab of tabs) {
+    // Tabs where the content script is unavailable reject; they can be safely ignored
+    send(tab.id).catch(() => {});
+  }
 };

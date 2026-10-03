@@ -5,24 +5,17 @@
  */
 /* istanbul ignore file */
 
+import ext from "../../main/lib/ext";
 import orgStorage from "../../main/lib/storage";
-
-type ByteInUseCallback = (bytesInUse: number) => void;
 
 const local = {
   ...orgStorage.local,
-  ...{
-    getBytesInUse: async () =>
-      orgStorage.doAsync((callback: ByteInUseCallback) => chrome.storage.local.getBytesInUse(callback)),
-  },
+  getBytesInUse: (): Promise<number> => ext().storage.local.getBytesInUse(),
 };
 
 const sync = {
   ...orgStorage.sync,
-  ...{
-    getBytesInUse: async () =>
-      orgStorage.doAsync((callback: ByteInUseCallback) => chrome.storage.sync.getBytesInUse(callback)),
-  },
+  getBytesInUse: (): Promise<number> => ext().storage.sync.getBytesInUse(),
 };
 
 export { local, sync };

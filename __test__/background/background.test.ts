@@ -6,7 +6,7 @@ let chrome: Chrome;
 beforeEach(() => {
   vi.resetModules();
   chrome = new Chrome();
-  chrome.tabs.query.mockImplementation((_query, callback) => callback([{ id: 1 }, { id: 2 }]));
+  chrome.tabs.query.mockResolvedValue([{ id: 1 }, { id: 2 }]);
   global.chrome = chrome as any;
 });
 
@@ -26,6 +26,7 @@ describe("extension icon", () => {
 
   test("should inject the main script (firefox)", async () => {
     vi.stubGlobal("BROWSER", "firefox");
+    vi.stubGlobal("browser", chrome);
     await importBackground();
     chrome.browserAction.onClicked.dispatch();
     expect(chrome.tabs.executeScript).toHaveBeenCalledWith({ file: "./main.js" });
@@ -37,15 +38,26 @@ test("should forward external messages to the active tabs", async () => {
   await importBackground();
   const message = { type: "text", text: "dog" };
   chrome.runtime.onMessageExternal.dispatch(message);
-  expect(chrome.tabs.query).toHaveBeenCalledWith({ active: true, currentWindow: true }, expect.any(Function));
+  expect(chrome.tabs.query).toHaveBeenCalledWith({ active: true, currentWindow: true });
+  await vi.waitFor(() => expect(chrome.tabs.sendMessage).toHaveBeenCalledTimes(2));
   expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(1, { message });
   expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(2, { message });
+});
+
+test("should ignore tabs where the content script is unavailable", async () => {
+  chrome.tabs.sendMessage.mockRejectedValue(new Error("Receiving end does not exist."));
+  chrome.runtime.sendMessage.mockRejectedValue(new Error("Receiving end does not exist."));
+  await importBackground();
+  chrome.commands.onCommand.dispatch("scroll_up");
+  chrome.runtime.onMessage.dispatch({ type: "open_pdf", payload: "PDF DATA" }, {}, vi.fn());
+  await vi.waitFor(() => expect(chrome.tabs.sendMessage).toHaveBeenCalledTimes(2));
 });
 
 describe("commands", () => {
   test.each(["scroll_up", "scroll_down"])("should send %s to the active tabs", async (command) => {
     await importBackground();
     chrome.commands.onCommand.dispatch(command);
+    await vi.waitFor(() => expect(chrome.tabs.sendMessage).toHaveBeenCalledTimes(2));
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(1, { message: { type: command } });
     expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(2, { message: { type: command } });
   });
@@ -53,6 +65,7 @@ describe("commands", () => {
   test("should inject the main script into the active tabs", async () => {
     await importBackground();
     chrome.commands.onCommand.dispatch("activate_extension");
+    await vi.waitFor(() => expect(chrome.scripting.executeScript).toHaveBeenCalledTimes(2));
     expect(chrome.scripting.executeScript).toHaveBeenCalledWith({ target: { tabId: 1 }, files: ["main.js"] });
     expect(chrome.scripting.executeScript).toHaveBeenCalledWith({ target: { tabId: 2 }, files: ["main.js"] });
   });
@@ -69,10 +82,15 @@ describe("PDF messages", () => {
     await importBackground();
 
     const openResponse = vi.fn();
-    chrome.runtime.onMessage.dispatch({ type: "open_pdf", payload: "PDF DATA" }, {}, openResponse);
+    const [keepChannelOpen] = chrome.runtime.onMessage.dispatch(
+      { type: "open_pdf", payload: "PDF DATA" },
+      {},
+      openResponse,
+    );
+    expect(keepChannelOpen).toBe(true);
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({ type: "prepare_pdf" });
     expect(chrome.runtime.openOptionsPage).toHaveBeenCalled();
-    expect(openResponse).toHaveBeenCalled();
+    await vi.waitFor(() => expect(openResponse).toHaveBeenCalled());
 
     const idResponse = vi.fn();
     chrome.runtime.onMessage.dispatch({ type: "shift_pdf_id" }, {}, idResponse);

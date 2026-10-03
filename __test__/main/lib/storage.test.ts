@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, expect, test } from "vitest";
+import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import storage from "../../../src/main/lib/storage";
 import Chrome from "../chrome";
 
@@ -47,21 +47,11 @@ test("should handle sync storage get and set operations correctly", async () => 
 });
 
 test("should throw an error when local storage get operation fails", async () => {
-  expect.hasAssertions();
-  global.chrome.runtime.lastError = { message: "error!" };
-  try {
-    await storage.local.get([]);
-  } catch (e) {
-    expect(e.message).toBe("error!");
-  }
+  vi.spyOn(global.chrome.storage.local, "get").mockRejectedValueOnce(new Error("error!"));
+  await expect(storage.local.get([])).rejects.toThrow("error!");
 });
 
 test("should throw an error when sync storage get operation fails", async () => {
-  expect.hasAssertions();
-  global.chrome.runtime.lastError = { message: "error!" };
-  try {
-    await storage.sync.get([]);
-  } catch (e) {
-    expect(e.message).toBe("error!");
-  }
+  vi.spyOn(global.chrome.storage.sync, "get").mockRejectedValueOnce(new Error("error!"));
+  await expect(storage.sync.get([])).rejects.toThrow("error!");
 });
