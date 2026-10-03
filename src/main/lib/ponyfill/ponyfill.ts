@@ -15,8 +15,11 @@ export type Ponyfill = {
   getCaretNodeAndOffsetFromPoint: (ownerDocument: Document, pointX: number, pointY: number) => CaretPosition | null;
 };
 
-// Resolved at build time so that unused implementations are tree-shaken
-let ponyfill: Ponyfill = chrome;
+// Selected at build time by the BROWSER constant
+let ponyfill!: Ponyfill;
+if (BROWSER === "chrome") {
+  ponyfill = chrome;
+}
 if (BROWSER === "firefox") {
   ponyfill = firefox;
 }

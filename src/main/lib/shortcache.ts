@@ -41,7 +41,8 @@ class ShortCache<T> {
       return null;
     }
     const index = this.dict.get(key);
-    if (index === undefined) {
+    // index is NaN when size is 0
+    if (index === undefined || !Number.isFinite(index)) {
       return null;
     }
     return (this.list[index] as CacheEntry<T>).value;

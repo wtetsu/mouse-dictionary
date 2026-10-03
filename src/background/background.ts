@@ -15,16 +15,20 @@ if (BROWSER === "chrome") {
     if (tab.id === undefined) {
       return;
     }
-    api.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["main.js"],
-    });
+    api.scripting
+      .executeScript({
+        target: { tabId: tab.id },
+        files: ["main.js"],
+      })
+      .catch(console.error);
   });
 } else {
   api.browserAction.onClicked.addListener(() => {
-    api.tabs.executeScript({
-      file: "./main.js",
-    });
+    api.tabs
+      .executeScript({
+        file: "./main.js",
+      })
+      .catch(console.error);
   });
 }
 
@@ -63,7 +67,10 @@ api.runtime.onMessage.addListener((request, _sender, sendResponse) => {
       queue.push(id, request.payload);
       // Rejects when no options page is open yet; the newly opened page will pick up the PDF itself
       api.runtime.sendMessage({ type: "prepare_pdf" }).catch(() => {});
-      api.runtime.openOptionsPage().then(() => sendResponse());
+      api.runtime
+        .openOptionsPage()
+        .catch(console.error)
+        .then(() => sendResponse());
       // Keep the message channel open for the asynchronous response
       return true;
     }

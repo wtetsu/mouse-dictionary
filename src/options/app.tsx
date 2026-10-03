@@ -37,7 +37,14 @@ const App = () => {
   };
 
   useEffect(() => {
-    const shiftPdfId = (): Promise<string | undefined> => ext().runtime.sendMessage({ type: "shift_pdf_id" });
+    // Resolves to undefined when the background does not respond
+    const shiftPdfId = (): Promise<string | undefined> =>
+      ext()
+        .runtime.sendMessage({ type: "shift_pdf_id" })
+        .catch((e) => {
+          console.error(e);
+          return undefined;
+        });
 
     const init = async (): Promise<void> => {
       const id = await shiftPdfId();

@@ -51,3 +51,12 @@ test("should return null for non-existent key", () => {
 
   expect(cache.get(undefined)).toEqual(null);
 });
+
+test("cache of size 0 should never hit", () => {
+  const cache = new ShortCache(0);
+  cache.put("a", 1);
+  cache.put("b", 2);
+  cache.put("c", 3);
+  expect(cache.get("b")).toEqual(null);
+  expect(cache.get("c")).toEqual(null);
+});

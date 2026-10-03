@@ -46,7 +46,7 @@ export default class Lookuper {
 
     // Compile templates, regular expressions so that it works fast
     this.generator = new Generator(settings);
-    const cacheSize = import.meta.env.PROD ? 100 : 0;
+    const cacheSize = import.meta.env.MODE === "production" ? 100 : 0;
     this.shortCache = new ShortCache(cacheSize);
   }
 

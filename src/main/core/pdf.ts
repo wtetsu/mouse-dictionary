@@ -40,7 +40,7 @@ const invoke = async () => {
   }
 
   const payload = convertToBase64(arrayBuffer);
-  ext().runtime.sendMessage({ type: "open_pdf", payload });
+  ext().runtime.sendMessage({ type: "open_pdf", payload }).catch(console.error);
 
   closeRibbon();
 };
