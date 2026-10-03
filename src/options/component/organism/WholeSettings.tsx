@@ -165,9 +165,13 @@ export const WholeSettings: React.FC<Props> = (props) => {
 
   const editor = useRef(null) as RefObject<AceEditor | null>;
 
+  // The copy button is created only once, so it reads the latest JSON through a ref
+  const jsonRef = useRef(json);
+  jsonRef.current = json;
+
   useEffect(() => {
     const copyButton = createProcessButton("COPY", COPY_BUTTON_STYLES1, "COPIED!", COPY_BUTTON_STYLES2, () =>
-      navigator.clipboard.writeText(json),
+      navigator.clipboard.writeText(jsonRef.current),
     );
     dom.applyStyles(copyButton, COPY_BUTTON_STYLES);
     editor?.current?.refEditor?.appendChild(copyButton);
