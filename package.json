@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "deinja": "0.0.3",
-    "immer": "^11.1.18",
+    "immer": "^11.1.21",
     "mustache": "^4.2.0",
     "react": "^19.3.0",
     "react-ace": "^15.0.0",
@@ -45,20 +45,17 @@
     "uniqlist": "^1.0.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.14",
-    "@types/chrome": "^0.3.0",
-    "@types/mustache": "^4.2.6",
+    "@biomejs/biome": "^2.5.15",
+    "@types/chrome": "^0.3.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@vitest/coverage-v8": "^5.0.1",
+    "@vitest/coverage-v8": "^5.0.3",
     "adm-zip": "^0.6.1",
-    "fast-glob": "^3.3.3",
-    "fs-extra": "^11.4.1",
     "happy-dom": "^20.14.5",
     "json5": "^2.2.3",
     "milligram": "^1.4.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.2",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.3"
   }
 }

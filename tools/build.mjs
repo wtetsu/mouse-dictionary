@@ -6,12 +6,14 @@
 
 // Build with Vite (Rolldown).
 
+import fs from "node:fs";
 import path from "node:path";
-import fse from "fs-extra";
 import { build } from "vite";
 
-const { version } = fse.readJsonSync("package.json");
-const settings = fse.readJsonSync("tools/build.json");
+const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf-8"));
+
+const { version } = readJson("package.json");
+const settings = readJson("tools/build.json");
 
 const main = async (browser, mode, watchMode) => {
   copyStaticFiles(browser, mode);
@@ -27,12 +29,12 @@ const copyStaticFiles = (browser, mode) => {
     sourceDirs.push("overwrite");
   }
   for (const sourceDir of sourceDirs) {
-    fse.copySync(`static/${sourceDir}`, `dist-${browser}`, {
-      overwrite: true,
-      filter: (f) => !f.startsWith("."),
+    fs.cpSync(`static/${sourceDir}`, `dist-${browser}`, {
+      recursive: true,
+      filter: (f) => !path.basename(f).startsWith("."),
     });
   }
-  fse.copyFileSync("node_modules/milligram/dist/milligram.min.css", `dist-${browser}/options/milligram.min.css`);
+  fs.copyFileSync("node_modules/milligram/dist/milligram.min.css", `dist-${browser}/options/milligram.min.css`);
 };
 
 const buildEntry = async (browser, mode, watchMode, entry, outfile) => {

@@ -9,7 +9,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const json5 = require("json5");
-const glob = require("fast-glob");
 
 const main = (options, outputDirPath) => {
   const args = process.argv.slice(2);
@@ -81,7 +80,7 @@ const allFilesExist = (to, split, outputDirPath) => {
 const uniteJsonFiles = (fileGlobList) => {
   const resultData = {};
   for (const fileGlob of fileGlobList) {
-    for (const entry of glob.sync(fileGlob)) {
+    for (const entry of fs.globSync(fileGlob)) {
       const json = fs.readFileSync(entry, "utf-8");
       const data = json5.parse(json);
       Object.assign(resultData, data);
