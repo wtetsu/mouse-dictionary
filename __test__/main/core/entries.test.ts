@@ -476,6 +476,11 @@ test("Test Japanese words", () => {
   // keeping the usual prefix decomposition on both spellings.
   expect(createLookupWordsJa("ﾃﾚﾋﾞ")).toEqual(expect.arrayContaining(["ﾃﾚﾋﾞ", "テレビ", "テレ", "テ", "ﾃﾚﾋ", "ﾃﾚ", "ﾃ"]));
   expect(createLookupWordsJa("ｶﾞｽ")).toEqual(expect.arrayContaining(["ｶﾞｽ", "ガス", "ｶﾞ", "ｶ", "ガ"]));
+  // Conversion is scoped to halfwidth katakana: other characters must not get
+  // compatibility-folded (NFKC over the whole string would turn ① into "1").
+  const mixed = createLookupWordsJa("①ﾃﾚﾋﾞ");
+  expect(mixed).toEqual(expect.arrayContaining(["①ﾃﾚﾋﾞ", "①テレビ", "①テレ", "①ﾃﾚ"]));
+  expect(mixed).not.toContain("1テレビ");
   // Fullwidth katakana runs keep cutting into all prefixes (show-all-candidates design)
   expect(createLookupWordsJa("ソフトウェアエンジニア")).toEqual(
     expect.arrayContaining(["ソフトウェアエンジニア", "ソフトウェア", "ソフト", "ソ"]),
