@@ -10,7 +10,9 @@ import fs from "node:fs";
 import path from "node:path";
 import json5 from "json5";
 
-const main = (options, outputDirPath) => {
+type DictOptions = { from: string[]; to: string; split: number };
+
+const main = (options: DictOptions, outputDirPath: string) => {
   const args = process.argv.slice(2);
   const force = args.includes("--force");
 
@@ -24,7 +26,7 @@ const main = (options, outputDirPath) => {
   generateDictData(options, outputDirPath);
 };
 
-const generateDictData = (options, outputDirPath) => {
+const generateDictData = (options: DictOptions, outputDirPath: string) => {
   fs.mkdirSync(outputDirPath, { recursive: true });
 
   const data = uniteJsonFiles(options.from);
@@ -36,15 +38,15 @@ const generateDictData = (options, outputDirPath) => {
   console.info(`✅ Generated: ${outputFilePath}`);
 };
 
-const splitDataAndWrite = (data, split, to, outputDirPath) => {
+const splitDataAndWrite = (data: Record<string, unknown>, split: number, to: string, outputDirPath: string) => {
   const keys = Object.keys(data);
   keys.sort();
   const unit = (keys.length * 1.0) / split;
 
   let nextThreshold = unit;
-  let outData = {};
+  let outData: Record<string, unknown> = {};
 
-  const outFiles = [];
+  const outFiles: string[] = [];
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     outData[key] = data[key];
@@ -63,7 +65,7 @@ const splitDataAndWrite = (data, split, to, outputDirPath) => {
   return outFiles;
 };
 
-const allFilesExist = (to, split, outputDirPath) => {
+const allFilesExist = (to: string, split: number, outputDirPath: string) => {
   if (!fs.existsSync(path.join(outputDirPath, `${to}.json`))) {
     return false;
   }
@@ -77,8 +79,8 @@ const allFilesExist = (to, split, outputDirPath) => {
   return true;
 };
 
-const uniteJsonFiles = (fileGlobList) => {
-  const resultData = {};
+const uniteJsonFiles = (fileGlobList: string[]) => {
+  const resultData: Record<string, unknown> = {};
   for (const fileGlob of fileGlobList) {
     for (const entry of fs.globSync(fileGlob)) {
       const json = fs.readFileSync(entry, "utf-8");

@@ -8,13 +8,16 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { build } from "vite";
+import { build, type InlineConfig } from "vite";
 import pkg from "../package.json" with { type: "json" };
 import settings from "./build.json" with { type: "json" };
 
 const { version } = pkg;
 
-const main = async (browser, mode, watchMode) => {
+type Browser = keyof typeof settings.targets;
+type Mode = "development" | "production";
+
+const main = async (browser: Browser, mode: Mode, watchMode: string | undefined) => {
   copyStaticFiles(browser, mode);
 
   for (const [entry, outfile] of Object.entries(settings.entries)) {
@@ -22,7 +25,7 @@ const main = async (browser, mode, watchMode) => {
   }
 };
 
-const copyStaticFiles = (browser, mode) => {
+const copyStaticFiles = (browser: Browser, mode: Mode) => {
   const sourceDirs = ["base", "gen", `gen-${browser}`, "pdf"];
   if (mode !== "production") {
     sourceDirs.push("overwrite");
@@ -36,11 +39,17 @@ const copyStaticFiles = (browser, mode) => {
   fs.copyFileSync("node_modules/milligram/dist/milligram.min.css", `dist-${browser}/options/milligram.min.css`);
 };
 
-const buildEntry = async (browser, mode, watchMode, entry, outfile) => {
+const buildEntry = async (
+  browser: Browser,
+  mode: Mode,
+  watchMode: string | undefined,
+  entry: string,
+  outfile: string,
+) => {
   const outPath = path.join(`dist-${browser}`, outfile);
   const result = await build(createConfig(browser, mode, watchMode, entry, outfile));
 
-  if (!watchMode) {
+  if (!watchMode || !("on" in result)) {
     console.info(`✅ Generated: ${outPath}`);
     return;
   }
@@ -56,7 +65,13 @@ const buildEntry = async (browser, mode, watchMode, entry, outfile) => {
   });
 };
 
-const createConfig = (browser, mode, watchMode, entry, outfile) => {
+const createConfig = (
+  browser: Browser,
+  mode: Mode,
+  watchMode: string | undefined,
+  entry: string,
+  outfile: string,
+): InlineConfig => {
   const isProd = mode === "production";
   return {
     configFile: false,
@@ -93,10 +108,12 @@ const createConfig = (browser, mode, watchMode, entry, outfile) => {
   };
 };
 
+const isBrowser = (browser: string): browser is Browser => Object.hasOwn(settings.targets, browser);
+
 const getTime = () => Temporal.Now.plainDateTimeISO().toString({ smallestUnit: "second" }).replace("T", " ");
 
 if (process.argv.length <= 3) {
-  console.error("Usage: node build.js browser mode");
+  console.error("Usage: node build.ts browser mode");
   process.exit(1);
 }
 
@@ -104,6 +121,9 @@ const browser = process.argv[2];
 const mode = process.argv[3];
 const watch = process.argv[4];
 
+if (!isBrowser(browser)) {
+  throw new Error(`Invalid browser: ${browser}`);
+}
 if (mode !== "development" && mode !== "production") {
   throw new Error(`Invalid mode: ${mode}`);
 }

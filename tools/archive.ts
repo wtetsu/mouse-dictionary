@@ -10,7 +10,19 @@ import fs from "node:fs";
 import path from "node:path";
 import zlib from "node:zlib";
 
-const main = (sourcePath, outZipPath) => {
+type ZipEntry = { name: string; data: Buffer; mtime: Date };
+
+type ZipHeader = {
+  method: number;
+  time: number;
+  date: number;
+  crc: number;
+  compressedSize: number;
+  size: number;
+  nameLength: number;
+};
+
+const main = (sourcePath: string, outZipPath: string) => {
   if (!fs.existsSync(sourcePath)) {
     console.error(`Not found: ${sourcePath}`);
     process.exit(1);
@@ -34,9 +46,9 @@ const main = (sourcePath, outZipPath) => {
 };
 
 // Minimal ZIP writer (no ZIP64; every file and the archive must be < 4 GiB)
-const makeZip = (entries) => {
-  const localParts = [];
-  const centralParts = [];
+const makeZip = (entries: ZipEntry[]): Buffer => {
+  const localParts: Buffer[] = [];
+  const centralParts: Buffer[] = [];
   let offset = 0;
 
   for (const { name, data, mtime } of entries) {
@@ -81,7 +93,7 @@ const makeZip = (entries) => {
 };
 
 // Fields shared by local file headers and central directory headers
-const writeCommonHeader = (buf, pos, h) => {
+const writeCommonHeader = (buf: Buffer, pos: number, h: ZipHeader) => {
   buf.writeUInt16LE(20, pos); // version needed to extract
   buf.writeUInt16LE(0x0800, pos + 2); // flags: UTF-8 file name
   buf.writeUInt16LE(h.method, pos + 4);
@@ -93,14 +105,14 @@ const writeCommonHeader = (buf, pos, h) => {
   buf.writeUInt16LE(h.nameLength, pos + 22);
 };
 
-const toDosDateTime = (d) => ({
+const toDosDateTime = (d: Date) => ({
   time: (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1),
   date: ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate(),
 });
 
 if (import.meta.main) {
   if (process.argv.length <= 2) {
-    console.error("Usage: node archive.js postfix");
+    console.error("Usage: node archive.ts postfix");
     process.exit(1);
   }
 

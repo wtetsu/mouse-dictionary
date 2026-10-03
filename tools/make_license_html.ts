@@ -8,7 +8,9 @@
 
 import fs from "node:fs";
 
-const main = (licenseJsonPath) => {
+type LicenseRecord = { licenses: string; publisher?: string; repository?: string; url?: string };
+
+const main = (licenseJsonPath: string) => {
   const licenseRecords = readJson(licenseJsonPath);
 
   const { licenseContent, summary } = makeLicenseContent(licenseRecords);
@@ -19,11 +21,11 @@ const main = (licenseJsonPath) => {
   fs.writeFileSync("license.html", htmlContent);
 };
 
-const makeLicenseContent = (licenseRecords) => {
+const makeLicenseContent = (licenseRecords: Record<string, LicenseRecord>) => {
   const keys = Object.keys(licenseRecords);
   keys.sort();
 
-  const summary = {};
+  const summary: Record<string, number> = {};
 
   let licenseContent = "<ul>";
   for (const key of keys) {
@@ -47,7 +49,7 @@ const makeLicenseContent = (licenseRecords) => {
   return { licenseContent, summary };
 };
 
-const printSummary = (summary) => {
+const printSummary = (summary: Record<string, number>) => {
   console.log("# Summary");
   const keys = Object.keys(summary);
   keys.sort();
@@ -63,7 +65,7 @@ const printSummary = (summary) => {
   }
 };
 
-const makeHtmlContent = (licenseContent) => {
+const makeHtmlContent = (licenseContent: string) => {
   return `
    <!DOCTYPE html>
    <html lang="en">
@@ -105,13 +107,13 @@ const makeHtmlContent = (licenseContent) => {
    `;
 };
 
-const readJson = (fileName) => {
+const readJson = (fileName: string) => {
   return JSON.parse(fs.readFileSync(fileName, "utf-8"));
 };
 
 if (import.meta.main) {
   if (process.argv.length <= 2) {
-    console.error("Usage: node make_license_html.js license_file_path");
+    console.error("Usage: node make_license_html.ts license_file_path");
     process.exit(1);
   }
 

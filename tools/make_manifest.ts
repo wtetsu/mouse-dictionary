@@ -12,14 +12,24 @@ import pkg from "../package.json" with { type: "json" };
 
 const { version } = pkg;
 
-const main = (options, outputDirPath) => {
+type ManifestOptions = {
+  from: string;
+  to: string;
+  overwrite?: Record<string, unknown>;
+  activate_extension_command: string;
+  debug: boolean;
+};
+
+type Manifest = { name: string; commands?: Record<string, unknown>; [key: string]: unknown };
+
+const main = (options: ManifestOptions, outputDirPath: string) => {
   fs.mkdirSync(outputDirPath, { recursive: true });
-  const manifest = readJsonFile(options.from);
+  const manifest: Manifest = readJsonFile(options.from);
 
   if (options.debug) {
     manifest.name += " (Debug)";
     const debugConfig = getDebugConfigFileName(options.from);
-    if (fs.existsSync(debugConfig)) {
+    if (debugConfig && fs.existsSync(debugConfig)) {
       Object.assign(manifest, readJsonFile(debugConfig));
     }
   }
@@ -40,12 +50,12 @@ const main = (options, outputDirPath) => {
   console.info(`Generated: ${outputFilePath}`);
 };
 
-const readJsonFile = (sourceJsonFile) => {
+const readJsonFile = (sourceJsonFile: string) => {
   const json = fs.readFileSync(sourceJsonFile, "utf-8");
   return JSON.parse(json);
 };
 
-const getDebugConfigFileName = (fileName) => {
+const getDebugConfigFileName = (fileName: string) => {
   const index = fileName.lastIndexOf(".");
   if (index === -1) {
     return null;
@@ -58,7 +68,7 @@ const getDebugConfigFileName = (fileName) => {
 
 if (import.meta.main) {
   if (process.argv.length <= 3) {
-    console.error("Usage: node make_manifest.js browser mode");
+    console.error("Usage: node make_manifest.ts browser mode");
     process.exit(1);
   }
 

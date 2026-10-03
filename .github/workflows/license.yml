@@ -29,7 +29,7 @@ jobs:
       - name: License
         run: npx --yes license-checker@25.0.1 --json --out license.json
       - name: Make HTML
-        run: node tools/make_license_html.js license.json
+        run: node tools/make_license_html.ts license.json
       - name: Upload
         uses: softprops/action-gh-release@v3
         with:

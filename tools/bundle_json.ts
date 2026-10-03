@@ -8,10 +8,13 @@
 
 import fs from "node:fs";
 import path from "node:path";
+// @ts-expect-error deinja ships no type declarations
 import jaRule from "deinja/src/data.js";
 import json5 from "json5";
 
-const DEFAULT_OPTIONS = [
+type RuleSource = { name: string; file?: string; data?: unknown };
+
+const DEFAULT_OPTIONS: RuleSource[] = [
   { name: "letters", file: "data/rule/letters.json5" },
   { name: "noun", file: "data/rule/noun.json5" },
   { name: "phrase", file: "data/rule/phrase.json5" },
@@ -23,7 +26,7 @@ const DEFAULT_OPTIONS = [
 ];
 const DEFAULT_OUTPUT_DIR_PATH = "static/gen/data";
 
-const main = (options, outputDirPath) => {
+const main = (options: RuleSource[], outputDirPath: string) => {
   const args = process.argv.slice(2);
   const force = args.includes("--force");
 
@@ -37,7 +40,7 @@ const main = (options, outputDirPath) => {
   generateJaRule(options, outputPath);
 };
 
-const generateJaRule = (options, outputPath) => {
+const generateJaRule = (options: RuleSource[], outputPath: string) => {
   const data = uniteJsonFiles(options);
   const unitedJson = JSON.stringify(data);
 
@@ -46,8 +49,8 @@ const generateJaRule = (options, outputPath) => {
   console.info(`✅ Generated: ${outputPath}`);
 };
 
-const uniteJsonFiles = (options) => {
-  const resultData = {};
+const uniteJsonFiles = (options: RuleSource[]) => {
+  const resultData: Record<string, unknown> = {};
   for (const option of options) {
     if (option.data) {
       resultData[option.name] = option.data;
