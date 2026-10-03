@@ -5,7 +5,6 @@
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "strict": true,
-    "allowJs": true,
     "noEmit": true,
     "isolatedModules": true,
     "useDefineForClassFields": false,

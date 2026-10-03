@@ -2,13 +2,13 @@
 
 ## Outline
 
-|                | main                | options            |
-| -------------- | ------------------- | ------------------ |
-| Responsibility | Core features       | Options screen     |
-| Priority       | Speed and lightness | Functionality      |
-| Implementation | Pure JavaScript     | TypeScript + React |
-| Dependency     | No dependency (\*)  | Many libraries     |
-| Module         | default             | named              |
+|                | main                      | options            |
+| -------------- | ------------------------- | ------------------ |
+| Responsibility | Core features             | Options screen     |
+| Priority       | Speed and lightness       | Functionality      |
+| Implementation | TypeScript (no framework) | TypeScript + React |
+| Dependency     | No dependency (\*)        | Many libraries     |
+| Module         | default                   | named              |
 
 (\*) mustache.js is the only exception.
 

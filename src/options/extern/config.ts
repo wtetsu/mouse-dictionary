@@ -20,6 +20,6 @@ export const saveSettings = (settings: MouseDictionarySettings): Promise<void> =
 
 export const setDataReady = (ready: boolean): Promise<void> => storage.local.set({ [KEY_LOADED]: ready });
 
-export const getBytesInUse = (): Promise<number> => storage.local.pick(KEY_BYTES_IN_USE) as Promise<number>;
+export const getBytesInUse = (): Promise<number | undefined> => storage.local.pick<number>(KEY_BYTES_IN_USE);
 
 export const setBytesInUse = (bytes: number): Promise<void> => storage.local.set({ [KEY_BYTES_IN_USE]: bytes });
