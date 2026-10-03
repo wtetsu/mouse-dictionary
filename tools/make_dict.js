@@ -46,10 +46,10 @@ const splitDataAndWrite = (data, split, to, outputDirPath) => {
   let outData = {};
 
   const outFiles = [];
-  for (let i = 1; i <= keys.length; i++) {
+  for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     outData[key] = data[key];
-    if (i >= nextThreshold || i === keys.length) {
+    if (i + 1 >= nextThreshold || i === keys.length - 1) {
       const outJson = JSON.stringify(outData);
       const outFileName = `/${to}${outFiles.length}.json`;
       const outPath = path.join(outputDirPath, outFileName);
