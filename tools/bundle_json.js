@@ -6,10 +6,10 @@
 
 // Bundle multiple JSON files into a single file.
 
-const fs = require("node:fs");
-const path = require("node:path");
-const json5 = require("json5");
-const jaRule = require("deinja/src/data");
+import fs from "node:fs";
+import path from "node:path";
+import jaRule from "deinja/src/data.js";
+import json5 from "json5";
 
 const DEFAULT_OPTIONS = [
   { name: "letters", file: "data/rule/letters.json5" },
@@ -61,6 +61,6 @@ const uniteJsonFiles = (options) => {
   return resultData;
 };
 
-if (require.main === module) {
+if (import.meta.main) {
   main(DEFAULT_OPTIONS, DEFAULT_OUTPUT_DIR_PATH);
 }

@@ -6,9 +6,11 @@
 
 // Make manifest.json.
 
-const fs = require("node:fs");
-const path = require("node:path");
-const version = require("../package.json").version;
+import fs from "node:fs";
+import path from "node:path";
+import pkg from "../package.json" with { type: "json" };
+
+const { version } = pkg;
 
 const main = (options, outputDirPath) => {
   fs.mkdirSync(outputDirPath, { recursive: true });
@@ -54,7 +56,7 @@ const getDebugConfigFileName = (fileName) => {
   return `${baseName}-debug.${ext}`;
 };
 
-if (require.main === module) {
+if (import.meta.main) {
   if (process.argv.length <= 3) {
     console.error("Usage: node make_manifest.js browser mode");
     process.exit(1);

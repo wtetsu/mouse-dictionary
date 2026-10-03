@@ -9,11 +9,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { build } from "vite";
+import pkg from "../package.json" with { type: "json" };
+import settings from "./build.json" with { type: "json" };
 
-const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf-8"));
-
-const { version } = readJson("package.json");
-const settings = readJson("tools/build.json");
+const { version } = pkg;
 
 const main = async (browser, mode, watchMode) => {
   copyStaticFiles(browser, mode);
@@ -95,20 +94,10 @@ const createConfig = (browser, mode, watchMode, entry, outfile) => {
   };
 };
 
-const getTime = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2, "0");
-  const day = now.getDate().toString().padStart(2, "0");
-  const hours = now.getHours().toString().padStart(2, "0");
-  const minutes = now.getMinutes().toString().padStart(2, "0");
-  const seconds = now.getSeconds().toString().padStart(2, "0");
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-};
+const getTime = () => Temporal.Now.plainDateTimeISO().toString({ smallestUnit: "second" }).replace("T", " ");
 
 if (process.argv.length <= 3) {
-  console.error("Usage: node build.mjs browser mode");
+  console.error("Usage: node build.js browser mode");
   process.exit(1);
 }
 

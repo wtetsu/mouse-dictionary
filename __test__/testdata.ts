@@ -1,8 +1,6 @@
 import fs from "node:fs";
+import jaRule from "deinja/src/data.js";
 import json5 from "json5";
-
-const jaRule = require("deinja/src/data");
-
 import rule from "../src/main/core/rule";
 
 const load = () => {

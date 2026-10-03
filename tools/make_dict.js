@@ -6,9 +6,9 @@
 
 // Make dictionary data and metadata.
 
-const fs = require("node:fs");
-const path = require("node:path");
-const json5 = require("json5");
+import fs from "node:fs";
+import path from "node:path";
+import json5 from "json5";
 
 const main = (options, outputDirPath) => {
   const args = process.argv.slice(2);

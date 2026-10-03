@@ -6,7 +6,7 @@
 
 // Convert license.json to a simple html file.
 
-const fs = require("node:fs");
+import fs from "node:fs";
 
 const main = (licenseJsonPath) => {
   const licenseRecords = readJson(licenseJsonPath);
@@ -106,10 +106,10 @@ const makeHtmlContent = (licenseContent) => {
 };
 
 const readJson = (fileName) => {
-  return JSON.parse(fs.readFileSync(fileName));
+  return JSON.parse(fs.readFileSync(fileName, "utf-8"));
 };
 
-if (require.main === module) {
+if (import.meta.main) {
   if (process.argv.length <= 2) {
     console.error("Usage: node make_license_html.js license_file_path");
     process.exit(1);
