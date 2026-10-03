@@ -120,7 +120,7 @@ const min = (a: number | null, b: number): number | null => {
 
 const getSelection = (): string => {
   const selection = window.getSelection();
-  return (selection?.toString() ?? "").replace("\r", " ").replace("\n", " ").trim();
+  return (selection?.toString() ?? "").replace(/[\r\n]/g, " ").trim();
 };
 
 // Returns the first supported primary language (e.g. "ja" for "ja-JP"), or "en"

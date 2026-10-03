@@ -142,4 +142,7 @@ test("getSelection function test", () => {
 
   setWindowGetSelection(() => "    aaa\nbbb\rccc   ");
   expect(utils.getSelection()).toEqual("aaa bbb ccc");
+
+  setWindowGetSelection(() => "aaa\r\nbbb\nccc\nddd");
+  expect(utils.getSelection()).toEqual("aaa  bbb ccc ddd");
 });
