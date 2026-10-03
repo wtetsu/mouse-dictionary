@@ -53,6 +53,17 @@ test("should ignore tabs where the content script is unavailable", async () => {
   await vi.waitFor(() => expect(chrome.tabs.sendMessage).toHaveBeenCalledTimes(2));
 });
 
+test("should skip tabs without an id", async () => {
+  chrome.tabs.query.mockResolvedValue([{}, { id: 2 }]);
+  await importBackground();
+  chrome.action.onClicked.dispatch({});
+  expect(chrome.scripting.executeScript).not.toHaveBeenCalled();
+
+  chrome.commands.onCommand.dispatch("scroll_up");
+  await vi.waitFor(() => expect(chrome.tabs.sendMessage).toHaveBeenCalledOnce());
+  expect(chrome.tabs.sendMessage).toHaveBeenCalledWith(2, { message: { type: "scroll_up" } });
+});
+
 describe("commands", () => {
   test.each(["scroll_up", "scroll_down"])("should send %s to the active tabs", async (command) => {
     await importBackground();

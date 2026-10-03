@@ -12,6 +12,9 @@ const api = ext();
 
 if (BROWSER === "chrome") {
   api.action.onClicked.addListener((tab) => {
+    if (tab.id === undefined) {
+      return;
+    }
     api.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["main.js"],
@@ -52,7 +55,7 @@ api.commands.onCommand.addListener((command) => {
 });
 
 // PDF handling
-const queue = new ExpiringQueue(1000 * 30);
+const queue = new ExpiringQueue<string>(1000 * 30);
 api.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   switch (request?.type) {
     case "open_pdf": {
@@ -77,9 +80,12 @@ api.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   }
 });
 
-const sendToActiveTabs = async (send) => {
+const sendToActiveTabs = async (send: (tabId: number) => Promise<unknown>): Promise<void> => {
   const tabs = await api.tabs.query({ active: true, currentWindow: true });
   for (const tab of tabs) {
+    if (tab.id === undefined) {
+      continue;
+    }
     // Tabs where the content script is unavailable reject; they can be safely ignored
     send(tab.id).catch(() => {});
   }

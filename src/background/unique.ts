@@ -3,6 +3,6 @@
  * Copyright 2018-present wtetsu
  * Licensed under MIT
  */
-const generateUniqueId = () => crypto.randomUUID();
+const generateUniqueId = (): string => crypto.randomUUID();
 
 export default generateUniqueId;
