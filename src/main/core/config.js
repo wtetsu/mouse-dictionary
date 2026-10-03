@@ -97,6 +97,8 @@ const getStoredData = async (keys) => {
 
 const isDataReady = () => storage.local.pick(KEY_LOADED);
 
+export { KEY_LOADED, KEY_USER_CONFIG };
+
 export default {
   loadAll,
   loadSettings,

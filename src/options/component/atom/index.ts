@@ -13,5 +13,4 @@ export * from "./Launch";
 export * from "./Overlay";
 export * from "./Panel";
 export * from "./Select";
-export * from "./Switch";
 export * from "./Toggle";

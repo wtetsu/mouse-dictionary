@@ -7,6 +7,8 @@
 // This resource file is separated from the file of the options UI screen,
 // in order to make the main feature lighter and faster.
 
+import utils from "../lib/utils";
+
 const resources = {
   ja: {
     continueProcessingPdf:
@@ -49,22 +51,7 @@ if (BROWSER === "safari") {
     'Please load dictionary data first. Right click on the extension icon, select "Extensions" tab, and select "Preferences"';
 }
 
-const decideLanguage = () => {
-  let result = "en";
-  const languages = navigator.languages;
-  if (!languages) {
-    return result;
-  }
-  const validLanguages = Object.keys(resources);
-  for (let i = 0; i < languages.length; i++) {
-    const lang = languages[i].toLowerCase().split("-")[0];
-    if (validLanguages.includes(lang)) {
-      result = lang;
-      break;
-    }
-  }
-  return result;
-};
+const decideLanguage = () => utils.pickLanguage(navigator.languages, Object.keys(resources));
 
 export default (key) => {
   const lang = decideLanguage();

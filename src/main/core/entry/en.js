@@ -6,6 +6,7 @@
 
 import UniqList from "uniqlist";
 import text from "../../lib/text";
+import trailing from "../../lib/trailing";
 import rule from "../rule";
 
 const createLookupWordsEn = (rawSourceStr, withCapitalized = false, mustIncludeOriginalText = false) => {
@@ -282,7 +283,7 @@ const createLinkedWordList = (arr, allLowercase, minWordNum = 1) => {
   }
   const newPhrases = [];
   for (let i = 0; i < linkedWords.length; i++) {
-    const arr = text.tryToReplaceTrailingStrings(linkedWords[i], TRAILING_RULES);
+    const arr = trailing.tryToReplaceTrailingStrings(linkedWords[i], TRAILING_RULES);
     newPhrases.push(...arr);
   }
   linkedWords.push(...newPhrases);
@@ -314,7 +315,7 @@ const parseFirstWord = (sourceStr, ignoreLowerCase, minLength = 3) => {
     if (i >= 1) {
       wordList.push(str);
     }
-    wordList.merge(text.tryToReplaceTrailingStrings(str, TRAILING_RULES));
+    wordList.merge(trailing.tryToReplaceTrailingStrings(str, TRAILING_RULES));
 
     const arr = text.splitString(str, 2);
     if (arr.length >= 2) {

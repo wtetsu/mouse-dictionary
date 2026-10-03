@@ -136,31 +136,6 @@ text.splitString = (str, minWordLength) => {
   return arr;
 };
 
-text.replaceTrailingCharacters = (str, searchValue, newValue) => {
-  let result = null;
-  if (str.endsWith(searchValue)) {
-    result = str.substring(str, str.length - searchValue.length) + newValue;
-  }
-  return result;
-};
-
-text.tryToReplaceTrailingStrings = (str, trailingRule, minLength = 3) => {
-  const words = [];
-
-  for (let i = 0; i < trailingRule.length; i++) {
-    const tlist = trailingRule[i];
-    for (let j = 0; j < tlist.length; j++) {
-      const t = tlist[j];
-      const w = text.replaceTrailingCharacters(str, t.search, t.new);
-      if (w?.length >= minLength) {
-        words.push(w);
-        break;
-      }
-    }
-  }
-  return words;
-};
-
 /**
  * ["American", "English"]
  * -> ["American English", "American", "american english", "american"]);

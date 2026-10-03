@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-import { template } from "../extern";
+import { template, utils } from "../extern";
 import type { TextResource, TextResourceKeys } from "../resource";
 import { EnglishTextResource, JapaneseTextResource } from "../resource";
 
@@ -34,18 +34,5 @@ export const get = (key: TextResourceKeys, params?: Record<string, any>): string
   return template.render(resourceText, params);
 };
 
-export const decideInitialLanguage = (languages: string[]): string => {
-  if (!languages) {
-    return "en";
-  }
-  const validLanguages = ["en", "ja"];
-  let result = "en";
-  for (let i = 0; i < languages.length; i++) {
-    const lang = languages[i].toLowerCase().split("-")[0];
-    if (validLanguages.includes(lang)) {
-      result = lang;
-      break;
-    }
-  }
-  return result;
-};
+export const decideInitialLanguage = (languages: readonly string[]): string =>
+  utils.pickLanguage(languages, Object.keys(resources));

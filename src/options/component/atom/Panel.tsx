@@ -10,8 +10,5 @@ type Props = {
 };
 
 export const Panel: React.FC<Props> = (props) => {
-  if (!props.active) {
-    return <></>;
-  }
-  return <>{props.children}</>;
+  return props.active ? props.children : null;
 };

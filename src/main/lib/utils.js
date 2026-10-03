@@ -115,6 +115,20 @@ const getSelection = () => {
   return selection.toString().replace("\r", " ").replace("\n", " ").trim();
 };
 
+// Returns the first supported primary language (e.g. "ja" for "ja-JP"), or "en"
+const pickLanguage = (languages, supportedLanguages) => {
+  for (const language of languages ?? []) {
+    const lang = language.toLowerCase().split("-")[0];
+    if (supportedLanguages.includes(lang)) {
+      return lang;
+    }
+  }
+  return "en";
+};
+
+// Printable ASCII
+const isEnglishLikeCharacter = (code) => 0x20 <= code && code <= 0x7e;
+
 export default {
   loadJson,
   updateMap,
@@ -125,4 +139,6 @@ export default {
   convertToStyles,
   optimizeInitialPosition,
   getSelection,
+  pickLanguage,
+  isEnglishLikeCharacter,
 };

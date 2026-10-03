@@ -7,6 +7,7 @@
 import decoy from "./decoy";
 import dom from "./dom";
 import ponyfill from "./ponyfill/ponyfill";
+import utils from "./utils";
 
 const build = (doConfirmValidCharacter, maxWords) => {
   const traverser = new Traverser(doConfirmValidCharacter, maxWords);
@@ -27,8 +28,7 @@ const build = (doConfirmValidCharacter, maxWords) => {
 class Traverser {
   constructor(doGetTargetCharacterType, maxWords) {
     this.JA_MAX_LENGTH = 40;
-    this.getTargetCharacterType =
-      doGetTargetCharacterType ?? ((code) => (isEnglishLikeCharacterFallback(code) ? 3 : 0));
+    this.getTargetCharacterType = doGetTargetCharacterType ?? ((code) => (utils.isEnglishLikeCharacter(code) ? 3 : 0));
     this.maxWords = maxWords ?? 8;
     this.decoy = decoy.create("div");
     this.segmenter = createWordSegmenter("ja-JP");
@@ -187,8 +187,6 @@ const concatenateFollowingText = (text, followingText, isEnglish) => {
   }
   return text + " " + followingText;
 };
-
-const isEnglishLikeCharacterFallback = (code) => 0x20 <= code && code <= 0x7e;
 
 const createWordSegmenter = (lang) => {
   if (!Intl.Segmenter) {

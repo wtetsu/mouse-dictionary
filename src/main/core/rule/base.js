@@ -5,7 +5,7 @@
  */
 
 import UniqList from "uniqlist";
-import text from "../../lib/text";
+import trailing from "../../lib/trailing";
 
 export default (rule, word) => {
   const list = new UniqList();
@@ -17,7 +17,7 @@ export default (rule, word) => {
   if (n) {
     list.push(n);
   }
-  const otherForms = text.tryToReplaceTrailingStrings(word, rule.trailing);
+  const otherForms = trailing.tryToReplaceTrailingStrings(word, rule.trailing);
   list.merge(otherForms);
   return list.toArray();
 };

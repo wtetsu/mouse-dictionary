@@ -6,17 +6,7 @@
 
 import { produce } from "immer";
 import { useEffect, useReducer } from "react";
-import {
-  Button,
-  DataUsage,
-  EditableSpan,
-  ExternalLink,
-  Launch,
-  Overlay,
-  Panel,
-  Switch,
-  Toggle,
-} from "../component/atom";
+import { Button, DataUsage, EditableSpan, ExternalLink, Launch, Overlay, Panel, Toggle } from "../component/atom";
 import {
   AdvancedSettings,
   BasicSettings,
@@ -161,7 +151,7 @@ export const Main: React.FC = () => {
 
         <div style={{ cursor: "pointer", fontSize: "75%" }} onClick={() => updateState({ dictDataUsage: -1 })} />
 
-        <Switch visible={state.initialized && state.panelLevel === 0}>
+        <Panel active={state.initialized && state.panelLevel === 0}>
           <Tips style={{ position: "absolute", bottom: -10, left: 315, width: 300 }} />
           <Launch
             href="pdf/web/viewer.html"
@@ -169,7 +159,7 @@ export const Main: React.FC = () => {
             image="img/pdf.png"
             style={{ position: "absolute", bottom: 0, left: 380 }}
           />
-        </Switch>
+        </Panel>
 
         <Panel active={!state.busy && env.get().enableUserSettings && state.initialized}>
           <hr style={{ marginTop: 15 }} />

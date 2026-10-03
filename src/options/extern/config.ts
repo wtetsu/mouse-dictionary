@@ -5,12 +5,10 @@
  */
 /* istanbul ignore file */
 
-import orgConfig from "../../main/core/config";
+import orgConfig, { KEY_LOADED, KEY_USER_CONFIG } from "../../main/core/config";
 import storage from "../../main/lib/storage";
 import type { MouseDictionarySettings } from "../types";
 
-const KEY_USER_CONFIG = "**** config ****";
-const KEY_LOADED = "**** loaded ****";
 const KEY_BYTES_IN_USE = "**** bytes_in_use ****";
 
 const { loadRawSettings, isDataReady } = orgConfig;
