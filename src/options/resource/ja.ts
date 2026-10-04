@@ -17,7 +17,7 @@ const JapaneseTextResource: TextResource = {
   dictDataUsage: "{{{size}}}KB使用中",
   confirmLoadInitialDict: "まだ辞書データが無いようです。\nフリー辞書のデータを自動登録します。",
   confirmReloadInitialDict: "デフォルト辞書データを再登録します",
-  fileMayNotBeShiftJis: "このファイルはShift_JISではないかもしれません。インポート処理を実行しますか？",
+  fileMayNotBeShiftJis: "このファイルはShift_JISではないかもしれません。",
 
   formatEijiroText: "英辞郎テキストデータ(■見出し)",
   formatTsv: "TSV(タブ区切り)",
@@ -31,6 +31,8 @@ const JapaneseTextResource: TextResource = {
   saveSettings: "設定を保存する",
   defaultSettings: "初期状態に戻す",
   finishSaving: "保存しました。",
+  ok: "OK",
+  cancel: "キャンセル",
 
   openBasicSettings: "設定を開く",
   closeBasicSettings: "設定を閉じる",

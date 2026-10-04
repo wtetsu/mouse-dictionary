@@ -7,9 +7,8 @@
 import ace from "ace-builds/src-noconflict/ace";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import swal from "sweetalert";
 import { ext, rule } from "./extern";
-import { res } from "./logic";
+import { message, res } from "./logic";
 import { Main } from "./page/Main";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/mode-json";
@@ -22,10 +21,7 @@ ace.config.set("basePath", "/options");
 res.setLang(res.decideInitialLanguage([...navigator.languages]));
 
 window.onerror = (msg) => {
-  swal({
-    text: msg.toString(),
-    icon: "error",
-  });
+  message.error(msg.toString());
 };
 
 const App = () => {

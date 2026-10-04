@@ -6,7 +6,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { res } from "../../logic";
-import { detectFileEncoding } from "../../logic/encoding";
+import { detectFileEncoding, type Encoding } from "../../logic/encoding";
 import type { DictionaryFileEncoding, DictionaryFileFormat } from "../../types";
 import { Button } from "../atom/Button";
 import { Select } from "../atom/Select";
@@ -31,6 +31,7 @@ export const LoadDictionary: React.FC<Props> = (props) => {
   const [encoding, setEncoding] = useState<DictionaryFileEncoding>("Shift_JIS");
   const [format, setFormat] = useState<DictionaryFileFormat>("EIJIRO");
   const [file, setFile] = useState<File | undefined>(undefined);
+  const [detectedEncoding, setDetectedEncoding] = useState<Encoding | undefined>(undefined);
   const selectRef = useRef<HTMLSelectElement>(null);
 
   const ENCODINGS = [
@@ -47,11 +48,18 @@ export const LoadDictionary: React.FC<Props> = (props) => {
   ];
 
   useEffect(() => {
+    setDetectedEncoding(undefined);
     if (!file) {
       return;
     }
+    // Ignore the result if another file was picked while detecting this one
+    let stale = false;
     const load = async () => {
       const detectedEncoding = await detectFileEncoding(file);
+      if (stale) {
+        return;
+      }
+      setDetectedEncoding(detectedEncoding);
       if (detectedEncoding === "Unknown") {
         return;
       }
@@ -71,7 +79,14 @@ export const LoadDictionary: React.FC<Props> = (props) => {
       }
     };
     load();
+    return () => {
+      stale = true;
+    };
   }, [file]);
+
+  // ASCII is a subset of Shift_JIS, so only warn about other encodings
+  const mayNotBeShiftJis =
+    encoding === "Shift_JIS" && detectedEncoding !== undefined && !["Shift_JIS", "ASCII"].includes(detectedEncoding);
 
   return (
     <div>
@@ -87,6 +102,12 @@ export const LoadDictionary: React.FC<Props> = (props) => {
       <label>{res.get("readDictData")}</label>
       <input type="file" onChange={(e) => setFile(e.target.files?.[0])} />
       <br />
+      {mayNotBeShiftJis && (
+        <p role="alert" style={{ margin: "0.5rem 0", color: "#d9534f", fontWeight: "bold" }}>
+          <span aria-hidden="true">⚠️ </span>
+          {res.get("fileMayNotBeShiftJis")}
+        </p>
+      )}
       <Button
         type="primary"
         text={res.get("loadSelectedFile")}

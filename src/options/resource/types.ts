@@ -25,6 +25,8 @@ export type TextResource = {
   saveSettings: string;
   defaultSettings: string;
   finishSaving: string;
+  ok: string;
+  cancel: string;
   openBasicSettings: string;
   closeBasicSettings: string;
   openAdvancedSettings: string;

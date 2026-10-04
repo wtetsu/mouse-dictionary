@@ -18,9 +18,27 @@ h3 {
   max-width: 60rem;
 }
 
-.swal-button {
-  padding-top: 0px;
-  padding-bottom: 0px;
+/* Stay above the full-screen JSON editor overlay (z-index: 10000) */
+.swal2-container {
+  z-index: 10001;
+}
+
+/* SweetAlert2 sizes itself in rem, but milligram sets the root font size to 10px */
+.swal2-popup {
+  font-size: 1.6rem;
+}
+
+.swal2-title,
+.swal2-html-container {
+  white-space: pre-line;
+}
+
+/* Undo milligram's global button styles */
+.swal2-container button {
+  height: auto;
+  line-height: normal;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .button-arrow {

@@ -4,35 +4,44 @@
  * Licensed under MIT
  */
 
-import swal from "sweetalert";
+import Swal, { type SweetAlertIcon } from "sweetalert2";
+import * as res from "./resource";
 
-type Icon = "info" | "success" | "warning" | "error";
-type Buttons = "ok" | "okCancel";
+const Toast = Swal.mixin({
+  toast: true,
+  position: "bottom-end",
+  width: "28em",
+  showConfirmButton: false,
+  showCloseButton: true,
+  timer: 4000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 
-export const notice = (text: string, buttons?: Buttons): Promise<any> => {
-  return show(text, "info", buttons, { closeOnClickOutside: false });
+const notify = (icon: SweetAlertIcon, title: string, text?: string): void => {
+  Toast.fire({ icon, title, text });
 };
 
-export const success = (text: string, buttons?: Buttons): Promise<any> => {
-  return show(text, "success", buttons);
-};
+export const info = (text: string, description?: string): void => notify("info", text, description);
 
-export const warn = (text: string, buttons?: Buttons): Promise<any> => {
-  return show(text, "warning", buttons);
-};
+export const success = (text: string, description?: string): void => notify("success", text, description);
 
-export const error = (text: string, buttons?: Buttons): Promise<any> => {
-  return show(text, "error", buttons);
-};
+export const warn = (text: string, description?: string): void => notify("warning", text, description);
 
-const show = (text: string, icon: Icon, buttons?: Buttons, extraOptions?: Record<string, unknown>): Promise<any> => {
-  const options = {
+export const error = (text: string, description?: string): void => notify("error", text, description);
+
+// Resolves to true on OK, false on Cancel
+export const confirm = async (text: string, kind: "info" | "warning" = "info"): Promise<boolean> => {
+  const result = await Swal.fire({
+    icon: kind,
     text,
-    icon,
-    buttons: buttons === "okCancel" ? [true, true] : undefined,
-  };
-  if (extraOptions) {
-    Object.assign(options, extraOptions);
-  }
-  return swal(options);
+    showCancelButton: true,
+    confirmButtonText: res.get("ok"),
+    cancelButtonText: res.get("cancel"),
+    allowOutsideClick: false,
+  });
+  return result.isConfirmed;
 };

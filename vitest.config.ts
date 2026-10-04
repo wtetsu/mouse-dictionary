@@ -15,7 +15,6 @@ export default defineConfig({
         "src/options/resource",
         "src/options/logic/debounce.ts",
         "src/options/logic/dict.ts",
-        "src/options/logic/message.ts",
         "src/options/logic/preview.ts",
       ],
       thresholds: {

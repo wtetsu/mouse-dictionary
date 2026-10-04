@@ -47,7 +47,7 @@
     "react": "^19.3.0",
     "react-ace": "^15.0.0",
     "react-dom": "^19.3.0",
-    "sweetalert": "^2.1.2",
+    "sweetalert2": "11.26.25",
     "uniqlist": "^1.0.4"
   },
   "devDependencies": {

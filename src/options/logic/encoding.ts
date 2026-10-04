@@ -4,7 +4,7 @@
  * Licensed under MIT
  */
 
-type Encoding = "ASCII" | "Shift_JIS" | "UTF-8" | "UTF-16" | "Unknown";
+export type Encoding = "ASCII" | "Shift_JIS" | "UTF-8" | "UTF-16" | "Unknown";
 
 export const detectFileEncoding = async (file: File): Promise<Encoding> => {
   const firstBytes = await getFirstBytes(file, 1024);

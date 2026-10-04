@@ -17,11 +17,10 @@ import {
 } from "../component/organism";
 import { config, defaultSettings, env } from "../extern";
 import { data, dict, message, res } from "../logic";
-import { detectFileEncoding } from "../logic/encoding";
 import { usePreview } from "../logic/preview";
 
 import type { TextResourceKeys } from "../resource";
-import type { DictionaryFile, DictionaryFileEncoding, MouseDictionarySettings } from "../types";
+import type { DictionaryFile, MouseDictionarySettings } from "../types";
 
 type MainState = {
   dictDataUsage?: number;
@@ -250,13 +249,14 @@ const saveSettings = async (rawSettings: MouseDictionarySettings): Promise<void>
   const settings = data.postProcessSettings(rawSettings);
   try {
     await config.saveSettings(settings);
+    message.success(res.get("finishSaving"));
   } catch (e) {
     showError(e);
   }
 };
 
 const confirmAndLoadInitialDict = async (messageId: TextResourceKeys, updateState: UpdateState): Promise<boolean> => {
-  const willLoad = await message.notice(res.get(messageId), "okCancel");
+  const willLoad = await message.confirm(res.get(messageId));
   if (!willLoad) {
     return false;
   }
@@ -273,7 +273,7 @@ const confirmAndLoadInitialDict = async (messageId: TextResourceKeys, updateStat
     updateState({ busy: false, progress: "" });
   }
   await config.setDataReady(true);
-  await message.success(res.get("finishRegister", { count: finalWordCount }));
+  message.success(res.get("finishRegister", { count: finalWordCount }));
 
   return true;
 };
@@ -282,9 +282,6 @@ const loadDictionaryData = async (dictionaryFile: DictionaryFile, updateState: U
   const { file, encoding, format } = dictionaryFile;
   if (!file) {
     message.warn(res.get("selectDictFile"));
-    return;
-  }
-  if (!(await confirmEncoding(file, encoding))) {
     return;
   }
   try {
@@ -299,14 +296,6 @@ const loadDictionaryData = async (dictionaryFile: DictionaryFile, updateState: U
   } finally {
     updateState({ busy: false, progress: "", dictDataUsage: -1 });
   }
-};
-
-// Ask before importing a file that's declared Shift_JIS but doesn't look like it
-const confirmEncoding = async (file: File, encoding: DictionaryFileEncoding): Promise<boolean> => {
-  if (encoding !== "Shift_JIS" || (await detectFileEncoding(file)) === "Shift_JIS") {
-    return true;
-  }
-  return message.warn(res.get("fileMayNotBeShiftJis"), "okCancel");
 };
 
 const formatLoadProgress = (ev: dict.CallbackParam): string => {

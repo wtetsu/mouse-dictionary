@@ -9,7 +9,7 @@ import type { RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
 import AceEditor from "react-ace";
 import { defaultSettings, dom } from "../../extern";
-import { data, htmlrisk, message, res } from "../../logic";
+import { data, htmlrisk, res } from "../../logic";
 import type { MouseDictionarySettings } from "../../types";
 import { Button } from "../atom/Button";
 
@@ -121,6 +121,7 @@ export const WholeSettings: React.FC<Props> = (props) => {
     const initialValue = data.postProcessSettings(props.initialValue);
     return JSON.stringify(initialValue, null, 2);
   });
+  const [importError, setImportError] = useState<string | undefined>(undefined);
 
   const createSettings = (json: string): MouseDictionarySettings => {
     const newSettings = data.preProcessSettings(JSON.parse(json));
@@ -149,11 +150,7 @@ export const WholeSettings: React.FC<Props> = (props) => {
       const settings = createSettings(json);
       props.onChange(settings);
     } catch (e) {
-      if (e instanceof Error) {
-        message.warn(res.get("JsonImportError") + "\n" + e.message);
-      } else {
-        message.warn(res.get("JsonImportError") + "\n" + String(e));
-      }
+      setImportError(`${res.get("JsonImportError")}\n${e instanceof Error ? e.message : String(e)}`);
     }
   };
 
@@ -183,17 +180,26 @@ export const WholeSettings: React.FC<Props> = (props) => {
       <div>
         <Button type="cancel" text={res.get("closeJsonEditor")} onClick={() => close()} />
         <Button type="json" text={res.get("importJson")} onClick={() => updateAndClose(json)} />
+        {importError && (
+          <p role="alert" style={{ ...WARNING_TEXT_STYLE, whiteSpace: "pre-line" }}>
+            <span aria-hidden="true">⚠️ </span>
+            {importError}
+          </p>
+        )}
 
         <AceEditor
           mode="json"
           theme="solarized_light"
-          onChange={(value) => setJson(value)}
+          onChange={(value) => {
+            setJson(value);
+            setImportError(undefined);
+          }}
           name="dialogTemplate"
           editorProps={{ $blockScrolling: true }}
           value={json}
           showPrintMargin={false}
           highlightActiveLine={false}
-          style={{ ...EDITOR_STYLE, height: 700, ...(warnings.length >= 1 ? WARNING_STYLE : {}) }}
+          style={{ ...EDITOR_STYLE, height: 700, ...(warnings.length >= 1 || importError ? WARNING_STYLE : {}) }}
           ref={editor}
           setOptions={{ useWorker: false }}
         />
