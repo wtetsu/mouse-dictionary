@@ -25,10 +25,10 @@ test("notifications are shown as toasts", () => {
   message.error("e", "boom");
 
   expect(toastFire.mock.calls).toEqual([
-    [{ icon: "info", title: "i", text: undefined }],
-    [{ icon: "success", title: "s", text: "detail" }],
-    [{ icon: "warning", title: "w", text: undefined }],
-    [{ icon: "error", title: "e", text: "boom" }],
+    [{ icon: "info", titleText: "i", text: undefined }],
+    [{ icon: "success", titleText: "s", text: "detail" }],
+    [{ icon: "warning", titleText: "w", text: undefined }],
+    [{ icon: "error", titleText: "e", text: "boom" }],
   ]);
   expect(fire).not.toHaveBeenCalled();
 });

@@ -18,6 +18,10 @@ type Browser = keyof typeof settings.targets;
 type Mode = "development" | "production";
 
 const main = async (browser: Browser, mode: Mode, watchMode: string | undefined) => {
+  if (mode === "production") {
+    // Start from an empty directory so that stale files never get into a release package
+    fs.rmSync(`dist-${browser}`, { recursive: true, force: true });
+  }
   copyStaticFiles(browser, mode);
 
   for (const [entry, outfile] of Object.entries(settings.entries)) {

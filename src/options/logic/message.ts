@@ -22,7 +22,8 @@ const Toast = Swal.mixin({
 });
 
 const notify = (icon: SweetAlertIcon, title: string, text?: string): void => {
-  Toast.fire({ icon, title, text });
+  // titleText: title would be rendered as HTML
+  Toast.fire({ icon, titleText: title, text });
 };
 
 export const info = (text: string, description?: string): void => notify("info", text, description);
